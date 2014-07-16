@@ -14,10 +14,12 @@
  * limitations under the License.
  */
   
+  #include "btle.h"
+  
 #include "mbed.h"
 #include "blueNRGDevice.h"
 
-//#include "btle.h"
+
 
 /**************************************************************************/
 /*!

@@ -13,17 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-#ifndef __BLUENRG_H__
-#define __BLUENRG_H__
+/*
+#ifdef __cplusplus
+extern "C" {
+#endif*/
+#if 0
+#include "btle.h"
 
-#define blueNRG
-#define DEBUG_NRG_USER
-#define BLE_STACK_SUPPORT_REQD
+#include "hw/Gap.h"
+#include "hw/GattServer.h"
+#include "hw/BLEDevice.h"
 
+/*
+#ifdef __cplusplus
+    }
+#endif*/
 #include "mbed.h"
 #include "blecommon.h"
-#include "hw/BLEDevice.h"
+
 #include "blueNRGGap.h"
 #include "blueNRGGattServer.h"
 
@@ -34,17 +41,30 @@
 
 
 *************************************************************************/
+void test_function(void);
 
-class blueNRGDevice : public BLEDeviceInstanceBase
+void test_function(void)
+{
+    //btle_init();
+    
+    }
+
+class BTLE_Test //: public BLEDeviceInstanceBase
 {
     public:   
-        blueNRGDevice(void);
-        virtual ~blueNRGDevice(void);
-
-        virtual Gap&        getGap()        { return blueNRGGap::getInstance(); };
+        BTLE_Test(void);
+        virtual ~BTLE_Test(void); 
+        void Init(void);
+        
+        /*virtual Gap&        getGap()        { return blueNRGGap::getInstance(); };
         virtual GattServer& getGattServer() { return blueNRGGattServer::getInstance(); };
         virtual ble_error_t init(void);
         virtual ble_error_t reset(void);
-        virtual void waitForEvent(void);         
-};
-#endif
+        virtual void waitForEvent(void);      */
+    };
+
+void BTLE_Test::Init(void) {
+    //btle_init();
+    }
+
+#endif    
