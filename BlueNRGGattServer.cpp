@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-#include "blueNRGGattServer.h"
+
+#include "BlueNRGGattServer.h"
 #include "mbed.h"
 
-#include "blueNRGGap.h"
+//#include "common/common.h"
+//#include "btle/custom/custom_helper.h"
+
+#include "BlueNRGGap.h"
 
 /**************************************************************************/
 /*!
     @brief  Adds a new service to the GATT table on the peripheral
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -35,16 +38,12 @@
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGattServer::addService(GattService & service)
+ble_error_t BlueNRGGattServer::addService(GattService &service)
 {
     /* ToDo: Make sure we don't overflow the array, etc. */
     /* ToDo: Make sure this service UUID doesn't already exist (?) */
     /* ToDo: Basic validation */
-    
-    /* Add the service to the nRF51 */
-  
-     
-    serviceCount++;
+
     
     return BLE_ERROR_NONE;
 }
@@ -61,12 +60,12 @@ ble_error_t blueNRGGattServer::addService(GattService & service)
                 (raw byte array in LSB format)
     @param[in]  len
                 The number of bytes read into the buffer
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -74,9 +73,9 @@ ble_error_t blueNRGGattServer::addService(GattService & service)
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGattServer::readValue(uint16_t handle, uint8_t buffer[], uint16_t *const lengthP)
+ble_error_t BlueNRGGattServer::readValue(uint16_t charHandle, uint8_t buffer[], uint16_t *const lengthP)
 {
-   
+    
     return BLE_ERROR_NONE;
 }
 
@@ -92,12 +91,12 @@ ble_error_t blueNRGGattServer::readValue(uint16_t handle, uint8_t buffer[], uint
                 (raw byte array in LSB format)
     @param[in]  len
                 The number of bytes in buffer
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -105,11 +104,9 @@ ble_error_t blueNRGGattServer::readValue(uint16_t handle, uint8_t buffer[], uint
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[], uint16_t len, bool localOnly)
+ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[], uint16_t len, bool localOnly)
 {
-  
     
-  return BLE_ERROR_NONE;
+
+    return BLE_ERROR_NONE;
 }
-
-

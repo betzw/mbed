@@ -73,9 +73,6 @@ void btle_init(void)
   
   HAL_Init();
   
-  /* Configure LED2 */
-  //BSP_LED_Init(LED2);
-  
   /* Configure the User Button in GPIO Mode */
   BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
   
@@ -95,17 +92,15 @@ void btle_init(void)
   /* Reset BlueNRG SPI interface */
   BlueNRG_RST();
 
-  //BSP_LED_Toggle(LED2);
-
   /* The Nucleo board must be configured as SERVER */
-  Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
+  /*Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
   
   ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
                                   CONFIG_DATA_PUBADDR_LEN,
-                                  bdaddr);
+                                  bdaddr);*/
                                   
   ret = aci_gatt_init();
-
+  //GAP is always in PERIPHERAL _ROLE as mbed does not support Master role at the moment
   ret = aci_gap_init(GAP_PERIPHERAL_ROLE, &service_handle, &dev_name_char_handle, &appearance_char_handle);
 
   ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,

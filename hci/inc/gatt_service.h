@@ -13,8 +13,8 @@
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
 
-#ifndef __GATT_SERVER_H__
-#define __GATT_SERVER_H__
+#ifndef __GATT_SERV_H__
+#define __GATT_SERV_H__
 
 #include "compiler.h"
 #include "ble_status.h"

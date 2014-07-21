@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-#include "blueNRGGap.h"
+
+#include "BlueNRGDevice.h"
 #include "mbed.h"
 
 
@@ -31,16 +31,16 @@
                 The optional Scan Response payload if the advertising
                 type is set to \ref GapAdvertisingParams::ADV_SCANNABLE_UNDIRECTED
                 in \ref GapAdveritinngParams
-            
+
     @returns    \ref ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
 
     @retval     BLE_ERROR_BUFFER_OVERFLOW
                 The proposed action would cause a buffer overflow.  All
                 advertising payloads must be <= 31 bytes, for example.
-                
+
     @retval     BLE_ERROR_NOT_IMPLEMENTED
                 A feature was requested that is not yet supported in the
                 nRF51 firmware or hardware.
@@ -55,22 +55,18 @@
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGap::setAdvertisingData(const GapAdvertisingData & advData, const GapAdvertisingData & scanResponse)
+ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, const GapAdvertisingData &scanResponse)
 {
     /* Make sure we don't exceed the advertising payload length */
-   
+    if (advData.getPayloadLen() > GAP_ADVERTISING_DATA_MAX_PAYLOAD) {
+        return BLE_ERROR_BUFFER_OVERFLOW;
+    }
+
     /* Make sure we have a payload! */
-    
-    /* Check the scan response payload limits */
-    
-    
-    
-    /* Send advertising data! */
-    
-    /* Make sure the GAP Service appearance value is aligned with the appearance from GapAdvertisingData */ 
- 
-    /* ToDo: Perform some checks on the payload, for example the Scan Response can't */
-    /* contains a flags AD type, etc. */
+    if (advData.getPayloadLen() == 0) {
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    }
+
 
     return BLE_ERROR_NONE;
 }
@@ -79,14 +75,14 @@ ble_error_t blueNRGGap::setAdvertisingData(const GapAdvertisingData & advData, c
 /*!
     @brief  Starts the BLE HW, initialising any services that were
             added before this function was called.
-            
+
     @note   All services must be added before calling this function!
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -94,36 +90,68 @@ ble_error_t blueNRGGap::setAdvertisingData(const GapAdvertisingData & advData, c
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGap::startAdvertising(const GapAdvertisingParams & params)
+ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
 {
-      /* Make sure we support the advertising type */
-    
+    /* Make sure we support the advertising type */
+    if (params.getAdvertisingType() == GapAdvertisingParams::ADV_CONNECTABLE_DIRECTED) {
+        /* ToDo: This requires a propery security implementation, etc. */
+        return BLE_ERROR_NOT_IMPLEMENTED;
+    }
 
     /* Check interval range */
-    
-    
+    if (params.getAdvertisingType() == GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED) {
+        /* Min delay is slightly longer for unconnectable devices */
+        if ((params.getInterval() < GAP_ADV_PARAMS_INTERVAL_MIN_NONCON) ||
+            (params.getInterval() > GAP_ADV_PARAMS_INTERVAL_MAX)) {
+            return BLE_ERROR_PARAM_OUT_OF_RANGE;
+        }
+    } else {
+        if ((params.getInterval() < GAP_ADV_PARAMS_INTERVAL_MIN) ||
+            (params.getInterval() > GAP_ADV_PARAMS_INTERVAL_MAX)) {
+            return BLE_ERROR_PARAM_OUT_OF_RANGE;
+        }
+    }
 
     /* Check timeout is zero for Connectable Directed */
-    
+    if ((params.getAdvertisingType() == GapAdvertisingParams::ADV_CONNECTABLE_DIRECTED) && (params.getTimeout() != 0)) {
+        /* Timeout must be 0 with this type, although we'll never get here */
+        /* since this isn't implemented yet anyway */
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    }
+
     /* Check timeout for other advertising types */
-    
+    if ((params.getAdvertisingType() != GapAdvertisingParams::ADV_CONNECTABLE_DIRECTED) &&
+        (params.getTimeout() > GAP_ADV_PARAMS_TIMEOUT_MAX)) {
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    }
 
-    /* Start Advertising */    
-        
-    state.advertising = 1;
-
+  tBleStatus ret;
+  
+  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+  
+  /* disable scan response */
+  hci_le_set_scan_resp_data(0,NULL);
+  
+  /*aci_gap_set_discoverable(Advertising_Event_Type, Adv_min_intvl, Adv_Max_Intvl, Addr_Type, Adv_Filter_Policy,
+                        Local_Name_Length, local_name, service_uuid_length, service_uuid_list, Slave_conn_intvl_min, Slave_conn_intvl_max);*/
+  /*LINK_LAYER.H DESCRIBES THE ADVERTISING TYPES*/ 
+                                
+  ret = aci_gap_set_discoverable(params.getAdvertisingType(), params.getInterval(), 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
+                                 8, local_name, 0, NULL, 0, 0);
+  
+  
     return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
 /*!
     @brief  Stops the BLE HW and disconnects from any devices
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -131,22 +159,22 @@ ble_error_t blueNRGGap::startAdvertising(const GapAdvertisingParams & params)
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGap::stopAdvertising(void)
+ble_error_t BlueNRGGap::stopAdvertising(void)
 {
-  state.advertising = 0;
+    
 
-  return BLE_ERROR_NONE;
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
 /*!
     @brief  Disconnects if we are connected to a central device
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -154,13 +182,10 @@ ble_error_t blueNRGGap::stopAdvertising(void)
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGap::disconnect(void)
+ble_error_t BlueNRGGap::disconnect(void)
 {
-    state.advertising = 0;
-  state.connected = 0;
     
-    
-  return BLE_ERROR_NONE;
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
@@ -168,25 +193,25 @@ ble_error_t blueNRGGap::disconnect(void)
     @brief  Sets the 16-bit connection handle
 */
 /**************************************************************************/
-void blueNRGGap::setConnectionHandle(uint16_t con_handle)
+void BlueNRGGap::setConnectionHandle(uint16_t con_handle)
 {
-  m_connectionHandle = con_handle;
+    m_connectionHandle = con_handle;
 }
- 
+
 /**************************************************************************/
 /*!
     @brief  Gets the 16-bit connection handle
 */
 /**************************************************************************/
-uint16_t blueNRGGap::getConnectionHandle(void)
+uint16_t BlueNRGGap::getConnectionHandle(void)
 {
-  return m_connectionHandle;
+    return m_connectionHandle;
 }
- 
+
 /**************************************************************************/
 /*!
     @brief      Sets the BLE device address
-            
+
     @returns    ble_error_t
 
     @section EXAMPLE
@@ -199,8 +224,11 @@ uint16_t blueNRGGap::getConnectionHandle(void)
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
+ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
 {
-  
-  return BLE_ERROR_NONE;
+    if (type > ADDR_TYPE_RANDOM_PRIVATE_NON_RESOLVABLE) {
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    }
+
+    return BLE_ERROR_NONE;
 }

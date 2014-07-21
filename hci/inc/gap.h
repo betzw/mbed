@@ -12,8 +12,8 @@
 * CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE CODING
 * INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
 *******************************************************************************/
-#ifndef __GAP_H__
-#define __GAP_H__
+#ifndef __GAP_HCI_H__
+#define __GAP_HCI_H__
 
 #include <link_layer.h>
 

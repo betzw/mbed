@@ -27,7 +27,8 @@ extern "C" {
 #include "bluenrg_hci.h"
 #include "hci_internal.h"
 #include "bluenrg_hci_internal.h"
-
+#include "gap.h"
+#include "gatt_service.h"
 #include <stdio.h>
 #include <string.h>
  

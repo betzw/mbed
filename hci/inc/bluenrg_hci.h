@@ -16,7 +16,7 @@
 #ifndef __BLUENRG_HCI_H__
 #define __BLUENRG_HCI_H__
 
-#include "gatt_server.h"
+#include "gatt_service.h"
 
 tBleStatus aci_gatt_init(void);
 tBleStatus aci_gap_init(uint8_t role,

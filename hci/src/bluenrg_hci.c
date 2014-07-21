@@ -20,7 +20,7 @@
 #include "osal.h"
 #include "hci_internal.h"
 #include "bluenrg_hci_internal.h"
-#include "gatt_server.h"
+#include "gatt_service.h"
 
 
 tBleStatus aci_gatt_init()

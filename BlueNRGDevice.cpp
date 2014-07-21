@@ -13,20 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-  
-  #include "btle.h"
-  
+
 #include "mbed.h"
-#include "blueNRGDevice.h"
+#include "BlueNRGDevice.h"
 
+#include "btle.h"
 
+/**
+ * The singleton which represents the nRF51822 transport for the BLEDevice.
+ */
+static BlueNRGDevice deviceInstance;
+
+/**
+ * BLE-API requires an implementation of the following function in order to
+ * obtain its transport handle.
+ */
+BLEDeviceInstanceBase *
+createBLEDeviceInstance(void)
+{
+    return (&deviceInstance);
+}
 
 /**************************************************************************/
 /*!
     @brief  Constructor
 */
 /**************************************************************************/
-blueNRGDevice::blueNRGDevice(void)
+BlueNRGDevice::BlueNRGDevice(void)
 {
 }
 
@@ -35,19 +48,19 @@ blueNRGDevice::blueNRGDevice(void)
     @brief  Destructor
 */
 /**************************************************************************/
-blueNRGDevice::~blueNRGDevice(void)
+BlueNRGDevice::~BlueNRGDevice(void)
 {
 }
 
 /**************************************************************************/
 /*!
     @brief  Initialises anything required to start using BLE
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -55,24 +68,24 @@ blueNRGDevice::~blueNRGDevice(void)
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGDevice::init(void)
+ble_error_t BlueNRGDevice::init(void)
 {
-  /* ToDo: Clear memory contents, reset the SD, etc. */
- // btle_init();
-  
-  return BLE_ERROR_NONE;
+    /* ToDo: Clear memory contents, reset the SD, etc. */
+    btle_init();
+
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
 /*!
     @brief  Resets the BLE HW, removing any existing services and
             characteristics
-            
+
     @returns    ble_error_t
-    
+
     @retval     BLE_ERROR_NONE
                 Everything executed properly
-                
+
     @section EXAMPLE
 
     @code
@@ -80,19 +93,22 @@ ble_error_t blueNRGDevice::init(void)
     @endcode
 */
 /**************************************************************************/
-ble_error_t blueNRGDevice::reset(void)
+ble_error_t BlueNRGDevice::reset(void)
 {
     wait(0.5);
-    
+
+    /* Reset BlueNRG SPI interface */
+    //BlueNRG_RST();
+  
     /* Wait for the radio to come back up */
     wait(1);
-    
+
     return BLE_ERROR_NONE;
 }
 
-void blueNRGDevice::waitForEvent(void)
+void BlueNRGDevice::waitForEvent(void)
 {
-        
-    return;
+    //sd_app_evt_wait();
+    HCI_Process();//Send App Events??
+    
 }
-
