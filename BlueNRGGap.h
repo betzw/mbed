@@ -57,9 +57,12 @@ private:
     tBleStatus ret;
   
     //const char local_name[];// = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+    //Local Variables
+    //uint8_t *device_name;
     BlueNRGGap() {
         m_connectionHandle = BLE_CONN_HANDLE_INVALID;
         //local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+        
     }
 
     BlueNRGGap(BlueNRGGap const &);

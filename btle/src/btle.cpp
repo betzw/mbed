@@ -35,7 +35,6 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 #include <stm32l0xx_bluenrg_shield_bsp.h>
-//#include "sensor_service.h"
 #include "role_type.h"
 #include "debug.h"
 
@@ -151,14 +150,57 @@ static void btle_handler(/*ble_evt_t * p_ble_evt*/)
 extern "C" {
 #endif
 
-extern void HCI_Event_CB(void *ptr) {
-    int a=3;
-    int b=5;
+extern void HCI_Event_CB(void *pckt) {
     
-    int sum = a+b;
+    hci_uart_pckt *hci_pckt = (hci_uart_pckt*)pckt;
+    hci_event_pckt *event_pckt = (hci_event_pckt*)hci_pckt->data;
+    
+    if(hci_pckt->type != HCI_EVENT_PKT)
+    return;
+
+    switch(event_pckt->evt){
+        
+        case EVT_DISCONN_COMPLETE:
+            {
+              //GAP_DisconnectionComplete_CB();
+            }
+            break;
+        
+        case EVT_LE_META_EVENT:
+            {
+                evt_le_meta_event *evt = (evt_le_meta_event *)event_pckt->data;
+              
+                switch(evt->subevent){
+                    case EVT_LE_CONN_COMPLETE:
+                        {
+                            //evt_le_connection_complete *cc = (void *)evt->data;
+                            //GAP_ConnectionComplete_CB(cc->peer_bdaddr, cc->handle);
+                        }
+                        break;
+                    }
+            }
+            break;
+        
+        case EVT_VENDOR:
+            {
+                evt_blue_aci *blue_evt = (evt_blue_aci*)event_pckt->data;
+                switch(blue_evt->ecode){
+    
+                    case EVT_BLUE_GATT_READ_PERMIT_REQ:
+                        {
+                            //evt_gatt_read_permit_req *pr = (void*)blue_evt->data;                    
+                            //Read_Request_CB(pr->attr_handle);                    
+                        }
+                    break;
+            }
+        }
+        break;
+    }    
     
     return ;
-    }
+}
+
+
 #ifdef __cplusplus
     }
 #endif

@@ -17,6 +17,8 @@
 #include "BlueNRGDevice.h"
 #include "mbed.h"
 
+//Local Variables
+const uint8_t *device_name;
 
 /**************************************************************************/
 /*!
@@ -67,7 +69,13 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     }
 
-
+    //set the advData here in some local variable so that startAdvertising can use it.
+    if (advData.getPayloadLen() > 0) {
+        const uint8_t *payload = advData.getPayload();
+        device_name = advData.getPayload();
+    }
+    
+    
     return BLE_ERROR_NONE;
 }
 
@@ -127,7 +135,9 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
 
   tBleStatus ret;
   
-  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+  //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[5],device_name[6],device_name[7],device_name[8], device_name[9],
+                                                        device_name[10], device_name[11], device_name[12]};
   
   /* disable scan response */
   hci_le_set_scan_resp_data(0,NULL);
@@ -137,7 +147,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   /*LINK_LAYER.H DESCRIBES THE ADVERTISING TYPES*/ 
                                 
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), params.getInterval(), 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
-                                 8, local_name, 0, NULL, 0, 0);
+                                 9 /*Length of the local_name[] array*/, local_name, 0, NULL, 0, 0);
   
   
     return BLE_ERROR_NONE;
