@@ -137,7 +137,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
   const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[5],device_name[6],device_name[7],device_name[8], device_name[9],
-                                                        device_name[10], device_name[11], device_name[12]};
+                                                        device_name[10], device_name[11], device_name[12], device_name[13], device_name[14]};
   
   /* disable scan response */
   hci_le_set_scan_resp_data(0,NULL);
@@ -147,8 +147,8 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   /*LINK_LAYER.H DESCRIBES THE ADVERTISING TYPES*/ 
                                 
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), params.getInterval(), 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
-                                 9 /*Length of the local_name[] array*/, local_name, 0, NULL, 0, 0);
-  
+                                 11 /*Length of the local_name[] array*/, local_name, 0, NULL, 0, 0);
+  state.advertising = 1;
   
     return BLE_ERROR_NONE;
 }
@@ -236,9 +236,16 @@ uint16_t BlueNRGGap::getConnectionHandle(void)
 /**************************************************************************/
 ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
 {
+    tBleStatus ret;
+    
     if (type > ADDR_TYPE_RANDOM_PRIVATE_NON_RESOLVABLE) {
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     }
-
+        
+    ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET, CONFIG_DATA_PUBADDR_LEN, (const tHalUint8*)address);
+    
+    //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;
+    
+    //return BLE_ERROR_PARAM_OUT_OF_RANGE;
 }

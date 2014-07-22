@@ -16,6 +16,10 @@
 
 
 #include "btle.h"
+#include "hw/Gap.h"
+#include "hw/GapEvents.h"
+#include "BlueNRGGap.h"
+#include "BlueNRGGattServer.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -162,7 +166,7 @@ extern void HCI_Event_CB(void *pckt) {
         
         case EVT_DISCONN_COMPLETE:
             {
-              //GAP_DisconnectionComplete_CB();
+              BlueNRGGap::getInstance().handleEvent(GapEvents::GAP_EVENT_DISCONNECTED);
             }
             break;
         
@@ -172,9 +176,12 @@ extern void HCI_Event_CB(void *pckt) {
               
                 switch(evt->subevent){
                     case EVT_LE_CONN_COMPLETE:
-                        {
-                            //evt_le_connection_complete *cc = (void *)evt->data;
-                            //GAP_ConnectionComplete_CB(cc->peer_bdaddr, cc->handle);
+                        {                            
+                            evt_le_connection_complete *cc = (evt_le_connection_complete *)evt->data;
+                            
+                            BlueNRGGap::getInstance().setConnectionHandle(cc->handle);
+                            BlueNRGGap::getInstance().handleEvent(GapEvents::GAP_EVENT_CONNECTED);
+                            
                         }
                         break;
                     }
