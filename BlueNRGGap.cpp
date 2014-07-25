@@ -136,9 +136,14 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   tBleStatus ret;
   
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
-  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[5],device_name[6],device_name[7],device_name[8], device_name[9],
-                                                        device_name[10], device_name[11], device_name[12], device_name[13], device_name[14]};
+  //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28],device_name[29],device_name[30], device_name[31],
+   //                                                     device_name[32], device_name[33], device_name[34], device_name[35], device_name[36]};
   
+  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[13],device_name[14],device_name[15],device_name[16], device_name[17],
+                                                       device_name[18], device_name[19], device_name[20], device_name[21], device_name[22]};
+  
+  //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28]};
+  const LongUUID_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
   /* disable scan response */
   hci_le_set_scan_resp_data(0,NULL);
   

@@ -16,12 +16,16 @@
 
 #include "BlueNRGGattServer.h"
 #include "mbed.h"
-
-//#include "common/common.h"
-//#include "btle/custom/custom_helper.h"
-
 #include "BlueNRGGap.h"
 
+#define STORE_LE_16(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)    ) , \
+                                   ((buf)[1] =  (tHalUint8) (val>>8) ) )
+
+#define STORE_LE_32(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)     ) , \
+                                   ((buf)[1] =  (tHalUint8) (val>>8)  ) , \
+                                   ((buf)[2] =  (tHalUint8) (val>>16) ) , \
+                                   ((buf)[3] =  (tHalUint8) (val>>24) ) ) 
+                                   
 /**************************************************************************/
 /*!
     @brief  Adds a new service to the GATT table on the peripheral
@@ -43,8 +47,31 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     /* ToDo: Make sure we don't overflow the array, etc. */
     /* ToDo: Make sure this service UUID doesn't already exist (?) */
     /* ToDo: Basic validation */
-
     
+    tBleStatus ret;
+    
+    
+    /* Add the service to the BlueNRG */
+    uint16_t primary_uuid = (service.getUUID()).getShortUUID();
+    
+    ret = aci_gatt_add_serv(UUID_TYPE_16, (const uint8_t*)primary_uuid, PRIMARY_SERVICE, 7, 
+                            &hrmServHandle);
+    service.setHandle(hrmServHandle);
+    
+    GattCharacteristic *p_char = service.getCharacteristic(0);
+    uint16_t char_uuid = (p_char->getUUID()).getShortUUID();
+    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, (const uint8_t*)char_uuid, 1,
+                           CHAR_PROP_NOTIFY, ATTR_PERMISSION_NONE, 0,
+                           16, 0, &hrmCharHandle);
+    
+    p_characteristics[characteristicCount++] = p_char;
+    p_char->setHandle(hrmCharHandle);                       
+    serviceCount++;
+               
+    if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
+            updateValue(hrmCharHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
+        }
+                    
     return BLE_ERROR_NONE;
 }
 
@@ -106,7 +133,14 @@ ble_error_t BlueNRGGattServer::readValue(uint16_t charHandle, uint8_t buffer[], 
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[], uint16_t len, bool localOnly)
 {
+    tBleStatus ret;    
+  tHalUint8 buff[6];
     
+  STORE_LE_16(buff,125);
+  STORE_LE_16(buff+2,145);
+  STORE_LE_16(buff+4,543);
+    
+  ret = aci_gatt_update_char_value(hrmServHandle, charHandle, 0, 6, buff);
 
     return BLE_ERROR_NONE;
 }

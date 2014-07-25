@@ -19,7 +19,7 @@
 
 #include "mbed.h"
 #include "blecommon.h"
-//#include "ble.h" /* nordic ble */
+#include "btle.h"
 #include "GattService.h"
 #include "hw/GattServer.h"
 
@@ -46,6 +46,7 @@ private:
 
     uint8_t serviceCount;
     uint8_t characteristicCount;
+    tHalUint16 hrmServHandle, hrmCharHandle;
     
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
     //ble_gatts_char_handles_t nrfCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
