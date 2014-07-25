@@ -233,9 +233,6 @@ uint16_t BlueNRGGap::getConnectionHandle(void)
 
     @code
 
-    uint8_t device_address[6] = { 0xca, 0xfe, 0xf0, 0xf0, 0xf0, 0xf0 };
-    nrf.getGap().setAddress(Gap::ADDR_TYPE_RANDOM_STATIC, device_address);
-
     @endcode
 */
 /**************************************************************************/

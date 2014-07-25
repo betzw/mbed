@@ -144,7 +144,7 @@ void setConnectable(void)
     @returns
 */
 /**************************************************************************/
-static void btle_handler(/*ble_evt_t * p_ble_evt*/)
+static void btle_handler()
 {
   
 }

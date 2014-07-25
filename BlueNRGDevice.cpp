@@ -20,7 +20,7 @@
 #include "btle.h"
 
 /**
- * The singleton which represents the nRF51822 transport for the BLEDevice.
+ * The singleton which represents the BlueNRG transport for the BLEDevice.
  */
 static BlueNRGDevice deviceInstance;
 
@@ -108,7 +108,6 @@ ble_error_t BlueNRGDevice::reset(void)
 
 void BlueNRGDevice::waitForEvent(void)
 {
-    //sd_app_evt_wait();
     HCI_Process();//Send App Events??
     
 }

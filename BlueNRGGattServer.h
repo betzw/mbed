@@ -38,9 +38,9 @@ public:
     virtual ble_error_t readValue(uint16_t handle, uint8_t buffer[], uint16_t *const lengthP);
     virtual ble_error_t updateValue(uint16_t, uint8_t[], uint16_t, bool localOnly = false);
 
-    /* nRF51 Functions */
+    /* BlueNRG Functions */
     void eventCallback(void);
-    //void hwCallback(ble_evt_t *p_ble_evt);
+    //void hwCallback(void *pckt);
 
 private:
 
@@ -49,7 +49,7 @@ private:
     tHalUint16 hrmServHandle, hrmCharHandle;
     
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
-    //ble_gatts_char_handles_t nrfCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
+    //uint16_t bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
 
     BlueNRGGattServer() {
         serviceCount = 0;
