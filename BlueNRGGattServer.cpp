@@ -52,11 +52,11 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     
     
     /* Add the service to the BlueNRG */
-    uint16_t primary_uuid = 0x180D;//(service.getUUID()).getShortUUID();
+    uint8_t primary_uuid[2] = {0x0D,0x18};//(service.getUUID()).getShortUUID();
     
     //TODO: Check UUID existence??
     
-    ret = aci_gatt_add_serv(UUID_TYPE_16, (const uint8_t*)primary_uuid, PRIMARY_SERVICE, 7, 
+    ret = aci_gatt_add_serv(UUID_TYPE_16, primary_uuid, PRIMARY_SERVICE, 7, 
                             &hrmServHandle);
     service.setHandle(hrmServHandle);
     
