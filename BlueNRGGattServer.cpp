@@ -52,28 +52,44 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     
     
     /* Add the service to the BlueNRG */
-    uint16_t primary_uuid = (service.getUUID()).getShortUUID();
+    uint16_t primary_uuid = 0x180D;//(service.getUUID()).getShortUUID();
+    
+    //TODO: Check UUID existence??
     
     ret = aci_gatt_add_serv(UUID_TYPE_16, (const uint8_t*)primary_uuid, PRIMARY_SERVICE, 7, 
                             &hrmServHandle);
     service.setHandle(hrmServHandle);
     
+    //TODO: iterate to include all characteristics
+    for (uint8_t i = 0; i < service.getCharacteristicCount(); i++) {
     GattCharacteristic *p_char = service.getCharacteristic(0);
     uint16_t char_uuid = (p_char->getUUID()).getShortUUID();
+    
+    //TODO: Check UUID existence??
+    
     ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, (const uint8_t*)char_uuid, 1,
-                           CHAR_PROP_NOTIFY, ATTR_PERMISSION_NONE, 0,
-                           16, 0, &hrmCharHandle);
+                           p_char->getProperties()/*CHAR_PROP_NOTIFY*/, ATTR_PERMISSION_NONE, 0,
+                           16, 0, /*&hrmCharHandle*/ &bleCharacteristicHandles[characteristicCount]);
+    
+    /* Update the characteristic handle */
+    uint16_t charHandle = characteristicCount;    
     
     p_characteristics[characteristicCount++] = p_char;
-    p_char->setHandle(hrmCharHandle);                       
-    serviceCount++;
-               
+    p_char->setHandle(charHandle);    //Set the characteristic count as the corresponding char handle
+    
     if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
-            updateValue(hrmCharHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
+            updateValue(charHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
         }
+    }    
+                       
+    serviceCount++;
+    
+    //FIXME: There is no GattService pointer array in GattServer. 
+    //        There should be one? (Only the user is aware of GattServices!) Report to forum.
                     
     return BLE_ERROR_NONE;
 }
+
 
 /**************************************************************************/
 /*!

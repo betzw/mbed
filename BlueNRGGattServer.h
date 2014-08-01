@@ -49,7 +49,7 @@ private:
     tHalUint16 hrmServHandle, hrmCharHandle;
     
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
-    //uint16_t bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
+    tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
 
     BlueNRGGattServer() {
         serviceCount = 0;
