@@ -25,7 +25,7 @@
                                    ((buf)[1] =  (tHalUint8) (val>>8)  ) , \
                                    ((buf)[2] =  (tHalUint8) (val>>16) ) , \
                                    ((buf)[3] =  (tHalUint8) (val>>24) ) ) 
-                                   
+                          
 /**************************************************************************/
 /*!
     @brief  Adds a new service to the GATT table on the peripheral
@@ -52,7 +52,10 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     
     
     /* Add the service to the BlueNRG */
-    uint8_t primary_uuid[2] = {0x0D,0x18};//(service.getUUID()).getShortUUID();
+    uint16_t short_uuid = (service.getUUID()).getShortUUID();
+    
+    uint8_t primary_uuid[2];//= {0x0D,0x18};    
+    STORE_LE_16(primary_uuid, short_uuid);
     
     //TODO: Check UUID existence??
     
