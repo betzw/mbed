@@ -16,9 +16,13 @@
 
 #include "BlueNRGDevice.h"
 #include "mbed.h"
+#include "Payload.h"
 
 //Local Variables
-const uint8_t *device_name;
+const char *local_name = NULL;
+uint8_t local_name_length = 0;
+
+Serial pc1(USBTX, USBRX); // tx, rx. For obtaining logs on terminal
 
 /**************************************************************************/
 /*!
@@ -65,16 +69,73 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
     }
 
     /* Make sure we have a payload! */
-    if (advData.getPayloadLen() == 0) {
+    if (advData.getPayloadLen() <= 0) {
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    } else { //set the advData here in some local variable so that startAdvertising can use it.
+        Payload load(advData.getPayload(), advData.getPayloadLen());
+        
+        for(uint8_t index=0; index<load.getPayloadUnitCount(); index++) {
+            //UnitPayload unitLoad = load.getPayLoadAtIndex(index);
+            switch(load.getIDAtIndex(index)) {
+                case GapAdvertisingData::FLAGS:                              /* ref *Flags */
+                break;
+                case GapAdvertisingData::INCOMPLETE_LIST_16BIT_SERVICE_IDS:  /**< Incomplete list of 16-bit Service IDs */
+                break;
+                case GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS:    /**< Complete list of 16-bit Service IDs */
+                break;
+                case GapAdvertisingData::INCOMPLETE_LIST_32BIT_SERVICE_IDS:  /**< Incomplete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
+                break;
+                case GapAdvertisingData::COMPLETE_LIST_32BIT_SERVICE_IDS:    /**< Complete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
+                break;
+                case GapAdvertisingData::INCOMPLETE_LIST_128BIT_SERVICE_IDS: /**< Incomplete list of 128-bit Service IDs */
+                break;
+                case GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS:   /**< Complete list of 128-bit Service IDs */
+                break;
+                case GapAdvertisingData::SHORTENED_LOCAL_NAME:               /**< Shortened Local Name */
+                break;
+                case GapAdvertisingData::COMPLETE_LOCAL_NAME:                /**< Complete Local Name */
+                    const char *device_name = NULL;
+                    device_name = (const char*)load.getDataAtIndex(index);  // to be set later when startAdvertising() is called
+                    //const char* local_name = NULL;
+                    if(device_name != NULL) {  
+                        pc1.printf("Advertising type: COMPLETE_LOCAL_NAME\n");
+                        char *namePtr = new char[1+sizeof(device_name)];
+                        namePtr[0] = AD_TYPE_COMPLETE_LOCAL_NAME;
+                        pc1.printf("now setting name to: %s...\n", device_name);
+                        
+                        int i=0;
+                        while(device_name[i]!=0) {
+                            namePtr[i+1] = device_name[i];
+                            pc1.printf("%c\n", namePtr[i+1]);
+                            i++;
+                            }
+                        local_name_length = i;
+                        pc1.printf("device_name length=%d", local_name_length);
+                        //const char* local_name = (const char*)namePtr;  
+                    }                
+                    break;
+                
+                case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
+                break;
+                case GapAdvertisingData::DEVICE_ID:                          /**< Device ID */
+                break;
+                case GapAdvertisingData::SLAVE_CONNECTION_INTERVAL_RANGE:    /**< Slave :Connection Interval Range */
+                break;
+                case GapAdvertisingData::SERVICE_DATA:                       /**< Service Data */
+                break;
+                case GapAdvertisingData::APPEARANCE:                         /**< \ref Appearance */
+                break;
+                case GapAdvertisingData::ADVERTISING_INTERVAL:               /**< Advertising Interval */
+                // taken care of in startAdvertising(params)
+                break;
+                case GapAdvertisingData::MANUFACTURER_SPECIFIC_DATA:        /**< Manufacturer Specific Data */                                
+                break;
+                                
+            }
     }
+        //const uint8_t *payload = advData.getPayload();
 
-    //set the advData here in some local variable so that startAdvertising can use it.
-    if (advData.getPayloadLen() > 0) {
-        const uint8_t *payload = advData.getPayload();
-        device_name = advData.getPayload();
     }
-    
     
     return BLE_ERROR_NONE;
 }
@@ -139,8 +200,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28],device_name[29],device_name[30], device_name[31],
    //                                                     device_name[32], device_name[33], device_name[34], device_name[35], device_name[36]};
   
-  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[13],device_name[14],device_name[15],device_name[16], device_name[17],
-                                                       device_name[18], device_name[19], device_name[20], device_name[21], device_name[22]};
+
   
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28]};
   const LongUUID_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
@@ -151,8 +211,19 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
                         Local_Name_Length, local_name, service_uuid_length, service_uuid_list, Slave_conn_intvl_min, Slave_conn_intvl_max);*/
   /*LINK_LAYER.H DESCRIBES THE ADVERTISING TYPES*/ 
                                 
-  ret = aci_gap_set_discoverable(params.getAdvertisingType(), params.getInterval(), 0, PUBLIC_ADDR, NO_WHITE_LIST_USE,
-                                 11 /*Length of the local_name[] array*/, local_name, 0, NULL, 0, 0);
+        
+  ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type
+                                params.getInterval(),   // Adv_Interval_Max
+                                0,   // Adv_Interval_Min
+                                PUBLIC_ADDR, // Address_Type
+                                NO_WHITE_LIST_USE,  // Adv_Filter_Policy
+                                local_name_length, // Local_Name_Length
+                                local_name, // Local_Name
+                                0,  //Service_Uuid_Length
+                                NULL, //Service_Uuid_List
+                                0, // Slave_Conn_Interval_Min
+                                0);  // Slave_Conn_Interval_Max
+                       
   state.advertising = 1;
   
     return BLE_ERROR_NONE;
