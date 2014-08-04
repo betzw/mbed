@@ -75,7 +75,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
         Payload load(advData.getPayload(), advData.getPayloadLen());
         
         for(uint8_t index=0; index<load.getPayloadUnitCount(); index++) {
-            //UnitPayload unitLoad = load.getPayLoadAtIndex(index);
+            pc1.printf("ID=%d\n", load.getIDAtIndex(index));
             switch(load.getIDAtIndex(index)) {
                 case GapAdvertisingData::FLAGS:                              /* ref *Flags */
                 break;
@@ -94,28 +94,25 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 case GapAdvertisingData::SHORTENED_LOCAL_NAME:               /**< Shortened Local Name */
                 break;
                 case GapAdvertisingData::COMPLETE_LOCAL_NAME:                /**< Complete Local Name */
+                    pc1.printf("Advertising type: COMPLETE_LOCAL_NAME\n");
                     const char *device_name = NULL;
                     device_name = (const char*)load.getDataAtIndex(index);  // to be set later when startAdvertising() is called
-                    //const char* local_name = NULL;
-                    if(device_name != NULL) {  
-                        pc1.printf("Advertising type: COMPLETE_LOCAL_NAME\n");
-                        char *namePtr = new char[1+sizeof(device_name)];
+                    pc1.printf("input: device_name= %s...\n", device_name);
+                     pc1.printf("input: device_name length= %d...\n", load.getLengthAtIndex(index)-1);
+                    if(device_name != NULL) {                          
+                        char *namePtr = new char[load.getLengthAtIndex(index)];
                         namePtr[0] = AD_TYPE_COMPLETE_LOCAL_NAME;
-                        pc1.printf("now setting name to: %s...\n", device_name);
-                        
-                        int i=0;
-                        while(device_name[i]!=0) {
-                            namePtr[i+1] = device_name[i];
-                            pc1.printf("%c\n", namePtr[i+1]);
-                            i++;
-                            }
-                        local_name_length = i;
+                        strcpy(namePtr+1, device_name);
+                        local_name_length = load.getLengthAtIndex(index)-1;                        
+                        local_name = (const char*)namePtr;  
+                        pc1.printf("setting name to: %s...\n", namePtr+1);
+                        pc1.printf("name string length: %d...\n", local_name_length+1);    // This includes 'AD_TYPE_COMPLETE_LOCAL_NAME' byte                
                         pc1.printf("device_name length=%d", local_name_length);
-                        //const char* local_name = (const char*)namePtr;  
                     }                
                     break;
                 
                 case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
+                    aci_hal_set_tx_power_level(0, 0);
                 break;
                 case GapAdvertisingData::DEVICE_ID:                          /**< Device ID */
                 break;
@@ -212,10 +209,10 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   /*LINK_LAYER.H DESCRIBES THE ADVERTISING TYPES*/ 
                                 
         
-  ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type
-                                params.getInterval(),   // Adv_Interval_Max
+  ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
-                                PUBLIC_ADDR, // Address_Type
+                                params.getInterval(),   // Adv_Interval_Max
+                                RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 local_name_length, // Local_Name_Length
                                 local_name, // Local_Name
