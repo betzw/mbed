@@ -17,6 +17,7 @@
 #include "BlueNRGDevice.h"
 #include "mbed.h"
 #include "Payload.h"
+#include "Utils.h"
 
 //Local Variables
 const char *local_name = NULL;
@@ -75,7 +76,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
         Payload load(advData.getPayload(), advData.getPayloadLen());
         
         for(uint8_t index=0; index<load.getPayloadUnitCount(); index++) {
-            pc1.printf("ID=%d\n", load.getIDAtIndex(index));
+            //UnitPayload unitLoad = load.getPayLoadAtIndex(index);
             switch(load.getIDAtIndex(index)) {
                 case GapAdvertisingData::FLAGS:                              /* ref *Flags */
                 break;
@@ -112,8 +113,15 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     break;
                 
                 case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
-                    aci_hal_set_tx_power_level(0, 0);
-                break;
+                    pc1.printf("Advertising type: TX_POWER_LEVEL\n");
+                    int8_t dbm = load.getInt8AtIndex(index);
+                    int8_t enHighPower = 0;
+                    int8_t paLevel = 0;
+                    int8_t dbmActuallySet = getHighPowerAndPALevelValue(dbm, enHighPower, paLevel);
+                    pc1.printf("dbm=%d, dbmActuallySet=%d\n", dbm, dbmActuallySet);
+                    pc1.printf("enHighPower=%d, paLevel=%d\n", enHighPower, paLevel);
+                    aci_hal_set_tx_power_level(enHighPower, paLevel);
+                    break;
                 case GapAdvertisingData::DEVICE_ID:                          /**< Device ID */
                 break;
                 case GapAdvertisingData::SLAVE_CONNECTION_INTERVAL_RANGE:    /**< Slave :Connection Interval Range */

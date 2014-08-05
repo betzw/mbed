@@ -13,32 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef _BTLE_H_
-#define _BTLE_H_
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "stm32l0xx_bluenrg_shield_bsp.h"
-#include "hci.h"
-#include "bluenrg_hci.h"
-#include "hci_internal.h"
-#include "bluenrg_hci_internal.h"
-#include "gap.h"
-#include "gatt_service.h"
-#include <stdio.h>
-#include <string.h>
  
+ #include "hal_types.h"
+ 
+ // utility functions
+ 
+#ifndef __UTIL_H__
+#define __UTIL_H__
 
-void btle_init(void);
-void User_Process(void);
-void setConnectable(void);
 
-#ifdef __cplusplus
-    }
-#endif
+double getHighPowerAndPALevelValue(int8_t dBMLevel, int8_t& EN_HIGH_POWER, int8_t& PA_LEVEL);
 
-#endif
+#endif // __UTIL_H__
