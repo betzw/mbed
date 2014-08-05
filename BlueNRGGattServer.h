@@ -18,7 +18,7 @@
 #define __BLUENRG_GATT_SERVER_H__
 
 #include "mbed.h"
-//#include "blecommon.h"
+#include "blecommon.h"
 #include "btle.h"
 #include "GattService.h"
 #include "hw/GattServer.h"
