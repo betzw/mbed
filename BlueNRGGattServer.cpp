@@ -68,9 +68,11 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     GattCharacteristic *p_char = service.getCharacteristic(0);
     uint16_t char_uuid = (p_char->getUUID()).getShortUUID();
     
+    uint8_t int_8_uuid[2];
+    STORE_LE_16(int_8_uuid, char_uuid);
     //TODO: Check UUID existence??
     
-    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, (const uint8_t*)char_uuid, 1,
+    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, 1,
                            p_char->getProperties()/*CHAR_PROP_NOTIFY*/, ATTR_PERMISSION_NONE, 0,
                            16, 0, /*&hrmCharHandle*/ &bleCharacteristicHandles[characteristicCount]);
     
