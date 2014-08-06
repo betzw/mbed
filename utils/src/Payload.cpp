@@ -80,3 +80,9 @@ int8_t Payload::getInt8AtIndex(int index) {
     int8_t value = (int8_t)str[0];
     return value;
 }
+
+uint16_t Payload::getUint16AtIndex(int index) {
+    uint16_t* str = (uint16_t*)payload[index].get_data();
+    uint16_t value = str[0];
+    return value;    
+    }

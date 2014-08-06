@@ -56,6 +56,10 @@ void HCI_Input(tHciDataPacket * hciReadPacket);
 #define BDADDR_SIZE 6
 tHalUint8 bdaddr[BDADDR_SIZE]= {0xaa, 0x00, 0x00, 0xE1, 0x80, 0x02};
 
+uint16_t g_gap_service_handle = 0;
+uint16_t g_appearance_char_handle = 0;
+uint16_t g_device_name_char_handle = 0;
+
 /* Private variables ---------------------------------------------------------*/
 volatile uint8_t set_connectable = 1;
 
@@ -68,7 +72,7 @@ volatile uint8_t set_connectable = 1;
 /**************************************************************************/
 void btle_init(void)
 {
-  const char *name = "BlueNRG";
+  const char *name = "BlueNRG_1";
   tHalUint8 SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x02};//MPD: This is the public address of the Server/Client
   tHalUint8 bdaddr[BDADDR_SIZE];
   int ret;
@@ -105,7 +109,10 @@ void btle_init(void)
   ret = aci_gatt_init();
   //GAP is always in PERIPHERAL _ROLE as mbed does not support Master role at the moment
   ret = aci_gap_init(GAP_PERIPHERAL_ROLE, &service_handle, &dev_name_char_handle, &appearance_char_handle);
-
+  
+  g_gap_service_handle = service_handle;
+  g_appearance_char_handle = appearance_char_handle;
+  g_device_name_char_handle = dev_name_char_handle;   
   ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
                                strlen(name), (tHalUint8 *)name);
                                
@@ -124,7 +131,7 @@ void setConnectable(void)
 {  
   tBleStatus ret;
   
-  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
+  const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G', '1', '2'};
   
   /* disable scan response */
   hci_le_set_scan_resp_data(0,NULL);

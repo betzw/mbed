@@ -37,6 +37,10 @@ void btle_init(void);
 void User_Process(void);
 void setConnectable(void);
 
+extern uint16_t g_gap_service_handle;
+extern uint16_t g_appearance_char_handle;
+extern uint16_t g_device_name_char_handle;
+
 #ifdef __cplusplus
     }
 #endif

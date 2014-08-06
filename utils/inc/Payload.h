@@ -68,7 +68,8 @@ public:
     uint8_t Payload::getIDAtIndex(int index);  
     uint8_t Payload::getLengthAtIndex(int index);   
     uint8_t* Payload::getDataAtIndex(int index);    
-    int8_t getInt8AtIndex(int index);    
+    int8_t getInt8AtIndex(int index);  
+    uint16_t getUint16AtIndex(int index);      
 };
 
 #endif // __PAYLOAD_H__
