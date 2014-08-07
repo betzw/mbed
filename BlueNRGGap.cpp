@@ -26,7 +26,7 @@ uint8_t local_name_length = 0;
 uint8_t servUuidlength = 0;
 uint8_t* servUuidData = NULL;
 
-Serial pc1(USBTX, USBRX); // tx, rx. For obtaining logs on terminal
+uint32_t advtInterval = 0;
 
 /**************************************************************************/
 /*!
@@ -86,10 +86,10 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 case GapAdvertisingData::INCOMPLETE_LIST_16BIT_SERVICE_IDS:  /**< Incomplete list of 16-bit Service IDs */
                 break;
                 case GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS:    /**< Complete list of 16-bit Service IDs */
-                    pc1.printf("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n");
+                    DEBUG("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n");
                     servUuidlength = load.getLengthAtIndex(index)-1;
                     servUuidData = load.getDataAtIndex(index);
-                    pc1.printf("servUuidlength=%d\n", servUuidlength);
+                    DEBUG("servUuidlength=%d\n", servUuidlength);
                     break;
                 case GapAdvertisingData::INCOMPLETE_LIST_32BIT_SERVICE_IDS:  /**< Incomplete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
                 break;
@@ -102,11 +102,11 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 case GapAdvertisingData::SHORTENED_LOCAL_NAME:               /**< Shortened Local Name */
                 break;
                 case GapAdvertisingData::COMPLETE_LOCAL_NAME:                /**< Complete Local Name */
-                    pc1.printf("Advertising type: COMPLETE_LOCAL_NAME\n");
+                    DEBUG("Advertising type: COMPLETE_LOCAL_NAME\n");
                     const char *device_name = NULL;
                     device_name = (const char*)load.getDataAtIndex(index);  // to be set later when startAdvertising() is called
-                    pc1.printf("input: device_name= %s...\n", device_name);
-                    pc1.printf("input: device_name length= %d...\n", load.getLengthAtIndex(index)-1);                                              
+                    DEBUG("input: device_name= %s...\n", device_name);
+                    DEBUG("input: device_name length= %d...\n", load.getLengthAtIndex(index)-1);                                              
                     char *namePtr = new char[load.getLengthAtIndex(index)];
                     namePtr[0] = AD_TYPE_COMPLETE_LOCAL_NAME;
                     strcpy(namePtr+1, device_name);
@@ -115,19 +115,19 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     // also set device name in GAP service 
                     aci_gatt_update_char_value(g_gap_service_handle, g_device_name_char_handle, 0, local_name_length, (tHalUint8 *)local_name);
                     
-                    pc1.printf("setting name to: %s...\n", namePtr+1);
-                    pc1.printf("name string length: %d...\n", local_name_length+1);    // This includes 'AD_TYPE_COMPLETE_LOCAL_NAME' byte                
-                    pc1.printf("device_name length=%d", local_name_length);                                    
+                    DEBUG("setting name to: %s...\n", namePtr+1);
+                    DEBUG("name string length: %d...\n", local_name_length+1);    // This includes 'AD_TYPE_COMPLETE_LOCAL_NAME' byte                
+                    DEBUG("device_name length=%d", local_name_length);                                    
                     break;
                 
                 case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
-                    pc1.printf("Advertising type: TX_POWER_LEVEL\n");
+                    DEBUG("Advertising type: TX_POWER_LEVEL\n");
                     int8_t dbm = load.getInt8AtIndex(index);
                     int8_t enHighPower = 0;
                     int8_t paLevel = 0;
                     int8_t dbmActuallySet = getHighPowerAndPALevelValue(dbm, enHighPower, paLevel);
-                    pc1.printf("dbm=%d, dbmActuallySet=%d\n", dbm, dbmActuallySet);
-                    pc1.printf("enHighPower=%d, paLevel=%d\n", enHighPower, paLevel);
+                    DEBUG("dbm=%d, dbmActuallySet=%d\n", dbm, dbmActuallySet);
+                    DEBUG("enHighPower=%d, paLevel=%d\n", enHighPower, paLevel);
                     aci_hal_set_tx_power_level(enHighPower, paLevel);
                     break;
                 case GapAdvertisingData::DEVICE_ID:                          /**< Device ID */
@@ -141,14 +141,16 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     Tested with GapAdvertisingData::GENERIC_PHONE. 
                     for other appearances BLE Scanner android app is not behaving properly 
                     */
-                    pc1.printf("Advertising type: APPEARANCE\n");
+                    DEBUG("Advertising type: APPEARANCE\n");
                     const char *deviceAppearance = NULL;
                     deviceAppearance = (const char*)load.getDataAtIndex(index);  // to be set later when startAdvertising() is called
-                    pc1.printf("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n", deviceAppearance[1], deviceAppearance[0], load.getLengthAtIndex(index)-1);         /**< \ref Appearance */
+                    DEBUG("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n", deviceAppearance[1], deviceAppearance[0], load.getLengthAtIndex(index)-1);         /**< \ref Appearance */
                     aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);
                     break;
                 case GapAdvertisingData::ADVERTISING_INTERVAL:               /**< Advertising Interval */
                 // taken care of in startAdvertising(params)
+                    advtInterval = load.getUint16AtIndex(index);
+                    DEBUG("advtInterval=%d\n", advtInterval);
                 break;
                 case GapAdvertisingData::MANUFACTURER_SPECIFIC_DATA:        /**< Manufacturer Specific Data */                                
                 break;
@@ -233,10 +235,10 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
                         Local_Name_Length, local_name, service_uuid_length, service_uuid_list, Slave_conn_intvl_min, Slave_conn_intvl_max);*/
   /*LINK_LAYER.H DESCRIBES THE ADVERTISING TYPES*/ 
                                 
-        
+  advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application    
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
-                                params.getInterval(),   // Adv_Interval_Max
+                                advtInterval,   // Adv_Interval_Max
                                 RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 local_name_length, // Local_Name_Length

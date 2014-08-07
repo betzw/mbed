@@ -15,11 +15,23 @@
  */
  
  #include "hal_types.h"
+ #include "mbed.h"
  
  // utility functions
  
 #ifndef __UTIL_H__
 #define __UTIL_H__
+
+#define NEED_CONSOLE_OUTPUT 1 /* Set this if you need debug messages on the console;
+                               * it will have an impact on code-size and power consumption. */
+ 
+#if NEED_CONSOLE_OUTPUT
+extern Serial  pc;
+#define DEBUG(...) { pc.printf(__VA_ARGS__); }
+#else
+#define DEBUG(...) /* nothing */
+#endif /* #if NEED_CONSOLE_OUTPUT */
+
 
 
 double getHighPowerAndPALevelValue(int8_t dBMLevel, int8_t& EN_HIGH_POWER, int8_t& PA_LEVEL);

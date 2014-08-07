@@ -31,7 +31,6 @@ extern "C" {
 #include "gatt_service.h"
 #include <stdio.h>
 #include <string.h>
- 
 
 void btle_init(void);
 void User_Process(void);
