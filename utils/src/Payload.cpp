@@ -86,3 +86,16 @@ uint16_t Payload::getUint16AtIndex(int index) {
     uint16_t value = str[0];
     return value;    
     }
+    
+uint8_t* Payload::getSerializedAdDataAtIndex(int index) {
+    uint8_t length = payload[index].get_length();
+    uint8_t* data = payload[index].get_data();
+    uint8_t id = payload[index].get_id();
+    uint8_t *serializedAdData = new uint8_t[length];
+    
+    serializedAdData[0] = id;
+    for(int i=0; i<length-1; i++) {
+            serializedAdData[i+1] = data[i];
+        }
+    return serializedAdData;
+    }    

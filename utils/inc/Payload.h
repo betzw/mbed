@@ -23,9 +23,12 @@ class UnitPayload
 {
     public:
     uint8_t length;
-    uint8_t id;
+    uint8_t id;    
     uint8_t *data;
-        
+    uint8_t *idptr;    
+
+    
+       
     void set_length(uint8_t l) {
         length=l;   
     }
@@ -69,7 +72,114 @@ public:
     uint8_t Payload::getLengthAtIndex(int index);   
     uint8_t* Payload::getDataAtIndex(int index);    
     int8_t getInt8AtIndex(int index);  
-    uint16_t getUint16AtIndex(int index);      
+    uint16_t getUint16AtIndex(int index); 
+    uint8_t* getSerializedAdDataAtIndex(int index);         
 };
+
+
+class PayloadUnit {
+   private:        
+        uint8_t* lenPtr;
+        uint8_t* adTypePtr;
+        uint8_t* dataPtr;
+        
+    public:
+        PayloadUnit() {
+            lenPtr = NULL;
+            adTypePtr = NULL;
+            dataPtr = NULL;
+            }
+            
+        PayloadUnit(uint8_t *len, uint8_t *adType, uint8_t* data) {
+            lenPtr = len;
+            adTypePtr = adType;
+            dataPtr = data;
+            }    
+             
+        void setLenPtr(uint8_t *len)   {
+            lenPtr = len;
+            } 
+            
+        void setAdTypePtr(uint8_t *adType)   {
+            adTypePtr = adType;
+            }  
+            
+        void setDataPtr(uint8_t *data)   {
+            dataPtr = data;
+            }      
+            
+        uint8_t* getLenPtr()   {
+            return lenPtr;
+            } 
+            
+        uint8_t* getAdTypePtr()   {
+            return adTypePtr;
+            }  
+            
+        uint8_t* getDataPtr()   {
+            return dataPtr;
+            }   
+            
+        void printDataAsHex()   {
+            int i = 0;
+            printf("AdData=");
+            for(i=0; i<*lenPtr-1; i++) {
+                printf("0x%x ", dataPtr[i]);
+            }
+            printf("\n");
+        }     
+        
+        void printDataAsString()   {
+            int i = 0;
+            printf("AdData=");
+            for(i=0; i<*lenPtr; i++) {
+                printf("%c", dataPtr[i]);
+            }
+            printf("\n");
+        }                                                   
+            
+    };
+    
+class PayloadPtr {
+private:
+    PayloadUnit *unit;
+    int payloadUnitCount;
+public:    
+    PayloadPtr::PayloadPtr(const uint8_t *tokenString, uint8_t string_ength) {
+        // initialize private data members
+        int stringLength = string_ength;
+        payloadUnitCount = 0;
+        
+        int index = 0;
+        while(index!=stringLength) {
+            int len=tokenString[index];
+            index=index+1+len;
+            payloadUnitCount++;               
+        }
+        
+        // allocate memory to unit
+        unit = new PayloadUnit[payloadUnitCount];
+        int i = 0;
+        int nextUnitOffset = 0;
+        
+        while(i<payloadUnitCount) {           
+            unit[i].setLenPtr((uint8_t *)tokenString+nextUnitOffset);
+            unit[i].setAdTypePtr((uint8_t *)tokenString+nextUnitOffset+1);
+            unit[i].setDataPtr((uint8_t *)tokenString+nextUnitOffset+2);
+           
+            nextUnitOffset += *unit[i].getLenPtr()+1;
+            i++;
+
+        }
+    }
+    
+    PayloadUnit getUnitAtIndex(int index) {
+        return unit[index];
+        }
+    
+    int getPayloadUnitCount() { return payloadUnitCount; }
+        
+    
+};    
 
 #endif // __PAYLOAD_H__
