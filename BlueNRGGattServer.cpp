@@ -17,6 +17,7 @@
 #include "BlueNRGGattServer.h"
 #include "mbed.h"
 #include "BlueNRGGap.h"
+#include "Utils.h"
 
 #define STORE_LE_16(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)    ) , \
                                    ((buf)[1] =  (tHalUint8) (val>>8) ) )
@@ -71,10 +72,10 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     uint8_t int_8_uuid[2];
     STORE_LE_16(int_8_uuid, char_uuid);
     //TODO: Check UUID existence??
-    
-    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, 1,
+    DEBUG("Char Properties 0x%x\n", p_char->getProperties());
+    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, 2,
                            p_char->getProperties()/*CHAR_PROP_NOTIFY*/, ATTR_PERMISSION_NONE, 0,
-                           16, 0, /*&hrmCharHandle*/ &bleCharacteristicHandles[characteristicCount]);
+                           16, 1, /*&hrmCharHandle*/ &bleCharacteristicHandles[characteristicCount]);
     
     /* Update the characteristic handle */
     uint16_t charHandle = characteristicCount;    
@@ -154,14 +155,24 @@ ble_error_t BlueNRGGattServer::readValue(uint16_t charHandle, uint8_t buffer[], 
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[], uint16_t len, bool localOnly)
 {
-    tBleStatus ret;    
-  tHalUint8 buff[6];
+  tBleStatus ret;    
+  tHalUint8 buff[2];
     
   STORE_LE_16(buff,125);
-  STORE_LE_16(buff+2,145);
-  STORE_LE_16(buff+4,543);
+  
+  int i=0;
+  DEBUG("CharHandle: %d", charHandle);
+  DEBUG("Actual Handle: 0x%x", bleCharacteristicHandles[charHandle]);
+  DEBUG("Service Handle: 0x%x", hrmServHandle);
+  
+  uint16_t val = 10;
     
-  ret = aci_gatt_update_char_value(hrmServHandle, charHandle, 0, 6, buff);
+  ret = aci_gatt_update_char_value(hrmServHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
 
-    return BLE_ERROR_NONE;
+  if (ret != BLE_STATUS_SUCCESS){
+      DEBUG("Error while updating characteristic.\n") ;
+      return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
+      //FIXME: Define Error values equivalent to BlueNRG Error Codes.
+    }
+  return BLE_ERROR_NONE;
 }

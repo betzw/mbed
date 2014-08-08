@@ -66,8 +66,7 @@ uint32_t advtInterval = 0;
 */
 /**************************************************************************/
 ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, const GapAdvertisingData &scanResponse)
-{
-#if 1    
+{ 
     DEBUG("BlueNRGGap::setAdvertisingData\n");
     /* Make sure we don't exceed the advertising payload length */
     if (advData.getPayloadLen() > GAP_ADVERTISING_DATA_MAX_PAYLOAD) {
@@ -162,14 +161,12 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 case GapAdvertisingData::MANUFACTURER_SPECIFIC_DATA:        /**< Manufacturer Specific Data */                                
                 break;
                                 
-            }
-//#endif            
+            }          
     }
         //const uint8_t *payload = advData.getPayload();
 
     }
- #endif   
-    return BLE_ERROR_NONE;
+   return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
@@ -263,7 +260,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
                                 advtInterval,   // Adv_Interval_Max
-                                RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
+                                PUBLIC_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 nameLen, //local_name_length, // Local_Name_Length
                                 (const char*)name, //local_name, // Local_Name

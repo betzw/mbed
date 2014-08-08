@@ -26,6 +26,7 @@
                                * it will have an impact on code-size and power consumption. */
  
 #if NEED_CONSOLE_OUTPUT
+//Serial usb(USBTX, USBRX); // tx, rx
 extern Serial  pc;
 #define DEBUG(...) { pc.printf(__VA_ARGS__); }
 #else
