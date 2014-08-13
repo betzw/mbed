@@ -214,9 +214,11 @@ extern void HCI_Event_CB(void *pckt) {
                           /* this callback is invoked when a GATT attribute is modified
                              extract callback data and pass to suitable handler function */
                           evt_gatt_attr_modified *evt = (evt_gatt_attr_modified*)blue_evt->data;
-                          DEBUG("EVT_BLUE_GATT_ATTRIBUTE_MODIFIED\n\r");
-                          
+                          DEBUG("EVT_BLUE_GATT_ATTRIBUTE_MODIFIED\n\r");                          
                           DEBUG("CharHandle 0x%x, Data: 0x%x\n\r",evt->attr_handle, evt->att_data);
+                          
+                          BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
+                          
                           //Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);                    
                         }
                         break;  
