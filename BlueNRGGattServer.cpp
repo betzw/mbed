@@ -51,7 +51,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     
     tBleStatus ret;
     
-    
+    DEBUG("AddService()\n\r");
     /* Add the service to the BlueNRG */
     uint16_t short_uuid = (service.getUUID()).getShortUUID();
     
@@ -66,16 +66,21 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     
     //TODO: iterate to include all characteristics
     for (uint8_t i = 0; i < service.getCharacteristicCount(); i++) {
-    GattCharacteristic *p_char = service.getCharacteristic(0);
+    GattCharacteristic *p_char = service.getCharacteristic(i);
     uint16_t char_uuid = (p_char->getUUID()).getShortUUID();
     
     uint8_t int_8_uuid[2];
     STORE_LE_16(int_8_uuid, char_uuid);
     //TODO: Check UUID existence??
-    DEBUG("Char Properties 0x%x\n", p_char->getProperties());
-    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, 2,
-                           p_char->getProperties()/*CHAR_PROP_NOTIFY*/, ATTR_PERMISSION_NONE, 0,
-                           16, 1, /*&hrmCharHandle*/ &bleCharacteristicHandles[characteristicCount]);
+    DEBUG("Char Properties 0x%x\n\r", p_char->getProperties());
+    /*
+    * Gatt_Evt_Mask -> HardCoded (0)
+    * Encryption_Key_Size -> Hardcoded (16)
+    * isVariable (variable length value field) -> Hardcoded (1)
+    */
+    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
+                           p_char->getProperties(), ATTR_PERMISSION_NONE, 0 /*Gatt_Evt_Mask*/,
+                           16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristicHandles[characteristicCount]);
     
     /* Update the characteristic handle */
     uint16_t charHandle = characteristicCount;    
@@ -124,7 +129,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::readValue(uint16_t charHandle, uint8_t buffer[], uint16_t *const lengthP)
 {
-    
+    DEBUG("ReadValue()\n\r");
     return BLE_ERROR_NONE;
 }
 
@@ -158,19 +163,19 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
   tBleStatus ret;    
   tHalUint8 buff[2];
     
-  STORE_LE_16(buff,125);
+  //STORE_LE_16(buff,125);
   
-  int i=0;
-  DEBUG("CharHandle: %d", charHandle);
-  DEBUG("Actual Handle: 0x%x", bleCharacteristicHandles[charHandle]);
-  DEBUG("Service Handle: 0x%x", hrmServHandle);
-  
-  uint16_t val = 10;
+  //DEBUG("CharHandle: %d\n\r", charHandle);
+  //DEBUG("Actual Handle: 0x%x\n\r", bleCharacteristicHandles[charHandle]);
+  //DEBUG("Service Handle: 0x%x\n\r", hrmServHandle);
+  //DEBUG("buffer[0]: %d\n\r", buffer[0]);
+  //DEBUG("buffer[1]: %d\n\r", buffer[1]);
+  //DEBUG("len: %d\n\r", len);
     
   ret = aci_gatt_update_char_value(hrmServHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
 
   if (ret != BLE_STATUS_SUCCESS){
-      DEBUG("Error while updating characteristic.\n") ;
+      DEBUG("Error while updating characteristic.\n\r") ;
       return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
       //FIXME: Define Error values equivalent to BlueNRG Error Codes.
     }

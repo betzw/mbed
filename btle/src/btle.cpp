@@ -20,6 +20,7 @@
 #include "hw/GapEvents.h"
 #include "BlueNRGGap.h"
 #include "BlueNRGGattServer.h"
+#include "Utils.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +66,7 @@ volatile uint8_t set_connectable = 1;
 
 /**************************************************************************/
 /*!
-    @brief      Initialises BTLE and the underlying HW/SoftDevice
+    @brief      Initialises BTLE and the underlying HW/Device
 
     @returns
 */
@@ -203,9 +204,30 @@ extern void HCI_Event_CB(void *pckt) {
                     case EVT_BLUE_GATT_READ_PERMIT_REQ:
                         {
                             //evt_gatt_read_permit_req *pr = (void*)blue_evt->data;                    
-                            //Read_Request_CB(pr->attr_handle);                    
+                            //Read_Request_CB(pr->attr_handle); 
+                            DEBUG("EVT_BLUE_GATT_READ_PERMIT_REQ\n\r");                   
                         }
                     break;
+                    
+                    case EVT_BLUE_GATT_ATTRIBUTE_MODIFIED:         
+                        {
+                          /* this callback is invoked when a GATT attribute is modified
+                             extract callback data and pass to suitable handler function */
+                          evt_gatt_attr_modified *evt = (evt_gatt_attr_modified*)blue_evt->data;
+                          DEBUG("EVT_BLUE_GATT_ATTRIBUTE_MODIFIED\n\r");
+                          
+                          DEBUG("CharHandle 0x%x, Data: 0x%x\n\r",evt->attr_handle, evt->att_data);
+                          //Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);                    
+                        }
+                        break;  
+                        
+                    //Any cases for Data Sent Notifications?
+                    case EVT_BLUE_GATT_NOTIFICATION:
+                    DEBUG("EVT_BLUE_GATT_NOTIFICATION");
+                    break;
+                    case EVT_BLUE_GATT_INDICATION:
+                    DEBUG("EVT_BLUE_GATT_INDICATION");
+                    break;                                        
             }
         }
         break;

@@ -67,7 +67,7 @@ uint32_t advtInterval = 0;
 /**************************************************************************/
 ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, const GapAdvertisingData &scanResponse)
 { 
-    DEBUG("BlueNRGGap::setAdvertisingData\n");
+    DEBUG("BlueNRGGap::setAdvertisingData\n\r");
     /* Make sure we don't exceed the advertising payload length */
     if (advData.getPayloadLen() > GAP_ADVERTISING_DATA_MAX_PAYLOAD) {
         return BLE_ERROR_BUFFER_OVERFLOW;
@@ -81,13 +81,13 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
         for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {      
             // add AD data to the 
             PayloadUnit unit = loadPtr.getUnitAtIndex(index);
-            DEBUG("adData[%d].length=%d\n", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
-            DEBUG("adData[%d].AdType=0x%x\n", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));      
+            DEBUG("adData[%d].length=%d\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
+            DEBUG("adData[%d].AdType=0x%x\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));      
             #if 0                       
             int err = aci_gap_update_adv_data(*loadPtr.getUnitAtIndex(index).getLenPtr(), loadPtr.getUnitAtIndex(index).getAdTypePtr());
             
             if(BLE_STATUS_SUCCESS!=err) {
-                DEBUG("error occurred while adding adv data\n");
+                DEBUG("error occurred while adding adv data\n\r");
                 return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
                 }
             #endif
@@ -98,7 +98,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 case GapAdvertisingData::INCOMPLETE_LIST_16BIT_SERVICE_IDS:  /**< Incomplete list of 16-bit Service IDs */
                 break;
                 case GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS:    /**< Complete list of 16-bit Service IDs */
-                    DEBUG("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n");
+                    DEBUG("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n\r");
                     break;
                 case GapAdvertisingData::INCOMPLETE_LIST_32BIT_SERVICE_IDS:  /**< Incomplete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
                 break;
@@ -111,7 +111,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 case GapAdvertisingData::SHORTENED_LOCAL_NAME:               /**< Shortened Local Name */
                 break;
                 case GapAdvertisingData::COMPLETE_LOCAL_NAME:                /**< Complete Local Name */
-                    DEBUG("Advertising type: COMPLETE_LOCAL_NAME\n");
+                    DEBUG("Advertising type: COMPLETE_LOCAL_NAME\n\r");
                     loadPtr.getUnitAtIndex(index).printDataAsString();       
                     local_name_length = *loadPtr.getUnitAtIndex(index).getLenPtr()-1;                        
                     local_name = (const char*)loadPtr.getUnitAtIndex(index).getAdTypePtr();  
@@ -124,17 +124,17 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                                                 (tHalUint8 *)local_name);
 
                             
-                    DEBUG("device_name length=%d", local_name_length);                                    
+                    DEBUG("device_name length=%d\n\r", local_name_length);                                    
                     break;
                 
                 case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
-                    DEBUG("Advertising type: TX_POWER_LEVEL\n");     
+                    DEBUG("Advertising type: TX_POWER_LEVEL\n\r");     
                     int8_t dbm = *loadPtr.getUnitAtIndex(index).getDataPtr();
                     int8_t enHighPower = 0;
                     int8_t paLevel = 0;
                     int8_t dbmActuallySet = getHighPowerAndPALevelValue(dbm, enHighPower, paLevel);
-                    DEBUG("dbm=%d, dbmActuallySet=%d\n", dbm, dbmActuallySet);
-                    DEBUG("enHighPower=%d, paLevel=%d\n", enHighPower, paLevel);                    
+                    DEBUG("dbm=%d, dbmActuallySet=%d\n\r", dbm, dbmActuallySet);
+                    DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
                     aci_hal_set_tx_power_level(enHighPower, paLevel);
                     break;
                 case GapAdvertisingData::DEVICE_ID:                          /**< Device ID */
@@ -148,15 +148,15 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     Tested with GapAdvertisingData::GENERIC_PHONE. 
                     for other appearances BLE Scanner android app is not behaving properly 
                     */
-                    DEBUG("Advertising type: APPEARANCE\n");
+                    DEBUG("Advertising type: APPEARANCE\n\r");
                     const char *deviceAppearance = NULL;                    
                     deviceAppearance = (const char*)loadPtr.getUnitAtIndex(index).getDataPtr();  // to be set later when startAdvertising() is called
-                    DEBUG("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n", deviceAppearance[1], deviceAppearance[0], (uint8_t)*loadPtr.getUnitAtIndex(index).getLenPtr()-1);         /**< \ref Appearance */
+                    DEBUG("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n\r", deviceAppearance[1], deviceAppearance[0], (uint8_t)*loadPtr.getUnitAtIndex(index).getLenPtr()-1);         /**< \ref Appearance */
                     aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);
                     break;
                 case GapAdvertisingData::ADVERTISING_INTERVAL:               /**< Advertising Interval */
                     advtInterval = (uint16_t)(*loadPtr.getUnitAtIndex(index).getDataPtr());
-                    DEBUG("advtInterval=%d\n", advtInterval);
+                    DEBUG("advtInterval=%d\n\r", advtInterval);
                 break;
                 case GapAdvertisingData::MANUFACTURER_SPECIFIC_DATA:        /**< Manufacturer Specific Data */                                
                 break;
@@ -251,8 +251,8 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
       name[0] = AD_TYPE_COMPLETE_LOCAL_NAME;
       strcpy(name+1, str);
       nameLen = strlen(name);
-      DEBUG("nameLen=%d\n", nameLen);
-      DEBUG("name=%s\n", name);      
+      DEBUG("nameLen=%d\n\r", nameLen);
+      DEBUG("name=%s\n\r", name);      
   }  
   
                                
@@ -260,7 +260,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
                                 advtInterval,   // Adv_Interval_Max
-                                PUBLIC_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
+                                RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 nameLen, //local_name_length, // Local_Name_Length
                                 (const char*)name, //local_name, // Local_Name
