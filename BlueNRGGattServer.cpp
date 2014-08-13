@@ -78,8 +78,17 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     * Encryption_Key_Size -> Hardcoded (16)
     * isVariable (variable length value field) -> Hardcoded (1)
     */
+    tGattServerEvent Gatt_Evt_Mask = 0x0;
+    
+    if((p_char->getProperties() &
+         (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
+          GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
+            DEBUG("Setting up Gatt EVt Mask");
+            Gatt_Evt_Mask = GATT_SERVER_ATTR_WRITE;
+        }
+        
     ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
-                           p_char->getProperties(), ATTR_PERMISSION_NONE, 0 /*Gatt_Evt_Mask*/,
+                           p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
                            16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristicHandles[characteristicCount]);
     
     /* Update the characteristic handle */
