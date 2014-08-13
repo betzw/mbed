@@ -84,8 +84,14 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
          (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
           GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
             DEBUG("Setting up Gatt EVt Mask");
-            Gatt_Evt_Mask = GATT_SERVER_ATTR_WRITE;
+            Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_SERVER_ATTR_WRITE;
         }
+    if((p_char->getProperties() &
+         (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ|
+          GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY))) {
+            DEBUG("Setting up Gatt EVt Mask");
+            Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_INTIMATE_APPL_WHEN_READ_N_WAIT;
+        }    
         
     ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
                            p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
