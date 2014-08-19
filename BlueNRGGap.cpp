@@ -78,19 +78,18 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     } else { 
         PayloadPtr loadPtr(advData.getPayload(), advData.getPayloadLen());        
-        for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {      
-            // add AD data to the 
+        for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {                  
             PayloadUnit unit = loadPtr.getUnitAtIndex(index);
             DEBUG("adData[%d].length=%d\n", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
             DEBUG("adData[%d].AdType=0x%x\n", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));      
-            #if 0                       
+        #if 1                       
             int err = aci_gap_update_adv_data(*loadPtr.getUnitAtIndex(index).getLenPtr(), loadPtr.getUnitAtIndex(index).getAdTypePtr());
             
             if(BLE_STATUS_SUCCESS!=err) {
-                DEBUG("error occurred while adding adv data\n");
-                return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
+                DEBUG("error occurred while adding adv data for Adv type 0x%x, errCode = 0x%x\n", *loadPtr.getUnitAtIndex(index).getAdTypePtr(), err);
+                //return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
                 }
-            #endif
+        #endif
             //UnitPayload unitLoad = load.getPayLoadAtIndex(index);
             switch(*loadPtr.getUnitAtIndex(index).getAdTypePtr()) {
                 case GapAdvertisingData::FLAGS:                              /* ref *Flags */                     
@@ -99,6 +98,13 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 break;
                 case GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS:    /**< Complete list of 16-bit Service IDs */
                     DEBUG("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n");
+                    #if 0
+                    int err = aci_gap_update_adv_data(*loadPtr.getUnitAtIndex(index).getLenPtr(), loadPtr.getUnitAtIndex(index).getAdTypePtr());            
+                    if(BLE_STATUS_SUCCESS!=err) {
+                        DEBUG("error occurred while adding adv data\n");
+                        return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
+                        }
+                    #endif
                     break;
                 case GapAdvertisingData::INCOMPLETE_LIST_32BIT_SERVICE_IDS:  /**< Incomplete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
                 break;
@@ -115,8 +121,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     loadPtr.getUnitAtIndex(index).printDataAsString();       
                     local_name_length = *loadPtr.getUnitAtIndex(index).getLenPtr()-1;                        
                     local_name = (const char*)loadPtr.getUnitAtIndex(index).getAdTypePtr();  
-                    //for(int i=0; i<local_name_length; i++)
-                    //    DEBUG("\n%c", local_name[i]);
+                    //for(int i=0; i<local_name_length; i++) DEBUG("\n%c", local_name[i]);
                      aci_gatt_update_char_value(g_gap_service_handle, 
                                                 g_device_name_char_handle, 
                                                 0, 
@@ -260,7 +265,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
                                 advtInterval,   // Adv_Interval_Max
-                                PUBLIC_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
+                                RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 nameLen, //local_name_length, // Local_Name_Length
                                 (const char*)name, //local_name, // Local_Name
