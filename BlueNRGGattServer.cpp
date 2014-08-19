@@ -197,3 +197,47 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
   return BLE_ERROR_NONE;
 }
 
+/**************************************************************************/
+/*!
+    @brief  Reads a value according to the handle provided
+
+    @param[in]  charHandle
+                The handle of the GattCharacteristic to write to
+    @param[in]  buffer
+                Data to use when updating the characteristic's value
+                (raw byte array in LSB format)
+    @param[in]  len
+                The number of bytes in buffer
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGattServer::Read_Request_CB(tHalUint16 handle)
+{
+    //signed short refvalue;
+    uint16_t gapConnectionHandle = BlueNRGGap::getInstance().getConnectionHandle();
+    
+    tBleStatus ret;
+    uint16_t data;
+    tHalUint8 buff[2];
+        
+    data = 450 + ((uint64_t)rand()*100)/RAND_MAX;
+    STORE_LE_16(buff,data);
+    
+    ret = aci_gatt_update_char_value(hrmServHandle, handle, 0, sizeof(buff), buff);
+    
+    
+    //EXIT:
+    if(gapConnectionHandle != 0)
+    aci_gatt_allow_read(gapConnectionHandle);
+}
+

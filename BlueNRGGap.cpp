@@ -85,7 +85,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
             DEBUG("adData[%d].length=%d\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
             DEBUG("adData[%d].AdType=0x%x\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));      
       
-        #if 1                
+        #if 0                
 
             int err = aci_gap_update_adv_data(*loadPtr.getUnitAtIndex(index).getLenPtr(), loadPtr.getUnitAtIndex(index).getAdTypePtr());            
             if(BLE_STATUS_SUCCESS!=err) {

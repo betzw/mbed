@@ -41,6 +41,7 @@ public:
     /* BlueNRG Functions */
     void eventCallback(void);
     //void hwCallback(void *pckt);
+    ble_error_t Read_Request_CB(tHalUint16 handle);
 
 private:
 
