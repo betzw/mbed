@@ -257,19 +257,22 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(tHalUint16 handle)
     @endcode
 */
 /**************************************************************************/
-GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 charHandle)
+GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 attrHandle)
 {
     GattCharacteristic *p_char;
     int i;
     uint16_t handle;
-    
+    DEBUG("Attribute Handle received 0x%x\n\r",attrHandle);
     for(i=0; i<characteristicCount; i++)
     {
         handle = p_characteristics[i]->getHandle();
-        if(charHandle==bleCharacteristicHandles[handle])
+        DEBUG("Handle 0x%x\n\r",bleCharacteristicHandles[handle]);
+        if(attrHandle==(bleCharacteristicHandles[handle]+1))//Testing attribute handle only and not Notify
         {
+            DEBUG("MATCH!\n\r");
             p_char = p_characteristics[i];
-            break;
+            DEBUG("Match Characteristic Properties 0x%x\n\r",p_char->getProperties());
+            
         }
     }
     return p_char;
