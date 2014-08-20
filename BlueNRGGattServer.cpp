@@ -144,7 +144,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::readValue(uint16_t charHandle, uint8_t buffer[], uint16_t *const lengthP)
 {
-    DEBUG("ReadValue()\n\r");
+    DEBUG("ReadValue() Not Supported\n\r");
     return BLE_ERROR_NONE;
 }
 
@@ -189,6 +189,8 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
     
   ret = aci_gatt_update_char_value(hrmServHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
 
+  //TODO?: Generate Data Sent Event Here? (GattServerEvents::GATT_EVENT_DATA_SENT)
+  
   if (ret != BLE_STATUS_SUCCESS){
       DEBUG("Error while updating characteristic.\n\r") ;
       return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
@@ -202,12 +204,7 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
     @brief  Reads a value according to the handle provided
 
     @param[in]  charHandle
-                The handle of the GattCharacteristic to write to
-    @param[in]  buffer
-                Data to use when updating the characteristic's value
-                (raw byte array in LSB format)
-    @param[in]  len
-                The number of bytes in buffer
+                The handle of the GattCharacteristic to read from
 
     @returns    ble_error_t
 
@@ -233,11 +230,47 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(tHalUint16 handle)
     data = 450 + ((uint64_t)rand()*100)/RAND_MAX;
     STORE_LE_16(buff,data);
     
-    ret = aci_gatt_update_char_value(hrmServHandle, handle, 0, sizeof(buff), buff);
-    
+    //ret = aci_gatt_update_char_value(hrmServHandle, handle, 0, sizeof(buff), buff);
+    //ret = aci_gatt_read_charac_val(gapConnectionHandle, handle);
     
     //EXIT:
     if(gapConnectionHandle != 0)
     aci_gatt_allow_read(gapConnectionHandle);
 }
 
+/**************************************************************************/
+/*!
+    @brief  Returns the GattCharacteristic according to the handle provided
+
+    @param[in]  charHandle
+                The handle of the GattCharacteristic
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 charHandle)
+{
+    GattCharacteristic *p_char;
+    int i;
+    uint16_t handle;
+    
+    for(i=0; i<characteristicCount; i++)
+    {
+        handle = p_characteristics[i]->getHandle();
+        if(charHandle==bleCharacteristicHandles[handle])
+        {
+            p_char = p_characteristics[i];
+            break;
+        }
+    }
+    return p_char;
+}

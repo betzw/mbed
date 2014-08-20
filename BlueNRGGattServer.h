@@ -42,7 +42,8 @@ public:
     void eventCallback(void);
     //void hwCallback(void *pckt);
     ble_error_t Read_Request_CB(tHalUint16 handle);
-
+    GattCharacteristic* getCharacteristicFromHandle(tHalUint16 charHandle);
+    
 private:
 
     uint8_t serviceCount;
@@ -51,7 +52,8 @@ private:
     
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
     tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
-
+    
+    
     BlueNRGGattServer() {
         serviceCount = 0;
         characteristicCount = 0;
