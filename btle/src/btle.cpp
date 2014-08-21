@@ -188,8 +188,7 @@ extern void HCI_Event_CB(void *pckt) {
                             evt_le_connection_complete *cc = (evt_le_connection_complete *)evt->data;
                             
                             BlueNRGGap::getInstance().setConnectionHandle(cc->handle);
-                            BlueNRGGap::getInstance().handleEvent(GapEvents::GAP_EVENT_CONNECTED);
-                            
+                            BlueNRGGap::getInstance().handleEvent(GapEvents::GAP_EVENT_CONNECTED);                            
                         }
                         break;
                     }
@@ -225,13 +224,11 @@ extern void HCI_Event_CB(void *pckt) {
                                   | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
                                   
                                    //Now Check if data written in Enable or Disable
-                                   if((uint16_t)evt->att_data[0]==1)
-                                   {
+                                   if((uint16_t)evt->att_data[0]==1) {
                                     //DEBUG("Notify ENABLED\n\r"); 
                                     BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
                                    } 
-                                   else
-                                   {
+                                   else {
                                     //DEBUG("Notify DISABLED\n\r"); 
                                     BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
                                     }
@@ -247,9 +244,7 @@ extern void HCI_Event_CB(void *pckt) {
                                     if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
                                         BlueNRGGattServer::getInstance().updateValue(p_char->getHandle(), p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
                                     }
-                          }
-                          
-                          //Attribute_Modified_CB(evt->attr_handle, evt->data_length, evt->att_data);                    
+                          }                   
                         }
                         break;  
                         

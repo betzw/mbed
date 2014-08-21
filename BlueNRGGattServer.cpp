@@ -189,13 +189,20 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
     
   ret = aci_gatt_update_char_value(hrmServHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
 
-  //TODO?: Generate Data Sent Event Here? (GattServerEvents::GATT_EVENT_DATA_SENT)
-  
   if (ret != BLE_STATUS_SUCCESS){
       DEBUG("Error while updating characteristic.\n\r") ;
       return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
       //FIXME: Define Error values equivalent to BlueNRG Error Codes.
     }
+
+  //Generate Data Sent Event Here? (GattServerEvents::GATT_EVENT_DATA_SENT)  //FIXME: Is this correct?
+  //Check if characteristic property is NOTIFY|INDICATE, if yes generate event
+  GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(bleCharacteristicHandles[charHandle]);
+  if(p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
+                                  | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE)) {
+          BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_SENT);
+      }
+  
   return BLE_ERROR_NONE;
 }
 
@@ -261,9 +268,9 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
 {
     GattCharacteristic *p_char;
     int i;
-    uint16_t handle, testHandle;
+    uint16_t handle;
     
-    DEBUG("BlueNRGGattServer::getCharacteristicFromHandle()>>Attribute Handle received 0x%x\n\r",attrHandle);
+    //DEBUG("BlueNRGGattServer::getCharacteristicFromHandle()>>Attribute Handle received 0x%x\n\r",attrHandle);
     for(i=0; i<characteristicCount; i++)
     {
         handle = p_characteristics[i]->getHandle();
@@ -279,7 +286,7 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
         }
         else {
             //Testing if attribute handle is between two Characteristic Handles
-            if(attrHandle>=bleCharacteristicHandles[handle] && attrHandle<=bleCharacteristicHandles[handle+1])
+            if(attrHandle>=bleCharacteristicHandles[handle] && attrHandle<bleCharacteristicHandles[handle+1])
             {
                 p_char = p_characteristics[i];
                 //DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
