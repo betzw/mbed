@@ -227,12 +227,12 @@ extern void HCI_Event_CB(void *pckt) {
                                    //Now Check if data written in Enable or Disable
                                    if((uint16_t)evt->att_data[0]==1)
                                    {
-                                    DEBUG("Notify ENABLED\n\r"); 
+                                    //DEBUG("Notify ENABLED\n\r"); 
                                     BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
                                    } 
                                    else
                                    {
-                                    DEBUG("Notify DISABLED\n\r"); 
+                                    //DEBUG("Notify DISABLED\n\r"); 
                                     BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
                                     }
                                 }

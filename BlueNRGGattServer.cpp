@@ -261,18 +261,30 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
 {
     GattCharacteristic *p_char;
     int i;
-    uint16_t handle;
-    DEBUG("Attribute Handle received 0x%x\n\r",attrHandle);
+    uint16_t handle, testHandle;
+    
+    DEBUG("BlueNRGGattServer::getCharacteristicFromHandle()>>Attribute Handle received 0x%x\n\r",attrHandle);
     for(i=0; i<characteristicCount; i++)
     {
         handle = p_characteristics[i]->getHandle();
-        DEBUG("Handle 0x%x\n\r",bleCharacteristicHandles[handle]);
-        if(attrHandle==(bleCharacteristicHandles[handle]+1))//Testing attribute handle only and not Notify
+        
+        if(i==characteristicCount-1)//Last Characteristic check
         {
-            DEBUG("MATCH!\n\r");
-            p_char = p_characteristics[i];
-            DEBUG("Match Characteristic Properties 0x%x\n\r",p_char->getProperties());
-            
+            if(attrHandle>=bleCharacteristicHandles[handle])
+            {
+                p_char = p_characteristics[i];
+                //DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+                break;
+                }            
+        }
+        else {
+            //Testing if attribute handle is between two Characteristic Handles
+            if(attrHandle>=bleCharacteristicHandles[handle] && attrHandle<=bleCharacteristicHandles[handle+1])
+            {
+                p_char = p_characteristics[i];
+                //DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+                break;
+            } else continue;
         }
     }
     return p_char;
