@@ -48,6 +48,9 @@ public:
     virtual ble_error_t startAdvertising(const GapAdvertisingParams &);
     virtual ble_error_t stopAdvertising(void);
     virtual ble_error_t disconnect(void);
+    virtual ble_error_t getPreferredConnectionParams(ConnectionParams_t *params);
+    virtual ble_error_t setPreferredConnectionParams(const ConnectionParams_t *params);
+    virtual ble_error_t updateConnectionParams(Handle_t handle, const ConnectionParams_t *params);  
 
     void     setConnectionHandle(uint16_t con_handle);
     uint16_t getConnectionHandle(void);

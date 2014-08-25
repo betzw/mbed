@@ -378,3 +378,60 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
     
     //return BLE_ERROR_PARAM_OUT_OF_RANGE;
 }
+
+/**************************************************************************/
+/*!
+    @brief      obtains preferred connection params
+
+    @returns    ble_error_t
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::getPreferredConnectionParams(ConnectionParams_t *params) 
+{
+    return BLE_ERROR_NONE;
+}
+
+
+/**************************************************************************/
+/*!
+    @brief      sets preferred connection params
+
+    @returns    ble_error_t
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::setPreferredConnectionParams(const ConnectionParams_t *params) 
+{
+    return BLE_ERROR_NONE;
+}
+
+/**************************************************************************/
+/*!
+    @brief      updates preferred connection params
+
+    @returns    ble_error_t
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::updateConnectionParams(Handle_t handle, const ConnectionParams_t *params)
+{
+    return BLE_ERROR_NONE;
+}
+
+
