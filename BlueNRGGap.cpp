@@ -245,7 +245,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28]};
   const LongUUID_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
   /* disable scan response */
-  hci_le_set_scan_resp_data(0,NULL);
+  hci_le_set_scan_resp_data(0,NULL); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
   
   /*aci_gap_set_discoverable(Advertising_Event_Type, Adv_min_intvl, Adv_Max_Intvl, Addr_Type, Adv_Filter_Policy,
                         Local_Name_Length, local_name, service_uuid_length, service_uuid_list, Slave_conn_intvl_min, Slave_conn_intvl_max);*/
@@ -303,8 +303,20 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
 /**************************************************************************/
 ble_error_t BlueNRGGap::stopAdvertising(void)
 {
+    tBleStatus ret;
     
-
+    //Set non-discoverable to stop advertising
+    ret = aci_gap_set_non_discoverable();
+    
+    if (ret != BLE_STATUS_SUCCESS){
+      DEBUG("Error in stopping advertisement!!\n\r") ;
+      return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
+      //FIXME: Define Error values equivalent to BlueNRG Error Codes.
+    }
+    DEBUG("Advertisement stopped!!\n\r") ;
+    //Set GapState_t::advertising state
+    state.advertising = 0;
+    
     return BLE_ERROR_NONE;
 }
 
@@ -326,6 +338,20 @@ ble_error_t BlueNRGGap::stopAdvertising(void)
 /**************************************************************************/
 ble_error_t BlueNRGGap::disconnect(void)
 {
+    tBleStatus ret;
+    //For Reason codes check BlueTooth HCI Spec
+    
+    if(m_connectionHandle != BLE_CONN_HANDLE_INVALID)
+        ret = aci_gap_terminate(m_connectionHandle, 0x16);//0x16 Connection Terminated by Local Host. 
+
+    if (ret != BLE_STATUS_SUCCESS){
+      DEBUG("Error in GAP termination!!\n\r") ;
+      return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
+      //FIXME: Define Error values equivalent to BlueNRG Error Codes.
+    }
+    
+    //DEBUG("Disconnected from localhost!!\n\r") ;
+    m_connectionHandle = BLE_CONN_HANDLE_INVALID;
     
     return BLE_ERROR_NONE;
 }
