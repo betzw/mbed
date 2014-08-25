@@ -88,7 +88,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         }
     if((p_char->getProperties() &
          (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ|
-          GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY))) {
+          GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY| GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
             DEBUG("Setting up Gatt GATT_INTIMATE_APPL_WHEN_READ_N_WAIT Mask\n\r");
             Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_INTIMATE_APPL_WHEN_READ_N_WAIT; 
         }    //This will support also GATT_SERVER_ATTR_READ_WRITE since it will be covered by previous if() check.
