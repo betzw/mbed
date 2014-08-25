@@ -305,6 +305,7 @@ ble_error_t BlueNRGGap::stopAdvertising(void)
 {
     tBleStatus ret;
     
+    if(state.advertising == 1) {
     //Set non-discoverable to stop advertising
     ret = aci_gap_set_non_discoverable();
     
@@ -316,6 +317,7 @@ ble_error_t BlueNRGGap::stopAdvertising(void)
     DEBUG("Advertisement stopped!!\n\r") ;
     //Set GapState_t::advertising state
     state.advertising = 0;
+    }
     
     return BLE_ERROR_NONE;
 }
@@ -341,7 +343,7 @@ ble_error_t BlueNRGGap::disconnect(void)
     tBleStatus ret;
     //For Reason codes check BlueTooth HCI Spec
     
-    if(m_connectionHandle != BLE_CONN_HANDLE_INVALID)
+    if(m_connectionHandle != BLE_CONN_HANDLE_INVALID) {
         ret = aci_gap_terminate(m_connectionHandle, 0x16);//0x16 Connection Terminated by Local Host. 
 
     if (ret != BLE_STATUS_SUCCESS){
@@ -352,6 +354,7 @@ ble_error_t BlueNRGGap::disconnect(void)
     
     //DEBUG("Disconnected from localhost!!\n\r") ;
     m_connectionHandle = BLE_CONN_HANDLE_INVALID;
+    }
     
     return BLE_ERROR_NONE;
 }
