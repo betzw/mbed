@@ -21,7 +21,7 @@
 #include "blecommon.h"
 #include "btle.h"
 #include "GattService.h"
-#include "hw/GattServer.h"
+#include "public/GattServer.h"
 
 #define BLE_TOTAL_CHARACTERISTICS 10
 

@@ -22,7 +22,7 @@
 #include "btle.h"
 #include "GapAdvertisingParams.h"
 #include "GapAdvertisingData.h"
-#include "hw/Gap.h"
+#include "public/Gap.h"
 
 #define BLE_CONN_HANDLE_INVALID 0x0
 
