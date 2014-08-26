@@ -296,3 +296,105 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
     }
     return p_char;
 }
+
+/**************************************************************************/
+/*!
+    @brief  sets device name characteristic 
+
+    @param[in]  deviceName
+                pointer to device name to be set
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGattServer::setDeviceName(const uint8_t *deviceName) 
+{
+    return BLE_ERROR_NONE;
+}
+
+/**************************************************************************/
+/*!
+    @brief  gets device name characteristic 
+
+    @param[in]  deviceName
+                pointer to device name 
+                
+
+    @param[in]  lengthP
+                pointer to device name length                
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGattServer::getDeviceName(uint8_t *deviceName, unsigned *lengthP) 
+{
+    return BLE_ERROR_NONE;
+}
+
+/**************************************************************************/
+/*!
+    @brief  sets device appearance characteristic 
+
+    @param[in]  appearance
+                device appearance      
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGattServer::setAppearance(uint16_t appearance)
+{
+    return BLE_ERROR_NONE;    
+}
+
+/**************************************************************************/
+/*!
+    @brief  gets device appearance  
+
+    @param[in]  appearance
+                pointer to device appearance value      
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGattServer::getAppearance(uint16_t *appearanceP)
+{
+    return BLE_ERROR_NONE;    
+}
+
+

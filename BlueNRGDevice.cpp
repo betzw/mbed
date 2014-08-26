@@ -111,3 +111,86 @@ void BlueNRGDevice::waitForEvent(void)
     HCI_Process();//Send App Events??
     
 }
+
+
+/**************************************************************************/
+/*!
+    @brief  get GAP version
+    
+    @returns    char *      
+
+    @retval    pointer to gap version
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+const char *BlueNRGDevice::getVersion(void)
+{
+return NULL;
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  get reference to GAP object
+    
+    @returns    Gap&      
+
+    @retval    reference to gap object
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+Gap        &BlueNRGDevice::getGap()        
+{
+        return BlueNRGGap::getInstance();
+}
+
+/**************************************************************************/
+/*!
+    @brief  get reference to GATT server object
+    
+    @returns    GattServer&    
+
+    @retval    reference to GATT server object
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+GattServer &BlueNRGDevice::getGattServer() 
+{
+        return BlueNRGGattServer::getInstance();
+}
+
+/**************************************************************************/
+/*!
+    @brief  set Tx power level
+    
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGDevice::setTxPower(int8_t txPower)
+{
+    return BLE_ERROR_NONE;    
+}
