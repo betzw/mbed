@@ -18,6 +18,8 @@
 #include "BlueNRGDevice.h"
 
 #include "btle.h"
+#include "Utils.h"
+#include "osal.h"
 
 /**
  * The singleton which represents the BlueNRG transport for the BLEDevice.
@@ -119,7 +121,7 @@ void BlueNRGDevice::waitForEvent(void)
     
     @returns    char *      
 
-    @retval    pointer to gap version
+    @retval    pointer to version string
 
     @section EXAMPLE
 
@@ -130,7 +132,9 @@ void BlueNRGDevice::waitForEvent(void)
 /**************************************************************************/
 const char *BlueNRGDevice::getVersion(void)
 {
-return NULL;
+    char *version = new char[6];
+    memcpy((void *)version, "1.0.0", 5);
+    return version;
 }
 
 
@@ -192,5 +196,11 @@ GattServer &BlueNRGDevice::getGattServer()
 /**************************************************************************/
 ble_error_t BlueNRGDevice::setTxPower(int8_t txPower)
 {
+    int8_t enHighPower = 0;
+    int8_t paLevel = 0;    
+    int8_t dbmActuallySet = getHighPowerAndPALevelValue(txPower, enHighPower, paLevel);
+    DEBUG("txPower=%d, dbmActuallySet=%d\n\r", txPower, dbmActuallySet);
+    DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
+    aci_hal_set_tx_power_level(enHighPower, paLevel);
     return BLE_ERROR_NONE;    
 }

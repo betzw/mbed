@@ -31,6 +31,7 @@
 
 class BlueNRGDevice : public BLEDeviceInstanceBase
 {
+
 public:
     BlueNRGDevice(void);
     virtual ~BlueNRGDevice(void);
