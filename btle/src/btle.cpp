@@ -16,8 +16,8 @@
 
 
 #include "btle.h"
-#include "hw/Gap.h"
-#include "hw/GapEvents.h"
+#include "public/Gap.h"
+#include "public/GapEvents.h"
 #include "BlueNRGGap.h"
 #include "BlueNRGGattServer.h"
 #include "Utils.h"
