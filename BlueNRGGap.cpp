@@ -414,18 +414,45 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
     
     //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;
-    
-    //return BLE_ERROR_PARAM_OUT_OF_RANGE;
 }
 
+/**************************************************************************/
+/*!
+    @brief      Returns boolean if the address of the device has been set
+                or not
+                
+    @returns    bool
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
 bool BlueNRGGap::getIsSetAddress() 
 {
     return isSetAddress;   
 }
 
+/**************************************************************************/
+/*!
+    @brief      Returns the address of the device if set
+
+    @returns    ble_error_t
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
 tHalUint8* BlueNRGGap::getAddress() 
 {
-    return bdaddr;    
+    if(isSetAddress)
+    return bdaddr; 
+    else return NULL;   
 }
 
 /**************************************************************************/
