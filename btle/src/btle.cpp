@@ -54,8 +54,8 @@ SPI_HandleTypeDef SpiHandle;
 static void btle_handler(/*ble_evt_t * p_ble_evt*/);
 void HCI_Input(tHciDataPacket * hciReadPacket);
 
-#define BDADDR_SIZE 6
-tHalUint8 bdaddr[BDADDR_SIZE]= {0xaa, 0x00, 0x00, 0xE1, 0x80, 0x02};
+//#define BDADDR_SIZE 6
+//tHalUint8 bdaddr[BDADDR_SIZE]= {0xaa, 0x00, 0x00, 0xE1, 0x80, 0x02};
 
 uint16_t g_gap_service_handle = 0;
 uint16_t g_appearance_char_handle = 0;
@@ -71,11 +71,11 @@ volatile uint8_t set_connectable = 1;
     @returns
 */
 /**************************************************************************/
-void btle_init(void)
+void btle_init(bool isSetAddress)
 {
-  const char *name = "BlueNRG_1";
-  tHalUint8 SERVER_BDADDR[] = {0x12, 0x34, 0x00, 0xE1, 0x80, 0x02};//MPD: This is the public address of the Server/Client
-  tHalUint8 bdaddr[BDADDR_SIZE];
+  DEBUG("btle_init>>");
+  const char *name = "STBlueNRG";
+  tHalUint8 *bleAddr;
   int ret;
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
   
@@ -101,12 +101,19 @@ void btle_init(void)
   BlueNRG_RST();
 
   /* The Nucleo board must be configured as SERVER */
-  /*Osal_MemCpy(bdaddr, SERVER_BDADDR, sizeof(SERVER_BDADDR));
+  //check if issetAddress is set than set address.
+  if(isSetAddress)
+  {
+    bleAddr = BlueNRGGap::getInstance().getAddress();
+        
+    tHalUint8 bdaddr[BDADDR_SIZE];
+    Osal_MemCpy(bdaddr, bleAddr, BDADDR_SIZE);
   
-  ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
-                                  CONFIG_DATA_PUBADDR_LEN,
-                                  bdaddr);*/
-                                  
+    ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET,
+                                    CONFIG_DATA_PUBADDR_LEN,
+                                    bdaddr);
+    }    
+                            
   ret = aci_gatt_init();
   //GAP is always in PERIPHERAL _ROLE as mbed does not support Master role at the moment
   ret = aci_gap_init(GAP_PERIPHERAL_ROLE, &service_handle, &dev_name_char_handle, &appearance_char_handle);

@@ -32,7 +32,7 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 
-void btle_init(void);
+void btle_init(bool isSetAddress);
 void User_Process(void);
 void setConnectable(void);
 

@@ -16,6 +16,8 @@
 
 #include "mbed.h"
 #include "BlueNRGDevice.h"
+#include "BlueNRGGap.h"
+#include "BlueNRGGattServer.h"
 
 #include "btle.h"
 #include "Utils.h"
@@ -73,7 +75,7 @@ BlueNRGDevice::~BlueNRGDevice(void)
 ble_error_t BlueNRGDevice::init(void)
 {
     /* ToDo: Clear memory contents, reset the SD, etc. */
-    btle_init();
+    btle_init(BlueNRGGap::getInstance().getIsSetAddress());
 
     return BLE_ERROR_NONE;
 }
@@ -100,7 +102,7 @@ ble_error_t BlueNRGDevice::reset(void)
     wait(0.5);
 
     /* Reset BlueNRG SPI interface */
-    //BlueNRG_RST();
+    BlueNRG_RST();
   
     /* Wait for the radio to come back up */
     wait(1);

@@ -271,7 +271,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
                                 advtInterval,   // Adv_Interval_Max
-                                RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
+                                PUBLIC_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 nameLen, //local_name_length, // Local_Name_Length
                                 (const char*)name, //local_name, // Local_Name
@@ -381,7 +381,8 @@ uint16_t BlueNRGGap::getConnectionHandle(void)
 
 /**************************************************************************/
 /*!
-    @brief      Sets the BLE device address
+    @brief      Sets the BLE device address. SetAddress will reset the BLE
+                device and re-initialize BTLE. Will not start advertising.
 
     @returns    ble_error_t
 
@@ -400,12 +401,31 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     }
         
-    ret = aci_hal_write_config_data(CONFIG_DATA_PUBADDR_OFFSET, CONFIG_DATA_PUBADDR_LEN, (const tHalUint8*)address);
+    //copy address to bdAddr[6]
+    for(int i=0; i<BDADDR_SIZE; i++) {
+        bdaddr[i] = address[i];
+        //DEBUG("i[%d]:0x%x\n\r",i,bdaddr[i]);
+        }
+        
+    if(!isSetAddress) isSetAddress = true;
+    
+    //Re-Init the BTLE Device with SetAddress as true
+    btle_init(isSetAddress);
     
     //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;
     
     //return BLE_ERROR_PARAM_OUT_OF_RANGE;
+}
+
+bool BlueNRGGap::getIsSetAddress() 
+{
+    return isSetAddress;   
+}
+
+tHalUint8* BlueNRGGap::getAddress() 
+{
+    return bdaddr;    
 }
 
 /**************************************************************************/

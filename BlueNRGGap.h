@@ -25,6 +25,7 @@
 #include "public/Gap.h"
 
 #define BLE_CONN_HANDLE_INVALID 0x0
+#define BDADDR_SIZE 6
 
 /**************************************************************************/
 /*!
@@ -54,9 +55,14 @@ public:
 
     void     setConnectionHandle(uint16_t con_handle);
     uint16_t getConnectionHandle(void);
+    
+    tHalUint8* getAddress();
+    bool getIsSetAddress();
 
 private:
     uint16_t m_connectionHandle;
+    tHalUint8 bdaddr[BDADDR_SIZE];
+    bool isSetAddress;
     tBleStatus ret;
   
     //const char local_name[];// = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
@@ -64,6 +70,7 @@ private:
     //uint8_t *device_name;
     BlueNRGGap() {
         m_connectionHandle = BLE_CONN_HANDLE_INVALID;
+        isSetAddress = false;
         //local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
         
     }
