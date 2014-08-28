@@ -22,7 +22,8 @@
 //Local Variables
 const char *local_name = NULL;
 uint8_t local_name_length = 0;
-
+const uint8_t *scan_response_payload = NULL;
+uint8_t scan_rsp_length = 0;
 uint8_t servUuidlength = 0;
 uint8_t* servUuidData = NULL;
 
@@ -181,8 +182,9 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                                 
             }          
     }
-        //const uint8_t *payload = advData.getPayload();
-
+        //Set the SCAN_RSP Payload
+        scan_response_payload = scanResponse.getPayload();
+        scan_rsp_length = scanResponse.getPayloadLen();
     }
    return BLE_ERROR_NONE;
 }
@@ -251,8 +253,8 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28]};
   const LongUUID_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
-  /* disable scan response */
-  hci_le_set_scan_resp_data(0,NULL); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
+  /* set scan response data */
+  hci_le_set_scan_resp_data(scan_rsp_length, scan_response_payload); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
   
   /*aci_gap_set_discoverable(Advertising_Event_Type, Adv_min_intvl, Adv_Max_Intvl, Addr_Type, Adv_Filter_Policy,
                         Local_Name_Length, local_name, service_uuid_length, service_uuid_list, Slave_conn_intvl_min, Slave_conn_intvl_max);*/
