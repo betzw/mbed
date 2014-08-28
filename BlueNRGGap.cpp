@@ -98,6 +98,13 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
             //UnitPayload unitLoad = load.getPayLoadAtIndex(index);
             switch(*loadPtr.getUnitAtIndex(index).getAdTypePtr()) {
                 case GapAdvertisingData::FLAGS:                              /* ref *Flags */                     
+                //Check if Flags are OK. BlueNRG only supports LE Mode.
+                uint8_t *flags = loadPtr.getUnitAtIndex(index).getDataPtr();
+                if((*flags & GapAdvertisingData::BREDR_NOT_SUPPORTED) != GapAdvertisingData::BREDR_NOT_SUPPORTED) {
+                        DEBUG("BlueNRG does not support BR/EDR Mode");
+                        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+                     }
+                
                 break;
                 case GapAdvertisingData::INCOMPLETE_LIST_16BIT_SERVICE_IDS:  /**< Incomplete list of 16-bit Service IDs */
                 break;
