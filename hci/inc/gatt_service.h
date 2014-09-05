@@ -119,14 +119,13 @@ typedef tHalUint8 tGattServerEvent;
  */
 #define MAX_ENCRY_KEY_SIZE                (0x10)
 
-
-typedef __packed struct _charactFormat {
+typedef  struct __packed _charactFormat {
     tHalUint8 format;
     tHalInt8 exp;
     tHalUint16 unit;
     tHalUint8 name_space;
     tHalUint16 desc;
-} PACKED charactFormat;
+} PACKED charactFormat; 
 
 #define FORMAT_UINT8         0x04
 #define FORMAT_UINT16        0x06
