@@ -58,6 +58,7 @@ private:
     tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
     
     uint8_t *DeviceName;
+    uint8_t deviceAppearance[2];
     
     BlueNRGGattServer() {
         serviceCount = 0;
