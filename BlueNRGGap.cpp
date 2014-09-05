@@ -171,8 +171,14 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     DEBUG("Advertising type: APPEARANCE\n\r");
                     const char *deviceAppearance = NULL;                    
                     deviceAppearance = (const char*)loadPtr.getUnitAtIndex(index).getDataPtr();  // to be set later when startAdvertising() is called
-                    DEBUG("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n\r", deviceAppearance[1], deviceAppearance[0], (uint8_t)*loadPtr.getUnitAtIndex(index).getLenPtr()-1);         /**< \ref Appearance */
-                    aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);
+                    
+                    uint8_t Appearance[2];
+                    uint16_t devP = (uint16_t)*deviceAppearance;
+                    STORE_LE_16(Appearance, (uint16_t)devP);
+    
+                    DEBUG("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n\r", Appearance[1], Appearance[0], (uint8_t)*loadPtr.getUnitAtIndex(index).getLenPtr()-1);         /**< \ref Appearance */
+                    
+                    aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);//not using array Appearance[2]
                     break;
                 case GapAdvertisingData::ADVERTISING_INTERVAL:               /**< Advertising Interval */
                     advtInterval = (uint16_t)(*loadPtr.getUnitAtIndex(index).getDataPtr());

@@ -33,6 +33,13 @@ extern Serial  pc;
 #define DEBUG(...) /* nothing */
 #endif /* #if NEED_CONSOLE_OUTPUT */
 
+#define STORE_LE_16(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)    ) , \
+                                   ((buf)[1] =  (tHalUint8) (val>>8) ) )
+
+#define STORE_LE_32(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)     ) , \
+                                   ((buf)[1] =  (tHalUint8) (val>>8)  ) , \
+                                   ((buf)[2] =  (tHalUint8) (val>>16) ) , \
+                                   ((buf)[3] =  (tHalUint8) (val>>24) ) ) 
 
 
 double getHighPowerAndPALevelValue(int8_t dBMLevel, int8_t& EN_HIGH_POWER, int8_t& PA_LEVEL);

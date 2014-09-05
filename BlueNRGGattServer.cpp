@@ -18,14 +18,6 @@
 #include "mbed.h"
 #include "BlueNRGGap.h"
 #include "Utils.h"
-
-#define STORE_LE_16(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)    ) , \
-                                   ((buf)[1] =  (tHalUint8) (val>>8) ) )
-
-#define STORE_LE_32(buf, val)    ( ((buf)[0] =  (tHalUint8) (val)     ) , \
-                                   ((buf)[1] =  (tHalUint8) (val>>8)  ) , \
-                                   ((buf)[2] =  (tHalUint8) (val>>16) ) , \
-                                   ((buf)[3] =  (tHalUint8) (val>>24) ) ) 
                           
 /**************************************************************************/
 /*!
@@ -401,6 +393,17 @@ ble_error_t BlueNRGGattServer::getDeviceName(uint8_t *deviceName, unsigned *leng
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::setAppearance(uint16_t appearance)
 {
+    /* 
+    Tested with GapAdvertisingData::GENERIC_PHONE. 
+    for other appearances BLE Scanner android app is not behaving properly 
+    */
+    //char deviceAppearance[2];   
+    uint8_t deviceAppearance[2];
+    STORE_LE_16(deviceAppearance, appearance);                 
+    DEBUG("input: incoming = %d deviceAppearance= 0x%x 0x%x\n\r", appearance, deviceAppearance[1], deviceAppearance[0]);
+    
+    aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);
+    
     return BLE_ERROR_NONE;    
 }
 
