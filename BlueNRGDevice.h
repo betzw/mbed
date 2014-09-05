@@ -35,14 +35,7 @@ class BlueNRGDevice : public BLEDeviceInstanceBase
 public:
     BlueNRGDevice(void);
     virtual ~BlueNRGDevice(void);
-/*
-    virtual Gap        &getGap()        {
-        return BlueNRGGap::getInstance();
-    };
-    virtual GattServer &getGattServer() {
-        return BlueNRGGattServer::getInstance();
-    };
-*/
+
     virtual Gap        &getGap();
     virtual GattServer &getGattServer();    
     virtual const char *getVersion(void);
@@ -50,6 +43,11 @@ public:
     virtual ble_error_t reset(void);
     virtual ble_error_t setTxPower(int8_t txPower);
     virtual void        waitForEvent(void);    
+
+    bool getIsInitialized(void);
+    
+private:
+    bool isInitialized;
 };
 
 #endif

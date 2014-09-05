@@ -318,6 +318,26 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::setDeviceName(const uint8_t *deviceName) 
 {
+    int ret;
+    uint8_t nameLen = 0;     
+    
+    DeviceName = (uint8_t *)deviceName;
+    //DEBUG("SetDeviceName=%s\n\r", DeviceName);
+    
+    nameLen = strlen((const char*)DeviceName);
+    //DEBUG("DeviceName Size=%d\n\r", nameLen); 
+    
+    ret = aci_gatt_update_char_value(g_gap_service_handle, 
+                                                g_device_name_char_handle, 
+                                                0, 
+                                                nameLen, 
+                                                (tHalUint8 *)DeviceName);
+                                                
+    if(ret){
+        DEBUG("device set name failed\n\r");            
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;//TODO:Wrong error code
+    }
+  
     return BLE_ERROR_NONE;
 }
 
@@ -345,7 +365,18 @@ ble_error_t BlueNRGGattServer::setDeviceName(const uint8_t *deviceName)
 */
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::getDeviceName(uint8_t *deviceName, unsigned *lengthP) 
-{
+{   
+    int ret;
+    
+    if(DeviceName==NULL) 
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    
+    strcpy((char*)deviceName, (const char*)DeviceName);
+    //DEBUG("GetDeviceName=%s\n\r", deviceName);
+    
+    *lengthP = strlen((const char*)DeviceName);
+    //DEBUG("DeviceName Size=%d\n\r", *lengthP); 
+    
     return BLE_ERROR_NONE;
 }
 
@@ -396,5 +427,4 @@ ble_error_t BlueNRGGattServer::getAppearance(uint16_t *appearanceP)
 {
     return BLE_ERROR_NONE;    
 }
-
 

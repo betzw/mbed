@@ -22,7 +22,7 @@
 extern "C" {
 #endif
 
-#include "stm32l0xx_bluenrg_shield_bsp.h"
+#include "cube_hal.h"
 #include "hci.h"
 #include "bluenrg_hci.h"
 #include "hci_internal.h"

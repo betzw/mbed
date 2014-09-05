@@ -136,11 +136,12 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                     local_name_length = *loadPtr.getUnitAtIndex(index).getLenPtr()-1;                        
                     local_name = (const char*)loadPtr.getUnitAtIndex(index).getAdTypePtr();  
                     //for(int i=0; i<local_name_length; i++) DEBUG("\n%c", local_name[i]);
-                     aci_gatt_update_char_value(g_gap_service_handle, 
+                    /*aci_gatt_update_char_value(g_gap_service_handle, 
                                                 g_device_name_char_handle, 
                                                 0, 
                                                 local_name_length, 
-                                                (tHalUint8 *)local_name);
+                                                (tHalUint8 *)local_name);*/
+                    //COMPLETE_LOCAL_NAME is only advertising device name. Gatt Device Name is not the same.(Must be set right after GAP/GATT init?)
 
                             
                     DEBUG("device_name length=%d\n\r", local_name_length);                                    
@@ -264,6 +265,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   uint8_t nameLen = 0; 
   if(local_name!=NULL) {
       name = (char*)local_name;
+      DEBUG("name=%s\n\r", name); 
       nameLen = local_name_length;
   } else {
       char str[] = "ST_BLE_DEV";
@@ -419,7 +421,8 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
     if(!isSetAddress) isSetAddress = true;
     
     //Re-Init the BTLE Device with SetAddress as true
-    btle_init(isSetAddress);
+    //if(BlueNRGDevice::getIsInitialized())//Re-init only initialization is already done
+        btle_init(isSetAddress);
     
     //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;
@@ -518,5 +521,4 @@ ble_error_t BlueNRGGap::updateConnectionParams(Handle_t handle, const Connection
 {
     return BLE_ERROR_NONE;
 }
-
 

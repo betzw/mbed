@@ -45,6 +45,7 @@ createBLEDeviceInstance(void)
 /**************************************************************************/
 BlueNRGDevice::BlueNRGDevice(void)
 {
+    isInitialized = false;
 }
 
 /**************************************************************************/
@@ -77,6 +78,8 @@ ble_error_t BlueNRGDevice::init(void)
     /* ToDo: Clear memory contents, reset the SD, etc. */
     btle_init(BlueNRGGap::getInstance().getIsSetAddress());
 
+    isInitialized = true;
+    
     return BLE_ERROR_NONE;
 }
 
@@ -106,6 +109,8 @@ ble_error_t BlueNRGDevice::reset(void)
   
     /* Wait for the radio to come back up */
     wait(1);
+    
+    isInitialized = false;
 
     return BLE_ERROR_NONE;
 }
@@ -139,6 +144,25 @@ const char *BlueNRGDevice::getVersion(void)
     return version;
 }
 
+/**************************************************************************/
+/*!
+    @brief  get init state
+    
+    @returns    bool  
+
+    @retval    
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+bool BlueNRGDevice::getIsInitialized(void)
+{
+    return isInitialized;
+}
 
 /**************************************************************************/
 /*!

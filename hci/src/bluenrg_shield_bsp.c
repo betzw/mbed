@@ -33,16 +33,17 @@
 ******************************************************************************
 */
 /* Includes ------------------------------------------------------------------*/
-//#ifdef USE_STM32F4XX_NUCLEO
+#include "cube_hal.h"
+#include "hci.h"
+
+/*//#ifdef USE_STM32F4XX_NUCLEO
   //#include "stm32f4xx_bluenrg_shield_bsp.h"
 //#else
   //#ifdef USE_STM32L0XX_NUCLEO
-    #include "stm32l0xx_bluenrg_shield_bsp.h"
+    //#include "stm32l0xx_bluenrg_shield_bsp.h"
   //#endif
-//#endif
+//#endif*/
 
-#include "cube_hal.h"
-#include "hci.h"
 
 /** @addtogroup BlueNRG_Shield
  *  @{

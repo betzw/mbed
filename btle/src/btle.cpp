@@ -26,6 +26,7 @@
 extern "C" {
 #endif
 
+
 /* C File Includes ------------------------------------------------------------------*/
 #include "hal_types.h"
 #include "hci.h"
@@ -39,7 +40,6 @@ extern "C" {
 #include "sm.h"
 #include <stdio.h>
 #include <string.h>
-#include <stm32l0xx_bluenrg_shield_bsp.h>
 #include "role_type.h"
 #include "debug.h"
 
@@ -73,8 +73,8 @@ volatile uint8_t set_connectable = 1;
 /**************************************************************************/
 void btle_init(bool isSetAddress)
 {
-  DEBUG("btle_init>>");
-  const char *name = "STBlueNRG";
+  DEBUG("btle_init>>\n\r");
+  const char *name = "TEST123";
   tHalUint8 *bleAddr;
   int ret;
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
@@ -121,8 +121,8 @@ void btle_init(bool isSetAddress)
   g_gap_service_handle = service_handle;
   g_appearance_char_handle = appearance_char_handle;
   g_device_name_char_handle = dev_name_char_handle;   
-  ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
-                               strlen(name), (tHalUint8 *)name);
+  /*ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
+                               strlen(name), (tHalUint8 *)name);*/
                                
   return;
 }

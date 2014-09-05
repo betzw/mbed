@@ -57,10 +57,12 @@ private:
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
     tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
     
+    uint8_t *DeviceName;
     
     BlueNRGGattServer() {
         serviceCount = 0;
         characteristicCount = 0;
+        DeviceName = NULL;
     };
 
     BlueNRGGattServer(BlueNRGGattServer const &);
