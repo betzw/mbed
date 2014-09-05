@@ -398,7 +398,6 @@ ble_error_t BlueNRGGattServer::setAppearance(uint16_t appearance)
     for other appearances BLE Scanner android app is not behaving properly 
     */
     //char deviceAppearance[2];   
-    uint8_t deviceAppearance[2];
     STORE_LE_16(deviceAppearance, appearance);                 
     DEBUG("input: incoming = %d deviceAppearance= 0x%x 0x%x\n\r", appearance, deviceAppearance[1], deviceAppearance[0]);
     
@@ -428,6 +427,11 @@ ble_error_t BlueNRGGattServer::setAppearance(uint16_t appearance)
 /**************************************************************************/
 ble_error_t BlueNRGGattServer::getAppearance(uint16_t *appearanceP)
 {
+    uint16_t devP;
+    if(!appearanceP) return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    devP = ((uint16_t)(0x0000|deviceAppearance[0])) | (((uint16_t)(0x0000|deviceAppearance[1]))<<8);
+    strcpy((char*)appearanceP, (const char*)&devP);
+    
     return BLE_ERROR_NONE;    
 }
 
