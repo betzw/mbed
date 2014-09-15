@@ -42,27 +42,54 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     /* ToDo: Basic validation */
     
     tBleStatus ret;
+    uint8_t type;
+    uint16_t short_uuid;
+    uint8_t primary_short_uuid[2];
+    uint8_t primary_base_uuid[16];
+    uint8_t char_base_uuid[16];
+    const uint8_t *base_uuid;
+    const uint8_t *base_char_uuid;
+        
+    type = (service.getUUID()).shortOrLong();
+    DEBUG("AddService(): Type:%d\n\r", type);
     
-    DEBUG("AddService()\n\r");
     /* Add the service to the BlueNRG */
-    uint16_t short_uuid = (service.getUUID()).getShortUUID();
+    short_uuid = (service.getUUID()).getShortUUID();
+    STORE_LE_16(primary_short_uuid, short_uuid);
     
-    uint8_t primary_uuid[2];//= {0x0D,0x18};    
-    STORE_LE_16(primary_uuid, short_uuid);
+    if(type==UUID::UUID_TYPE_LONG) {
+    base_uuid = (service.getUUID()).getBaseUUID();   
+    
+    //TODO:128 bit support for UUID
+    COPY_UUID_128(primary_base_uuid, base_uuid[15],base_uuid[14],base_uuid[13],base_uuid[12],base_uuid[11],base_uuid[10],base_uuid[9],
+                  base_uuid[8],base_uuid[7],base_uuid[6],base_uuid[5],base_uuid[4],primary_short_uuid[1],primary_short_uuid[0],base_uuid[1],base_uuid[0]);
+    }
     
     //TODO: Check UUID existence??
-    
-    ret = aci_gatt_add_serv(UUID_TYPE_16, primary_uuid, PRIMARY_SERVICE, 7, 
+    if(type==UUID::UUID_TYPE_SHORT) {
+        ret = aci_gatt_add_serv(UUID_TYPE_16, primary_short_uuid, PRIMARY_SERVICE, 7, 
                             &hrmServHandle);
+    }
+    else if(type==UUID::UUID_TYPE_LONG) {
+        ret = aci_gatt_add_serv(UUID_TYPE_128, primary_base_uuid, PRIMARY_SERVICE, 7, 
+                            &hrmServHandle);
+    }
     service.setHandle(hrmServHandle);
     
     //TODO: iterate to include all characteristics
     for (uint8_t i = 0; i < service.getCharacteristicCount(); i++) {
     GattCharacteristic *p_char = service.getCharacteristic(i);
-    uint16_t char_uuid = (p_char->getUUID()).getShortUUID();
+    uint16_t char_uuid = (p_char->getUUID()).getShortUUID();   
     
     uint8_t int_8_uuid[2];
     STORE_LE_16(int_8_uuid, char_uuid);
+    
+    if(type==UUID::UUID_TYPE_LONG) {
+    base_char_uuid = (p_char->getUUID()).getBaseUUID();
+    
+    COPY_UUID_128(char_base_uuid, base_char_uuid[15],base_char_uuid[14],base_char_uuid[13],base_char_uuid[12],base_char_uuid[11],base_char_uuid[10],base_char_uuid[9],
+                  base_char_uuid[8],base_char_uuid[7],base_char_uuid[6],base_char_uuid[5],base_char_uuid[4],int_8_uuid[1],int_8_uuid[0],base_char_uuid[1],base_char_uuid[0]);
+    }
     //TODO: Check UUID existence??
     DEBUG("Char Properties 0x%x\n\r", p_char->getProperties());
     /*
@@ -84,11 +111,17 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
             DEBUG("Setting up Gatt GATT_INTIMATE_APPL_WHEN_READ_N_WAIT Mask\n\r");
             Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_INTIMATE_APPL_WHEN_READ_N_WAIT; 
         }    //This will support also GATT_SERVER_ATTR_READ_WRITE since it will be covered by previous if() check.
-        
-    ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
+    
+    if(type==UUID::UUID_TYPE_SHORT) {
+        ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
                            p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
                            16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristicHandles[characteristicCount]);
-    
+    }
+    else if(type==UUID::UUID_TYPE_LONG) {
+        ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_128, char_base_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
+                           p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
+                           16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristicHandles[characteristicCount]);
+    }
     /* Update the characteristic handle */
     uint16_t charHandle = characteristicCount;    
     
