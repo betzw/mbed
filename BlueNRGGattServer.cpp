@@ -68,27 +68,27 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     //TODO: Check UUID existence??
     if(type==UUID::UUID_TYPE_SHORT) {
         ret = aci_gatt_add_serv(UUID_TYPE_16, primary_short_uuid, PRIMARY_SERVICE, 7, 
-                            &hrmServHandle);
+                            &servHandle);
     }
     else if(type==UUID::UUID_TYPE_LONG) {
         ret = aci_gatt_add_serv(UUID_TYPE_128, primary_base_uuid, PRIMARY_SERVICE, 7, 
-                            &hrmServHandle);
+                            &servHandle);
     }
-    service.setHandle(hrmServHandle);
+    service.setHandle(servHandle);
     
     //TODO: iterate to include all characteristics
     for (uint8_t i = 0; i < service.getCharacteristicCount(); i++) {
-    GattCharacteristic *p_char = service.getCharacteristic(i);
-    uint16_t char_uuid = (p_char->getUUID()).getShortUUID();   
-    
-    uint8_t int_8_uuid[2];
-    STORE_LE_16(int_8_uuid, char_uuid);
-    
-    if(type==UUID::UUID_TYPE_LONG) {
-    base_char_uuid = (p_char->getUUID()).getBaseUUID();
-    
-    COPY_UUID_128(char_base_uuid, base_char_uuid[15],base_char_uuid[14],base_char_uuid[13],base_char_uuid[12],base_char_uuid[11],base_char_uuid[10],base_char_uuid[9],
-                  base_char_uuid[8],base_char_uuid[7],base_char_uuid[6],base_char_uuid[5],base_char_uuid[4],int_8_uuid[1],int_8_uuid[0],base_char_uuid[1],base_char_uuid[0]);
+        GattCharacteristic *p_char = service.getCharacteristic(i);
+        uint16_t char_uuid = (p_char->getUUID()).getShortUUID();   
+        
+        uint8_t int_8_uuid[2];
+        STORE_LE_16(int_8_uuid, char_uuid);
+        
+        if(type==UUID::UUID_TYPE_LONG) {
+        base_char_uuid = (p_char->getUUID()).getBaseUUID();
+        
+        COPY_UUID_128(char_base_uuid, base_char_uuid[15],base_char_uuid[14],base_char_uuid[13],base_char_uuid[12],base_char_uuid[11],base_char_uuid[10],base_char_uuid[9],
+                      base_char_uuid[8],base_char_uuid[7],base_char_uuid[6],base_char_uuid[5],base_char_uuid[4],int_8_uuid[1],int_8_uuid[0],base_char_uuid[1],base_char_uuid[0]);
     }
     //TODO: Check UUID existence??
     DEBUG("Char Properties 0x%x\n\r", p_char->getProperties());
@@ -207,12 +207,12 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
   
   //DEBUG("CharHandle: %d\n\r", charHandle);
   //DEBUG("Actual Handle: 0x%x\n\r", bleCharacteristicHandles[charHandle]);
-  //DEBUG("Service Handle: 0x%x\n\r", hrmServHandle);
+  //DEBUG("Service Handle: 0x%x\n\r", servHandle);
   //DEBUG("buffer[0]: %d\n\r", buffer[0]);
   //DEBUG("buffer[1]: %d\n\r", buffer[1]);
   //DEBUG("len: %d\n\r", len);
     
-  ret = aci_gatt_update_char_value(hrmServHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
+  ret = aci_gatt_update_char_value(servHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
 
   if (ret != BLE_STATUS_SUCCESS){
       DEBUG("Error while updating characteristic.\n\r") ;
@@ -262,7 +262,7 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(tHalUint16 handle)
     data = 450 + ((uint64_t)rand()*100)/RAND_MAX;
     STORE_LE_16(buff,data);
     
-    //ret = aci_gatt_update_char_value(hrmServHandle, handle, 0, sizeof(buff), buff);
+    //ret = aci_gatt_update_char_value(servHandle, handle, 0, sizeof(buff), buff);
     //ret = aci_gatt_read_charac_val(gapConnectionHandle, handle);
     
     //EXIT:

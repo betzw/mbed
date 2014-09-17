@@ -52,7 +52,7 @@ private:
 
     uint8_t serviceCount;
     uint8_t characteristicCount;
-    tHalUint16 hrmServHandle, hrmCharHandle;
+    tHalUint16 servHandle, charHandle;
     
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
     tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
