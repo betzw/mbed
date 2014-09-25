@@ -58,11 +58,11 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     STORE_LE_16(primary_short_uuid, short_uuid);
     
     if(type==UUID::UUID_TYPE_LONG) {
-    base_uuid = (service.getUUID()).getBaseUUID();   
-    
-    //TODO:128 bit support for UUID
-    COPY_UUID_128(primary_base_uuid, base_uuid[15],base_uuid[14],base_uuid[13],base_uuid[12],base_uuid[11],base_uuid[10],base_uuid[9],
-                  base_uuid[8],base_uuid[7],base_uuid[6],base_uuid[5],base_uuid[4],primary_short_uuid[1],primary_short_uuid[0],base_uuid[1],base_uuid[0]);
+        base_uuid = (service.getUUID()).getBaseUUID();   
+        
+        //TODO:128 bit support for UUID
+        COPY_UUID_128(primary_base_uuid, base_uuid[15],base_uuid[14],base_uuid[13],base_uuid[12],base_uuid[11],base_uuid[10],base_uuid[9],
+                      base_uuid[8],base_uuid[7],base_uuid[6],base_uuid[5],base_uuid[4],primary_short_uuid[1],primary_short_uuid[0],base_uuid[1],base_uuid[0]);
     }
     
     //TODO: Check UUID existence??
@@ -74,7 +74,11 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         ret = aci_gatt_add_serv(UUID_TYPE_128, primary_base_uuid, PRIMARY_SERVICE, 7, 
                             &servHandle);
     }
+    
     service.setHandle(servHandle);
+    //serviceHandleVector.push_back(servHandle);
+    DEBUG("added servHandle handle =%u\n\r", servHandle);
+    tHalUint16 bleCharacteristic;
     
     //TODO: iterate to include all characteristics
     for (uint8_t i = 0; i < service.getCharacteristicCount(); i++) {
@@ -85,51 +89,55 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         STORE_LE_16(int_8_uuid, char_uuid);
         
         if(type==UUID::UUID_TYPE_LONG) {
-        base_char_uuid = (p_char->getUUID()).getBaseUUID();
-        
-        COPY_UUID_128(char_base_uuid, base_char_uuid[15],base_char_uuid[14],base_char_uuid[13],base_char_uuid[12],base_char_uuid[11],base_char_uuid[10],base_char_uuid[9],
-                      base_char_uuid[8],base_char_uuid[7],base_char_uuid[6],base_char_uuid[5],base_char_uuid[4],int_8_uuid[1],int_8_uuid[0],base_char_uuid[1],base_char_uuid[0]);
-    }
-    //TODO: Check UUID existence??
-    DEBUG("Char Properties 0x%x\n\r", p_char->getProperties());
-    /*
-    * Gatt_Evt_Mask -> HardCoded (0)
-    * Encryption_Key_Size -> Hardcoded (16)
-    * isVariable (variable length value field) -> Hardcoded (1)
-    */
-    tGattServerEvent Gatt_Evt_Mask = 0x0;
-    
-    if((p_char->getProperties() &
-         (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
-          GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
-            DEBUG("Setting up Gatt GATT_SERVER_ATTR_WRITE Mask\n\r");
-            Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_SERVER_ATTR_WRITE;
+            base_char_uuid = (p_char->getUUID()).getBaseUUID();
+            
+            COPY_UUID_128(char_base_uuid, base_char_uuid[15],base_char_uuid[14],base_char_uuid[13],base_char_uuid[12],base_char_uuid[11],base_char_uuid[10],base_char_uuid[9],
+                          base_char_uuid[8],base_char_uuid[7],base_char_uuid[6],base_char_uuid[5],base_char_uuid[4],int_8_uuid[1],int_8_uuid[0],base_char_uuid[1],base_char_uuid[0]);
         }
-    if((p_char->getProperties() &
-         (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ|
-          GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY| GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
-            DEBUG("Setting up Gatt GATT_INTIMATE_APPL_WHEN_READ_N_WAIT Mask\n\r");
-            Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_INTIMATE_APPL_WHEN_READ_N_WAIT; 
-        }    //This will support also GATT_SERVER_ATTR_READ_WRITE since it will be covered by previous if() check.
+        //TODO: Check UUID existence??
+        DEBUG("Char Properties 0x%x\n\r", p_char->getProperties());
+        /*
+        * Gatt_Evt_Mask -> HardCoded (0)
+        * Encryption_Key_Size -> Hardcoded (16)
+        * isVariable (variable length value field) -> Hardcoded (1)
+        */
+        tGattServerEvent Gatt_Evt_Mask = 0x0;
     
-    if(type==UUID::UUID_TYPE_SHORT) {
-        ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
-                           p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
-                           16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristicHandles[characteristicCount]);
-    }
-    else if(type==UUID::UUID_TYPE_LONG) {
-        ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_128, char_base_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
-                           p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
-                           16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristicHandles[characteristicCount]);
-    }
-    /* Update the characteristic handle */
-    uint16_t charHandle = characteristicCount;    
-    
-    p_characteristics[characteristicCount++] = p_char;
-    p_char->setHandle(charHandle);    //Set the characteristic count as the corresponding char handle
-    
-    if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
-            updateValue(charHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
+        if((p_char->getProperties() &
+             (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
+              GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
+                DEBUG("Setting up Gatt GATT_SERVER_ATTR_WRITE Mask\n\r");
+                Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_SERVER_ATTR_WRITE;
+            }
+        if((p_char->getProperties() &
+             (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ|
+              GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY| GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
+                DEBUG("Setting up Gatt GATT_INTIMATE_APPL_WHEN_READ_N_WAIT Mask\n\r");
+                Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_INTIMATE_APPL_WHEN_READ_N_WAIT; 
+            }    //This will support also GATT_SERVER_ATTR_READ_WRITE since it will be covered by previous if() check.
+        
+        if(type==UUID::UUID_TYPE_SHORT) {
+            ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_16, int_8_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
+                               p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
+                               16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristic);
+        }
+        else if(type==UUID::UUID_TYPE_LONG) {
+            ret =  aci_gatt_add_char(service.getHandle(), UUID_TYPE_128, char_base_uuid, p_char->getMaxLength() /*2*/ /*Value Length*/,
+                               p_char->getProperties(), ATTR_PERMISSION_NONE, Gatt_Evt_Mask /*Gatt_Evt_Mask*/,
+                               16 /*Encryption_Key_Size*/, 1 /*isVariable*/, &bleCharacteristic);
+        }
+        /* Update the characteristic handle */
+        uint16_t charHandle = characteristicCount;   
+        
+        bleCharHanldeMap.insert(std::pair<tHalUint16, tHalUint16>(bleCharacteristic, servHandle)); 
+        
+        p_characteristics[characteristicCount++] = p_char;
+        p_char->setHandle(bleCharacteristic);    //Set the characteristic count as the corresponding char handle
+        DEBUG("added bleCharacteristic handle =%u\n\r", bleCharacteristic);
+        
+        if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
+                //updateValue(charHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
+                updateValue(p_char->getHandle(), p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
         }
     }    
                        
@@ -140,7 +148,6 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
                     
     return BLE_ERROR_NONE;
 }
-
 
 /**************************************************************************/
 /*!
@@ -202,17 +209,10 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
 {
   tBleStatus ret;    
   tHalUint8 buff[2];
-    
-  //STORE_LE_16(buff,125);
   
-  //DEBUG("CharHandle: %d\n\r", charHandle);
-  //DEBUG("Actual Handle: 0x%x\n\r", bleCharacteristicHandles[charHandle]);
-  //DEBUG("Service Handle: 0x%x\n\r", servHandle);
-  //DEBUG("buffer[0]: %d\n\r", buffer[0]);
-  //DEBUG("buffer[1]: %d\n\r", buffer[1]);
-  //DEBUG("len: %d\n\r", len);
-    
-  ret = aci_gatt_update_char_value(servHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
+  DEBUG("updating bleCharacteristic charHandle =%u, corresponding serviceHanle= %u\n\r", charHandle, bleCharHanldeMap.find(charHandle)->second);  
+  // <hdd>ret = aci_gatt_update_char_value(servHandle, bleCharacteristicHandles[charHandle], 0, len, buffer);
+  ret = aci_gatt_update_char_value(bleCharHanldeMap.find(charHandle)->second, charHandle, 0, len, buffer);
 
   if (ret != BLE_STATUS_SUCCESS){
       DEBUG("Error while updating characteristic.\n\r") ;
@@ -222,7 +222,7 @@ ble_error_t BlueNRGGattServer::updateValue(uint16_t charHandle, uint8_t buffer[]
 
   //Generate Data Sent Event Here? (GattServerEvents::GATT_EVENT_DATA_SENT)  //FIXME: Is this correct?
   //Check if characteristic property is NOTIFY|INDICATE, if yes generate event
-  GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(bleCharacteristicHandles[charHandle]);
+  GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(charHandle);
   if(p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
                                   | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE)) {
           BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_SENT);
@@ -291,10 +291,10 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(tHalUint16 handle)
 /**************************************************************************/
 GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 attrHandle)
 {
-    GattCharacteristic *p_char;
+    GattCharacteristic *p_char = NULL;
     int i;
     uint16_t handle;
-    
+#if 1
     //DEBUG("BlueNRGGattServer::getCharacteristicFromHandle()>>Attribute Handle received 0x%x\n\r",attrHandle);
     for(i=0; i<characteristicCount; i++)
     {
@@ -305,7 +305,7 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
             if(attrHandle>=bleCharacteristicHandles[handle])
             {
                 p_char = p_characteristics[i];
-                //DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+                DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
                 break;
                 }            
         }
@@ -319,6 +319,7 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
             } else continue;
         }
     }
+#endif    
     return p_char;
 }
 

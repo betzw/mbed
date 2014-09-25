@@ -35,9 +35,10 @@
 /* Includes ------------------------------------------------------------------*/
 #include "cube_hal.h"
 #include "hci.h"
+//#include "mbed.h"
 
 /*//#ifdef USE_STM32F4XX_NUCLEO
-  //#include "stm32f4xx_bluenrg_shield_bsp.h"
+  //#include "stm32f4xx_bluenrg_shield_bsp.h
 //#else
   //#ifdef USE_STM32L0XX_NUCLEO
     //#include "stm32l0xx_bluenrg_shield_bsp.h"
@@ -201,6 +202,7 @@ void BNRG_SPI_Init(void)
   SpiHandle.Init.CRCCalculation = BNRG_SPI_CRCCALCULATION;
   
   HAL_SPI_Init(&SpiHandle);
+ 
 }
 
 /**

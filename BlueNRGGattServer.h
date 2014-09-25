@@ -22,8 +22,12 @@
 #include "btle.h"
 #include "GattService.h"
 #include "public/GattServer.h"
+#include <vector>
+#include <map>
 
 #define BLE_TOTAL_CHARACTERISTICS 10
+
+using namespace std;
 
 class BlueNRGGattServer : public GattServer
 {
@@ -32,8 +36,8 @@ public:
         static BlueNRGGattServer m_instance;
         return m_instance;
     }
-
-    /* Functions that must be implemented from GattServer */
+    
+   /* Functions that must be implemented from GattServer */
     virtual ble_error_t addService(GattService &);
     virtual ble_error_t readValue(uint16_t handle, uint8_t buffer[], uint16_t *const lengthP);
     virtual ble_error_t updateValue(uint16_t, uint8_t[], uint16_t, bool localOnly = false);
@@ -49,21 +53,22 @@ public:
     GattCharacteristic* getCharacteristicFromHandle(tHalUint16 charHandle);
     
 private:
-
+    static const int MAX_SERVICE_COUNT = 10;
     uint8_t serviceCount;
     uint8_t characteristicCount;
     tHalUint16 servHandle, charHandle;
-    
+
+    std::map<tHalUint16, tHalUint16> bleCharHanldeMap;  // 1st argument is characteristic, 2nd argument is service
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
     tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
-    
+        
     uint8_t *DeviceName;
     uint8_t deviceAppearance[2];
     
     BlueNRGGattServer() {
         serviceCount = 0;
         characteristicCount = 0;
-        DeviceName = NULL;
+        DeviceName = NULL;        
     };
 
     BlueNRGGattServer(BlueNRGGattServer const &);

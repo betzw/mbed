@@ -223,37 +223,39 @@ extern void HCI_Event_CB(void *pckt) {
                              extract callback data and pass to suitable handler function */
                           evt_gatt_attr_modified *evt = (evt_gatt_attr_modified*)blue_evt->data;
                           DEBUG("EVT_BLUE_GATT_ATTRIBUTE_MODIFIED\n\r");                          
-                          DEBUG("CharHandle 0x%x, length: 0x%x, Data: 0x%x\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);
-                          
+                          //DEBUG("CharHandle 0x%x, length: 0x%x, Data: 0x%x\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);
+                          DEBUG("CharHandle %d, length: %d, Data: %d\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);       
                           
                           //Extract the GattCharacteristic from p_characteristics[] and find the properties mask
                           GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle);
-                          DEBUG("getProperties 0x%x\n\r",p_char->getProperties());
-                          if((p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
-                                  | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
-                                  
-                                   //Now Check if data written in Enable or Disable
-                                   if((uint16_t)evt->att_data[0]==1) {
-                                    //DEBUG("Notify ENABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
-                                   } 
-                                   else {
-                                    //DEBUG("Notify DISABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
+                          if(p_char!=NULL) {
+                              DEBUG("getProperties 0x%x\n\r",p_char->getProperties());
+                              if((p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
+                                      | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
+                                      
+                                       //Now Check if data written in Enable or Disable
+                                       if((uint16_t)evt->att_data[0]==1) {
+                                        //DEBUG("Notify ENABLED\n\r"); 
+                                        BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
+                                       } 
+                                       else {
+                                        //DEBUG("Notify DISABLED\n\r"); 
+                                        BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
+                                        }
                                     }
-                                }
-                          
-                          //Check is attr handle property is WRITEABLE, if yes, generate GATT_EVENT_DATA_WRITTEN Event
-                          if((p_char->getProperties() &
-                                 (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
-                                  GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
-                                    
-                                    BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
-                                    //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
-                                    if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
-                                        BlueNRGGattServer::getInstance().updateValue(p_char->getHandle(), p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
-                                    }
-                          }                   
+                              
+                              //Check is attr handle property is WRITEABLE, if yes, generate GATT_EVENT_DATA_WRITTEN Event
+                              if((p_char->getProperties() &
+                                     (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
+                                      GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
+                                        
+                                        BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
+                                        //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
+                                        if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
+                                            BlueNRGGattServer::getInstance().updateValue(p_char->getHandle(), p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
+                                        }
+                              } 
+                            }                  
                         }
                         break;  
                         
