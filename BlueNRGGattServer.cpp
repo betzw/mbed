@@ -139,6 +139,22 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
                 //updateValue(charHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
                 updateValue(p_char->getHandle(), p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
         }
+        
+        // add descriptors now
+        uint16_t descHandle = 0;
+        for(uint8_t descIndex=0; descIndex<p_char->getDescriptorCount(); descIndex++) {
+                GattAttribute *descriptor = p_char->getDescriptor(descIndex);
+                uint16_t shortUUID = descriptor->getUUID().getShortUUID();
+                const tHalUint8 uuidArray[] = {(shortUUID>>8)&0xFF, (shortUUID&0xFF)};
+                ret = aci_gatt_add_char_desc(service.getHandle(), p_char->getHandle(), 
+                                        CHAR_DESC_TYPE_16_BIT, uuidArray, descriptor->getMaxLength(), descriptor->getInitialLength(), 
+                                        descriptor->getValuePtr(), CHAR_DESC_SECURITY_PERMISSION, CHAR_DESC_ACCESS_PERMISSION, GATT_SERVER_ATTR_READ_WRITE,
+                                        MIN_ENCRY_KEY_SIZE, CHAR_ATTRIBUTE_LEN_IS_FIXED, &descHandle);
+                if(ret==(tBleStatus)0) {
+                    DEBUG("Descriptor added successfully, descriptor handle=%d\n\r", descHandle);
+                    descriptor->setHandle(descHandle);
+                }
+        }
     }    
                        
     serviceCount++;

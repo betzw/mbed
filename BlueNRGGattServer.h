@@ -27,6 +27,7 @@
 
 #define BLE_TOTAL_CHARACTERISTICS 10
 
+
 using namespace std;
 
 class BlueNRGGattServer : public GattServer
@@ -73,6 +74,12 @@ private:
 
     BlueNRGGattServer(BlueNRGGattServer const &);
     void operator=(BlueNRGGattServer const &);
+    
+    static const int CHAR_DESC_TYPE_16_BIT=0x01; 
+    static const int CHAR_DESC_TYPE_128_BIT=0x02;    
+    static const int CHAR_DESC_SECURITY_PERMISSION=0x00;
+    static const int CHAR_DESC_ACCESS_PERMISSION=0x03;  
+    static const int CHAR_ATTRIBUTE_LEN_IS_FIXED=0x00;        
 };
 
 #endif
