@@ -288,7 +288,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
   ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
                                 0,   // Adv_Interval_Min
                                 advtInterval,   // Adv_Interval_Max
-                                RANDOM_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
+                                PUBLIC_ADDR, // Address_Type <hdd> It seems there is some problem with RANDOM_ADDRESS. <problem_desc> When RANDOM_ADDRESS is selected device name is not being handled properly, i.e. wrong device name is seen by android app </problem_desc>
                                 NO_WHITE_LIST_USE,  // Adv_Filter_Policy
                                 nameLen, //local_name_length, // Local_Name_Length
                                 (const char*)name, //local_name, // Local_Name

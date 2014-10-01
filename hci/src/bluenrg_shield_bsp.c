@@ -127,24 +127,24 @@ void EXTI_irq_handler(uint32_t id, gpio_irq_event event)
 /**
 * @brief  This function is used to initialize the SPI communication with
 *         the BlueNRG Shield. All params should come from the User
-* @param  SPI_MOSI : PA_7
-* @param  SPI_MISO : PA_6
-* @param  SPI_SCLK : PB_3
-* @param  SPI_CS : PA_1
-* @param  EXTI_IRQ : PA_0
-* @param  BlueNRG_RESET : PA_8
+* @param  SPI_MOSI : PA_7 (Nucleo), D11 (Generic Arduino Pin)
+* @param  SPI_MISO : PA_6, D12
+* @param  SPI_SCLK : PB_3, D3
+* @param  SPI_CS : PA_1, A1
+* @param  EXTI_IRQ : PA_0, A0
+* @param  BlueNRG_RESET : PA_8, D7
 * @retval None
 */
 void BNRG_SPI_Init(void)
 {  
   int ret;
-	spi_init(&__spi, PA_7, PA_6, PB_3, NC);
+	spi_init(&__spi, D11, D12, D3, NC);
 	//spi_format(&__spi, 8, 0, 0);
   	//spi_frequency(&__spi, 1000000);
 	
 	/*Init IRQ for EXTI Interrupt*/	
 	//gpio_init(&gpio_pin_A0, A0);//PA_0 in Nucleo
-	ret = gpio_irq_init(&irq_exti, PA_0, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
+	ret = gpio_irq_init(&irq_exti, A0, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
 	gpio_irq_set(&irq_exti, IRQ_RISE, 1);//Set mode to IRQ_RISE
 	gpio_init_in(&gpio_pin_A0, A0);//PA_0 in Nucleo//Configure the GPIO Pin as Input pin and PullDefault
 	//gpio_irq_enable(&irq_exti);//IRQ already enabled in IRQ init call above.
