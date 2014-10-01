@@ -22,7 +22,7 @@
 #include "btle.h"
 #include "GapAdvertisingParams.h"
 #include "GapAdvertisingData.h"
-#include "public/Gap.h"
+#include <public/Gap.h>
 
 #define BLE_CONN_HANDLE_INVALID 0x0
 #define BDADDR_SIZE 6
@@ -48,10 +48,16 @@ public:
                                            const GapAdvertisingData &);
     virtual ble_error_t startAdvertising(const GapAdvertisingParams &);
     virtual ble_error_t stopAdvertising(void);
-    virtual ble_error_t disconnect(void);
+    virtual ble_error_t disconnect(DisconnectionReason_t reason);
     virtual ble_error_t getPreferredConnectionParams(ConnectionParams_t *params);
     virtual ble_error_t setPreferredConnectionParams(const ConnectionParams_t *params);
     virtual ble_error_t updateConnectionParams(Handle_t handle, const ConnectionParams_t *params);  
+    
+    virtual ble_error_t setDeviceName(const uint8_t *deviceName);
+    virtual ble_error_t getDeviceName(uint8_t *deviceName, unsigned *lengthP);
+    virtual ble_error_t setAppearance(uint16_t appearance);
+    virtual ble_error_t getAppearance(uint16_t *appearanceP);    
+    
 
     void     setConnectionHandle(uint16_t con_handle);
     uint16_t getConnectionHandle(void);
@@ -64,6 +70,9 @@ private:
     tHalUint8 bdaddr[BDADDR_SIZE];
     bool isSetAddress;
     tBleStatus ret;
+    uint8_t *DeviceName;
+    uint8_t deviceAppearance[2];
+    
   
     //const char local_name[];// = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
     //Local Variables
@@ -71,8 +80,8 @@ private:
     BlueNRGGap() {
         m_connectionHandle = BLE_CONN_HANDLE_INVALID;
         isSetAddress = false;
-        //local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
-        
+        DeviceName = NULL;                
+        //local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};        
     }
 
     BlueNRGGap(BlueNRGGap const &);

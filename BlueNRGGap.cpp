@@ -259,7 +259,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
 
   
   //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28]};
-  const LongUUID_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
+  const LongUUIDBytes_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
   /* set scan response data */
   hci_le_set_scan_resp_data(scan_rsp_length, scan_response_payload); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
   
@@ -355,7 +355,7 @@ ble_error_t BlueNRGGap::stopAdvertising(void)
     @endcode
 */
 /**************************************************************************/
-ble_error_t BlueNRGGap::disconnect(void)
+ble_error_t BlueNRGGap::disconnect(Gap::DisconnectionReason_t reason)
 {
     tBleStatus ret;
     //For Reason codes check BlueTooth HCI Spec
@@ -528,3 +528,148 @@ ble_error_t BlueNRGGap::updateConnectionParams(Handle_t handle, const Connection
     return BLE_ERROR_NONE;
 }
 
+/**************************************************************************/
+/*!
+    @brief  sets device name characteristic 
+
+    @param[in]  deviceName
+                pointer to device name to be set
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::setDeviceName(const uint8_t *deviceName) 
+{
+    int ret;
+    uint8_t nameLen = 0;     
+    
+    DeviceName = (uint8_t *)deviceName;
+    //DEBUG("SetDeviceName=%s\n\r", DeviceName);
+    
+    nameLen = strlen((const char*)DeviceName);
+    //DEBUG("DeviceName Size=%d\n\r", nameLen); 
+    
+    ret = aci_gatt_update_char_value(g_gap_service_handle, 
+                                                g_device_name_char_handle, 
+                                                0, 
+                                                nameLen, 
+                                                (tHalUint8 *)DeviceName);
+                                                
+    if(ret){
+        DEBUG("device set name failed\n\r");            
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;//TODO:Wrong error code
+    }
+  
+    return BLE_ERROR_NONE;
+}
+
+/**************************************************************************/
+/*!
+    @brief  gets device name characteristic 
+
+    @param[in]  deviceName
+                pointer to device name 
+                
+
+    @param[in]  lengthP
+                pointer to device name length                
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::getDeviceName(uint8_t *deviceName, unsigned *lengthP) 
+{   
+    int ret;
+    
+    if(DeviceName==NULL) 
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    
+    strcpy((char*)deviceName, (const char*)DeviceName);
+    //DEBUG("GetDeviceName=%s\n\r", deviceName);
+    
+    *lengthP = strlen((const char*)DeviceName);
+    //DEBUG("DeviceName Size=%d\n\r", *lengthP); 
+    
+    return BLE_ERROR_NONE;
+}
+
+/**************************************************************************/
+/*!
+    @brief  sets device appearance characteristic 
+
+    @param[in]  appearance
+                device appearance      
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::setAppearance(uint16_t appearance)
+{
+    /* 
+    Tested with GapAdvertisingData::GENERIC_PHONE. 
+    for other appearances BLE Scanner android app is not behaving properly 
+    */
+    //char deviceAppearance[2];   
+    STORE_LE_16(deviceAppearance, appearance);                 
+    DEBUG("input: incoming = %d deviceAppearance= 0x%x 0x%x\n\r", appearance, deviceAppearance[1], deviceAppearance[0]);
+    
+    aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);
+    
+    return BLE_ERROR_NONE;    
+}
+
+/**************************************************************************/
+/*!
+    @brief  gets device appearance  
+
+    @param[in]  appearance
+                pointer to device appearance value      
+
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::getAppearance(uint16_t *appearanceP)
+{
+    uint16_t devP;
+    if(!appearanceP) return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    devP = ((uint16_t)(0x0000|deviceAppearance[0])) | (((uint16_t)(0x0000|deviceAppearance[1]))<<8);
+    strcpy((char*)appearanceP, (const char*)&devP);
+    
+    return BLE_ERROR_NONE;    
+}

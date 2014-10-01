@@ -182,7 +182,7 @@ extern void HCI_Event_CB(void *pckt) {
             {
               evt_disconn_complete *evt = (evt_disconn_complete*)event_pckt;
               
-              BlueNRGGap::getInstance().processHandleSpecificEvent(GapEvents::GAP_EVENT_DISCONNECTED, evt->handle);
+              BlueNRGGap::getInstance().processDisconnectionEvent(evt->handle, BlueNRGGap::REMOTE_USER_TERMINATED_CONNECTION);
             }
             break;
         
@@ -196,7 +196,9 @@ extern void HCI_Event_CB(void *pckt) {
                             evt_le_connection_complete *cc = (evt_le_connection_complete *)evt->data;
                             
                             BlueNRGGap::getInstance().setConnectionHandle(cc->handle);
-                            BlueNRGGap::getInstance().processHandleSpecificEvent(GapEvents::GAP_EVENT_CONNECTED, cc->handle);                            
+                            BlueNRGGap::ConnectionParams_t connectionParams;
+                            BlueNRGGap::getInstance().getPreferredConnectionParams(&connectionParams);                                                
+                            BlueNRGGap::getInstance().processConnectionEvent(cc->handle, (const BlueNRGGap::ConnectionParams_t *)&connectionParams);                            
                         }
                         break;
                     }

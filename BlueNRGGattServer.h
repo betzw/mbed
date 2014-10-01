@@ -42,10 +42,6 @@ public:
     virtual ble_error_t addService(GattService &);
     virtual ble_error_t readValue(uint16_t handle, uint8_t buffer[], uint16_t *const lengthP);
     virtual ble_error_t updateValue(uint16_t, uint8_t[], uint16_t, bool localOnly = false);
-    virtual ble_error_t setDeviceName(const uint8_t *deviceName);
-    virtual ble_error_t getDeviceName(uint8_t *deviceName, unsigned *lengthP);
-    virtual ble_error_t setAppearance(uint16_t appearance);
-    virtual ble_error_t getAppearance(uint16_t *appearanceP);    
 
     /* BlueNRG Functions */
     void eventCallback(void);
@@ -62,14 +58,10 @@ private:
     std::map<tHalUint16, tHalUint16> bleCharHanldeMap;  // 1st argument is characteristic, 2nd argument is service
     GattCharacteristic *p_characteristics[BLE_TOTAL_CHARACTERISTICS];
     tHalUint16 bleCharacteristicHandles[BLE_TOTAL_CHARACTERISTICS];
-        
-    uint8_t *DeviceName;
-    uint8_t deviceAppearance[2];
-    
+  
     BlueNRGGattServer() {
         serviceCount = 0;
         characteristicCount = 0;
-        DeviceName = NULL;        
     };
 
     BlueNRGGattServer(BlueNRGGattServer const &);
