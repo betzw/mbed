@@ -73,8 +73,7 @@ volatile uint8_t set_connectable = 1;
 /**************************************************************************/
 void btle_init(bool isSetAddress)
 {
-  DEBUG("btle_init>>\n\r");
-  const char *name = "TEST123";
+  DEBUG("btle_init>>\n\r"); 
   tHalUint8 *bleAddr;
   int ret;
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
@@ -251,8 +250,9 @@ extern void HCI_Event_CB(void *pckt) {
                                         
                                         BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
                                         //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
-                                        if ((p_char->getValuePtr() != NULL) && (p_char->getInitialLength() > 0)) {
-                                            BlueNRGGattServer::getInstance().updateValue(p_char->getHandle(), p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
+                                        if ((p_char->getValueAttribute().getValuePtr() != NULL) && (p_char->getValueAttribute().getInitialLength() > 0)) {
+                                            BlueNRGGattServer::getInstance().updateValue(p_char->getValueAttribute().getHandle(), 
+                                            p_char->getValueAttribute().getValuePtr(), p_char->getValueAttribute().getInitialLength(), false /* localOnly */);
                                         }
                               } 
                             }                  
