@@ -36,7 +36,7 @@ extern "C" {
 #include "osal.h"
 #include "hci_internal.h"
 #include "bluenrg_hci_internal.h"
-#include "gap.h"
+#include "bluenrg_gap.h"
 #include "sm.h"
 #include <stdio.h>
 #include <string.h>
@@ -44,7 +44,7 @@ extern "C" {
 #include "debug.h"
 
 /* SPI handler declaration */
-SPI_HandleTypeDef SpiHandle;
+//SPI_HandleTypeDef SpiHandle;
 
 #ifdef __cplusplus
     }
@@ -78,13 +78,13 @@ void btle_init(bool isSetAddress)
   int ret;
   uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
   
-  HAL_Init();
+  //HAL_Init();
   
   /* Configure the User Button in GPIO Mode */
-  BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
+  //BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
   
   /* Configure the system clock */
-  SystemClock_Config();
+  //SystemClock_Config();
 
   /* Delay needed only to be able to acces the JTAG interface after reset
     if it will be disabled later. */
@@ -119,7 +119,8 @@ void btle_init(bool isSetAddress)
   
   g_gap_service_handle = service_handle;
   g_appearance_char_handle = appearance_char_handle;
-  g_device_name_char_handle = dev_name_char_handle;   
+  g_device_name_char_handle = dev_name_char_handle; 
+  //Device Name is set from Accumulate Adv Data Payload or through setDeviceName API  
   /*ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
                                strlen(name), (tHalUint8 *)name);*/
                                
@@ -164,10 +165,26 @@ static void btle_handler()
 }
 
 
+void SPI_Poll(void)
+{
+    //HAL_GPIO_EXTI_Callback_Poll(BNRG_SPI_EXTI_PIN);
+    return;
+}
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
+/**************************************************************************/
+/*!
+    @brief      Handle HCI Stack Event
+
+    @param[in]  pckt
+                Event Packet sent by the stack to be decoded
+    
+    @returns
+*/
+/**************************************************************************/
 extern void HCI_Event_CB(void *pckt) {
     
     hci_uart_pckt *hci_pckt = (hci_uart_pckt*)pckt;

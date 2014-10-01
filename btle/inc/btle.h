@@ -22,17 +22,18 @@
 extern "C" {
 #endif
 
-#include "cube_hal.h"
 #include "hci.h"
 #include "bluenrg_hci.h"
 #include "hci_internal.h"
 #include "bluenrg_hci_internal.h"
-#include "gap.h"
+#include "bluenrg_shield_bsp.h"
+#include "bluenrg_gap.h"
 #include "gatt_service.h"
 #include <stdio.h>
 #include <string.h>
 
 void btle_init(bool isSetAddress);
+void SPI_Poll(void);
 void User_Process(void);
 void setConnectable(void);
 

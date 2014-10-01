@@ -1,9 +1,9 @@
 /**
 ******************************************************************************
 * File Name          : bluenrg_shield_bsp.c
-* Date               : 16/05/2014
+* Date               : 01/10/2014
 * Description        : This file provides code for the BlueNRG Shield driver
-*                      based on STM32Cube HAL for STM32 Nucleo boards.
+*                      based on mbed HAL.
 ******************************************************************************
 *
 * COPYRIGHT(c) 2014 STMicroelectronics
@@ -33,134 +33,80 @@
 ******************************************************************************
 */
 /* Includes ------------------------------------------------------------------*/
-#include "cube_hal.h"
+
 #include "hci.h"
-//#include "mbed.h"
+#include "spi_api.h"
+#include "gpio_irq_api.h"
+#include "gpio_api.h"
+#include "pinmap.h"
+#include "bluenrg_shield_bsp.h"
 
-/*//#ifdef USE_STM32F4XX_NUCLEO
-  //#include "stm32f4xx_bluenrg_shield_bsp.h
-//#else
-  //#ifdef USE_STM32L0XX_NUCLEO
-    //#include "stm32l0xx_bluenrg_shield_bsp.h"
-  //#endif
-//#endif*/
-
-
+spi_t __spi;
+gpio_irq_t irq_exti;
+gpio_t gpio_pin_A0, gpio_pin_CS, gpio_pin_MOSI, gpio_pin_MISO, gpio_pin_SCLK, gpio_pin_RESET;
+void EXTI_irq_handler(uint32_t id, gpio_irq_event event);
+	
 /** @addtogroup BlueNRG_Shield
  *  @{
  */
 
 /** @defgroup BlueNRG_Shield_Driver
- *  @brief BlueNRG Shield driver based on STM32Cube HAL for STM32 Nucleo boards.
+ *  @brief BlueNRG Shield driver based on mbed HAL
  *  @{
  */
-
-
-/* SPI handler declared in "main.c" file */
-extern SPI_HandleTypeDef SpiHandle;
-
-
+ 
+ 
 /**
  * @brief  This function is used for low level initialization of the SPI 
  *         communication with the BlueNRG Shield.
  * @param  hspi: handle of the STM32Cube HAL SPI interface
  * @retval None
  */
+ #if 0
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 {
   GPIO_InitTypeDef GPIO_InitStruct;
+	int ret;
   if(hspi->Instance==BNRG_SPI_INSTANCE)
-  {
-    /* Enable peripherals clock */
-    
-    /* Enable GPIO Ports Clock */  
-    BNRG_SPI_RESET_CLK_ENABLE();
-    BNRG_SPI_SCLK_CLK_ENABLE();
-    BNRG_SPI_MISO_CLK_ENABLE();
-    BNRG_SPI_MOSI_CLK_ENABLE();
-    BNRG_SPI_CS_CLK_ENABLE();
-    BNRG_SPI_IRQ_CLK_ENABLE();
-    
-    /* Enable SPI clock */
-    BNRG_SPI_CLK_ENABLE();
-    
-    /* Reset */
-    GPIO_InitStruct.Pin = BNRG_SPI_RESET_PIN;
-    GPIO_InitStruct.Mode = BNRG_SPI_RESET_MODE;
-    GPIO_InitStruct.Pull = BNRG_SPI_RESET_PULL;
-    GPIO_InitStruct.Speed = BNRG_SPI_RESET_SPEED;
-    GPIO_InitStruct.Alternate = BNRG_SPI_RESET_ALTERNATE;
-    HAL_GPIO_Init(BNRG_SPI_RESET_PORT, &GPIO_InitStruct);	
-    HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_RESET);	/*Added to avoid spurious interrupt from the BlueNRG */
-    
-    /* SCLK */
-    GPIO_InitStruct.Pin = BNRG_SPI_SCLK_PIN;
-    GPIO_InitStruct.Mode = BNRG_SPI_SCLK_MODE;
-    GPIO_InitStruct.Pull = BNRG_SPI_SCLK_PULL;
-    GPIO_InitStruct.Speed = BNRG_SPI_SCLK_SPEED;
-    GPIO_InitStruct.Alternate = BNRG_SPI_SCLK_ALTERNATE;
-    HAL_GPIO_Init(BNRG_SPI_SCLK_PORT, &GPIO_InitStruct); 
-    
-    /* MISO */
-    GPIO_InitStruct.Pin = BNRG_SPI_MISO_PIN;
-    GPIO_InitStruct.Mode = BNRG_SPI_MISO_MODE;
-    GPIO_InitStruct.Pull = BNRG_SPI_MISO_PULL;
-    GPIO_InitStruct.Speed = BNRG_SPI_MISO_SPEED;
-    GPIO_InitStruct.Alternate = BNRG_SPI_MISO_ALTERNATE;
-    HAL_GPIO_Init(BNRG_SPI_MISO_PORT, &GPIO_InitStruct);
-    
-    /* MOSI */
-    GPIO_InitStruct.Pin = BNRG_SPI_MOSI_PIN;
-    GPIO_InitStruct.Mode = BNRG_SPI_MOSI_MODE;
-    GPIO_InitStruct.Pull = BNRG_SPI_MOSI_PULL;
-    GPIO_InitStruct.Speed = BNRG_SPI_MOSI_SPEED;
-    GPIO_InitStruct.Alternate = BNRG_SPI_MOSI_ALTERNATE;
-    HAL_GPIO_Init(BNRG_SPI_MOSI_PORT, &GPIO_InitStruct);
-    
-    /* NSS/CSN/CS */
-    GPIO_InitStruct.Pin = BNRG_SPI_CS_PIN;
-    GPIO_InitStruct.Mode = BNRG_SPI_CS_MODE;
-    GPIO_InitStruct.Pull = BNRG_SPI_CS_PULL;
-    GPIO_InitStruct.Speed = BNRG_SPI_CS_SPEED;
-    GPIO_InitStruct.Alternate = BNRG_SPI_CS_ALTERNATE;
-    HAL_GPIO_Init(BNRG_SPI_CS_PORT, &GPIO_InitStruct);
-    HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
-    
-    /* IRQ -- INPUT */
-    GPIO_InitStruct.Pin = BNRG_SPI_IRQ_PIN;
-    GPIO_InitStruct.Mode = BNRG_SPI_IRQ_MODE;
-    GPIO_InitStruct.Pull = BNRG_SPI_IRQ_PULL;
-    GPIO_InitStruct.Speed = BNRG_SPI_IRQ_SPEED;
-    GPIO_InitStruct.Alternate = BNRG_SPI_IRQ_ALTERNATE;
-    HAL_GPIO_Init(BNRG_SPI_IRQ_PORT, &GPIO_InitStruct);
-    
-    /* Configure the NVIC for SPI */  
-    HAL_NVIC_SetPriority(BNRG_SPI_EXTI_IRQn, 4, 0);    
-    HAL_NVIC_EnableIRQ(BNRG_SPI_EXTI_IRQn);
+  {        
+    /* Reset */    
+		gpio_init(&gpio_pin_RESET, PA_8);
+		gpio_mode(&gpio_pin_RESET, PullNone);
+		gpio_dir(&gpio_pin_RESET, PIN_OUTPUT);
+    gpio_write(&gpio_pin_RESET, 1);
+		
+    /* SCLK - PA_5 - Not needed to configure if correct PinName is given to spi_init, in this case PB_3 for L0*/    
+		/*gpio_init(&gpio_pin_SCLK, PB_3); //PA_5 is not USED????!!!! Since configuring PA_5 does not work!
+		gpio_mode(&gpio_pin_SCLK, PullUp);
+		//gpio_dir(&gpio_pin_SCLK, PIN_INPUT); //just 2 options of PIN_INPUT and PIN_OUTPUT does not suffice to configure Pin.
+		pin_function(PB_3, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, 0));*/		
+		
+    /* NSS/CSN/CS - PA_1*/		
+		gpio_init(&gpio_pin_CS, PA_1);
+		gpio_mode(&gpio_pin_CS, PullNone);
+		gpio_dir(&gpio_pin_CS, PIN_OUTPUT);
+    gpio_write(&gpio_pin_CS, 1);
+		
   }
 }
-
-/**
- * @brief EXTI line detection callback.
- * @param GPIO_Pin: Specifies the pins connected EXTI line
- * @retval None
- */
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+#endif
+/*
+*	mbed EXTI IRQ Handler
+*
+*/
+void EXTI_irq_handler(uint32_t id, gpio_irq_event event)
 {
-  tHciDataPacket * hciReadPacket = NULL;
+	tHciDataPacket * hciReadPacket = NULL;
   uint8_t data_len;
-  /* 
-   * No need to call Clear_SPI_EXTI_Flag() here as
-   * HAL_GPIO_EXTI_IRQHandler() already does it
-   */
+  
+	//Check id of the IRQ
+  if(id == (uint32_t)BNRG_SPI_INSTANCE) {
     
-  if(GPIO_Pin == BNRG_SPI_EXTI_PIN) {
-    
-    while (HAL_GPIO_ReadPin(BNRG_SPI_EXTI_PORT, BNRG_SPI_EXTI_PIN) == GPIO_PIN_SET) {
+		while (gpio_read(&gpio_pin_A0) == 1) {
       if (list_is_empty (&hciReadPktPool) == FALSE){
         /* enqueueing a packet for read */
         list_remove_head (&hciReadPktPool, (tListNode **)&hciReadPacket);
-        data_len = BlueNRG_SPI_Read_All(&SpiHandle, hciReadPacket->dataBuff, HCI_PACKET_SIZE);
+        data_len = BlueNRG_SPI_Read_All(hciReadPacket->dataBuff, HCI_PACKET_SIZE);
         
         if(data_len > 0){
           /* Packet will be inserted to the correct queue */
@@ -174,62 +120,80 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
         /* TODO: HCI Read Packet Pool is empty, wait for a free packet */
       }
       
-      Clear_SPI_EXTI_Flag();
     }
   }
 }
 
-
 /**
 * @brief  This function is used to initialize the SPI communication with
-*         the BlueNRG Shield.
-* @param  None
+*         the BlueNRG Shield. All params should come from the User
+* @param  SPI_MOSI : PA_7
+* @param  SPI_MISO : PA_6
+* @param  SPI_SCLK : PB_3
+* @param  SPI_CS : PA_1
+* @param  EXTI_IRQ : PA_0
+* @param  BlueNRG_RESET : PA_8
 * @retval None
 */
 void BNRG_SPI_Init(void)
-{
-  SpiHandle.Instance = BNRG_SPI_INSTANCE;
-  SpiHandle.Init.Mode = BNRG_SPI_MODE;
-  SpiHandle.Init.Direction = BNRG_SPI_DIRECTION;
-  SpiHandle.Init.DataSize = BNRG_SPI_DATASIZE;
-  SpiHandle.Init.CLKPolarity = BNRG_SPI_CLKPOLARITY;
-  SpiHandle.Init.CLKPhase = BNRG_SPI_CLKPHASE;
-  SpiHandle.Init.NSS = BNRG_SPI_NSS;
-  SpiHandle.Init.FirstBit = BNRG_SPI_FIRSTBIT;
-  SpiHandle.Init.TIMode = BNRG_SPI_TIMODE;
-  SpiHandle.Init.CRCPolynomial = BNRG_SPI_CRCPOLYNOMIAL;
-  SpiHandle.Init.BaudRatePrescaler = BNRG_SPI_BAUDRATEPRESCALER;
-  SpiHandle.Init.CRCCalculation = BNRG_SPI_CRCCALCULATION;
-  
-  HAL_SPI_Init(&SpiHandle);
- 
+{  
+  int ret;
+	spi_init(&__spi, PA_7, PA_6, PB_3, NC);
+	//spi_format(&__spi, 8, 0, 0);
+  	//spi_frequency(&__spi, 1000000);
+	
+	/*Init IRQ for EXTI Interrupt*/	
+	//gpio_init(&gpio_pin_A0, A0);//PA_0 in Nucleo
+	ret = gpio_irq_init(&irq_exti, PA_0, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
+	gpio_irq_set(&irq_exti, IRQ_RISE, 1);//Set mode to IRQ_RISE
+	gpio_init_in(&gpio_pin_A0, A0);//PA_0 in Nucleo//Configure the GPIO Pin as Input pin and PullDefault
+	//gpio_irq_enable(&irq_exti);//IRQ already enabled in IRQ init call above.
+	
+	/* Reset Pin Config */    
+	gpio_init(&gpio_pin_RESET, D7);//PA_8 in Nucleo
+	gpio_mode(&gpio_pin_RESET, PullNone);
+	gpio_dir(&gpio_pin_RESET, PIN_OUTPUT);
+	gpio_write(&gpio_pin_RESET, 1);
+	
+	/* SCLK - PA_5 - Not needed to configure if correct PinName is given to spi_init, in this case PB_3 for L0*/    
+	/*gpio_init(&gpio_pin_SCLK, PB_3); //PA_5 is not USED????!!!! Since configuring PA_5 does not work!
+	gpio_mode(&gpio_pin_SCLK, PullUp);
+	//gpio_dir(&gpio_pin_SCLK, PIN_INPUT); //just 2 options of PIN_INPUT and PIN_OUTPUT does not suffice to configure Pin.
+	pin_function(PB_3, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, 0));*/
+	
+	/* NSS/CSN/CS - PA_1*/		
+	gpio_init(&gpio_pin_CS, A1);//PA_1 in Nucleo
+	gpio_mode(&gpio_pin_CS, PullNone);
+	gpio_dir(&gpio_pin_CS, PIN_OUTPUT);
+	gpio_write(&gpio_pin_CS, 1);
+		
 }
 
 /**
 * @brief  Read from BlueNRG SPI buffer and store data into local buffer
-* @param  hspi:      handle of the STM32Cube HAL SPI interface
 * @param  buffer:    buffer where data from SPI are stored
 * @param  buff_size: buffer size
 * @retval number of read bytes
 */
-int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi, uint8_t *buffer, uint8_t buff_size)
+int32_t BlueNRG_SPI_Read_All(uint8_t *buffer, uint8_t buff_size)
 {
   uint16_t byte_count;
   uint8_t len = 0;
   uint8_t i = 0;
   uint8_t char_ff = 0xff;
-  volatile uint8_t read_char;
+  volatile uint8_t read_char, tmpreg;
   
   uint8_t header_master[5] = {0x0b, 0x00, 0x00, 0x00, 0x00};
   uint8_t header_slave[5];
   
   /* CS reset */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_RESET);
-  
+  gpio_write(&gpio_pin_CS, 0);
+	
   /* Read the header */
   for (i = 0; i < 5; i++)
   { 
-    HAL_SPI_TransmitReceive(hspi, &header_master[i], &header_slave[i], 1, 15);
+		tmpreg = spi_master_write(&__spi, header_master[i]);
+		header_slave[i] = (uint8_t)(tmpreg);
   }    
   
   
@@ -237,66 +201,63 @@ int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi, uint8_t *buffer, uint8_t b
     /* device is ready */
     byte_count = (header_slave[4]<<8)|header_slave[3];
     
-    if (byte_count > 0) {
-      
+    if (byte_count > 0) {      
       /* avoid to read more data that size of the buffer */
       if (byte_count > buff_size){
         byte_count = buff_size;
       }
       
       for (len = 0; len < byte_count; len++){
-        HAL_SPI_TransmitReceive(hspi, &char_ff, (uint8_t*)&read_char, 1, 15);
+				read_char = spi_master_write(&__spi, char_ff);
         buffer[len] = read_char;
       }    
     }    
   }
   /* Release CS line */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+	gpio_write(&gpio_pin_CS, 1);
   
   return len;   
 }
 
 /**
 * @brief  Write data from local buffer to SPI
-* @param  hspi:      handle of the STM32Cube HAL SPI interface
 * @param  data1:     first data buffer to be written
 * @param  data2:     second data buffer to be written
 * @param  Nb_bytes1: size of first data buffer to be written
 * @param  Nb_bytes2: size of second data buffer to be written
 * @retval number of read bytes
 */
-int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi, uint8_t* data1, uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
+int32_t BlueNRG_SPI_Write(uint8_t* data1, uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
 {  
   uint32_t i;
-  uint8_t read_char;
+  volatile uint8_t read_char;
   int32_t result = 0;
-  
+  volatile uint8_t tmpreg;
+	
   unsigned char header_master[5] = {0x0a, 0x00, 0x00, 0x00, 0x00};
   unsigned char header_slave[5]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
   
   Disable_SPI_IRQ();
   
   /* CS reset */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_RESET);
+	gpio_write(&gpio_pin_CS, 0);
   
-  /* Exchange header */
-  
-  
+  /* Exchange header */  
   for (i = 0; i < 5; i++)
   { 
-    HAL_SPI_TransmitReceive(hspi, &header_master[i], &header_slave[i], 1, 15);
-  }    
-  
+		tmpreg = spi_master_write(&__spi, header_master[i]);
+		header_slave[i] = tmpreg;
+  }      
   
   if (header_slave[0] == 0x02) {
     /* SPI is ready */
     if (header_slave[1] >= (Nb_bytes1+Nb_bytes2)) {
       /*  Buffer is big enough */
       for (i = 0; i < Nb_bytes1; i++) {
-        HAL_SPI_TransmitReceive(hspi, (data1 + i), &read_char, 1, 15);
+				read_char = spi_master_write(&__spi, *(data1 + i));
       }
       for (i = 0; i < Nb_bytes2; i++) {
-        HAL_SPI_TransmitReceive(hspi, (data2 + i), &read_char, 1, 15);
+				read_char = spi_master_write(&__spi, *(data2 + i));
       }
     } else {
       /* Buffer is too small */
@@ -308,7 +269,7 @@ int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi, uint8_t* data1, uint8_t* data
   }
   
   /* Release CS line */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+	gpio_write(&gpio_pin_CS, 1);
   
   Enable_SPI_IRQ();
   
@@ -316,21 +277,20 @@ int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi, uint8_t* data1, uint8_t* data
 }
 
 /**
- * Writes data to a serial interface.
- *
+ * Writes data to a serial interface. *
  * @param  data1    1st buffer
  * @param  data2    2nd buffer
  * @param  n_bytes1 number of bytes in 1st buffer
  * @param  n_bytes2 number of bytes in 2nd buffer
  */
-void Hal_Write_Serial(const void* data1, const void* data2, tHalInt32 n_bytes1, tHalInt32 n_bytes2)
+void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1, int32_t n_bytes2)
 {
   struct timer t;
   
   Timer_Set(&t, CLOCK_SECOND/10);
   
   while(1){
-    if(BlueNRG_SPI_Write(&SpiHandle, (uint8_t *)data1,(uint8_t *)data2, n_bytes1, n_bytes2)==0) break;
+    if(BlueNRG_SPI_Write((uint8_t *)data1,(uint8_t *)data2, n_bytes1, n_bytes2)==0) break;
     if(Timer_Expired(&t)){
       break;
     }
@@ -344,7 +304,7 @@ void Hal_Write_Serial(const void* data1, const void* data2, tHalInt32 n_bytes1, 
  */
 void Disable_SPI_IRQ(void)
 {  
-  HAL_NVIC_DisableIRQ(BNRG_SPI_EXTI_IRQn);
+	gpio_irq_disable(&irq_exti);
 }
 
 /**
@@ -354,7 +314,7 @@ void Disable_SPI_IRQ(void)
  */
 void Enable_SPI_IRQ(void)
 {  
-  HAL_NVIC_EnableIRQ(BNRG_SPI_EXTI_IRQn);  
+	gpio_irq_enable(&irq_exti);
 }
 
 /**
@@ -364,7 +324,7 @@ void Enable_SPI_IRQ(void)
  */
 void Clear_SPI_IRQ(void)
 {
-  HAL_NVIC_ClearPendingIRQ(BNRG_SPI_EXTI_IRQn);
+  //Not Used
 }
 
 /**
@@ -374,7 +334,7 @@ void Clear_SPI_IRQ(void)
  */
 void Clear_SPI_EXTI_Flag(void)
 {
-  __HAL_GPIO_EXTI_CLEAR_IT(BNRG_SPI_EXTI_PIN);
+	//Not Used
 }
 
 /**
@@ -384,9 +344,9 @@ void Clear_SPI_EXTI_Flag(void)
  */
 void BlueNRG_RST(void)
 {    
-  HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_RESET);
+	gpio_write(&gpio_pin_RESET, 0);
   HAL_Delay(5);
-  HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_SET);
+	gpio_write(&gpio_pin_RESET, 1);
   HAL_Delay(5);
 }
 
