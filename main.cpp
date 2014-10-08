@@ -20,8 +20,7 @@
 BLEDevice ble;
 
 static const uint8_t BEACON_UUID[] = {0xD8, 0xFE};
-uint8_t urldata[] =
-{
+uint8_t urldata[] = {
     BEACON_UUID[0], BEACON_UUID[1],
     0x00, // flags
     0x20, // power
