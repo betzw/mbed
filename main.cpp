@@ -26,10 +26,10 @@ uint8_t urldata[] =
     0x00, // flags
     0x20, // power
     0x00, // http://www.
-    'm',  // 'm'
-    'b',  // 'b'
-    'e',  // 'e'
-    'd',  // 'd'
+    'm',
+    'b',
+    'e',
+    'd',
     0x08, // .".org"
 };
 
