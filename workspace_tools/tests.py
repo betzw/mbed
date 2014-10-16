@@ -882,6 +882,14 @@ TESTS = [
         "automated": False,
         "mcu": ["LPC1768", "LPC2368", "LPC11U24"]
     },
+
+    # betzw
+    {
+        "id": "betzw_test_1", "description": "1st testing approaches",
+        "source_dir": join(TEST_DIR, "betzw_tests", "test1"),
+        "dependencies": [MBED_LIBRARIES],
+        "mcu": ["NUCLEO_F401RE"]
+    },
 ]
 
 # Group tests with the same goals into categories
