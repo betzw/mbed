@@ -18,14 +18,14 @@ static void print_char(char c)
 }
 
 /* Called in interrupt context, therefore just set a trigger variable */
-static void attime(void) {
+static void timer_irq(void) {
 	irq_triggered = true;
 }
 
 /* Everything is happening here 
    (and above all in "normal" context, i.e. not in IRQ context)
 */
-static void action(void) {
+static void main_cycle(void) {
 	led = !led; // Blink
 	if(button) 
 		print_char('*');
@@ -38,14 +38,14 @@ static void action(void) {
 */
 int main()
 {
-	timer.attach_us(attime, MS_INTERVALS * 1000);
+	timer.attach_us(timer_irq, MS_INTERVALS * 1000);
 
 	while (true) {
 		__disable_irq();
 		if(irq_triggered) {
 			irq_triggered = false;
 			__enable_irq();
-			action();
+			main_cycle();
 		} else {
 			__enable_irq();
 			__WFI();
