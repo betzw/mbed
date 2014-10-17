@@ -38,6 +38,7 @@
 #include "spi_api.h"
 #include "gpio_irq_api.h"
 #include "gpio_api.h"
+#include "wait_api.h"
 #include "pinmap.h"
 #include "bluenrg_shield_bsp.h"
 
@@ -345,9 +346,9 @@ void Clear_SPI_EXTI_Flag(void)
 void BlueNRG_RST(void)
 {    
 	gpio_write(&gpio_pin_RESET, 0);
-  HAL_Delay(5);
+  	wait_us(5);
 	gpio_write(&gpio_pin_RESET, 1);
-  HAL_Delay(5);
+  	wait_us(5);
 }
 
 /**

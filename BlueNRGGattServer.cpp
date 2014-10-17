@@ -60,12 +60,10 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     if(type==UUID::UUID_TYPE_LONG) {
         base_uuid = (service.getUUID()).getBaseUUID();   
         
-        //TODO:128 bit support for UUID
         COPY_UUID_128(primary_base_uuid, base_uuid[15],base_uuid[14],base_uuid[13],base_uuid[12],base_uuid[11],base_uuid[10],base_uuid[9],
         base_uuid[8],base_uuid[7],base_uuid[6],base_uuid[5],base_uuid[4],primary_short_uuid[1],primary_short_uuid[0],base_uuid[1],base_uuid[0]);
     }
     
-    //TODO: Check UUID existence??
     if(type==UUID::UUID_TYPE_SHORT) {
         ret = aci_gatt_add_serv(UUID_TYPE_16, primary_short_uuid, PRIMARY_SERVICE, 7, 
         &servHandle);
@@ -80,7 +78,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     DEBUG("added servHandle handle =%u\n\r", servHandle);
     tHalUint16 bleCharacteristic;
     
-    //TODO: iterate to include all characteristics
+    //iterate to include all characteristics
     for (uint8_t i = 0; i < service.getCharacteristicCount(); i++) {
         GattCharacteristic *p_char = service.getCharacteristic(i);
         uint16_t char_uuid = (p_char->getValueAttribute().getUUID()).getShortUUID();   
@@ -94,7 +92,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
             COPY_UUID_128(char_base_uuid, base_char_uuid[15],base_char_uuid[14],base_char_uuid[13],base_char_uuid[12],base_char_uuid[11],base_char_uuid[10],base_char_uuid[9],
             base_char_uuid[8],base_char_uuid[7],base_char_uuid[6],base_char_uuid[5],base_char_uuid[4],int_8_uuid[1],int_8_uuid[0],base_char_uuid[1],base_char_uuid[0]);
         }
-        //TODO: Check UUID existence??
+        
         DEBUG("Char Properties 0x%x\n\r", p_char->getProperties());
         /*
         * Gatt_Evt_Mask -> HardCoded (0)
@@ -136,7 +134,6 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         DEBUG("added bleCharacteristic handle =%u\n\r", bleCharacteristic);
         
         if ((p_char->getValueAttribute().getValuePtr() != NULL) && (p_char->getValueAttribute().getInitialLength() > 0)) {
-            //updateValue(charHandle, p_char->getValuePtr(), p_char->getInitialLength(), false /* localOnly */);
             updateValue(p_char->getValueAttribute().getHandle(), p_char->getValueAttribute().getValuePtr(), p_char->getValueAttribute().getInitialLength(), false /* localOnly */);
         }
         
@@ -270,16 +267,6 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(tHalUint16 handle)
 {
     //signed short refvalue;
     uint16_t gapConnectionHandle = BlueNRGGap::getInstance().getConnectionHandle();
-    
-    tBleStatus ret;
-    uint16_t data;
-    tHalUint8 buff[2];
-    
-    data = 450 + ((uint64_t)rand()*100)/RAND_MAX;
-    STORE_LE_16(buff,data);
-    
-    //ret = aci_gatt_update_char_value(servHandle, handle, 0, sizeof(buff), buff);
-    //ret = aci_gatt_read_charac_val(gapConnectionHandle, handle);
     
     //EXIT:
     if(gapConnectionHandle != 0)

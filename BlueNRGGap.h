@@ -76,8 +76,7 @@ private:
     BlueNRGGap() {
         m_connectionHandle = BLE_CONN_HANDLE_INVALID;
         isSetAddress = false;
-        DeviceName = NULL;                
-        //local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};        
+        DeviceName = NULL;     
     }
 
     BlueNRGGap(BlueNRGGap const &);

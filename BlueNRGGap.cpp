@@ -124,14 +124,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 loadPtr.getUnitAtIndex(index).printDataAsString();       
                 local_name_length = *loadPtr.getUnitAtIndex(index).getLenPtr()-1;                        
                 local_name = (const char*)loadPtr.getUnitAtIndex(index).getAdTypePtr();  
-                //for(int i=0; i<local_name_length; i++) DEBUG("\n%c", local_name[i]);
-                /*aci_gatt_update_char_value(g_gap_service_handle, 
-                                                g_device_name_char_handle, 
-                                                0, 
-                                                local_name_length, 
-                                                (tHalUint8 *)local_name);*/
                 //COMPLETE_LOCAL_NAME is only advertising device name. Gatt Device Name is not the same.(Must be set right after GAP/GATT init?)
-
                 
                 DEBUG("device_name length=%d\n\r", local_name_length);                                    
                 break;
@@ -240,14 +233,6 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
     }
 
     tBleStatus ret;
-
-    //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,'B','l','u','e','N','R','G'};
-    //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28],device_name[29],device_name[30], device_name[31],
-    //                                                     device_name[32], device_name[33], device_name[34], device_name[35], device_name[36]};
-
-
-
-    //const char local_name[] = {AD_TYPE_COMPLETE_LOCAL_NAME,device_name[27],device_name[28]};
     const LongUUIDBytes_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
     /* set scan response data */
     hci_le_set_scan_resp_data(scan_rsp_length, scan_response_payload); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
