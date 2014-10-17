@@ -65,12 +65,12 @@ class Payload {
     
 public:
     Payload(const uint8_t *tokenString, uint8_t string_ength);
-    Payload::Payload();
-    uint8_t Payload::getPayloadUnitCount();
+    Payload();
+    uint8_t getPayloadUnitCount();
     
-    uint8_t Payload::getIDAtIndex(int index);  
-    uint8_t Payload::getLengthAtIndex(int index);   
-    uint8_t* Payload::getDataAtIndex(int index);    
+    uint8_t getIDAtIndex(int index);  
+    uint8_t getLengthAtIndex(int index);   
+    uint8_t* getDataAtIndex(int index);    
     int8_t getInt8AtIndex(int index);  
     uint16_t getUint16AtIndex(int index); 
     uint8_t* getSerializedAdDataAtIndex(int index);         
@@ -145,7 +145,7 @@ private:
     PayloadUnit *unit;
     int payloadUnitCount;
 public:    
-    PayloadPtr::PayloadPtr(const uint8_t *tokenString, uint8_t string_ength) {
+    PayloadPtr(const uint8_t *tokenString, uint8_t string_ength) {
         // initialize private data members
         int stringLength = string_ength;
         payloadUnitCount = 0;

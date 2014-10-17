@@ -57,40 +57,6 @@ void EXTI_irq_handler(uint32_t id, gpio_irq_event event);
  */
  
  
-/**
- * @brief  This function is used for low level initialization of the SPI 
- *         communication with the BlueNRG Shield.
- * @param  hspi: handle of the STM32Cube HAL SPI interface
- * @retval None
- */
- #if 0
-void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
-{
-  GPIO_InitTypeDef GPIO_InitStruct;
-	int ret;
-  if(hspi->Instance==BNRG_SPI_INSTANCE)
-  {        
-    /* Reset */    
-		gpio_init(&gpio_pin_RESET, PA_8);
-		gpio_mode(&gpio_pin_RESET, PullNone);
-		gpio_dir(&gpio_pin_RESET, PIN_OUTPUT);
-    gpio_write(&gpio_pin_RESET, 1);
-		
-    /* SCLK - PA_5 - Not needed to configure if correct PinName is given to spi_init, in this case PB_3 for L0*/    
-		/*gpio_init(&gpio_pin_SCLK, PB_3); //PA_5 is not USED????!!!! Since configuring PA_5 does not work!
-		gpio_mode(&gpio_pin_SCLK, PullUp);
-		//gpio_dir(&gpio_pin_SCLK, PIN_INPUT); //just 2 options of PIN_INPUT and PIN_OUTPUT does not suffice to configure Pin.
-		pin_function(PB_3, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, 0));*/		
-		
-    /* NSS/CSN/CS - PA_1*/		
-		gpio_init(&gpio_pin_CS, PA_1);
-		gpio_mode(&gpio_pin_CS, PullNone);
-		gpio_dir(&gpio_pin_CS, PIN_OUTPUT);
-    gpio_write(&gpio_pin_CS, 1);
-		
-  }
-}
-#endif
 /*
 *	mbed EXTI IRQ Handler
 *

@@ -64,19 +64,19 @@
  * @param[in]  data1    1st buffer
  * @param[in]  data2    2nd buffer
  * @param[in]  n_bytes1 number of bytes in 1st buffer
- * @param[in]  n_bytes2 number of bytes in 2nd buffer
+ * @param[in]  n_byt//es2 number of bytes in 2nd buffer
  */
-void Hal_Write_Serial(const void* data1, const void* data2, tHalInt32 n_bytes1, tHalInt32 n_bytes2);
+//void Hal_Write_Serial(const void* data1, const void* data2, tHalInt32 n_bytes1, tHalInt32 n_bytes2);
 
 /**
  * Enable interrupts from HCI controller.
  */
-void Enable_SPI_IRQ(void);
+//void Enable_SPI_IRQ(void);
 
 /**
  * Disable interrupts from BLE controller.
  */
-void Disable_SPI_IRQ(void);
+//void Disable_SPI_IRQ(void);
 
  
 

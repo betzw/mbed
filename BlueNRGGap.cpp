@@ -88,6 +88,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
             
             switch(*loadPtr.getUnitAtIndex(index).getAdTypePtr()) {
             case GapAdvertisingData::FLAGS:                              /* ref *Flags */                     
+                {
                 //Check if Flags are OK. BlueNRG only supports LE Mode.
                 uint8_t *flags = loadPtr.getUnitAtIndex(index).getDataPtr();
                 if((*flags & GapAdvertisingData::BREDR_NOT_SUPPORTED) != GapAdvertisingData::BREDR_NOT_SUPPORTED) {
@@ -96,9 +97,13 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 }
                 
                 break;
+                }
             case GapAdvertisingData::INCOMPLETE_LIST_16BIT_SERVICE_IDS:  /**< Incomplete list of 16-bit Service IDs */
+                {
                 break;
+                }
             case GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS:    /**< Complete list of 16-bit Service IDs */
+                {
                 DEBUG("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n\r");
                 DEBUG("Advertising type: COMPLETE_LIST_16BIT_SERVICE_IDS\n");
                 #if 0
@@ -109,17 +114,29 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 }
                 #endif
                 break;
+                }
             case GapAdvertisingData::INCOMPLETE_LIST_32BIT_SERVICE_IDS:  /**< Incomplete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
+                {
                 break;
+                }
             case GapAdvertisingData::COMPLETE_LIST_32BIT_SERVICE_IDS:    /**< Complete list of 32-bit Service IDs (not relevant for Bluetooth 4.0) */
+                {
                 break;
+                }
             case GapAdvertisingData::INCOMPLETE_LIST_128BIT_SERVICE_IDS: /**< Incomplete list of 128-bit Service IDs */
+                {
                 break;
+                }
             case GapAdvertisingData::COMPLETE_LIST_128BIT_SERVICE_IDS:   /**< Complete list of 128-bit Service IDs */
+                {
                 break;
+                }
             case GapAdvertisingData::SHORTENED_LOCAL_NAME:               /**< Shortened Local Name */
+                {
                 break;
+                }
             case GapAdvertisingData::COMPLETE_LOCAL_NAME:                /**< Complete Local Name */
+                {
                 DEBUG("Advertising type: COMPLETE_LOCAL_NAME\n\r");
                 loadPtr.getUnitAtIndex(index).printDataAsString();       
                 local_name_length = *loadPtr.getUnitAtIndex(index).getLenPtr()-1;                        
@@ -128,8 +145,9 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 
                 DEBUG("device_name length=%d\n\r", local_name_length);                                    
                 break;
-                
+                }
             case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
+                {
                 DEBUG("Advertising type: TX_POWER_LEVEL\n\r");     
                 int8_t dbm = *loadPtr.getUnitAtIndex(index).getDataPtr();
                 int8_t enHighPower = 0;
@@ -139,13 +157,21 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
                 aci_hal_set_tx_power_level(enHighPower, paLevel);
                 break;
+                }
             case GapAdvertisingData::DEVICE_ID:                          /**< Device ID */
+                {
                 break;
+                }
             case GapAdvertisingData::SLAVE_CONNECTION_INTERVAL_RANGE:    /**< Slave :Connection Interval Range */
+                {
                 break;
+                }
             case GapAdvertisingData::SERVICE_DATA:                       /**< Service Data */
+                {
                 break;
+                }
             case GapAdvertisingData::APPEARANCE:   
+                {
                 /* 
                     Tested with GapAdvertisingData::GENERIC_PHONE. 
                     for other appearances BLE Scanner android app is not behaving properly 
@@ -162,12 +188,17 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 
                 aci_gatt_update_char_value(g_gap_service_handle, g_appearance_char_handle, 0, 2, (tHalUint8 *)deviceAppearance);//not using array Appearance[2]
                 break;
+                }
             case GapAdvertisingData::ADVERTISING_INTERVAL:               /**< Advertising Interval */
+                {
                 advtInterval = (uint16_t)(*loadPtr.getUnitAtIndex(index).getDataPtr());
                 DEBUG("advtInterval=%d\n\r", advtInterval);
                 break;
+                }
             case GapAdvertisingData::MANUFACTURER_SPECIFIC_DATA:        /**< Manufacturer Specific Data */                                
+                {
                 break;
+                }
                 
             }          
         }
