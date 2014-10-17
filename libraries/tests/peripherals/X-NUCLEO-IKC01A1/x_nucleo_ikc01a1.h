@@ -1,9 +1,16 @@
-/* Define to prevent recursive inclusion -------------------------------------*/
+/* Copyright (C) STMicroelectronics Srl 2014 */
+/*
+ * @(#)x_nucleo_ikc01a1.h
+ *
+ */
+
+/* Define to prevent from recursive inclusion --------------------------------*/
 #ifndef __X_NUCLEO_IKC01A1_H
 #define __X_NUCLEO_IKC01A1_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
+#include "x_nucleo_ikc01a1_targets.h"
 #include "x_nucleo_ikc01a1_charger.h"
 
 /* Classes -------------------------------------------------------------------*/

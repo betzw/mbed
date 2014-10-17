@@ -1,3 +1,9 @@
+/* Copyright (C) STMicroelectronics Srl 2014 */
+/*
+ * @(#)x_nucleo_ikc01a1.cpp
+ *
+ */
+
 #include "mbed.h"
 #include "x_nucleo_ikc01a1.h"
 

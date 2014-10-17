@@ -1,18 +1,16 @@
-/* Define to prevent recursive inclusion -------------------------------------*/
+/* Copyright (C) STMicroelectronics Srl 2014 */
+/*
+ * @(#)x_nucleo_ikc01a1_charger.h
+ *
+ */
+
+/* Define to prevent from recursive inclusion --------------------------------*/
 #ifndef __X_NUCLEO_IKC01A1_CHARGER_H
 #define __X_NUCLEO_IKC01A1_CHARGER_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-
-/* Macros --------------------------------------------------------------------*/
-#ifdef TARGET_NUCLEO_F401RE
-#define CHARGER_PIN_ST1          (PC_2)
-#define CHARGER_PIN_ST2          (PC_3) 
-#define CHARGER_PIN_DISCHARGE    (PB_0)
-#else // !TARGET_NUCLEO_F401RE
-#error "Platform not supported!"
-#endif // !TARGET_NUCLEO_F401RE
+#include "x_nucleo_ikc01a1_targets.h"
 
 /* Typedefs ------------------------------------------------------------------*/
 typedef enum charger_conditions {
