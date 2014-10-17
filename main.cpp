@@ -1,3 +1,12 @@
+/* Copyright (C) STMicroelectronics Srl 2014 */
+/*
+ * @(#)main.cpp
+ *
+ * Example application for using the X_NUCLEO_IKC01A1 battery
+ * mangement expansion board.
+ *
+ */
+
 #include "mbed.h"
 #include "x_nucleo_ikc01a1.h"
 
