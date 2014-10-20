@@ -1,11 +1,10 @@
 /**
   ******************************************************************************
-  * @file    x_nucleo_ikc01a1_charger.h
+  * @file    x_nucleo_ikc01a1_rtc.h
   * @author  AST / EST
   * @version V0.0.1
-  * @date    08-October-2014
-  * @brief   This file contains the common defines and functions prototypes for
-  *          the x_nucleo_ikc01a1_charger.cpp driver.
+  * @date    
+  * @brief   
   ******************************************************************************
   * @attention
   *
@@ -36,36 +35,84 @@
   ******************************************************************************
   */ 
 
-/* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_CHARGER_H
-#define __X_NUCLEO_IKC01A1_CHARGER_H
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __X_NUCLEO_IKC01A1_RTC_H
+#define __X_NUCLEO_IKC01A1_RTC_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "x_nucleo_ikc01a1_targets.h"
 
-/* Typedefs ------------------------------------------------------------------*/
-typedef enum charger_conditions {
-	CHARGER_CHARGE_IN_PROGRESS,
-	CHARGER_CHARGE_DONE,
-	CHARGER_IN_STAND_BY,
-	CHARGER_INVALID_STATE
-} charger_conditions_t;
+/* Forward declarations ------------------------------------------------------*/
+class X_NUCLEO_IKC01A1;
 
-/* Classes  ------------------------------------------------------------------*/
-class L6924D {
+/* Types ---------------------------------------------------------------------*/
+/** Structure defining Time of Day
+ */
+typedef struct {
+	int tm_sec;
+	int tm_min;
+	int tm_hour;
+	int tm_mday;
+	int tm_mon;
+	int tm_year;
+	int tm_wday;
+	int tm_yday;
+	int tm_isdst;
+} rtc_time_t ;
+   
+/** Structure defining an alarm
+ */
+typedef enum {
+	ONCE_PER_SEC,
+	ONCE_PER_MIN,
+	ONCE_PER_HOUR,
+	ONCE_PER_DAY,
+	ONCE_PER_MONTH,
+	ONCE_PER_YEAR
+} rtc_repeat_t;
+
+typedef struct {
+	int alm_sec;
+	int alm_min;
+	int alm_hour;
+	int alm_day;
+	int alm_mon;
+	rtc_repeat_t alm_repeat_mode;
+} rtc_alarm_t ;
+
+/* Classes -------------------------------------------------------------------*/
+class M41T62 {
  public:
-        L6924D(void) :  discharge(CHARGER_PIN_DISCHARGE), st1(CHARGER_PIN_ST1), st2(CHARGER_PIN_ST2) {
-		discharge = 0;	
+        M41T62(X_NUCLEO_IKC01A1 *board) : irq_out(RTC_PIN_IRQ_OUT), 
+		expansion_board(board) {};
+
+	int GetTime(rtc_time_t*);
+	int SetTime(rtc_time_t*);
+	int IsTimeOfDayValid(void);
+	void RestartOscillator(void);
+	int SetAlarm(rtc_alarm_t*);
+	int ClearAlarm(void);
+	int ClearIrq(void);
+
+	static const char* GetWeekName(int);
+	static const char* GetMonthName(int);
+
+ protected:
+	/* BCD helper functions  */
+	static inline unsigned int bcd2bin(uint8_t val)
+	{
+		return ((val) & 0x0f) + ((val) >> 4)  * 10;
+	}
+	
+	static inline uint8_t bin2bcd (unsigned int val)
+	{
+		return (((val / 10) << 4) | (val % 10));
 	}
 
-	charger_conditions_t GetState(void);
-
-	DigitalOut discharge;
-
  private:
-	DigitalIn st1;
-	DigitalIn st2;
+	InterruptIn irq_out;
+	X_NUCLEO_IKC01A1 *expansion_board;
 };
 
-#endif /* __X_NUCLEO_IKC01A1_CHARGER_H */
+#endif // __X_NUCLEO_IKC01A1_RTC_H
