@@ -41,45 +41,11 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
+#include "x_nucleo_ikc01a1_crtc.h"
 #include "x_nucleo_ikc01a1_targets.h"
 
 /* Forward declarations ------------------------------------------------------*/
 class X_NUCLEO_IKC01A1;
-
-/* Types ---------------------------------------------------------------------*/
-/** Structure defining Time of Day
- */
-typedef struct {
-	int tm_sec;
-	int tm_min;
-	int tm_hour;
-	int tm_mday;
-	int tm_mon;
-	int tm_year;
-	int tm_wday;
-	int tm_yday;
-	int tm_isdst;
-} rtc_time_t ;
-   
-/** Structure defining an alarm
- */
-typedef enum {
-	ONCE_PER_SEC,
-	ONCE_PER_MIN,
-	ONCE_PER_HOUR,
-	ONCE_PER_DAY,
-	ONCE_PER_MONTH,
-	ONCE_PER_YEAR
-} rtc_repeat_t;
-
-typedef struct {
-	int alm_sec;
-	int alm_min;
-	int alm_hour;
-	int alm_day;
-	int alm_mon;
-	rtc_repeat_t alm_repeat_mode;
-} rtc_alarm_t ;
 
 /* Classes -------------------------------------------------------------------*/
 class M41T62 {

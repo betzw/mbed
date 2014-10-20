@@ -50,18 +50,31 @@ X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance() {
 	return _instance;
 }
 
-#if 0 // TODO
-int busWrite(uint8_t addr, uint8_t* buffer, int len)
+/**
+ * @brief  Writes a buffer from the I2C peripheral device.
+ * @param  pBuffer: pointer to data to be read.
+ * @param  DaviceAddr: specifies the peripheral device slave address.
+ * @param  RegisterAddr: specifies internal address register to read from.
+ * @param  NumByteToRead: number of bytes to be read.
+ * @retval 0 if ok, -1 if an I2C error has occured
+ */
+int X_NUCLEO_IKC01A1::io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
+			       uint16_t NumByteToRead)
 {
+	int ret;
 	uint8_t tmp[16];
 	
 	/* First, send device address. Then, send data and STOP condition */
-	tmp[0] = addr;
-	memcpy(tmp+1, buffer, len);
+	tmp[0] = RegisterAddr;
+	memcpy(tmp+1, pBuffer, NumByteToRead);
 
-	return i2cWrite(LIS3DH_ADDR, (char*)tmp, len+1, 1);
+	ret = i2c.write(DeviceAddr, (const char*)tmp, NumByteToRead+1, 0);
+
+	if(ret) {
+		return -1;
+	}
+	return 0;
 }
-#endif
 
 /**
  * @brief  Reads a buffer from the I2C peripheral device.
@@ -77,16 +90,15 @@ int X_NUCLEO_IKC01A1::io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t Regi
 	int ret;
 
 	/* Send device address, with no STOP condition */
-	ret = i2c.write(DeviceAddr, (const char*)&RegisterAddr, 1, 0);
+	ret = i2c.write(DeviceAddr, (const char*)&RegisterAddr, 1, 1);
 	if(!ret) {
 		/* Read data, with STOP condition  */
-		ret = i2c.read(DeviceAddr, (char*)pBuffer, NumByteToRead, 1);
+		ret = i2c.read(DeviceAddr, (char*)pBuffer, NumByteToRead, 0);
 	}
 
 	if(ret) {
 		return -1;
 	}
-
 	return 0;
 }
 
