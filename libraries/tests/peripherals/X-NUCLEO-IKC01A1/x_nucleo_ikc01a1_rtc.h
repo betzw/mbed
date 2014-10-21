@@ -56,25 +56,50 @@ class M41T62 {
 	int GetTime(rtc_time_t*);
 	int SetTime(rtc_time_t*);
 	int IsTimeOfDayValid(void);
-	void RestartOscillator(void);
+	int RestartOscillator(void);
 	int SetAlarm(rtc_alarm_t*);
 	int ClearAlarm(void);
 	int ClearIrq(void);
 
+	/** Attach a function to call when a rising edge occurs on the input
+	 *
+	 *  @param fptr A pointer to a void function, or 0 to set as none
+	 */
+	void attach_irq(void (*fptr)(void)) {
+		irq_out.fall(fptr);
+	}
+
+	/** Enable IRQ. This method depends on hw implementation, might enable one
+	 *  port interrupts. For further information, check gpio_irq_enable().
+	 */
+	void enable_irq() {
+		irq_out.enable_irq();
+	}
+	
+	/** Disable IRQ. This method depends on hw implementation, might disable one
+	 *  port interrupts. For further information, check gpio_irq_disable().
+	 */
+	void disable_irq() {
+		irq_out.disable_irq();
+	}
+	
 	static const char* GetWeekName(int);
 	static const char* GetMonthName(int);
 
  protected:
 	/* BCD helper functions  */
-	static inline unsigned int bcd2bin(uint8_t val)
+	static unsigned int bcd2bin(uint8_t val)
 	{
 		return ((val) & 0x0f) + ((val) >> 4)  * 10;
 	}
 	
-	static inline uint8_t bin2bcd (unsigned int val)
+	static uint8_t bin2bcd (unsigned int val)
 	{
 		return (((val / 10) << 4) | (val % 10));
 	}
+
+	/* alarm helper function */
+	int prepare_alarm_buffer(uint8_t *buf, rtc_alarm_t *alm);
 
  private:
 	InterruptIn irq_out;
