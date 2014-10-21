@@ -40,8 +40,19 @@
 #define RX_BUF_ALIGNMENT              (16)
 #define TX_BUF_ALIGNMENT              (8)
 #define BOARD_DEBUG_ENET_INSTANCE     (0)
+#define BOARD_DEBUG_ENET_INSTANCE_ADDR (ENET_BASE)
 
 #define ENET_ETH_MAX_FLEN             (1522) // recommended size for a VLAN frame
+
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
+int phy_link_status(void);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif // #define K64F_EMAC_CONFIG_H__
 

@@ -128,7 +128,9 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "automated": True,
         "peripherals": ["analog_loop"],
-        "mcu": ["LPC1768", "LPC2368", "KL25Z", "K64F", "LPC4088", "LPC1549"]
+        "mcu": ["LPC1768", "LPC2368", "KL25Z", "K64F", "K22F", "LPC4088", "LPC1549",
+                "NUCLEO_F072RB", "NUCLEO_F091RC", "NUCLEO_F302R8", "NUCLEO_F303RE",
+                "NUCLEO_F334R8", "NUCLEO_L053R8", "NUCLEO_L152RE"]
     },
     {
         "id": "MBED_A9", "description": "Serial Echo at 115200",
@@ -882,6 +884,21 @@ TESTS = [
         "automated": False,
         "mcu": ["LPC1768", "LPC2368", "LPC11U24"]
     },
+    {
+        "id": "UT_3", "description": "General tests",
+        "source_dir": join(TEST_DIR, "utest", "general"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB, CPPUTEST_LIBRARY],
+        "automated": False,
+    },
+
+    # Tests used for target information purposes
+    {
+        "id": "DTCT_1", "description": "Simple detect test",
+        "source_dir": join(TEST_DIR, "mbed", "detect"),
+        "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
+        "automated": True,
+        "host_test" : "detect_auto",
+    },
 
     # betzw
     {
@@ -891,6 +908,7 @@ TESTS = [
         "mcu": ["NUCLEO_F401RE"],
         "peripherals": ["X-NUCLEO-IKC01A1"]
     },
+
 ]
 
 # Group tests with the same goals into categories
