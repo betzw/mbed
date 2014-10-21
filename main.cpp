@@ -96,20 +96,20 @@
 
 /* Constants -----------------------------------------------------------------*/
 namespace {
-	const int MS_INTERVALS = 1000;
+	const int MS_INTERVALS = 2000;
 }
 
 /* Macros --------------------------------------------------------------------*/
-#define APP_LOOP_PERIOD 100 // in ms
-#define GASGAUGE_PERIOD  10 // in loop iterations
+#define APP_LOOP_PERIOD 1000 // in ms
 
 /* Static variables ----------------------------------------------------------*/
 static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
 
 static Ticker timer;
-static DigitalIn button(USER_BUTTON);
+static InterruptIn button(USER_BUTTON);
 
-static volatile bool irq_triggered = false;
+static volatile bool timer_irq_triggered = false;
+static volatile bool button_irq_triggered = false;
 static volatile bool gg_irq_triggered = false;
 static volatile bool rtc_irq_triggered = false;
 
@@ -119,9 +119,7 @@ static int periodicRtcAlarm = 0;
 static int alarmCounter = 0;
 static int dischargingEnabled = 0;
 
-/* Private function prototypes -----------------------------------------------*/
-static void Error_Handler(void);
-static void setUserInputParams(void);
+static int main_rtc_irq_triggered = 0;
 
 /* Functions -----------------------------------------------------------------*/
 /* Returns string describing charger state */
@@ -144,7 +142,19 @@ static const char *getChargerCondition(void) {
 
 /* Called in interrupt context, therefore just set a trigger variable */
 static void timer_irq(void) {
-	irq_triggered = true;
+	timer_irq_triggered = true;
+}
+
+/* Called in interrupt context, therefore just set a trigger variable */
+static void button_irq(void) {
+	button_irq_triggered = true;
+	button.disable_irq();
+}
+
+/* Called in interrupt context, therefore just set a trigger variable */
+static void rtc_irq(void) {
+	rtc_irq_triggered = true;
+	battery_expansion_board->rtc.disable_irq();
 }
 
 /* Initialization function */
@@ -152,18 +162,16 @@ static void init(void) {
 	rtc_time_t time;
 	int ret;
 
+	/* Set irq handler for button */
+	button.fall(button_irq);
+
 	/* Check whether RTC needs to be configured */
 	ret = battery_expansion_board->rtc.IsTimeOfDayValid();
 	if(ret < 0) error("I2C error!\n");
 
 	if(ret  != 1) {
-		/* betzw: TODO */
-#if 0
 		cuiGetTime(&time);
-		BSP_RTC_SetTime(&time);
-#else
-		printf("Time is not valid (%d)\n", ret);
-#endif
+		battery_expansion_board->rtc.SetTime(&time);
 	}
 	
 	printf("\r\nSTMicroelectronics Energy Management Expansion Board demo application\r\n");
@@ -172,20 +180,11 @@ static void init(void) {
 	printf("Today is %s, %02i %s %02i\r\n", 
 	       battery_expansion_board->rtc.GetWeekName(time.tm_wday), time.tm_mday,
 	       battery_expansion_board->rtc.GetMonthName(time.tm_mon), time.tm_year);
-}
-
-/**
- * @brief  This function is executed in case of error occurrence.
- * @param  None
- * @retval None
- */
-static void Error_Handler(void)
-{
-	/* User may add here some code to deal with this error */
-	while(1)
-		{
-			__WFI();
-		}
+	
+	/* Atach RTC interrupt handler */
+	battery_expansion_board->rtc.ClearIrq();
+	battery_expansion_board->rtc.disable_irq();
+	battery_expansion_board->rtc.attach_irq(rtc_irq);
 }
 
 /** @brief Asks user application settings: SoC and Voltage thresholds, RTC Alarm, Discharge on/off
@@ -210,61 +209,108 @@ static void setUserInputParams(void)
 	
 	/* Enable Alarm */
 	BSP_GG_AlarmSet();
+#endif // 0
 	
 	/* Set periodic RTC Alarm */
 	if(periodicRtcAlarm == 0) { // clear alarm & Irq
-		BSP_RTC_ClearAlarm();
-		BSP_RTC_ClearIrq();
+		battery_expansion_board->rtc.ClearAlarm();
+		battery_expansion_board->rtc.ClearIrq();
+		battery_expansion_board->rtc.disable_irq();
 	} else { // set alarm
 		rtc_alarm_t alm;
-		
+
 		memset(&alm, 0, sizeof(alm));
 		alm.alm_repeat_mode = ONCE_PER_SEC;
 		
-		BSP_RTC_SetAlarm(&alm);
+		battery_expansion_board->rtc.SetAlarm(&alm);
+		battery_expansion_board->rtc.enable_irq();
 	}
-#endif // 0
 	
 	/* Enable/disable discharging */
 	battery_expansion_board->charger.discharge = dischargingEnabled;
+}
+
+/* Handle button irq
+   (here we are in "normal" context, i.e. not in IRQ context)
+*/
+static void handle_button_irq(void) {
+	if(periodicRtcAlarm || socThreshold || voltageThreshold || dischargingEnabled) {
+		/* Clear RTC alarm */
+		if(periodicRtcAlarm) {
+			battery_expansion_board->rtc.ClearAlarm();
+			battery_expansion_board->rtc.ClearIrq();
+			battery_expansion_board->rtc.disable_irq();
+
+			/* Reset variables */
+			periodicRtcAlarm = alarmCounter = 0;
+			
+			printf("RTC periodic alarm cleared\r\n");
+		}
+		
+		/* Clear GasGauge alarms */
+		if(socThreshold || voltageThreshold){
+#if 0 // betzw: TODO
+			BSP_GG_AlarmClear();
+#endif // 0
+			/* Reset variables */
+			socThreshold = voltageThreshold = 0;
+			
+			printf("Gas Gauge alarms cleared\r\n");
+		}
+		
+		/* Clear discharging */
+		if(dischargingEnabled != 0) {
+			battery_expansion_board->charger.discharge = dischargingEnabled = 0;
+			printf("Discharging cleared\r\n");
+		}
+	} else {
+		setUserInputParams();
+	}
+
+	/* Re-enable button irq */
+	button.enable_irq();
+}
+
+/* Handle RTC alarm
+   (here we are in "normal" context, i.e. not in IRQ context)
+*/
+static void handle_rtc_alarm(void) {
+	alarmCounter++;
+	if(alarmCounter >= periodicRtcAlarm) {
+		main_rtc_irq_triggered = 1;
+		alarmCounter = 0;
+	}
+	battery_expansion_board->rtc.ClearIrq();
+	battery_expansion_board->rtc.enable_irq();
 }
 
 /* Everything is happening here 
    (and above all in "normal" context, i.e. not in IRQ context)
 */
 static void main_cycle(void) {
-	static int i = 0;
 	rtc_time_t time;
 	
 	/* Handle potential interrupts */
 	// betzw: TODO
 
-	if(i >= GASGAUGE_PERIOD) {
-		/* Get Time of Day */
-		battery_expansion_board->rtc.GetTime(&time);
-		printf("%02i:%02i:%02i ", time.tm_hour, time.tm_min, time.tm_sec);
-
-		/* Update Gas Gauge driver */
-		// betzw: TODO
-
-		/* Print out status */
-		printf("Charge state: %s - %s",
-		       getChargerCondition(),
-		       (battery_expansion_board->charger.discharge == 0) ? 
-		       "!discharging" : "discharging");
-		printf("\n");
-
-		/* Housekeeping */
-		i = 0;
-	}
-
-	/* Handle User Button */
-	if(button == 0) {			
-		setUserInputParams();
-	}
+	/* Get Time of Day */
+	battery_expansion_board->rtc.GetTime(&time);
+	printf("%02i:%02i:%02i ", time.tm_hour, time.tm_min, time.tm_sec);
 	
-	/* Housekeeping */
-	i++;
+	/* Update Gas Gauge driver */
+	// betzw: TODO
+	
+	/* Print out status */
+	printf("Charge state: %s - %s, alm=%isec %s",
+	       getChargerCondition(),
+	       (battery_expansion_board->charger.discharge == 0) ? 
+	       "!discharging" : "discharging",
+	       periodicRtcAlarm, (main_rtc_irq_triggered ?  "(*)" : ""));
+	
+	/* reset handled information */
+	main_rtc_irq_triggered = 0;
+	
+	printf("\n");
 }
 
 
@@ -275,7 +321,7 @@ static void main_cycle(void) {
 int main()
 {
 	/* Start & initialize */
-	printf("--- Starting new run ---\n");
+	printf("\n--- Starting new run ---\n");
 	init();
 
 	/* Start timer irq */
@@ -283,10 +329,18 @@ int main()
 
 	while (true) {
 		__disable_irq();
-		if(irq_triggered) {
-			irq_triggered = false;
+		if(timer_irq_triggered) {
+			timer_irq_triggered = false;
 			__enable_irq();
 			main_cycle();
+		} else if(button_irq_triggered) {
+			button_irq_triggered = false;
+			__enable_irq();
+			handle_button_irq();
+		} else if(rtc_irq_triggered) {
+			rtc_irq_triggered = false;
+			__enable_irq();
+			handle_rtc_alarm();
 		} else {
 			__WFI();
 			__enable_irq(); /* do NOT enable irqs before WFI to avoid 
