@@ -44,18 +44,18 @@
 /* Macros --------------------------------------------------------------------*/
 #ifdef TARGET_NUCLEO_F401RE
 /*** Charger ***/
-#define CHARGER_PIN_ST1          (PC_2)
-#define CHARGER_PIN_ST2          (PC_3) 
-#define CHARGER_PIN_DISCHARGE    (PB_0)
+#define CHARGER_PIN_ST1             (PC_2)
+#define CHARGER_PIN_ST2             (PC_3) 
+#define CHARGER_PIN_DISCHARGE       (PB_0)
 
 
 /*** I2C ***/
-#define IKC01A1_PIN_I2C_SCL      (PB_8)
-#define IKC01A1_PIN_I2C_SDA      (PB_9)
+#define IKC01A1_PIN_I2C_SCL         (PB_8)
+#define IKC01A1_PIN_I2C_SDA         (PB_9)
 
 
 /*** RTC ***/
-#define RTC_PIN_IRQ_OUT          (PA_5)
+#define RTC_PIN_IRQ_OUT             (PA_5)
 
 /* M41T62 */
 #define M41T62_SLAVE_ADDRESS        0xD0    /* M41T62 8-bit address byte (0xD0 8 bit)		*/
@@ -87,6 +87,10 @@
 #define M41T62_FLAGS_ALARMF	    (1 << 6)	/* AF: Alarm Flag Bit */
 #define M41T62_FLAGS_OSCFAIL        (1 << 2)    /* Oscillator fail bit */
 #define M41T62_FLAGS_STOP           (1 << 7)    /* Stop Bit. Used to restart oscillator */
+
+
+/*** Gas Gauge ***/
+#define GG_PIN_ALM                  (PC_7)
 
 
 #else // !TARGET_NUCLEO_F401RE

@@ -1,10 +1,11 @@
 /**
 ******************************************************************************
-* @file    x_nucleo_ikc01a1_rtc.h
+* @file    x_nucleo_ikc01a1_gg.h
 * @author  AST / EST
 * @version V0.0.1
-* @date    
-* @brief   
+* @date    08-October-2014
+* @brief   This file contains the common defines and functions prototypes for
+*          the x_nucleo_ikc01a1_gg.cpp driver.
 ******************************************************************************
 * @attention
 *
@@ -35,78 +36,23 @@
 ******************************************************************************
 */ 
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_RTC_H
-#define __X_NUCLEO_IKC01A1_RTC_H
+/* Define to prevent from recursive inclusion --------------------------------*/
+#ifndef __X_NUCLEO_IKC01A1_GG_H
+#define __X_NUCLEO_IKC01A1_GG_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_nucleo_ikc01a1_crtc.h"
 #include "x_nucleo_ikc01a1_targets.h"
 
-/* Forward declarations ------------------------------------------------------*/
-class X_NUCLEO_IKC01A1;
-
-/* Classes -------------------------------------------------------------------*/
-class M41T62 {
+/* Classes  ------------------------------------------------------------------*/
+class STC3115 {
  public:
- M41T62(X_NUCLEO_IKC01A1 *board) : irq_out(RTC_PIN_IRQ_OUT), 
-		expansion_board(board) {
-			ClearIrq();
-			disable_irq();
-		};
-
-	int GetTime(rtc_time_t*);
-	int SetTime(rtc_time_t*);
-	int IsTimeOfDayValid(void);
-	int RestartOscillator(void);
-	int SetAlarm(rtc_alarm_t*);
-	int ClearAlarm(void);
-	int ClearIrq(void);
-
-	/** Attach a function to call when a rising edge occurs on the input
-	 *
-	 *  @param fptr A pointer to a void function, or 0 to set as none
-	 */
-	void attach_irq(void (*fptr)(void)) {
-		irq_out.fall(fptr);
-	}
-
-	/** Enable IRQ. This method depends on hw implementation, might enable one
-	 *  port interrupts. For further information, check gpio_irq_enable().
-	 */
-	void enable_irq() {
-		irq_out.enable_irq();
-	}
+ STC3115(X_NUCLEO_IKC01A1 *board) : alm(GG_PIN_ALM),
+		expansion_board(board) {};
 	
-	/** Disable IRQ. This method depends on hw implementation, might disable one
-	 *  port interrupts. For further information, check gpio_irq_disable().
-	 */
-	void disable_irq() {
-		irq_out.disable_irq();
-	}
-	
-	static const char* GetWeekName(int);
-	static const char* GetMonthName(int);
-
- protected:
-	/* BCD helper functions  */
-	static unsigned int bcd2bin(uint8_t val)
-	{
-		return ((val) & 0x0f) + ((val) >> 4)  * 10;
-	}
-	
-	static uint8_t bin2bcd (unsigned int val)
-	{
-		return (((val / 10) << 4) | (val % 10));
-	}
-
-	/* alarm helper function */
-	int prepare_alarm_buffer(uint8_t *buf, rtc_alarm_t *alm);
-
  private:
-	InterruptIn irq_out;
+	InterruptIn alm;
 	X_NUCLEO_IKC01A1 *expansion_board;
 };
 
-#endif // __X_NUCLEO_IKC01A1_RTC_H
+#endif /* __X_NUCLEO_IKC01A1_GG_H */

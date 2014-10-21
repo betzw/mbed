@@ -182,8 +182,6 @@ static void init(void) {
 	       battery_expansion_board->rtc.GetMonthName(time.tm_mon), time.tm_year);
 	
 	/* Atach RTC interrupt handler */
-	battery_expansion_board->rtc.ClearIrq();
-	battery_expansion_board->rtc.disable_irq();
 	battery_expansion_board->rtc.attach_irq(rtc_irq);
 }
 
