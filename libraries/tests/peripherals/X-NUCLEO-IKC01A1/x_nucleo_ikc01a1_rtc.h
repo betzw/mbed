@@ -53,7 +53,6 @@ class M41T62 {
  M41T62(X_NUCLEO_IKC01A1 *board) : irq_out(RTC_PIN_IRQ_OUT), 
 		expansion_board(board) {
 			ClearIrq();
-			disable_irq();
 		};
 
 	int GetTime(rtc_time_t*);
