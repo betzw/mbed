@@ -215,7 +215,7 @@ TESTS = [
         "id": "MBED_A21", "description": "Call function before main (mbed_main)",
         "source_dir": join(TEST_DIR, "mbed", "call_before_main"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
-        "automated": False,
+        "automated": True,
     },
     {
         "id": "MBED_A22", "description": "SPIFI for LPC4088 (test 1)",
@@ -447,7 +447,7 @@ TESTS = [
         "source_dir": join(TEST_DIR, "mbed", "semihost"),
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "automated": True,
-        "mcu": ["LPC1768", "LPC2368", "LPC11U24", "KL05Z", "KL25Z", "KL46Z"]
+        "mcu": ["LPC1768", "LPC2368", "LPC11U24"]
     },
     {
         "id": "MBED_23", "description": "Ticker Int us",
@@ -666,7 +666,7 @@ TESTS = [
     {
         "id": "NET_4", "description": "TCP echo client",
         "source_dir": join(TEST_DIR, "net", "echo", "tcp_client"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
         "automated": True,
         "host_test": "tcpecho_client_auto",
         "peripherals": ["ethernet"]
@@ -682,7 +682,7 @@ TESTS = [
     {
         "id": "NET_6", "description": "UDP echo client",
         "source_dir": join(TEST_DIR, "net", "echo", "udp_client"),
-        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
+        "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY, TEST_MBED_LIB],
         "automated": True,
         "host_test" : "udpecho_client_auto",
         "peripherals": ["ethernet"],
@@ -740,8 +740,8 @@ TESTS = [
         "source_dir": join(TEST_DIR, "net", "echo", "udp_link_layer"),
         "dependencies": [MBED_LIBRARIES, RTOS_LIBRARIES, ETH_LIBRARY],
         "automated": False,
-        "duration": 15,
-        "host_test": "udp_link_layer_auto.py",
+        "duration": 20,
+        "host_test": "udp_link_layer_auto",
         "peripherals": ["ethernet"],
     },
 
@@ -908,7 +908,6 @@ TESTS = [
         "mcu": ["NUCLEO_F401RE"],
         "peripherals": ["X-NUCLEO-IKC01A1"]
     },
-
 ]
 
 # Group tests with the same goals into categories

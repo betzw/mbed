@@ -61,8 +61,8 @@ class X_NUCLEO_IKC01A1 {
  protected:
         X_NUCLEO_IKC01A1() : i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL), 
 		charger(), 
-		gg(this),
-		rtc(this)
+		rtc(this),
+		gg(this)
 		{};
 
 	I2C i2c;
@@ -74,8 +74,8 @@ class X_NUCLEO_IKC01A1 {
 	int io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
 
 	L6924D charger;
-	STC3115 gg;
 	M41T62 rtc;
+	STC3115 gg;
 
  private:
 	static X_NUCLEO_IKC01A1 *_instance;
