@@ -183,7 +183,6 @@ static void init(void) {
 	
 	/* Atach RTC interrupt handler */
 	battery_expansion_board->rtc.attach_irq(rtc_irq);
-	printf("betzw: %s %d\n", __func__, __LINE__);
 }
 
 /** @brief Asks user application settings: SoC and Voltage thresholds, RTC Alarm, Discharge on/off
@@ -214,7 +213,6 @@ static void setUserInputParams(void)
 	if(periodicRtcAlarm == 0) { // clear alarm & Irq
 		battery_expansion_board->rtc.ClearAlarm();
 		battery_expansion_board->rtc.ClearIrq();
-		battery_expansion_board->rtc.disable_irq();
 	} else { // set alarm
 		rtc_alarm_t alm;
 
@@ -238,7 +236,6 @@ static void handle_button_irq(void) {
 		if(periodicRtcAlarm) {
 			battery_expansion_board->rtc.ClearAlarm();
 			battery_expansion_board->rtc.ClearIrq();
-			battery_expansion_board->rtc.disable_irq();
 
 			/* Reset variables */
 			periodicRtcAlarm = alarmCounter = 0;
@@ -323,10 +320,8 @@ int main()
 	printf("\n--- Starting new run ---\n");
 	init();
 
-	printf("betzw: %s %d\n", __func__, __LINE__);
 	/* Start timer irq */
 	timer.attach_us(timer_irq, MS_INTERVALS * APP_LOOP_PERIOD);
-	printf("betzw: %s %d\n", __func__, __LINE__);
 
 	while (true) {
 		__disable_irq();
