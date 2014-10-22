@@ -1,10 +1,10 @@
 /**
   ******************************************************************************
-  * @file    x_nucleo_ikc01a1.h
-  * @author  AST / EST
+  * @file    stc3115_Battery.h
+  * @author  AMS
   * @version V0.0.1
-  * @date    08-October-2014
-  * @brief   
+  * @date    07-October-2014
+  * @brief   Application/Battery description
   ******************************************************************************
   * @attention
   *
@@ -33,48 +33,37 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */ 
+  */
 
-/* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_H
-#define __X_NUCLEO_IKC01A1_H
+/* Define to prevent recursive inclusion ------------------------------------ */
+#ifndef __Battery_H
+#define __Battery_H
 
-/* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
-#include "x_nucleo_ikc01a1_targets.h"
-#include "x_nucleo_ikc01a1_charger.h"
-#include "x_nucleo_ikc01a1_rtc.h"
-#include "Components/Common/GasGauge.h"
 
-/* Classes -------------------------------------------------------------------*/
-/* Class X_NUCLEO_IKC01A1 is intended to represent the battery management 
-   expansion board with the same name, featuring basically three IPs:
-   1) a battery charger of class L6924D
-   2) a real-time clock (RTC) of class M41T62
-   3) and a gas gauge (GG) of class STC3115
-   It is intentionally implemented as a singleton because only one 
-   X_NUCLEO_IKC01A1 at a time might be deployed in a HW component stack.
-   In order to get the singleton instance you have to call class method
-   X_NUCLEO_IKC01A1::Instance().
-*/
-class X_NUCLEO_IKC01A1 {
- protected:
-        X_NUCLEO_IKC01A1();
+/* ******************************************************************************** */
+/*        INTERNAL PARAMETERS                                                       */
+/*   TO BE ADJUSTED ACCORDING TO BATTERY AND APPLCICATION CHARACTERISTICS                			*/
+/* -------------------------------------------------------------------------------- */
 
-	I2C i2c;
+/*Battery parameters define  ------------------------------------------------------ */
+#define CC_CNF			  30
+#define VM_CNF			  34
+#define CNOM			    165
+#define RELAX_CURRENT	17
+#define OCV_OFFSET			{0, -127, -63, 8, 35, 76, 94, 123, 127, 127, 127, 127, 127, 89, -29, -67}
+	
+/*Application parameters define  -------------------------------------------------- */
+#define VMODE 			MIXED_MODE   
+#define ALM_EN			0
+#define ALM_SOC			10
+#define ALM_VBAT 		2850
+#define RSENSE			10
 
- public:
-	static X_NUCLEO_IKC01A1* Instance();
+#define BATT_CHG_VOLTAGE   4120   /* min voltage at the end of the charge (mV)      */
+#define CHG_MIN_CURRENT      30   /* min charge current in mA                       */
+#define CHG_END_CURRENT       5   /* end charge current in mA                       */
+#define APP_MIN_VOLTAGE	   3000   /* application cut-off voltage                    */
 
-	int io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
-	int io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
+/* ******************************************************************************** */
 
-	L6924D charger;
-	M41T62 rtc;
-	GasGauge *gg;
-
- private:
-	static X_NUCLEO_IKC01A1 *_instance;
-};
-
-#endif /* __X_NUCLEO_IKC01A1_H */
+#endif

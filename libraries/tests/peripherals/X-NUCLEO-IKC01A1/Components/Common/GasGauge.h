@@ -1,11 +1,11 @@
 /**
 ******************************************************************************
-* @file    x_nucleo_ikc01a1_gg.h
+* @file    GasGauge.h
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
-* @brief   This file contains the common defines and functions prototypes for
-*          the x_nucleo_ikc01a1_gg.cpp driver.
+* @brief   This file contains the abstract class describing in general
+*          the interfaces of a gas gauge
 ******************************************************************************
 * @attention
 *
@@ -37,22 +37,39 @@
 */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_GG_H
-#define __X_NUCLEO_IKC01A1_GG_H
+#ifndef __GAS_GAUGE_H
+#define __GAS_GAUGE_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "x_nucleo_ikc01a1_targets.h"
 
 /* Classes  ------------------------------------------------------------------*/
-class STC3115 {
+class GasGauge {
  public:
- STC3115(X_NUCLEO_IKC01A1 *board) : alm(GG_PIN_ALM),
-		expansion_board(board) {};
-	
- private:
-	InterruptIn alm;
-	X_NUCLEO_IKC01A1 *expansion_board;
+	GasGauge(void) {};
+
+	virtual int Task(void) = 0;
+	virtual void Reset(void) = 0;
+	virtual int Stop(void) = 0;
+
+	virtual int GetSOC(void) = 0;
+	virtual int GetOCV(void) = 0;
+	virtual int GetCurrent(void) = 0;
+	virtual int GetTemperature(void) = 0;
+	virtual int GetVoltage(void) = 0;
+	virtual int GetChargeValue(void) = 0;
+	virtual int GetPresence(void) = 0;
+	virtual int GetAlarmStatus(void) = 0;
+	virtual int GetITState(void) = 0;
+
+	virtual int AlarmSetVoltageThreshold(int) = 0;
+	virtual int AlarmSetSOCThreshold(int) = 0;
+
+	virtual int GetIT(void) = 0;
+	virtual int SetIT(void) = 0;
+	virtual int StopIT(void) = 0;
+	virtual int ClearIT(void) = 0; 
 };
 
-#endif /* __X_NUCLEO_IKC01A1_GG_H */
+#endif /* __GAS_GAUGE_H */

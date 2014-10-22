@@ -38,11 +38,19 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "x_nucleo_ikc01a1.h"
+#include "stc3115/stc3115.h"
 
 /* Static variables ----------------------------------------------------------*/
 X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::_instance = NULL;
 
 /* Methods -------------------------------------------------------------------*/
+X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1() : i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL), 
+	charger(), 
+	rtc(this)
+{
+	gg = new STC3115(this);
+}
+
 X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance() {
 	if(_instance == NULL) {
 		_instance = new X_NUCLEO_IKC01A1();
@@ -53,7 +61,7 @@ X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance() {
 /**
  * @brief  Writes a buffer from the I2C peripheral device.
  * @param  pBuffer: pointer to data to be read.
- * @param  DaviceAddr: specifies the peripheral device slave address.
+ * @param  DeviceAddr: specifies the peripheral device slave address.
  * @param  RegisterAddr: specifies internal address register to read from.
  * @param  NumByteToRead: number of bytes to be read.
  * @retval 0 if ok, -1 if an I2C error has occured

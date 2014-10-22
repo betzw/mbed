@@ -41,8 +41,11 @@
 #ifndef _X_NUCLEO_IKC01A1_TARGETS_H_
 #define _X_NUCLEO_IKC01A1_TARGETS_H_
 
-/* Macros --------------------------------------------------------------------*/
 #ifdef TARGET_NUCLEO_F401RE
+/* Includes -------------------------------------------------------------------*/
+#include "stc3115/stc3115_Driver.h"
+#include "stc3115/stc3115_Battery.h"
+
 /*** Charger ***/
 #define CHARGER_PIN_ST1             (PC_2)
 #define CHARGER_PIN_ST2             (PC_3) 
