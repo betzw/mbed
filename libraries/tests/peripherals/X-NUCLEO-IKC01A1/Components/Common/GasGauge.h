@@ -42,7 +42,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_nucleo_ikc01a1_targets.h"
 
 /* Classes  ------------------------------------------------------------------*/
 class GasGauge {
@@ -67,9 +66,10 @@ class GasGauge {
 	virtual int AlarmSetSOCThreshold(int) = 0;
 
 	virtual int GetIT(void) = 0;
-	virtual int SetIT(void) = 0;
-	virtual int StopIT(void) = 0;
+	virtual int EnableIT(void) = 0;
+	virtual int DisableIT(void) = 0;
 	virtual int ClearIT(void) = 0; 
+	virtual void AttachIT(void (*fptr)(void)) = 0;
 };
 
 #endif /* __GAS_GAUGE_H */

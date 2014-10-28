@@ -63,22 +63,24 @@ X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance() {
  * @param  pBuffer: pointer to data to be read.
  * @param  DeviceAddr: specifies the peripheral device slave address.
  * @param  RegisterAddr: specifies internal address register to read from.
- * @param  NumByteToRead: number of bytes to be read.
+ * @param  NumByteToWrite: number of bytes to be written.
  * @retval 0 if ok, -1 if an I2C error has occured
  */
 int X_NUCLEO_IKC01A1::io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
-			       uint16_t NumByteToRead)
+			       uint16_t NumByteToWrite)
 {
 	int ret;
-	uint8_t tmp[16];
+	uint8_t tmp[32];
 	
 	/* First, send device address. Then, send data and STOP condition */
 	tmp[0] = RegisterAddr;
-	memcpy(tmp+1, pBuffer, NumByteToRead);
+	memcpy(tmp+1, pBuffer, NumByteToWrite);
 
-	ret = i2c.write(DeviceAddr, (const char*)tmp, NumByteToRead+1, 0);
+	ret = i2c.write(DeviceAddr, (const char*)tmp, NumByteToWrite+1, 0);
 
 	if(ret) {
+		error("%s: dev = %d, reg = %d, num = %d\n",
+		      __func__, DeviceAddr, RegisterAddr, NumByteToWrite);
 		return -1;
 	}
 	return 0;
@@ -105,6 +107,8 @@ int X_NUCLEO_IKC01A1::io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t Regi
 	}
 
 	if(ret) {
+		error("%s: dev = %d, reg = %d, num = %d\n",
+		      __func__, DeviceAddr, RegisterAddr, NumByteToRead);
 		return -1;
 	}
 	return 0;

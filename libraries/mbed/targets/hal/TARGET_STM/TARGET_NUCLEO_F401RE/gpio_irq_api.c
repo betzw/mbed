@@ -101,15 +101,15 @@ static void handle_interrupt_in(uint32_t irq_index, uint32_t max_num_pin_line) {
 			// Clear interrupt flag
 			if (__HAL_GPIO_EXTI_GET_FLAG(pin) != RESET) {
 				__HAL_GPIO_EXTI_CLEAR_FLAG(pin);
-			}
-
-			if (gpio_channel->channel_ids[gpio_idx] == 0) return;
-
-			// Check which edge has generated the irq
-			if ((gpio->IDR & pin) == 0) {
-				irq_handler(gpio_channel->channel_ids[gpio_idx], IRQ_FALL);
-			} else  {
-				irq_handler(gpio_channel->channel_ids[gpio_idx], IRQ_RISE);
+				
+				if (gpio_channel->channel_ids[gpio_idx] == 0) continue;
+				
+				// Check which edge has generated the irq
+				if ((gpio->IDR & pin) == 0) {
+					irq_handler(gpio_channel->channel_ids[gpio_idx], IRQ_FALL);
+				} else  {
+					irq_handler(gpio_channel->channel_ids[gpio_idx], IRQ_RISE);
+				}
 			}
 		}
 	}

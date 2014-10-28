@@ -138,6 +138,7 @@ int STC3115::Task(void)
 	if(res!=0) return(-1); /* abort in case of I2C failure */
     
 	/* ------------------------------- battery data report ------------------------------- */
+
 	/* check INIT state */
 	if(RAMData.reg.STC3115_Status == STC3115_INIT)
 		{

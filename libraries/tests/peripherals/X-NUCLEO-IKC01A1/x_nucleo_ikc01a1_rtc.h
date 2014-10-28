@@ -64,7 +64,7 @@ class M41T62 {
 	int ClearAlarm(void);
 	int ClearIrq(void);
 
-	/** Attach a function to call when a rising edge occurs on the input
+	/** Attach a function to call when a falling edge occurs on the input
 	 *
 	 *  @param fptr A pointer to a void function, or 0 to set as none
 	 */

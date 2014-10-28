@@ -41,6 +41,8 @@
 #define __STC3115_H
 
 /* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
+
 #include "mbed.h"
 #include "../../x_nucleo_ikc01a1.h"
 #include "../Common/GasGauge.h"
@@ -93,19 +95,22 @@ class STC3115 : public GasGauge {
 		res = ReadByte(STC3115_REG_CTRL);
 		res = res >> 5;
 		
-		return (res);
+		return (res & 0x3);
 	}
 
 	/**
-	 * @brief Clear the alarm signal
+	 * @brief Enable alarm functionality
 	 * @param None
 	 * @retval error status (OK, !OK)
 	 */
-	virtual int SetIT(void) {  
+	virtual int EnableIT(void) {  
 		int res;
 		
-		/* clear ALM bits*/
-		res = WriteByte(STC3115_REG_CTRL, 0x01);
+		/* Read the mode register*/
+		res = ReadByte(STC3115_REG_MODE);
+		
+		/* Set the ALM_ENA bit to 1 */
+		res = WriteByte(STC3115_REG_MODE, (res | STC3115_ALM_ENA));
 		if (res!= OK) return (!OK);
 		
 		return (res);
@@ -116,7 +121,7 @@ class STC3115 : public GasGauge {
 	 * @param None
 	 * @retval error status (OK, !OK)
 	 */
-	virtual int StopIT(void) {  
+	virtual int DisableIT(void) {  
 		int res;
 		
 		/* Read the mode register*/
@@ -130,7 +135,7 @@ class STC3115 : public GasGauge {
 	}
 
 	/**
-	 * @brief Clear the alarm signal
+	 * @brief Clear the alarm signals
 	 * @param None
 	 * @retval error status (OK, !OK)
 	 */
@@ -144,22 +149,33 @@ class STC3115 : public GasGauge {
 		return (res);
 	}
 
+	/** 
+	 *  @brief Attach a function to call when a falling edge occurs on the input
+	 *  @param fptr A pointer to a void function, or 0 to set as none
+	 *  @note enables/disables the interrupt
+	 */
+	void AttachIT(void (*fptr)(void)) {
+		alm.fall(fptr);
+		if(fptr) alm.enable_irq();
+		else alm.disable_irq();
+	}
+
  private:
 	InterruptIn alm;
 	X_NUCLEO_IKC01A1 *expansion_board;
 
  protected:
 	union {
-		unsigned char db[RAM_SIZE];  /* last byte holds the CRC */
+		uint8_t db[RAM_SIZE];  /* last byte holds the CRC */
 		struct {
-			short int TstWord;     /* 0-1 */
-			short int HRSOC;       /* 2-3 SOC backup in (1/512%) */
-			short int CC_cnf;      /* 4-5 current CC_cnf */
-			short int VM_cnf;      /* 6-7 current VM_cnf */
-			char SOC;              /* 8 SOC (in %) */
-			char STC3115_Status;   /* 9  STC3115 working state */
+			uint16_t TstWord;     /* 0-1 */
+			uint16_t HRSOC;       /* 2-3 SOC backup in (1/512%) */
+			uint16_t CC_cnf;      /* 4-5 current CC_cnf */
+			uint16_t VM_cnf;      /* 6-7 current VM_cnf */
+			uint8_t  SOC;              /* 8 SOC (in %) */
+			uint8_t  STC3115_Status;   /* 9  STC3115 working state */
 			/* bytes ..RAM_SIZE-2 are free, last byte RAM_SIZE-1 is the CRC */
-		} reg;
+		} reg __attribute__((packed));
 	} RAMData;
 
 	STC3115_ConfigData_TypeDef ConfigData;
@@ -542,9 +558,9 @@ class STC3115 : public GasGauge {
 		
 		/* write 0 into the REG_MODE register to put the STC3115 in standby mode */
 		res = WriteByte(STC3115_REG_MODE, 0);
-		if (res!= OK) return (res);
+		if (res != OK) return (res);
 
-		return (OK);
+		return(OK);
 	}
 
 	int ReadBatteryData(void);
