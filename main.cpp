@@ -71,9 +71,9 @@
  *   - Battery Charge status
  *
  * Application console output example: <br>
- * 17:40:22 Vbat: 4110mV, SoC=94% I=-15mA, C=15, P=1 A=1, Charge state: invalid - !discharging, vbatTh=4100mV, socTh=98%, alm=5sec Gas Gauge alarm set to 'b01' - Press button to clear alarm <br>
- * 17:40:24 Vbat: 4112mV, SoC=94% I=-4mA, C=15, P=1 A=1, Charge state: invalid - !discharging, vbatTh=4100mV, socTh=98%, alm=5sec Gas Gauge alarm set to 'b01' - Press button to clear alarm <br>
- * 17:40:26 Vbat: 4112mV, SoC=94% I=-4mA, C=15, P=1 A=1, Charge state: invalid - !discharging, vbatTh=4100mV, socTh=98%, alm=5sec (*) Gas Gauge alarm set to 'b01' - Press button to clear alarm <br>
+ * 17:40:22 Vbat: 4110mV, SoC=94% I=-15mA, C=15, P=1 A=1, Charge state: !charging - !discharging, vbatTh=4100mV, socTh=98%, alm=5sec Gas Gauge alarm set to 'b01' - Press button to clear alarm <br>
+ * 17:40:24 Vbat: 4112mV, SoC=94% I=-4mA, C=15, P=1 A=1, Charge state: !charging - !discharging, vbatTh=4100mV, socTh=98%, alm=5sec Gas Gauge alarm set to 'b01' - Press button to clear alarm <br>
+ * 17:40:26 Vbat: 4112mV, SoC=94% I=-4mA, C=15, P=1 A=1, Charge state: !charging - !discharging, vbatTh=4100mV, socTh=98%, alm=5sec (*) Gas Gauge alarm set to 'b01' - Press button to clear alarm <br>
  *
  *
  * If the user presses button B1 on Nucleo board, the following settings can be
@@ -96,11 +96,11 @@
 
 /* Constants -----------------------------------------------------------------*/
 namespace {
-	const int MS_INTERVALS = 2000;
+	const int MS_INTERVALS = 1000;
 }
 
 /* Macros --------------------------------------------------------------------*/
-#define APP_LOOP_PERIOD 1000 // in ms
+#define APP_LOOP_PERIOD 2000 // in ms
 
 /* Static variables ----------------------------------------------------------*/
 static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
@@ -137,7 +137,7 @@ static const char *getChargerCondition(void) {
 	default:
 		break;
 	}
-	return "invalid";
+	return "!charging";
 }
 
 /* Called in interrupt context, therefore just set a trigger variable */
@@ -157,6 +157,11 @@ static void rtc_irq(void) {
 	battery_expansion_board->rtc.disable_irq();
 }
 
+/* Called in interrupt context, therefore just set a trigger variable */
+static void gg_irq(void) {
+	gg_irq_triggered = true;
+}
+
 /* Initialization function */
 static void init(void) {
 	rtc_time_t time;
@@ -169,7 +174,7 @@ static void init(void) {
 	ret = battery_expansion_board->rtc.IsTimeOfDayValid();
 	if(ret < 0) error("I2C error!\n");
 
-	if(ret  != 1) {
+	if(ret != 1) {
 		cuiGetTime(&time);
 		battery_expansion_board->rtc.SetTime(&time);
 	}
@@ -181,8 +186,11 @@ static void init(void) {
 	       battery_expansion_board->rtc.GetWeekName(time.tm_wday), time.tm_mday,
 	       battery_expansion_board->rtc.GetMonthName(time.tm_mon), time.tm_year);
 	
-	/* Atach RTC interrupt handler */
+	/* Attach RTC interrupt handler */
 	battery_expansion_board->rtc.attach_irq(rtc_irq);
+
+	/* Attach GG interrupt handler */
+	battery_expansion_board->gg->AttachIT(gg_irq);
 }
 
 /** @brief Asks user application settings: SoC and Voltage thresholds, RTC Alarm, Discharge on/off
@@ -191,23 +199,28 @@ static void init(void) {
  */
 static void setUserInputParams(void)
 {
+	int ret;
+	
 	/* Asks user RTC alarm, SoC and voltage thresholds */
 	getUserInputParams(&socThreshold, &voltageThreshold, &periodicRtcAlarm, &dischargingEnabled);
 		
-#if 0 // betzw: TODO
 	/* This is needed, otherwise alarms can't be re-scheduled without resetting application */
-	BSP_GG_AlarmStop();
-	
+	ret = battery_expansion_board->gg->DisableIT();
+	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
+
 	/* Clear any pending IT */
-	BSP_GG_AlarmClear();
-	
+	ret = battery_expansion_board->gg->ClearIT();
+	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
+
 	/* Set thresholds */
-	BSP_GG_SetVoltageThreshold(voltageThreshold);
-	BSP_GG_SetSOCThreshold(socThreshold);
+	ret = battery_expansion_board->gg->AlarmSetVoltageThreshold(voltageThreshold);
+	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
+	ret = battery_expansion_board->gg->AlarmSetSOCThreshold(socThreshold);
+	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 	
 	/* Enable Alarm */
-	BSP_GG_AlarmSet();
-#endif // 0
+	ret = battery_expansion_board->gg->EnableIT();
+	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 	
 	/* Set periodic RTC Alarm */
 	if(periodicRtcAlarm == 0) { // clear alarm & Irq
@@ -245,9 +258,16 @@ static void handle_button_irq(void) {
 		
 		/* Clear GasGauge alarms */
 		if(socThreshold || voltageThreshold){
-#if 0 // betzw: TODO
-			BSP_GG_AlarmClear();
-#endif // 0
+			int ret;
+			
+			/* Disable GG Interrupts */
+			ret = battery_expansion_board->gg->DisableIT();
+			if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
+
+			/* Clear GG Interrupts */
+			ret = battery_expansion_board->gg->ClearIT();
+			if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
+
 			/* Reset variables */
 			socThreshold = voltageThreshold = 0;
 			
@@ -280,27 +300,49 @@ static void handle_rtc_alarm(void) {
 	battery_expansion_board->rtc.enable_irq();
 }
 
+/* Handle GG alarm
+   (here we are in "normal" context, i.e. not in IRQ context)
+*/
+static void handle_gg_alarm(void) {
+	char buf[3];
+	uint8_t alarm_state = battery_expansion_board->gg->GetIT();
+	int ret;
+
+	buf[2] = '\0';
+	buf[1] = ((alarm_state & 0x1) ? '1' : '0'); // SoC alarm
+	buf[0] = ((alarm_state & 0x2) ? '1' : '0'); // Voltage alarm
+	
+	printf("Gas Gauge alarm set to \'b%s\' - Press button to clear alarm\r\n", buf);
+}
+
 /* Everything is happening here 
    (and above all in "normal" context, i.e. not in IRQ context)
 */
 static void main_cycle(void) {
 	rtc_time_t time;
-	
-	/* Handle potential interrupts */
-	// betzw: TODO
+	int ret;
 
 	/* Get Time of Day */
 	battery_expansion_board->rtc.GetTime(&time);
 	printf("%02i:%02i:%02i ", time.tm_hour, time.tm_min, time.tm_sec);
 	
 	/* Update Gas Gauge driver */
-	// betzw: TODO
+	ret = battery_expansion_board->gg->Task();
 	
 	/* Print out status */
-	printf("Charge state: %s - %s, alm=%isec %s",
+	printf("Tsk: %i, Vbat: %imV, SoC=%i%% I=%imA, C=%i, P=%i A=%i, Charge state: %s - %s, "
+	       "vbatTh=%imV, socTh=%i%%, alm=%isec %s",
+	       ret,
+	       battery_expansion_board->gg->GetVoltage(),
+	       battery_expansion_board->gg->GetSOC(),
+	       battery_expansion_board->gg->GetCurrent(),
+	       battery_expansion_board->gg->GetChargeValue(),
+	       battery_expansion_board->gg->GetPresence(),
+	       battery_expansion_board->gg->GetAlarmStatus(),
 	       getChargerCondition(),
 	       (battery_expansion_board->charger.discharge == 0) ? 
 	       "!discharging" : "discharging",
+	       voltageThreshold, socThreshold, 
 	       periodicRtcAlarm, (main_rtc_irq_triggered ?  "(*)" : ""));
 	
 	/* reset handled information */
@@ -337,6 +379,10 @@ int main()
 			rtc_irq_triggered = false;
 			__enable_irq();
 			handle_rtc_alarm();
+		}  else if(gg_irq_triggered) {
+			gg_irq_triggered = false;
+			__enable_irq();
+			handle_gg_alarm();
 		} else {
 			__WFI();
 			__enable_irq(); /* do NOT enable irqs before WFI to avoid 
