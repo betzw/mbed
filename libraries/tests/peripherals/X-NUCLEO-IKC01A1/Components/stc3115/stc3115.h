@@ -81,7 +81,7 @@ class STC3115 : public GasGauge {
 	}
 
 	/**
-	 * @brief Return the ALM status
+	 * @brief Return the current ALM status (from register)
 	 * @param None
 	 * @retval ALM status 00 : no alarm
 	 *                    01 : SOC alarm
@@ -152,12 +152,9 @@ class STC3115 : public GasGauge {
 	/** 
 	 *  @brief Attach a function to call when a falling edge occurs on the input
 	 *  @param fptr A pointer to a void function, or 0 to set as none
-	 *  @note enables/disables the interrupt
 	 */
 	void AttachIT(void (*fptr)(void)) {
 		alm.fall(fptr);
-		if(fptr) alm.enable_irq();
-		else alm.disable_irq();
 	}
 
  private:
