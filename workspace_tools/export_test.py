@@ -153,6 +153,7 @@ if __name__ == '__main__':
             ('gcc_arm', 'NUCLEO_F411RE'),
             ('gcc_arm', 'DISCO_F429ZI'),
             ('gcc_arm', 'NUCLEO_F334R8'),
+            ('gcc_arm', 'NUCLEO_L053R8'),
 
 
             ('ds5_5', 'LPC1768'), ('ds5_5', 'LPC11U24'),
