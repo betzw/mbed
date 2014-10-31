@@ -41,7 +41,7 @@
 #ifndef _X_NUCLEO_IKC01A1_TARGETS_H_
 #define _X_NUCLEO_IKC01A1_TARGETS_H_
 
-#ifdef TARGET_NUCLEO_F401RE
+#if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8)
 /* Includes -------------------------------------------------------------------*/
 #include "stc3115/stc3115_Driver.h"
 #include "stc3115/stc3115_Battery.h"
@@ -96,9 +96,11 @@
 #define GG_PIN_ALM                  (PC_7)
 
 
-#else // !TARGET_NUCLEO_F401RE
+#else // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8))
+
 #error "Platform not supported!"
-#endif // !TARGET_NUCLEO_F401RE
+
+#endif // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8))
 
 
 #endif // _X_NUCLEO_IKC01A1_TARGETS_H_
