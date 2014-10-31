@@ -306,7 +306,6 @@ static void handle_rtc_alarm(void) {
 static void handle_gg_alarm(void) {
 	char buf[3];
 	uint8_t alarm_state = battery_expansion_board->gg->GetIT();
-	int ret;
 
 	buf[2] = '\0';
 	buf[1] = ((alarm_state & 0x1) ? '1' : '0'); // SoC alarm
