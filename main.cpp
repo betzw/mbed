@@ -167,7 +167,7 @@ static void init(void) {
 	rtc_time_t time;
 	int ret;
 
-	/* betzw; just for debugging */
+	/* betzw: just for debugging */
 	{
 		/* the following code is NOT portable */
 		volatile uint32_t *tpiu_reg = (uint32_t*)0xE0042004;
