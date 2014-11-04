@@ -167,6 +167,18 @@ static void init(void) {
 	rtc_time_t time;
 	int ret;
 
+	/* betzw; just for debugging */
+	{
+		/* the following code is NOT portable */
+		volatile uint32_t *tpiu_reg = (uint32_t*)0xE0042004;
+		uint32_t tmp = *tpiu_reg;
+
+		tmp &= ~(0xE7);
+		tmp |= 0x27; // Set asynchronous communication via DBGMCU_CR (for ITM/printf)
+		// tmp |= 0xE7; // Set 4-pin tracing via DBGMCU_CR (for ETM)
+		*tpiu_reg = tmp;
+	}
+
 	/* Set irq handler for button */
 	button.fall(button_irq);
 
