@@ -167,6 +167,7 @@ static void init(void) {
 	rtc_time_t time;
 	int ret;
 
+#ifdef TPIU_DEBUG
 	/* betzw: just for debugging */
 	{
 		/* the following code is NOT portable */
@@ -178,6 +179,7 @@ static void init(void) {
 		// tmp |= 0xE7; // Set 4-pin tracing via DBGMCU_CR (for ETM)
 		*tpiu_reg = tmp;
 	}
+#endif // TPIU_DEBUG
 
 	/* Set irq handler for button */
 	button.fall(button_irq);
