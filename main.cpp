@@ -24,7 +24,7 @@ uint8_t urldata[] = {
     BEACON_UUID[0], BEACON_UUID[1],
     0x00, // flags
     0x20, // power
-    0x00, // http://www.
+    0x02, // http://
     'm',
     'b',
     'e',
