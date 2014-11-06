@@ -59,19 +59,19 @@
 */
 class X_NUCLEO_IKC01A1 {
  protected:
-        X_NUCLEO_IKC01A1();
+        X_NUCLEO_IKC01A1(I2C&);
 
-	I2C i2c;
+	I2C &i2c;
 
  public:
-	static X_NUCLEO_IKC01A1* Instance();
+	static X_NUCLEO_IKC01A1* Instance(I2C&);
 
 	int io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
 	int io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
 
 	L6924D charger;
 	M41T62 rtc;
-	GasGauge *gg;
+	GasGauge &gg;
 
  private:
 	static X_NUCLEO_IKC01A1 *_instance;

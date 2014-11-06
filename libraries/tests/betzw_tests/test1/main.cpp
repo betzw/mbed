@@ -103,7 +103,8 @@ namespace {
 #define APP_LOOP_PERIOD 2000 // in ms
 
 /* Static variables ----------------------------------------------------------*/
-static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
+static I2C i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL);
+static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance(i2c);
 
 static Ticker timer;
 static InterruptIn button(USER_BUTTON);
@@ -204,7 +205,7 @@ static void init(void) {
 	battery_expansion_board->rtc.attach_irq(rtc_irq);
 
 	/* Attach GG interrupt handler */
-	battery_expansion_board->gg->AttachIT(gg_irq);
+	battery_expansion_board->gg.AttachIT(gg_irq);
 }
 
 /** @brief Asks user application settings: SoC and Voltage thresholds, RTC Alarm, Discharge on/off
@@ -219,21 +220,21 @@ static void setUserInputParams(void)
 	getUserInputParams(&socThreshold, &voltageThreshold, &periodicRtcAlarm, &dischargingEnabled);
 		
 	/* This is needed, otherwise alarms can't be re-scheduled without resetting application */
-	ret = battery_expansion_board->gg->DisableIT();
+	ret = battery_expansion_board->gg.DisableIT();
 	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 
 	/* Clear any pending IT */
-	ret = battery_expansion_board->gg->ClearIT();
+	ret = battery_expansion_board->gg.ClearIT();
 	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 
 	/* Set thresholds */
-	ret = battery_expansion_board->gg->AlarmSetVoltageThreshold(voltageThreshold);
+	ret = battery_expansion_board->gg.AlarmSetVoltageThreshold(voltageThreshold);
 	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
-	ret = battery_expansion_board->gg->AlarmSetSOCThreshold(socThreshold);
+	ret = battery_expansion_board->gg.AlarmSetSOCThreshold(socThreshold);
 	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 	
 	/* Enable Alarm */
-	ret = battery_expansion_board->gg->EnableIT();
+	ret = battery_expansion_board->gg.EnableIT();
 	if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 	
 	/* Set periodic RTC Alarm */
@@ -275,11 +276,11 @@ static void handle_button_irq(void) {
 			int ret;
 			
 			/* Disable GG Interrupts */
-			ret = battery_expansion_board->gg->DisableIT();
+			ret = battery_expansion_board->gg.DisableIT();
 			if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 
 			/* Clear GG Interrupts */
-			ret = battery_expansion_board->gg->ClearIT();
+			ret = battery_expansion_board->gg.ClearIT();
 			if(ret != 0) error("Error in function %s, line %d\n", __func__, __LINE__);
 
 			/* Reset variables */
@@ -319,7 +320,7 @@ static void handle_rtc_alarm(void) {
 */
 static void handle_gg_alarm(void) {
 	char buf[3];
-	uint8_t alarm_state = battery_expansion_board->gg->GetIT();
+	uint8_t alarm_state = battery_expansion_board->gg.GetIT();
 
 	buf[2] = '\0';
 	buf[1] = ((alarm_state & 0x1) ? '1' : '0'); // SoC alarm
@@ -340,18 +341,18 @@ static void main_cycle(void) {
 	printf("%02i:%02i:%02i ", time.tm_hour, time.tm_min, time.tm_sec);
 	
 	/* Update Gas Gauge driver */
-	ret = battery_expansion_board->gg->Task();
+	ret = battery_expansion_board->gg.Task();
 	
 	/* Print out status */
 	printf("Tsk: %i, Vbat: %imV, SoC=%i%% I=%imA, C=%i, P=%i A=%i, Charge state: %s - %s, "
 	       "vbatTh=%imV, socTh=%i%%, alm=%isec %s",
 	       ret,
-	       battery_expansion_board->gg->GetVoltage(),
-	       battery_expansion_board->gg->GetSOC(),
-	       battery_expansion_board->gg->GetCurrent(),
-	       battery_expansion_board->gg->GetChargeValue(),
-	       battery_expansion_board->gg->GetPresence(),
-	       battery_expansion_board->gg->GetAlarmStatus(),
+	       battery_expansion_board->gg.GetVoltage(),
+	       battery_expansion_board->gg.GetSOC(),
+	       battery_expansion_board->gg.GetCurrent(),
+	       battery_expansion_board->gg.GetChargeValue(),
+	       battery_expansion_board->gg.GetPresence(),
+	       battery_expansion_board->gg.GetAlarmStatus(),
 	       getChargerCondition(),
 	       (battery_expansion_board->charger.discharge == 0) ? 
 	       "!discharging" : "discharging",

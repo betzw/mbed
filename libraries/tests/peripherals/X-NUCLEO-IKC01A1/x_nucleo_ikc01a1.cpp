@@ -44,16 +44,16 @@
 X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::_instance = NULL;
 
 /* Methods -------------------------------------------------------------------*/
-X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1() : i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL), 
+X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(I2C &bus) : i2c(bus), 
 	charger(), 
-	rtc(this)
+	rtc(this),
+	gg(*(new STC3115(this))) 
 {
-	gg = new STC3115(this);
 }
 
-X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance() {
+X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(I2C &bus) {
 	if(_instance == NULL) {
-		_instance = new X_NUCLEO_IKC01A1();
+		_instance = new X_NUCLEO_IKC01A1(bus);
 	}
 	return _instance;
 }
