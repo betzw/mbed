@@ -350,7 +350,7 @@ int M41T62::ClearIrq(void)
 					       M41T62_SLAVE_ADDRESS,
 					       M41T62_FLAGS, 1);
 		if(ret) return ret;
-	} while(buf & 0x40); // check if alarm flag (AF) has been reset to '0' 
+	} while(buf & M41T62_FLAGS_ALARMF); // check if alarm flag (AF) has been reset to '0' 
 	
 	return 0;
 }

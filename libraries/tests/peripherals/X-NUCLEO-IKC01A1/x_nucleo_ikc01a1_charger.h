@@ -59,7 +59,18 @@ class L6924D {
 		discharge = 0;	
 	}
 
-	charger_conditions_t GetState(void);
+	charger_conditions_t GetState(void) {
+		if(!st1 && st2)
+			return CHARGER_CHARGE_IN_PROGRESS;
+		
+		if(st1 && !st2)
+			return CHARGER_CHARGE_DONE;
+		
+		if(st1 && st2)
+			return CHARGER_IN_STAND_BY;
+		
+		return CHARGER_INVALID_STATE;
+	}
 
 	DigitalOut discharge;
 
