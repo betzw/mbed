@@ -44,7 +44,7 @@
 #include <stdint.h>
 
 #include "mbed.h"
-#include "../../x_nucleo_ikc01a1.h"
+#include "../../x_cube_bfuelg1.h"
 #include "../Common/GasGauge.h"
 
 /* Macros --------------------------------------------------------------------*/
@@ -53,7 +53,7 @@
 /* Classes  ------------------------------------------------------------------*/
 class STC3115 : public GasGauge {
  public:
-	STC3115(X_NUCLEO_IKC01A1 *board);
+	STC3115(X_CUBE_BFUELG1 *board);
  
 	virtual int Task(void);
 	virtual void Reset(void);
@@ -159,7 +159,7 @@ class STC3115 : public GasGauge {
 
  private:
 	InterruptIn alm;
-	X_NUCLEO_IKC01A1 *expansion_board;
+	X_CUBE_BFUELG1 *expansion_board;
 
  protected:
 	union {

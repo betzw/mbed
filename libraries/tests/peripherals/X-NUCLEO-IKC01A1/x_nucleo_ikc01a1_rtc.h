@@ -36,8 +36,8 @@
 */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_RTC_H
-#define __X_NUCLEO_IKC01A1_RTC_H
+#ifndef __X_CUBE_BFUELG1_RTC_H
+#define __X_CUBE_BFUELG1_RTC_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -45,12 +45,12 @@
 #include "x_nucleo_ikc01a1_targets.h"
 
 /* Forward declarations ------------------------------------------------------*/
-class X_NUCLEO_IKC01A1;
+class X_CUBE_BFUELG1;
 
 /* Classes -------------------------------------------------------------------*/
 class M41T62 {
  public:
- M41T62(X_NUCLEO_IKC01A1 *board) : irq_out(RTC_PIN_IRQ_OUT), 
+ M41T62(X_CUBE_BFUELG1 *board) : irq_out(RTC_PIN_IRQ_OUT), 
 		expansion_board(board) {
 			ClearAlarm();
 			ClearIrq();
@@ -106,7 +106,7 @@ class M41T62 {
 
  private:
 	InterruptIn irq_out;
-	X_NUCLEO_IKC01A1 *expansion_board;
+	X_CUBE_BFUELG1 *expansion_board;
 };
 
-#endif // __X_NUCLEO_IKC01A1_RTC_H
+#endif // __X_CUBE_BFUELG1_RTC_H

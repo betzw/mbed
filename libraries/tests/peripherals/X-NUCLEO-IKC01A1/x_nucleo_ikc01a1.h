@@ -36,8 +36,8 @@
   */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_H
-#define __X_NUCLEO_IKC01A1_H
+#ifndef __X_CUBE_BFUELG1_H
+#define __X_CUBE_BFUELG1_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -47,24 +47,24 @@
 #include "Components/Common/GasGauge.h"
 
 /* Classes -------------------------------------------------------------------*/
-/* Class X_NUCLEO_IKC01A1 is intended to represent the battery management 
+/* Class X_CUBE_BFUELG1 is intended to represent the battery management 
    expansion board with the same name, featuring basically three IPs:
    1) a battery charger of class L6924D
    2) a real-time clock (RTC) of class M41T62
    3) and a gas gauge (GG) of class STC3115
    It is intentionally implemented as a singleton because only one 
-   X_NUCLEO_IKC01A1 at a time might be deployed in a HW component stack.
+   X_CUBE_BFUELG1 at a time might be deployed in a HW component stack.
    In order to get the singleton instance you have to call class method
-   X_NUCLEO_IKC01A1::Instance().
+   X_CUBE_BFUELG1::Instance().
 */
-class X_NUCLEO_IKC01A1 {
+class X_CUBE_BFUELG1 {
  protected:
-        X_NUCLEO_IKC01A1(I2C&);
+        X_CUBE_BFUELG1(I2C&);
 
 	I2C &i2c;
 
  public:
-	static X_NUCLEO_IKC01A1* Instance(I2C&);
+	static X_CUBE_BFUELG1* Instance(I2C&);
 
 	int io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
 	int io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
@@ -74,7 +74,7 @@ class X_NUCLEO_IKC01A1 {
 	GasGauge &gg;
 
  private:
-	static X_NUCLEO_IKC01A1 *_instance;
+	static X_CUBE_BFUELG1 *_instance;
 };
 
-#endif /* __X_NUCLEO_IKC01A1_H */
+#endif /* __X_CUBE_BFUELG1_H */

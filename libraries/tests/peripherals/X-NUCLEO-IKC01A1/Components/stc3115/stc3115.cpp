@@ -40,7 +40,7 @@
 #include "stc3115.h"
 
 /* Methods -------------------------------------------------------------------*/
-STC3115::STC3115(X_NUCLEO_IKC01A1 *board) : GasGauge(), alm(GG_PIN_ALM),
+STC3115::STC3115(X_CUBE_BFUELG1 *board) : GasGauge(), alm(GG_PIN_ALM),
 	expansion_board(board), RAMData(), ConfigData(), BatteryData() 
 {
 	int ret;

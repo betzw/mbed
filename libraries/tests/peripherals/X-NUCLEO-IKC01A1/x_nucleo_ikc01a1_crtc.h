@@ -36,8 +36,8 @@
 */ 
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_CRTC_H
-#define __X_NUCLEO_IKC01A1_CRTC_H
+#ifndef __X_CUBE_BFUELG1_CRTC_H
+#define __X_CUBE_BFUELG1_CRTC_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -83,4 +83,4 @@ extern "C" {
 }
 #endif
 
-#endif // __X_NUCLEO_IKC01A1_CRTC_H
+#endif // __X_CUBE_BFUELG1_CRTC_H

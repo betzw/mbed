@@ -6,7 +6,7 @@
   * @date    08-October-2014
   * @brief   This header file is intended to manage the differences between 
   *          the different supported base-boards which might mount the
-  *          X_NUCLEO_IKC01A1 battery management expansion board.
+  *          X_CUBE_BFUELG1 battery management expansion board.
   ******************************************************************************
   * @attention
   *
@@ -38,8 +38,8 @@
   */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef _X_NUCLEO_IKC01A1_TARGETS_H_
-#define _X_NUCLEO_IKC01A1_TARGETS_H_
+#ifndef _X_CUBE_BFUELG1_TARGETS_H_
+#define _X_CUBE_BFUELG1_TARGETS_H_
 
 #if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8)
 /* Includes -------------------------------------------------------------------*/
@@ -103,4 +103,4 @@
 #endif // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8))
 
 
-#endif // _X_NUCLEO_IKC01A1_TARGETS_H_
+#endif // _X_CUBE_BFUELG1_TARGETS_H_

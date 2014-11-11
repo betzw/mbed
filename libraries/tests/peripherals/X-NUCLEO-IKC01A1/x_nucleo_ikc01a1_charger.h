@@ -37,8 +37,8 @@
   */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_CHARGER_H
-#define __X_NUCLEO_IKC01A1_CHARGER_H
+#ifndef __X_CUBE_BFUELG1_CHARGER_H
+#define __X_CUBE_BFUELG1_CHARGER_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -79,4 +79,4 @@ class L6924D {
 	DigitalIn st2;
 };
 
-#endif /* __X_NUCLEO_IKC01A1_CHARGER_H */
+#endif /* __X_CUBE_BFUELG1_CHARGER_H */

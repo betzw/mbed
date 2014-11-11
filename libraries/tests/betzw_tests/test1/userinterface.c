@@ -42,11 +42,11 @@
   * @{
   */
 
-/** @addtogroup X_NUCLEO_IKC01A1_Demonstration
+/** @addtogroup X_CUBE_BFUELG1_Demonstration
   * @{
   */ 
 
-/** @defgroup X_NUCLEO_IKC01A1_Demonstration_CharacterUserInterface
+/** @defgroup X_CUBE_BFUELG1_Demonstration_CharacterUserInterface
  * @{
  */
  

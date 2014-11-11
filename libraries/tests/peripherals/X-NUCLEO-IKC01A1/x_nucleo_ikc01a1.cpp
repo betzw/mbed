@@ -4,7 +4,7 @@
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
-* @brief   Implementation file for the X_NUCLEO_IKC01A1 singleton class
+* @brief   Implementation file for the X_CUBE_BFUELG1 singleton class
 ******************************************************************************
 * @attention
 *
@@ -41,19 +41,19 @@
 #include "stc3115/stc3115.h"
 
 /* Static variables ----------------------------------------------------------*/
-X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::_instance = NULL;
+X_CUBE_BFUELG1* X_CUBE_BFUELG1::_instance = NULL;
 
 /* Methods -------------------------------------------------------------------*/
-X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(I2C &bus) : i2c(bus), 
+X_CUBE_BFUELG1::X_CUBE_BFUELG1(I2C &bus) : i2c(bus), 
 	charger(), 
 	rtc(this),
 	gg(*(new STC3115(this))) 
 {
 }
 
-X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(I2C &bus) {
+X_CUBE_BFUELG1* X_CUBE_BFUELG1::Instance(I2C &bus) {
 	if(_instance == NULL) {
-		_instance = new X_NUCLEO_IKC01A1(bus);
+		_instance = new X_CUBE_BFUELG1(bus);
 	}
 	return _instance;
 }
@@ -66,7 +66,7 @@ X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(I2C &bus) {
  * @param  NumByteToWrite: number of bytes to be written.
  * @retval 0 if ok, -1 if an I2C error has occured
  */
-int X_NUCLEO_IKC01A1::io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
+int X_CUBE_BFUELG1::io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
 			       uint16_t NumByteToWrite)
 {
 	int ret;
@@ -94,7 +94,7 @@ int X_NUCLEO_IKC01A1::io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t Reg
  * @param  NumByteToRead: number of bytes to be read.
  * @retval 0 if ok, -1 if an I2C error has occured
  */
-int X_NUCLEO_IKC01A1::io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
+int X_CUBE_BFUELG1::io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
 			      uint16_t NumByteToRead)
 {
 	int ret;
