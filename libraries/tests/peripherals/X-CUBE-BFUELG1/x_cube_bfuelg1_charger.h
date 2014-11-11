@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  * @file    x_nucleo_ikc01a1_charger.h
+  * @file    x_cube_bfuelg1_charger.h
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
   * @brief   This file contains the common defines and functions prototypes for
-  *          the x_nucleo_ikc01a1_charger.cpp driver.
+  *          the x_cube_bfuelg1_charger.cpp driver.
   ******************************************************************************
   * @attention
   *
@@ -42,7 +42,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_nucleo_ikc01a1_targets.h"
+#include "x_cube_bfuelg1_targets.h"
 
 /* Typedefs ------------------------------------------------------------------*/
 typedef enum charger_conditions {

@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    x_nucleo_ikc01a1_targets.h
+  * @file    x_cube_bfuelg1_targets.h
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
@@ -53,8 +53,8 @@
 
 
 /*** I2C ***/
-#define IKC01A1_PIN_I2C_SCL         (PB_8)
-#define IKC01A1_PIN_I2C_SDA         (PB_9)
+#define BFUELG1_PIN_I2C_SCL         (PB_8)
+#define BFUELG1_PIN_I2C_SDA         (PB_9)
 
 
 /*** RTC ***/

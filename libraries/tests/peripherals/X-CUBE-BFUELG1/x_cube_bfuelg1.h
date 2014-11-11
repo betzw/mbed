@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    x_nucleo_ikc01a1.h
+  * @file    x_cube_bfuelg1.h
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
@@ -41,9 +41,9 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_nucleo_ikc01a1_targets.h"
-#include "x_nucleo_ikc01a1_charger.h"
-#include "x_nucleo_ikc01a1_rtc.h"
+#include "x_cube_bfuelg1_targets.h"
+#include "x_cube_bfuelg1_charger.h"
+#include "x_cube_bfuelg1_rtc.h"
 #include "Components/Common/GasGauge.h"
 
 /* Classes -------------------------------------------------------------------*/
