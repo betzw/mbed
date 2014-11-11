@@ -103,7 +103,7 @@ namespace {
 #define APP_LOOP_PERIOD 2000 // in ms
 
 /* Static variables ----------------------------------------------------------*/
-static I2C i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL);
+static I2C i2c(BFUELG1_PIN_I2C_SDA, BFUELG1_PIN_I2C_SCL);
 static X_CUBE_BFUELG1 *battery_expansion_board = X_CUBE_BFUELG1::Instance(i2c);
 
 static Ticker timer;
