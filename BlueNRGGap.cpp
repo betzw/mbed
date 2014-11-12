@@ -433,7 +433,7 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const uint8_t address[6])
     
     //Re-Init the BTLE Device with SetAddress as true
     //if(BlueNRGDevice::getIsInitialized())//Re-init only initialization is already done
-    btle_init(isSetAddress);
+    btle_init(isSetAddress, D11, D12, D3);
     
     //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;

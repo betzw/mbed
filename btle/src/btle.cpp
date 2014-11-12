@@ -68,7 +68,7 @@ volatile uint8_t set_connectable = 1;
     @returns
 */
 /**************************************************************************/
-void btle_init(bool isSetAddress)
+void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk)
 {
     DEBUG("btle_init>>\n\r"); 
     tHalUint8 *bleAddr;
@@ -88,7 +88,7 @@ void btle_init(bool isSetAddress)
     Clock_Wait(500);
 
     /* Initialize the BlueNRG SPI driver */
-    BNRG_SPI_Init();
+    BNRG_SPI_Init(D11, D12, D3);
 
     /* Initialize the BlueNRG HCI */
     HCI_Init();

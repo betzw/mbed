@@ -14,13 +14,14 @@
 * limitations under the License.
 */
 
-#include "hal_types.h"
-#include "mbed.h"
 
 // utility functions
 
 #ifndef __UTIL_H__
 #define __UTIL_H__
+
+#include "hal_types.h"
+#include "mbed.h"
 
 #define NEED_CONSOLE_OUTPUT 1 /* Set this if you need debug messages on the console;
                             * it will have an impact on code-size and power consumption. */

@@ -76,7 +76,7 @@ BlueNRGDevice::~BlueNRGDevice(void)
 ble_error_t BlueNRGDevice::init(void)
 {
     /* ToDo: Clear memory contents, reset the SD, etc. */
-    btle_init(BlueNRGGap::getInstance().getIsSetAddress());
+    btle_init(BlueNRGGap::getInstance().getIsSetAddress(), D11, D12, D3);
 
     isInitialized = true;
     

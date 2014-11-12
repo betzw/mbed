@@ -39,8 +39,8 @@
 #include "gpio_irq_api.h"
 #include "gpio_api.h"
 #include "wait_api.h"
-#include "pinmap.h"
 #include "bluenrg_shield_bsp.h"
+#include "platform.h"
 
 spi_t __spi;
 gpio_irq_t irq_exti;
@@ -96,28 +96,19 @@ void EXTI_irq_handler(uint32_t id, gpio_irq_event event)
 *         the BlueNRG Shield. All params should come from the User
 * @param  SPI_MOSI : PA_7 (Nucleo), D11 (Generic Arduino Pin)
 * @param  SPI_MISO : PA_6, D12
-* @param  SPI_SCLK : PB_3, D3
+* @param  SPI_SCLK : PB_3, D3 (Nucleo)
 * @param  SPI_CS : PA_1, A1
 * @param  EXTI_IRQ : PA_0, A0
 * @param  BlueNRG_RESET : PA_8, D7
 * @retval None
 */
-void BNRG_SPI_Init(void)
-{  
-  int ret;
-	spi_init(&__spi, D11, D12, D3, NC);
-	//spi_format(&__spi, 8, 0, 0);
-  	//spi_frequency(&__spi, 1000000);
-	
-	/*Init IRQ for EXTI Interrupt*/	
-	//gpio_init(&gpio_pin_A0, A0);//PA_0 in Nucleo
-	ret = gpio_irq_init(&irq_exti, A0, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
-	gpio_irq_set(&irq_exti, IRQ_RISE, 1);//Set mode to IRQ_RISE
-	gpio_init_in(&gpio_pin_A0, A0);//PA_0 in Nucleo//Configure the GPIO Pin as Input pin and PullDefault
-	//gpio_irq_enable(&irq_exti);//IRQ already enabled in IRQ init call above.
+void BNRG_SPI_Init(PinName mosi, PinName miso, PinName sclk)
+{
+	//All pins configured in platform.h according to platform chosen
+	spi_init(&__spi, SPI_MOSI, SPI_MISO, SPI_CLK, NC);
 	
 	/* Reset Pin Config */    
-	gpio_init(&gpio_pin_RESET, D7);//PA_8 in Nucleo
+	gpio_init(&gpio_pin_RESET, SPI_RESET);//PA_8 in Nucleo
 	gpio_mode(&gpio_pin_RESET, PullNone);
 	gpio_dir(&gpio_pin_RESET, PIN_OUTPUT);
 	gpio_write(&gpio_pin_RESET, 1);
@@ -129,11 +120,22 @@ void BNRG_SPI_Init(void)
 	pin_function(PB_3, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, 0));*/
 	
 	/* NSS/CSN/CS - PA_1*/		
-	gpio_init(&gpio_pin_CS, A1);//PA_1 in Nucleo
+	gpio_init(&gpio_pin_CS, SPI_CS);//PA_1 in Nucleo
 	gpio_mode(&gpio_pin_CS, PullNone);
 	gpio_dir(&gpio_pin_CS, PIN_OUTPUT);
 	gpio_write(&gpio_pin_CS, 1);
-		
+	
+	/*Init IRQ for EXTI Interrupt*/	
+	gpio_irq_init(&irq_exti, SPI_IRQ, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
+	gpio_irq_set(&irq_exti, IRQ_RISE, 1);//Set mode to IRQ_RISE
+	//gpio_init_in(&gpio_pin_A0, PTA2);//Configure the GPIO Pin as Input pin and PullDefault//gpio_init_in() does gpio_init() anyway
+	
+	/* EXTI IRQ Pin Config*/		
+	gpio_init(&gpio_pin_A0, SPI_IRQ);
+	gpio_mode(&gpio_pin_A0, PullNone);
+	gpio_dir(&gpio_pin_A0, PIN_INPUT);
+	gpio_write(&gpio_pin_A0, 0);
+			
 }
 
 /**
@@ -161,8 +163,7 @@ int32_t BlueNRG_SPI_Read_All(uint8_t *buffer, uint8_t buff_size)
   { 
 		tmpreg = spi_master_write(&__spi, header_master[i]);
 		header_slave[i] = (uint8_t)(tmpreg);
-  }    
-  
+  }      
   
   if (header_slave[0] == 0x02) {
     /* device is ready */

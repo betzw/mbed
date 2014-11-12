@@ -32,7 +32,7 @@ extern "C" {
 #include <stdio.h>
 #include <string.h>
 
-    void btle_init(bool isSetAddress);
+    void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk);
     void SPI_Poll(void);
     void User_Process(void);
     void setConnectable(void);
