@@ -46,7 +46,6 @@ X_CUBE_BFUELG1* X_CUBE_BFUELG1::_instance = NULL;
 /* Methods -------------------------------------------------------------------*/
 /**
  * @brief  Constructor
- * @param  bus reference to an DevI2C instance to be used for board communication
  */
 X_CUBE_BFUELG1::X_CUBE_BFUELG1(void) : dev_i2c(BFUELG1_PIN_I2C_SDA, BFUELG1_PIN_I2C_SCL),
 	charger(), 
@@ -57,7 +56,6 @@ X_CUBE_BFUELG1::X_CUBE_BFUELG1(void) : dev_i2c(BFUELG1_PIN_I2C_SDA, BFUELG1_PIN_
 
 /**
  * @brief  Get singleton instance
- * @param  bus reference to an DevI2C instance to be used for board communication
  * @return a pointer to the singleton instance of class X_CUBE_BFUELG1
  */
  X_CUBE_BFUELG1* X_CUBE_BFUELG1::Instance(void) {
