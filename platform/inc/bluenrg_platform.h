@@ -23,9 +23,9 @@
 #define BNRG_SPI_INSTANCE   0x1234
 
 /* Platform Pin Configurations -----------------------------------------------*/
-//#define MBED_NUCLEO_PLATFORM
+#define MBED_NUCLEO_PLATFORM
 //#define MBED_FRDM_PLATFORM
-#define MBED_LPC_PLATFORM
+//#define MBED_LPC_PLATFORM
 
 #ifdef MBED_FRDM_PLATFORM
 PinName PIN_SPI_MOSI=PTD2;//D11
