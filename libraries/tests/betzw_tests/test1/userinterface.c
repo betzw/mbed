@@ -38,7 +38,7 @@
 #include <stdio.h>
 #include "userinterface.h"
 
-/** @addtogroup STM32F4xx_HAL_Examples
+/** @addtogroup STM32xxxx_HAL_Examples
   * @{
   */
 

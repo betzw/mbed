@@ -10,3 +10,10 @@ Compile mbed:
 =============
 python workspace_tools/build.py -m NUCLEO_F401RE -t GCC_ARM
 python workspace_tools/build.py -m NUCLEO_L053R8 -t GCC_ARM
+
+
+Mercurial:
+==========
+git remote add mbed-origin "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/X-CUBE-BFUELG1"
+git subtree split -P libraries/tests/peripherals/X-CUBE-BFUELG1 -b split-lib
+git push mbed-origin split-lib:master

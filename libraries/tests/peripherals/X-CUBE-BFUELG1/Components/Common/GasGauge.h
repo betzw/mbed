@@ -34,7 +34,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************
-*/ 
+*/
 
 /* Define to prevent from recursive inclusion --------------------------------*/
 #ifndef __GAS_GAUGE_H
@@ -44,32 +44,35 @@
 #include "mbed.h"
 
 /* Classes  ------------------------------------------------------------------*/
-class GasGauge {
- public:
-	GasGauge(void) {};
+/** An abstract class for GasGauge components
+ */
+class GasGauge
+{
+public:
+    GasGauge(void) {};
 
-	virtual int Task(void) = 0;
-	virtual void Reset(void) = 0;
-	virtual int Stop(void) = 0;
+    virtual int Task(void) = 0;
+    virtual void Reset(void) = 0;
+    virtual int Stop(void) = 0;
 
-	virtual int GetSOC(void) = 0;
-	virtual int GetOCV(void) = 0;
-	virtual int GetCurrent(void) = 0;
-	virtual int GetTemperature(void) = 0;
-	virtual int GetVoltage(void) = 0;
-	virtual int GetChargeValue(void) = 0;
-	virtual int GetPresence(void) = 0;
-	virtual int GetAlarmStatus(void) = 0;
-	virtual int GetITState(void) = 0;
+    virtual int GetSOC(void) = 0;
+    virtual int GetOCV(void) = 0;
+    virtual int GetCurrent(void) = 0;
+    virtual int GetTemperature(void) = 0;
+    virtual int GetVoltage(void) = 0;
+    virtual int GetChargeValue(void) = 0;
+    virtual int GetPresence(void) = 0;
+    virtual int GetAlarmStatus(void) = 0;
+    virtual int GetITState(void) = 0;
 
-	virtual int AlarmSetVoltageThreshold(int) = 0;
-	virtual int AlarmSetSOCThreshold(int) = 0;
+    virtual int AlarmSetVoltageThreshold(int) = 0;
+    virtual int AlarmSetSOCThreshold(int) = 0;
 
-	virtual int GetIT(void) = 0;
-	virtual int EnableIT(void) = 0;
-	virtual int DisableIT(void) = 0;
-	virtual int ClearIT(void) = 0; 
-	virtual void AttachIT(void (*fptr)(void)) = 0;
+    virtual int GetIT(void) = 0;
+    virtual int EnableIT(void) = 0;
+    virtual int DisableIT(void) = 0;
+    virtual int ClearIT(void) = 0;
+    virtual void AttachIT(void (*fptr)(void)) = 0;
 };
 
 #endif /* __GAS_GAUGE_H */

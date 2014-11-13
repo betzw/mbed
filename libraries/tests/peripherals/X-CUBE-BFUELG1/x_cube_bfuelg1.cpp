@@ -44,73 +44,25 @@
 X_CUBE_BFUELG1* X_CUBE_BFUELG1::_instance = NULL;
 
 /* Methods -------------------------------------------------------------------*/
-X_CUBE_BFUELG1::X_CUBE_BFUELG1(I2C &bus) : i2c(bus), 
+/**
+ * @brief  Constructor
+ * @param  bus reference to an DevI2C instance to be used for board communication
+ */
+X_CUBE_BFUELG1::X_CUBE_BFUELG1(void) : dev_i2c(BFUELG1_PIN_I2C_SDA, BFUELG1_PIN_I2C_SCL),
 	charger(), 
-	rtc(this),
-	gg(*(new STC3115(this))) 
+	rtc(dev_i2c),
+	gg(*(new STC3115(dev_i2c)))
 {
 }
 
-X_CUBE_BFUELG1* X_CUBE_BFUELG1::Instance(I2C &bus) {
+/**
+ * @brief  Get singleton instance
+ * @param  bus reference to an DevI2C instance to be used for board communication
+ * @return a pointer to the singleton instance of class X_CUBE_BFUELG1
+ */
+ X_CUBE_BFUELG1* X_CUBE_BFUELG1::Instance(void) {
 	if(_instance == NULL) {
-		_instance = new X_CUBE_BFUELG1(bus);
+		_instance = new X_CUBE_BFUELG1();
 	}
 	return _instance;
 }
-
-/**
- * @brief  Writes a buffer from the I2C peripheral device.
- * @param  pBuffer: pointer to data to be read.
- * @param  DeviceAddr: specifies the peripheral device slave address.
- * @param  RegisterAddr: specifies internal address register to read from.
- * @param  NumByteToWrite: number of bytes to be written.
- * @retval 0 if ok, -1 if an I2C error has occured
- */
-int X_CUBE_BFUELG1::io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
-			       uint16_t NumByteToWrite)
-{
-	int ret;
-	uint8_t tmp[32];
-	
-	/* First, send device address. Then, send data and STOP condition */
-	tmp[0] = RegisterAddr;
-	memcpy(tmp+1, pBuffer, NumByteToWrite);
-
-	ret = i2c.write(DeviceAddr, (const char*)tmp, NumByteToWrite+1, 0);
-
-	if(ret) {
-		error("%s: dev = %d, reg = %d, num = %d\n",
-		      __func__, DeviceAddr, RegisterAddr, NumByteToWrite);
-		return -1;
-	}
-	return 0;
-}
-
-/**
- * @brief  Reads a buffer from the I2C peripheral device.
- * @param  pBuffer: pointer to data to be read.
- * @param  DaviceAddr: specifies the peripheral device slave address.
- * @param  RegisterAddr: specifies internal address register to read from.
- * @param  NumByteToRead: number of bytes to be read.
- * @retval 0 if ok, -1 if an I2C error has occured
- */
-int X_CUBE_BFUELG1::io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, 
-			      uint16_t NumByteToRead)
-{
-	int ret;
-
-	/* Send device address, with no STOP condition */
-	ret = i2c.write(DeviceAddr, (const char*)&RegisterAddr, 1, 1);
-	if(!ret) {
-		/* Read data, with STOP condition  */
-		ret = i2c.read(DeviceAddr, (char*)pBuffer, NumByteToRead, 0);
-	}
-
-	if(ret) {
-		error("%s: dev = %d, reg = %d, num = %d\n",
-		      __func__, DeviceAddr, RegisterAddr, NumByteToRead);
-		return -1;
-	}
-	return 0;
-}
-

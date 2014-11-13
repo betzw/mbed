@@ -42,10 +42,6 @@
 #define _X_CUBE_BFUELG1_TARGETS_H_
 
 #if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8)
-/* Includes -------------------------------------------------------------------*/
-#include "stc3115/stc3115_Driver.h"
-#include "stc3115/stc3115_Battery.h"
-
 /*** Charger ***/
 #define CHARGER_PIN_ST1             (PC_2)
 #define CHARGER_PIN_ST2             (PC_3) 

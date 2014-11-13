@@ -3,8 +3,8 @@
 * @file    x_cube_bfuelg1_crtc.h
 * @author  AST / EST
 * @version V0.0.1
-* @date    
-* @brief   
+* @date    08-October-2014
+* @brief   C-style types and declaration for RTC component M41T62
 ******************************************************************************
 * @attention
 *

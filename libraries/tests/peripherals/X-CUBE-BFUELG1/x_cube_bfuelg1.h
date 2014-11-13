@@ -4,7 +4,8 @@
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
-  * @brief   
+  * @brief   Header file for class X_CUBE_BFUELG1 representing an X-CUBE-BFUELG1
+  *          expansion board
   ******************************************************************************
   * @attention
   *
@@ -33,7 +34,7 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */ 
+  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
 #ifndef __X_CUBE_BFUELG1_H
@@ -44,37 +45,43 @@
 #include "x_cube_bfuelg1_targets.h"
 #include "x_cube_bfuelg1_charger.h"
 #include "x_cube_bfuelg1_rtc.h"
+#include "x_cube_bfuelg1_i2c.h"
 #include "Components/Common/GasGauge.h"
 
 /* Classes -------------------------------------------------------------------*/
-/* Class X_CUBE_BFUELG1 is intended to represent the battery management 
-   expansion board with the same name, featuring basically three IPs:
-   1) a battery charger of class L6924D
-   2) a real-time clock (RTC) of class M41T62
-   3) and a gas gauge (GG) of class STC3115
-   It is intentionally implemented as a singleton because only one 
-   X_CUBE_BFUELG1 at a time might be deployed in a HW component stack.
-   In order to get the singleton instance you have to call class method
-   X_CUBE_BFUELG1::Instance().
-*/
-class X_CUBE_BFUELG1 {
- protected:
-        X_CUBE_BFUELG1(I2C&);
+/** Class X_CUBE_BFUELG1 is intended to represent the battery management
+ *  expansion board with the same name.
+ *
+ *  The expansion board is featuring basically three IPs:\n
+ *  -# a battery charger of class L6924D\n
+ *  -# a real-time clock (RTC) of class M41T62\n
+ *  -# and a gas gauge (GG) of class STC3115\n
+ *
+ * It is intentionally implemented as a singleton because only one
+ * X_CUBE_BFUELG1 at a time might be deployed in a HW component stack.\n
+ * In order to get the singleton instance you have to call class method `Instance()`, 
+ * e.g.:
+ * @code
+ * // Battery expansion board singleton instance
+ * static X_CUBE_BFUELG1 *battery_expansion_board = X_CUBE_BFUELG1::Instance();
+ * @endcode
+ */
+class X_CUBE_BFUELG1
+{
+protected:
+    X_CUBE_BFUELG1(void);
 
-	I2C &i2c;
+public:
+    static X_CUBE_BFUELG1* Instance(void);
 
- public:
-	static X_CUBE_BFUELG1* Instance(I2C&);
+    DevI2C dev_i2c;
 
-	int io_read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
-	int io_write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
+    L6924D charger;
+    M41T62 rtc;
+    GasGauge &gg;
 
-	L6924D charger;
-	M41T62 rtc;
-	GasGauge &gg;
-
- private:
-	static X_CUBE_BFUELG1 *_instance;
+private:
+    static X_CUBE_BFUELG1 *_instance;
 };
 
 #endif /* __X_CUBE_BFUELG1_H */

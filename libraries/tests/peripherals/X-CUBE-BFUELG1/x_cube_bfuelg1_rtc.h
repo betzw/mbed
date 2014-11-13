@@ -3,8 +3,8 @@
 * @file    x_cube_bfuelg1_rtc.h
 * @author  AST / EST
 * @version V0.0.1
-* @date    
-* @brief   
+* @date    08-October-2014
+* @brief   Header file for RTC component M41T62
 ******************************************************************************
 * @attention
 *
@@ -33,7 +33,7 @@
 * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 *
 ******************************************************************************
-*/ 
+*/
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __X_CUBE_BFUELG1_RTC_H
@@ -43,70 +43,72 @@
 #include "mbed.h"
 #include "x_cube_bfuelg1_crtc.h"
 #include "x_cube_bfuelg1_targets.h"
-
-/* Forward declarations ------------------------------------------------------*/
-class X_CUBE_BFUELG1;
+#include "x_cube_bfuelg1_i2c.h"
 
 /* Classes -------------------------------------------------------------------*/
-class M41T62 {
- public:
- M41T62(X_CUBE_BFUELG1 *board) : irq_out(RTC_PIN_IRQ_OUT), 
-		expansion_board(board) {
-			ClearAlarm();
-			ClearIrq();
-		};
+/** Class representing a M41T62 real-time clock
+ */
+class M41T62
+{
+public:
+    /** Constructor
+     * @param i2c device I2C used to communicate on battery expansion board
+     */
+    M41T62(DevI2C &i2c) : irq_out(RTC_PIN_IRQ_OUT),
+        dev_i2c(i2c) {
+        ClearAlarm();
+        ClearIrq();
+    };
 
-	int GetTime(rtc_time_t*);
-	int SetTime(rtc_time_t*);
-	int IsTimeOfDayValid(void);
-	int RestartOscillator(void);
-	int SetAlarm(rtc_alarm_t*);
-	int ClearAlarm(void);
-	int ClearIrq(void);
+    int GetTime(rtc_time_t*);
+    int SetTime(rtc_time_t*);
+    int IsTimeOfDayValid(void);
+    int RestartOscillator(void);
+    int SetAlarm(rtc_alarm_t*);
+    int ClearAlarm(void);
+    int ClearIrq(void);
 
-	/** Attach a function to call when a falling edge occurs on the input
-	 *
-	 *  @param fptr A pointer to a void function, or 0 to set as none
-	 */
-	void attach_irq(void (*fptr)(void)) {
-		irq_out.fall(fptr);
-	}
+    /** Attach a function to call when a falling edge occurs on the input
+     *
+     *  @param fptr A pointer to a void function, or 0 to set as none
+     */
+    void attach_irq(void (*fptr)(void)) {
+        irq_out.fall(fptr);
+    }
 
-	/** Enable IRQ. This method depends on hw implementation, might enable one
-	 *  port interrupts. For further information, check gpio_irq_enable().
-	 */
-	void enable_irq() {
-		irq_out.enable_irq();
-	}
-	
-	/** Disable IRQ. This method depends on hw implementation, might disable one
-	 *  port interrupts. For further information, check gpio_irq_disable().
-	 */
-	void disable_irq() {
-		irq_out.disable_irq();
-	}
-	
-	static const char* GetWeekName(int);
-	static const char* GetMonthName(int);
+    /** Enable IRQ. This method depends on hw implementation, might enable one
+     *  port interrupts. For further information, check gpio_irq_enable().
+     */
+    void enable_irq() {
+        irq_out.enable_irq();
+    }
 
- protected:
-	/* BCD helper functions  */
-	static unsigned int bcd2bin(uint8_t val)
-	{
-		return ((val) & 0x0f) + ((val) >> 4)  * 10;
-	}
-	
-	static uint8_t bin2bcd (unsigned int val)
-	{
-		return (((val / 10) << 4) | (val % 10));
-	}
+    /** Disable IRQ. This method depends on hw implementation, might disable one
+     *  port interrupts. For further information, check gpio_irq_disable().
+     */
+    void disable_irq() {
+        irq_out.disable_irq();
+    }
 
-	/* alarm helper function */
-	int prepare_alarm_buffer(uint8_t *buf, rtc_alarm_t *alm);
+    static const char* GetWeekName(int);
+    static const char* GetMonthName(int);
 
- private:
-	InterruptIn irq_out;
-	X_CUBE_BFUELG1 *expansion_board;
+protected:
+    /* BCD helper functions  */
+    static unsigned int bcd2bin(uint8_t val) {
+        return ((val) & 0x0f) + ((val) >> 4)  * 10;
+    }
+
+    static uint8_t bin2bcd (unsigned int val) {
+        return (((val / 10) << 4) | (val % 10));
+    }
+
+    /* alarm helper function */
+    int prepare_alarm_buffer(uint8_t *buf, rtc_alarm_t *alm);
+
+private:
+    InterruptIn irq_out;
+    DevI2C &dev_i2c;
 };
 
 #endif // __X_CUBE_BFUELG1_RTC_H

@@ -44,16 +44,20 @@
 #include <stdint.h>
 
 #include "mbed.h"
-#include "../../x_cube_bfuelg1.h"
+#include "stc3115_Battery.h"
+#include "stc3115_Driver.h"
+#include "../../x_cube_bfuelg1_i2c.h"
 #include "../Common/GasGauge.h"
 
 /* Macros --------------------------------------------------------------------*/
 #define VoltageFactor  9011      /* LSB=2.20mV ~9011/4096 - convert to mV */        
 
 /* Classes  ------------------------------------------------------------------*/
+/** Implementation of STM's GasGauge component STC3115
+ */
 class STC3115 : public GasGauge {
  public:
-	STC3115(X_CUBE_BFUELG1 *board);
+	STC3115(DevI2C &i2c);
  
 	virtual int Task(void);
 	virtual void Reset(void);
@@ -153,13 +157,13 @@ class STC3115 : public GasGauge {
 	 *  @brief Attach a function to call when a falling edge occurs on the input
 	 *  @param fptr A pointer to a void function, or 0 to set as none
 	 */
-	void AttachIT(void (*fptr)(void)) {
+	virtual void AttachIT(void (*fptr)(void)) {
 		alm.fall(fptr);
 	}
 
  private:
 	InterruptIn alm;
-	X_CUBE_BFUELG1 *expansion_board;
+	DevI2C &dev_i2c;
 
  protected:
 	union {
@@ -226,12 +230,12 @@ class STC3115 : public GasGauge {
 	 */
 	int ReadData(uint8_t* pBuffer, uint8_t RegisterAddr, uint16_t NumByteToRead)
 	{
-		return expansion_board->io_read(pBuffer,
-						STC3115_SLAVE_ADDRESS,
-						RegisterAddr,
-						NumByteToRead);
+		return dev_i2c.i2c_read(pBuffer,
+					STC3115_SLAVE_ADDRESS,
+					RegisterAddr,
+					NumByteToRead);
 	}
-
+	
 	/**
 	 * @brief utility function to write data to STC3115
 	 * @param  pBuffer: pointer to buffer to be filled.
@@ -241,12 +245,12 @@ class STC3115 : public GasGauge {
 	 */
 	int WriteData(uint8_t* pBuffer, uint8_t RegisterAddr, uint16_t NumByteToWrite)
 	{
-		return expansion_board->io_write(pBuffer,
-						 STC3115_SLAVE_ADDRESS,
-						 RegisterAddr,
-						 NumByteToWrite);
+		return dev_i2c.i2c_write(pBuffer,
+					 STC3115_SLAVE_ADDRESS,
+					 RegisterAddr,
+					 NumByteToWrite);
 	}
-
+	
 	/** 
 	 * @brief Utility function to read the value stored in one register
 	 * @param  RegAddress STC3115 register to read

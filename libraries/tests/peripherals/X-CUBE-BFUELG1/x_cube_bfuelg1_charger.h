@@ -5,7 +5,7 @@
   * @version V0.0.1
   * @date    08-October-2014
   * @brief   This file contains the common defines and functions prototypes for
-  *          the x_cube_bfuelg1_charger.cpp driver.
+  *          the x_cube_bfuelg1_charger.cpp driver
   ******************************************************************************
   * @attention
   *
@@ -45,6 +45,8 @@
 #include "x_cube_bfuelg1_targets.h"
 
 /* Typedefs ------------------------------------------------------------------*/
+/** L6924D charger operating states
+ */
 typedef enum charger_conditions {
 	CHARGER_CHARGE_IN_PROGRESS,
 	CHARGER_CHARGE_DONE,
@@ -53,12 +55,17 @@ typedef enum charger_conditions {
 } charger_conditions_t;
 
 /* Classes  ------------------------------------------------------------------*/
+/** Class representing the L6924D charger component
+ */
 class L6924D {
  public:
-        L6924D(void) :  discharge(CHARGER_PIN_DISCHARGE), st1(CHARGER_PIN_ST1), st2(CHARGER_PIN_ST2) {
+        L6924D(void) : discharge(CHARGER_PIN_DISCHARGE), st1(CHARGER_PIN_ST1), st2(CHARGER_PIN_ST2) {
 		discharge = 0;	
 	}
 
+	/** Get charger state
+	 * @returns current charger operatinmg state
+	 */
 	charger_conditions_t GetState(void) {
 		if(!st1 && st2)
 			return CHARGER_CHARGE_IN_PROGRESS;
@@ -72,6 +79,8 @@ class L6924D {
 		return CHARGER_INVALID_STATE;
 	}
 
+	/** Digital output control discharging operation
+	 */
 	DigitalOut discharge;
 
  private:

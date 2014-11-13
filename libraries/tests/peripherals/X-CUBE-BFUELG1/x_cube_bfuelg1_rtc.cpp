@@ -3,8 +3,8 @@
 * @file    x_cube_bfuelg1_rtc.cpp
 * @author  AST / EST
 * @version V0.0.1
-* @date    
-* @brief   
+* @date    08-October-2014
+* @brief   Implementation file for RTC component M41T62
 ******************************************************************************
 * @attention
 *
@@ -40,9 +40,12 @@
 #include "x_cube_bfuelg1_rtc.h"
 
 /* Constants -----------------------------------------------------------------*/
-/* Week and months names  */
+/** Week names 
+ */
 static const char* weekDayNames[] = 
 	{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+/** Month names
+ */
 static const char* monthsNames[] = 
 	{"January", "February", "March", "April", "May", "June", "July", 
 	 "August", "September", "October", "November", "December"};
@@ -88,9 +91,9 @@ int M41T62::prepare_alarm_buffer(uint8_t *buf, rtc_alarm_t *alm) {
 	
 	/* read current value of M41T62_ALARM_MONTH register
 	   (for SQWE - square wave enable flag - bit)*/
-	ret = expansion_board->io_read(buf,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_ALARM_MONTH, 1);
+	ret = dev_i2c.i2c_read(buf,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_ALARM_MONTH, 1);
 	if(ret) return ret;
 
 	/* Merge time-data and register flags into buf[0..7]  */
@@ -122,10 +125,10 @@ int M41T62::GetTime(rtc_time_t *tm) {
 	uint8_t buf[M41T62_DATETIME_REG_SIZE];
 	int ret;
 	
-	ret = expansion_board->io_read(buf, 
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_SSECONDS, 
-				       M41T62_DATETIME_REG_SIZE);
+	ret = dev_i2c.i2c_read(buf, 
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_SSECONDS, 
+			       M41T62_DATETIME_REG_SIZE);
 	if(ret) return ret;
 
 	tm->tm_sec = bcd2bin(buf[M41T62_SECONDS] & 0x7f);
@@ -151,9 +154,9 @@ int M41T62::IsTimeOfDayValid(void)
 	int ret;
 
 	/* Check whether Oscillator Failed bit is set  */
-	ret = expansion_board->io_read(&val,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_FLAGS, 1);
+	ret = dev_i2c.i2c_read(&val,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_FLAGS, 1);
 	if(ret) return ret;
   
 	if(val & M41T62_FLAGS_OSCFAIL)
@@ -171,10 +174,10 @@ int M41T62::SetTime(rtc_time_t *tm)
 	uint8_t buf[M41T62_DATETIME_REG_SIZE];
 	int ret;
 
-	ret = expansion_board->io_read(buf,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_SSECONDS, 
-				       M41T62_DATETIME_REG_SIZE);
+	ret = dev_i2c.i2c_read(buf,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_SSECONDS, 
+			       M41T62_DATETIME_REG_SIZE);
 	if(ret) return ret;
 
 	/* Merge time-data and register flags into buf[0..7]  */
@@ -194,22 +197,22 @@ int M41T62::SetTime(rtc_time_t *tm)
 	/* assume 20YY not 19YY  */
 	buf[M41T62_YEAR] = bin2bcd(tm->tm_year % 100);
 
-	ret = expansion_board->io_write(buf,
-					M41T62_SLAVE_ADDRESS,
-					M41T62_SSECONDS, 
-					M41T62_DATETIME_REG_SIZE);
+	ret = dev_i2c.i2c_write(buf,
+				M41T62_SLAVE_ADDRESS,
+				M41T62_SSECONDS, 
+				M41T62_DATETIME_REG_SIZE);
 	if(ret) return ret;
 
 	/* Clear Oscillator Failed bit  */
-	ret = expansion_board->io_read(buf,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_FLAGS, 1);
+	ret = dev_i2c.i2c_read(buf,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_FLAGS, 1);
 	if(ret) return ret;
 
 	buf[0] &= ~M41T62_FLAGS_OSCFAIL;
-	ret = expansion_board->io_write(buf,
-					M41T62_SLAVE_ADDRESS,
-					M41T62_FLAGS, 1);
+	ret = dev_i2c.i2c_write(buf,
+				M41T62_SLAVE_ADDRESS,
+				M41T62_FLAGS, 1);
 	if(ret) return ret;
 
 	return 0;
@@ -249,21 +252,21 @@ int M41T62::RestartOscillator(void)
 	int ret;
 
 	/* Set STOP bit  */
-	ret = expansion_board->io_read(&val,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_SECONDS, 1);
+	ret = dev_i2c.i2c_read(&val,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_SECONDS, 1);
 	if(ret) return ret;
 	val |= M41T62_FLAGS_STOP;
-	ret = expansion_board->io_write(&val,
-					M41T62_SLAVE_ADDRESS,
-					M41T62_SECONDS, 1);
+	ret = dev_i2c.i2c_write(&val,
+				M41T62_SLAVE_ADDRESS,
+				M41T62_SECONDS, 1);
 	if(ret) return ret;
 	
 	/* Clear STOP bit  */
 	val &= ~M41T62_FLAGS_STOP;
-	ret = expansion_board->io_write(&val,
-					M41T62_SLAVE_ADDRESS,
-					M41T62_SECONDS, 1);
+	ret = dev_i2c.i2c_write(&val,
+				M41T62_SLAVE_ADDRESS,
+				M41T62_SECONDS, 1);
 	if(ret) return ret;
   
 	return 0;
@@ -282,15 +285,15 @@ int M41T62::SetAlarm(rtc_alarm_t  *alm)
 	ret = prepare_alarm_buffer(buf, alm);
 	if(ret) return ret;
 	
-	ret = expansion_board->io_write(buf,
-					M41T62_SLAVE_ADDRESS,
-					M41T62_ALARM_MONTH, M41T62_ALARM_REG_SIZE);
+	ret = dev_i2c.i2c_write(buf,
+				M41T62_SLAVE_ADDRESS,
+				M41T62_ALARM_MONTH, M41T62_ALARM_REG_SIZE);
 	if(ret) return ret;
 
 	/* Move address pointer to address different from flags register  */
-	ret = expansion_board->io_read(buf,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_SSECONDS, 1);
+	ret = dev_i2c.i2c_read(buf,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_SSECONDS, 1);
 	if(ret) return ret;
 
 	return 0;
@@ -317,15 +320,15 @@ int M41T62::ClearAlarm(void)
 	buf[M41T62_ALARM_MONTH-M41T62_ALARM_MONTH] =
 		buf[M41T62_ALARM_MONTH-M41T62_ALARM_MONTH] & ~0x80;
 	
-	ret = expansion_board->io_write(buf,
-					M41T62_SLAVE_ADDRESS,
-					M41T62_ALARM_MONTH, M41T62_ALARM_REG_SIZE);
+	ret = dev_i2c.i2c_write(buf,
+				M41T62_SLAVE_ADDRESS,
+				M41T62_ALARM_MONTH, M41T62_ALARM_REG_SIZE);
 	if(ret) return ret;
 
 	/* Move address pointer to address different from flags register  */
-	ret = expansion_board->io_read(buf,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_SSECONDS, 1);
+	ret = dev_i2c.i2c_read(buf,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_SSECONDS, 1);
 	if(ret) return ret;
 
 	return 0;
@@ -340,18 +343,17 @@ int M41T62::ClearIrq(void)
 	uint8_t buf;
 	int ret;
 
-	ret = expansion_board->io_read(&buf,
-				       M41T62_SLAVE_ADDRESS,
-				       M41T62_FLAGS, 1);
+	ret = dev_i2c.i2c_read(&buf,
+			       M41T62_SLAVE_ADDRESS,
+			       M41T62_FLAGS, 1);
 	if(ret) return ret;
 
 	do {
-		ret = expansion_board->io_read(&buf,
-					       M41T62_SLAVE_ADDRESS,
-					       M41T62_FLAGS, 1);
+		ret = dev_i2c.i2c_read(&buf,
+				       M41T62_SLAVE_ADDRESS,
+				       M41T62_FLAGS, 1);
 		if(ret) return ret;
 	} while(buf & M41T62_FLAGS_ALARMF); // check if alarm flag (AF) has been reset to '0' 
 	
 	return 0;
 }
-
