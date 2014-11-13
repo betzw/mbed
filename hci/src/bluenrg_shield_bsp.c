@@ -40,7 +40,7 @@
 #include "gpio_api.h"
 #include "wait_api.h"
 #include "bluenrg_shield_bsp.h"
-#include "platform.h"
+#include "bluenrg_platform.h"
 
 spi_t __spi;
 gpio_irq_t irq_exti;
@@ -105,10 +105,10 @@ void EXTI_irq_handler(uint32_t id, gpio_irq_event event)
 void BNRG_SPI_Init(PinName mosi, PinName miso, PinName sclk)
 {
 	//All pins configured in platform.h according to platform chosen
-	spi_init(&__spi, SPI_MOSI, SPI_MISO, SPI_CLK, NC);
+	spi_init(&__spi, PIN_SPI_MOSI, PIN_SPI_MISO, PIN_SPI_CLK, NC);
 	
 	/* Reset Pin Config */    
-	gpio_init(&gpio_pin_RESET, SPI_RESET);//PA_8 in Nucleo
+	gpio_init(&gpio_pin_RESET, PIN_SPI_RESET);//PA_8 in Nucleo
 	gpio_mode(&gpio_pin_RESET, PullNone);
 	gpio_dir(&gpio_pin_RESET, PIN_OUTPUT);
 	gpio_write(&gpio_pin_RESET, 1);
@@ -120,18 +120,18 @@ void BNRG_SPI_Init(PinName mosi, PinName miso, PinName sclk)
 	pin_function(PB_3, STM_PIN_DATA(STM_MODE_AF_PP, GPIO_PULLUP, 0));*/
 	
 	/* NSS/CSN/CS - PA_1*/		
-	gpio_init(&gpio_pin_CS, SPI_CS);//PA_1 in Nucleo
+	gpio_init(&gpio_pin_CS, PIN_SPI_CS);//PA_1 in Nucleo
 	gpio_mode(&gpio_pin_CS, PullNone);
 	gpio_dir(&gpio_pin_CS, PIN_OUTPUT);
 	gpio_write(&gpio_pin_CS, 1);
 	
 	/*Init IRQ for EXTI Interrupt*/	
-	gpio_irq_init(&irq_exti, SPI_IRQ, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
+	gpio_irq_init(&irq_exti, PIN_SPI_IRQ, EXTI_irq_handler,(uint32_t)BNRG_SPI_INSTANCE);
 	gpio_irq_set(&irq_exti, IRQ_RISE, 1);//Set mode to IRQ_RISE
 	//gpio_init_in(&gpio_pin_A0, PTA2);//Configure the GPIO Pin as Input pin and PullDefault//gpio_init_in() does gpio_init() anyway
 	
 	/* EXTI IRQ Pin Config*/		
-	gpio_init(&gpio_pin_A0, SPI_IRQ);
+	gpio_init(&gpio_pin_A0, PIN_SPI_IRQ);
 	gpio_mode(&gpio_pin_A0, PullNone);
 	gpio_dir(&gpio_pin_A0, PIN_INPUT);
 	gpio_write(&gpio_pin_A0, 0);
