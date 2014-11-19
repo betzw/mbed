@@ -14,6 +14,31 @@
 * limitations under the License.
 */
 
+
+/**
+  ******************************************************************************
+  * @file    BlueNRGGap.cpp 
+  * @author  STMicroelectronics
+  * @brief   Implementation of BLE_API Gap Class
+  ******************************************************************************
+  * @copy
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  */ 
+
+/** @defgroup BlueNRGGap
+ *  @brief BlueNRG BLE_API GAP Adaptation
+ *  @{
+ */
+ 
+   
 #include "BlueNRGDevice.h"
 #include "mbed.h"
 #include "Payload.h"
@@ -34,9 +59,6 @@ uint32_t advtInterval = 0;
     @brief  Sets the advertising parameters and payload for the device. 
             Note: Some data types give error when their adv data is updated using aci_gap_update_adv_data() API
 
-    @param[in]  params
-                Basic advertising details, including the advertising
-                delay, timeout and how the device should be advertised
     @params[in] advData
                 The primary advertising data payload
     @params[in] scanResponse
@@ -213,7 +235,11 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
 /*!
     @brief  Starts the BLE HW, initialising any services that were
             added before this function was called.
-
+    
+    @param[in]  params
+                Basic advertising details, including the advertising
+                delay, timeout and how the device should be advertised
+                
     @note   All services must be added before calling this function!
 
     @returns    ble_error_t
@@ -348,6 +374,9 @@ ble_error_t BlueNRGGap::stopAdvertising(void)
 /*!
     @brief  Disconnects if we are connected to a central device
 
+    @param[in]  reason
+                Disconnection Reason
+                
     @returns    ble_error_t
 
     @retval     BLE_ERROR_NONE
@@ -384,6 +413,11 @@ ble_error_t BlueNRGGap::disconnect(Gap::DisconnectionReason_t reason)
 /**************************************************************************/
 /*!
     @brief  Sets the 16-bit connection handle
+    
+    @param[in]  con_handle
+                Connection Handle which is set in the Gap Instance
+                
+    @returns    void
 */
 /**************************************************************************/
 void BlueNRGGap::setConnectionHandle(uint16_t con_handle)
@@ -394,6 +428,11 @@ void BlueNRGGap::setConnectionHandle(uint16_t con_handle)
 /**************************************************************************/
 /*!
     @brief  Gets the 16-bit connection handle
+    
+    @param[in]  void
+                
+    @returns    uint16_t
+                Connection Handle of the Gap Instance
 */
 /**************************************************************************/
 uint16_t BlueNRGGap::getConnectionHandle(void)
@@ -406,6 +445,12 @@ uint16_t BlueNRGGap::getConnectionHandle(void)
     @brief      Sets the BLE device address. SetAddress will reset the BLE
                 device and re-initialize BTLE. Will not start advertising.
 
+    @param[in]  type
+                Type of Address
+    
+    @param[in]  address[6]
+                Value of the Address to be set
+                
     @returns    ble_error_t
 
     @section EXAMPLE
@@ -462,7 +507,7 @@ bool BlueNRGGap::getIsSetAddress()
 /*!
     @brief      Returns the address of the device if set
 
-    @returns    ble_error_t
+    @returns    Pointer to the address is Address is set else NULL
 
     @section EXAMPLE
 
@@ -535,7 +580,7 @@ ble_error_t BlueNRGGap::updateConnectionParams(Handle_t handle, const Connection
 
 /**************************************************************************/
 /*!
-    @brief  sets device name characteristic 
+    @brief  Sets the Device Name Characteristic 
 
     @param[in]  deviceName
                 pointer to device name to be set
@@ -579,11 +624,10 @@ ble_error_t BlueNRGGap::setDeviceName(const uint8_t *deviceName)
 
 /**************************************************************************/
 /*!
-    @brief  gets device name characteristic 
+    @brief  Gets the Device Name Characteristic 
 
     @param[in]  deviceName
-                pointer to device name 
-                
+                pointer to device name                 
 
     @param[in]  lengthP
                 pointer to device name length                
@@ -618,7 +662,7 @@ ble_error_t BlueNRGGap::getDeviceName(uint8_t *deviceName, unsigned *lengthP)
 
 /**************************************************************************/
 /*!
-    @brief  sets device appearance characteristic 
+    @brief  Sets the Device Appearance Characteristic 
 
     @param[in]  appearance
                 device appearance      
@@ -652,7 +696,7 @@ ble_error_t BlueNRGGap::setAppearance(uint16_t appearance)
 
 /**************************************************************************/
 /*!
-    @brief  gets device appearance  
+    @brief  Gets the Device Appearance Characteristic
 
     @param[in]  appearance
                 pointer to device appearance value      

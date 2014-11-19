@@ -17,10 +17,6 @@
 
 #include <hal_types.h>
 
-
-/** @defgroup ble_status Bluetooth Status/Error Codes
- * @{
- */
  
 typedef tHalUint8 tBleStatus; 
 

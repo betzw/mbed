@@ -14,6 +14,29 @@
 * limitations under the License.
 */
 
+/**
+  ******************************************************************************
+  * @file    BlueNRGDevice.cpp 
+  * @author  STMicroelectronics
+  * @brief   Implementation of BLEDeviceInstanceBase
+  ******************************************************************************
+  * @copy
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  */ 
+  
+/** @defgroup BlueNRGDevice
+ *  @brief BlueNRG BLE_API Device Adaptation
+ *  @{
+ */
+ 
 #include "mbed.h"
 #include "BlueNRGDevice.h"
 #include "BlueNRGGap.h"
@@ -39,7 +62,7 @@ createBLEDeviceInstance(void)
 }
 
 /**************************************************************************/
-/*!
+/**
     @brief  Constructor
 */
 /**************************************************************************/
@@ -49,7 +72,7 @@ BlueNRGDevice::BlueNRGDevice(void)
 }
 
 /**************************************************************************/
-/*!
+/**
     @brief  Destructor
 */
 /**************************************************************************/
@@ -57,22 +80,12 @@ BlueNRGDevice::~BlueNRGDevice(void)
 {
 }
 
-/**************************************************************************/
-/*!
+
+/**
     @brief  Initialises anything required to start using BLE
-
+    @param[in] void
     @returns    ble_error_t
-
-    @retval     BLE_ERROR_NONE
-                Everything executed properly
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
 */
-/**************************************************************************/
 ble_error_t BlueNRGDevice::init(void)
 {
     /* ToDo: Clear memory contents, reset the SD, etc. */
@@ -83,23 +96,13 @@ ble_error_t BlueNRGDevice::init(void)
     return BLE_ERROR_NONE;
 }
 
-/**************************************************************************/
-/*!
+
+/**
     @brief  Resets the BLE HW, removing any existing services and
             characteristics
-
+    @param[in] void
     @returns    ble_error_t
-
-    @retval     BLE_ERROR_NONE
-                Everything executed properly
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
 */
-/**************************************************************************/
 ble_error_t BlueNRGDevice::reset(void)
 {
     wait(0.5);
@@ -115,6 +118,12 @@ ble_error_t BlueNRGDevice::reset(void)
     return BLE_ERROR_NONE;
 }
 
+
+/*!
+    @brief  Wait for any BLE Event like BLE Connection, Read Request etc.    
+    @param[in] void
+    @returns    char *      
+*/
 void BlueNRGDevice::waitForEvent(void)
 {
     HCI_Process();//Send App Events??
@@ -122,21 +131,11 @@ void BlueNRGDevice::waitForEvent(void)
 }
 
 
-/**************************************************************************/
 /*!
     @brief  get GAP version
-    
-    @returns    char *      
-
-    @retval    pointer to version string
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
+    @param[in] void
+    @returns    char *
 */
-/**************************************************************************/
 const char *BlueNRGDevice::getVersion(void)
 {
     char *version = new char[6];
@@ -147,16 +146,8 @@ const char *BlueNRGDevice::getVersion(void)
 /**************************************************************************/
 /*!
     @brief  get init state
-    
+    @param[in] void
     @returns    bool  
-
-    @retval    
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
 */
 /**************************************************************************/
 bool BlueNRGDevice::getIsInitialized(void)
@@ -167,16 +158,8 @@ bool BlueNRGDevice::getIsInitialized(void)
 /**************************************************************************/
 /*!
     @brief  get reference to GAP object
-    
+    @param[in] void
     @returns    Gap&      
-
-    @retval    reference to gap object
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
 */
 /**************************************************************************/
 Gap        &BlueNRGDevice::getGap()        
@@ -187,16 +170,8 @@ Gap        &BlueNRGDevice::getGap()
 /**************************************************************************/
 /*!
     @brief  get reference to GATT server object
-    
+    @param[in] void
     @returns    GattServer&    
-
-    @retval    reference to GATT server object
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
 */
 /**************************************************************************/
 GattServer &BlueNRGDevice::getGattServer() 
@@ -207,17 +182,8 @@ GattServer &BlueNRGDevice::getGattServer()
 /**************************************************************************/
 /*!
     @brief  set Tx power level
-    
+    @param[in] txPower Transmission Power level
     @returns    ble_error_t
-
-    @retval     BLE_ERROR_NONE
-                Everything executed properly
-
-    @section EXAMPLE
-
-    @code
-
-    @endcode
 */
 /**************************************************************************/
 ble_error_t BlueNRGDevice::setTxPower(int8_t txPower)

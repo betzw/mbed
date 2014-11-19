@@ -13,7 +13,30 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+/**
+  ******************************************************************************
+  * @file    BlueNRGGattServer.cpp 
+  * @author  STMicroelectronics
+  * @brief   Implementation of BlueNRG BLE_API GattServer Class
+  ******************************************************************************
+  * @copy
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  */ 
+  
+  
+/** @defgroup BlueNRGGATTSERVER
+ *  @brief BlueNRG BLE_API GattServer Adaptation
+ *  @{
+ */
+ 
 #include "BlueNRGGattServer.h"
 #include "mbed.h"
 #include "BlueNRGGap.h"
@@ -23,6 +46,9 @@
 /*!
     @brief  Adds a new service to the GATT table on the peripheral
 
+    @params[in] service
+                Pointer to instance of the Gatt Server to add
+                
     @returns    ble_error_t
 
     @retval     BLE_ERROR_NONE
@@ -172,7 +198,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
     @param[in]  buffer
                 Buffer to hold the the characteristic's value
                 (raw byte array in LSB format)
-    @param[in]  len
+    @param[in]  lengthP
                 The number of bytes read into the buffer
 
     @returns    ble_error_t

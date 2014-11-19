@@ -15,6 +15,25 @@
 */
 
 
+/**
+  ******************************************************************************
+  * @file    btle.cpp 
+  * @author  STMicroelectronics
+  * @brief   Implementation BlueNRG Init and helper functions.
+  ******************************************************************************
+  * @copy
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  */ 
+
+
 #include "btle.h"
 #include "public/Gap.h"
 #include "public/GapEvents.h"
@@ -40,7 +59,7 @@ extern "C" {
 #include "sm.h"
 #include <stdio.h>
 #include <string.h>
-#include "role_type.h"
+//#include "role_type.h"
 #include "debug.h"
 
 #ifdef __cplusplus
@@ -63,9 +82,12 @@ volatile uint8_t set_connectable = 1;
 
 /**************************************************************************/
 /*!
-    @brief      Initialises BTLE and the underlying HW/Device
-
-    @returns
+    @brief  Initialises BTLE and the underlying HW/Device
+    @param  isSetAddress boolean if address has been set
+    @param  mosi MOSI Pin
+    @param  miso MISO Pin
+    @param  sclk clock Pin
+    @returns void
 */
 /**************************************************************************/
 void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk)
@@ -149,9 +171,9 @@ void setConnectable(void)
 
 /**************************************************************************/
 /*!
-    @brief
+    @brief  Not Used
 
-    @param[in]  p_ble_evt
+    @param[in]  void
     
     @returns
 */
@@ -161,7 +183,13 @@ static void btle_handler()
 
 }
 
+/*!
+    @brief  Not Used
 
+    @param[in]  void
+    
+    @returns
+*/
 void SPI_Poll(void)
 {
     //HAL_GPIO_EXTI_Callback_Poll(BNRG_SPI_EXTI_PIN);
@@ -180,7 +208,7 @@ extern "C" {
                 Event Packet sent by the stack to be decoded
     
     @returns
-*/
+    */
     /**************************************************************************/
     extern void HCI_Event_CB(void *pckt) {
         

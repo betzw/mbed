@@ -32,6 +32,26 @@
 *
 ******************************************************************************
 */
+
+/**
+  ******************************************************************************
+  * @file    bluenrg_shield_bsp.c 
+  * @author  STMicroelectronics
+  * @brief   Function for managing HCI interface.
+  ******************************************************************************
+  * @copy
+  *
+  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
+  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
+  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
+  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
+  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+  *
+  * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
+  */ 
+  
+  
 /* Includes ------------------------------------------------------------------*/
 
 #include "hci.h"
@@ -47,11 +67,7 @@ gpio_irq_t irq_exti;
 gpio_t gpio_pin_A0, gpio_pin_CS, gpio_pin_MOSI, gpio_pin_MISO, gpio_pin_SCLK, gpio_pin_RESET;
 void EXTI_irq_handler(uint32_t id, gpio_irq_event event);
 	
-/** @addtogroup BlueNRG_Shield
- *  @{
- */
-
-/** @defgroup BlueNRG_Shield_Driver
+/** @defgroup bluenrg_shield_bsp
  *  @brief BlueNRG Shield driver based on mbed HAL
  *  @{
  */
