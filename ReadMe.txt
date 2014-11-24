@@ -14,7 +14,7 @@ python workspace_tools/build.py -m NUCLEO_L053R8 -t GCC_ARM
 
 Mercurial:
 ==========
-git remote add mbed "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/X-CUBE-BFUELG1"
-git subtree split -P libraries/tests/peripherals/X-CUBE-BFUELG1 -b split-lib
-git push mbed split-lib:master
-git branch -D split-lib
+git remote add mbed-lib "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/X-CUBE-BFUELG1"
+
+git subtree push -P libraries/tests/peripherals/X-CUBE-BFUELG1 mbed-lib master
+git subtree pull -P libraries/tests/peripherals/X-CUBE-BFUELG1 mbed-lib master
