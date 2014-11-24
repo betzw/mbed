@@ -37,8 +37,7 @@ void us_ticker_irq_handler(void) {
             return;
         }
 
-        if ((int32_t)((uint32_t)head->timestamp - us_ticker_read()) <= 0)
-	{
+        if ((int)(head->timestamp - us_ticker_read()) <= 0) {
             // This event was in the past:
             //      point to the following one and execute its handler
             ticker_event_t *p = head;

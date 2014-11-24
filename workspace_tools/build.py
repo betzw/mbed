@@ -37,7 +37,6 @@ from workspace_tools.build_api import static_analysis_scan, static_analysis_scan
 from workspace_tools.build_api import print_build_results
 from workspace_tools.settings import CPPCHECK_CMD, CPPCHECK_MSG_FORMAT
 
-
 if __name__ == '__main__':
     start = time()
 
@@ -85,6 +84,12 @@ if __name__ == '__main__':
                       dest="ublox",
                       default=False,
                       help="Compile the u-blox library")
+
+    parser.add_option("", "--cpputest",
+                      action="store_true",
+                      dest="cpputest_lib",
+                      default=False,
+                      help="Compiles 'cpputest' unit test library (library should be on the same directory level as mbed repository)")
 
     parser.add_option("-D", "",
                       action="append",
@@ -170,6 +175,8 @@ if __name__ == '__main__':
         libraries.extend(["fat"])
     if options.ublox:
         libraries.extend(["rtx", "rtos", "usb_host", "ublox"])
+    if options.cpputest_lib:
+        libraries.extend(["cpputest"])
 
     notify = print_notify_verbose if options.extra_verbose_notify else None  # Special notify for CI (more verbose)
 
@@ -209,7 +216,6 @@ if __name__ == '__main__':
                     lib_build_res = build_mbed_libs(mcu, toolchain, options=options.options,
                                                     notify=notify, verbose=options.verbose, jobs=options.jobs, clean=options.clean,
                                                     macros=options.macros)
-
                     for lib_id in libraries:
                         notify = print_notify_verbose if options.extra_verbose_notify else None  # Special notify for CI (more verbose)
                         build_lib(lib_id, mcu, toolchain, options=options.options,

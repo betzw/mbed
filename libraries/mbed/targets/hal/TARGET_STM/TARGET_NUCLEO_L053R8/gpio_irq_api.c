@@ -41,14 +41,14 @@
 // Number of EXTI irq vectors (EXTI0_1, EXTI2_3, EXTI4_15)
 #define CHANNEL_NUM (3)
 
-// Max pins for one line
+// Max pins for one line (max with EXTI4_15)
 #define MAX_PIN_LINE (12)
 
 typedef struct gpio_channel {
-    uint32_t pin_mask; // bitmask representing with position which pins are configured for receiving interrupts
-    uint32_t channel_ids[MAX_PIN_LINE]; // mbed "gpio_irq_t gpio_irq" field of instance
+    uint32_t pin_mask;                   // bitmask representing which pins are configured for receiving interrupts
+    uint32_t channel_ids[MAX_PIN_LINE];  // mbed "gpio_irq_t gpio_irq" field of instance
     uint32_t channel_gpio[MAX_PIN_LINE]; // base address of gpio port group
-    uint32_t channel_pin[MAX_PIN_LINE]; // pin number in port group
+    uint32_t channel_pin[MAX_PIN_LINE];  // pin number in port group
 } gpio_channel_t;
 
 static gpio_channel_t channels[CHANNEL_NUM] = {
@@ -57,6 +57,7 @@ static gpio_channel_t channels[CHANNEL_NUM] = {
     {.pin_mask = 0}
 };
 
+// Used to return the index for channels array.
 static uint32_t pin_base_nr[16] = {
     // EXTI0_1
     0, // pin 0
