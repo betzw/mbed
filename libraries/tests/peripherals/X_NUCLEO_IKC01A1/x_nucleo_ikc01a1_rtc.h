@@ -1,6 +1,6 @@
 /**
 ******************************************************************************
-* @file    x_cube_bfuelg1_rtc.h
+* @file    x_nucleo_ikc01a1_rtc.h
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
@@ -36,14 +36,14 @@
 */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __X_CUBE_BFUELG1_RTC_H
-#define __X_CUBE_BFUELG1_RTC_H
+#ifndef __X_NUCLEO_IKC01A1_RTC_H
+#define __X_NUCLEO_IKC01A1_RTC_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_cube_bfuelg1_crtc.h"
-#include "x_cube_bfuelg1_targets.h"
-#include "x_cube_bfuelg1_i2c.h"
+#include "x_nucleo_ikc01a1_crtc.h"
+#include "x_nucleo_ikc01a1_targets.h"
+#include "x_nucleo_ikc01a1_i2c.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a M41T62 real-time clock
@@ -111,4 +111,4 @@ private:
     DevI2C &dev_i2c;
 };
 
-#endif // __X_CUBE_BFUELG1_RTC_H
+#endif // __X_NUCLEO_IKC01A1_RTC_H

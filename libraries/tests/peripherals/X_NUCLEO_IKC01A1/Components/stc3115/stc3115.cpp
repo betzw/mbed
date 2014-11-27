@@ -38,7 +38,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "stc3115.h"
-#include "../../x_cube_bfuelg1_targets.h"
+#include "../../x_nucleo_ikc01a1_targets.h"
 
 /* Methods -------------------------------------------------------------------*/
 /** Constructor

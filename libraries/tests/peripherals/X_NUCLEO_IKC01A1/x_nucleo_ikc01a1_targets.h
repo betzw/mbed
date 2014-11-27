@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
-  * @file    x_cube_bfuelg1_targets.h
+  * @file    x_nucleo_ikc01a1_targets.h
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
   * @brief   This header file is intended to manage the differences between 
   *          the different supported base-boards which might mount the
-  *          X_CUBE_BFUELG1 battery management expansion board.
+  *          X_NUCLEO_IKC01A1 battery management expansion board.
   ******************************************************************************
   * @attention
   *
@@ -38,8 +38,8 @@
   */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef _X_CUBE_BFUELG1_TARGETS_H_
-#define _X_CUBE_BFUELG1_TARGETS_H_
+#ifndef _X_NUCLEO_IKC01A1_TARGETS_H_
+#define _X_NUCLEO_IKC01A1_TARGETS_H_
 
 #if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8)
 /*** Charger ***/
@@ -49,8 +49,8 @@
 
 
 /*** I2C ***/
-#define BFUELG1_PIN_I2C_SCL         (PB_8)
-#define BFUELG1_PIN_I2C_SDA         (PB_9)
+#define IKC01A1_PIN_I2C_SCL         (PB_8)
+#define IKC01A1_PIN_I2C_SDA         (PB_9)
 
 
 /*** RTC ***/
@@ -99,4 +99,4 @@
 #endif // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8))
 
 
-#endif // _X_CUBE_BFUELG1_TARGETS_H_
+#endif // _X_NUCLEO_IKC01A1_TARGETS_H_

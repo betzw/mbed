@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  * @file    x_cube_bfuelg1_charger.h
+  * @file    x_nucleo_ikc01a1.h
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
-  * @brief   This file contains the common defines and functions prototypes for
-  *          the x_cube_bfuelg1_charger.cpp driver
+  * @brief   Header file for class X_NUCLEO_IKC01A1 representing an X-NUCLEO-IKC01A1
+  *          expansion board
   ******************************************************************************
   * @attention
   *
@@ -34,58 +34,54 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */ 
+  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_CUBE_BFUELG1_CHARGER_H
-#define __X_CUBE_BFUELG1_CHARGER_H
+#ifndef __X_NUCLEO_IKC01A1_H
+#define __X_NUCLEO_IKC01A1_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_cube_bfuelg1_targets.h"
+#include "x_nucleo_ikc01a1_targets.h"
+#include "x_nucleo_ikc01a1_charger.h"
+#include "x_nucleo_ikc01a1_rtc.h"
+#include "x_nucleo_ikc01a1_i2c.h"
+#include "Components/Common/GasGauge.h"
 
-/* Typedefs ------------------------------------------------------------------*/
-/** L6924D charger operating states
+/* Classes -------------------------------------------------------------------*/
+/** Class X_NUCLEO_IKC01A1 is intended to represent the battery management
+ *  expansion board with the same name.
+ *
+ *  The expansion board is featuring basically three IPs:\n
+ *  -# a battery charger of class L6924D\n
+ *  -# a real-time clock (RTC) of class M41T62\n
+ *  -# and a gas gauge (GG) of class STC3115\n
+ *
+ * It is intentionally implemented as a singleton because only one
+ * X_NUCLEO_IKC01A1 at a time might be deployed in a HW component stack.\n
+ * In order to get the singleton instance you have to call class method `Instance()`, 
+ * e.g.:
+ * @code
+ * // Battery expansion board singleton instance
+ * static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
+ * @endcode
  */
-typedef enum charger_conditions {
-	CHARGER_CHARGE_IN_PROGRESS,
-	CHARGER_CHARGE_DONE,
-	CHARGER_IN_STAND_BY,
-	CHARGER_INVALID_STATE
-} charger_conditions_t;
+class X_NUCLEO_IKC01A1
+{
+protected:
+    X_NUCLEO_IKC01A1(void);
 
-/* Classes  ------------------------------------------------------------------*/
-/** Class representing the L6924D charger component
- */
-class L6924D {
- public:
-        L6924D(void) : discharge(CHARGER_PIN_DISCHARGE), st1(CHARGER_PIN_ST1), st2(CHARGER_PIN_ST2) {
-		discharge = 0;	
-	}
+public:
+    static X_NUCLEO_IKC01A1* Instance(void);
 
-	/** Get charger state
-	 * @returns current charger operatinmg state
-	 */
-	charger_conditions_t GetState(void) {
-		if(!st1 && st2)
-			return CHARGER_CHARGE_IN_PROGRESS;
-		
-		if(st1 && !st2)
-			return CHARGER_CHARGE_DONE;
-		
-		if(st1 && st2)
-			return CHARGER_IN_STAND_BY;
-		
-		return CHARGER_INVALID_STATE;
-	}
+    DevI2C dev_i2c;
 
-	/** Digital output control discharging operation
-	 */
-	DigitalOut discharge;
+    L6924D charger;
+    M41T62 rtc;
+    GasGauge &gg;
 
- private:
-	DigitalIn st1;
-	DigitalIn st2;
+private:
+    static X_NUCLEO_IKC01A1 *_instance;
 };
 
-#endif /* __X_CUBE_BFUELG1_CHARGER_H */
+#endif /* __X_NUCLEO_IKC01A1_H */

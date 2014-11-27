@@ -1,10 +1,10 @@
 /**
 ******************************************************************************
-* @file    x_cube_bfuelg1.cpp
+* @file    x_nucleo_ikc01a1_crtc.h
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
-* @brief   Implementation file for the X_CUBE_BFUELG1 singleton class
+* @brief   C-style types and declaration for RTC component M41T62
 ******************************************************************************
 * @attention
 *
@@ -34,33 +34,53 @@
 *
 ******************************************************************************
 */ 
-    
-/* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
-#include "x_cube_bfuelg1.h"
-#include "stc3115/stc3115.h"
 
-/* Static variables ----------------------------------------------------------*/
-X_CUBE_BFUELG1* X_CUBE_BFUELG1::_instance = NULL;
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __X_NUCLEO_IKC01A1_CRTC_H
+#define __X_NUCLEO_IKC01A1_CRTC_H
 
-/* Methods -------------------------------------------------------------------*/
-/**
- * @brief  Constructor
- */
-X_CUBE_BFUELG1::X_CUBE_BFUELG1(void) : dev_i2c(BFUELG1_PIN_I2C_SDA, BFUELG1_PIN_I2C_SCL),
-	charger(), 
-	rtc(dev_i2c),
-	gg(*(new STC3115(dev_i2c)))
-{
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
+	/* Types ---------------------------------------------------------------------*/
+	/** Structure defining Time of Day
+	 */
+	typedef struct {
+		int tm_sec;
+		int tm_min;
+		int tm_hour;
+		int tm_mday;
+		int tm_mon;
+		int tm_year;
+		int tm_wday;
+		int tm_yday;
+		int tm_isdst;
+	} rtc_time_t ;
+   
+	/** Structure defining an alarm
+	 */
+	typedef enum {
+		ONCE_PER_SEC,
+		ONCE_PER_MIN,
+		ONCE_PER_HOUR,
+		ONCE_PER_DAY,
+		ONCE_PER_MONTH,
+		ONCE_PER_YEAR
+	} rtc_repeat_t;
+
+	typedef struct {
+		int alm_sec;
+		int alm_min;
+		int alm_hour;
+		int alm_day;
+		int alm_mon;
+		rtc_repeat_t alm_repeat_mode;
+	} rtc_alarm_t ;
+
+
+#ifdef __cplusplus
 }
+#endif
 
-/**
- * @brief  Get singleton instance
- * @return a pointer to the singleton instance of class X_CUBE_BFUELG1
- */
- X_CUBE_BFUELG1* X_CUBE_BFUELG1::Instance(void) {
-	if(_instance == NULL) {
-		_instance = new X_CUBE_BFUELG1();
-	}
-	return _instance;
-}
+#endif // __X_NUCLEO_IKC01A1_CRTC_H

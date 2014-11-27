@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  * @file    x_cube_bfuelg1.h
+  * @file    x_nucleo_ikc01a1_charger.h
   * @author  AST / EST
   * @version V0.0.1
   * @date    08-October-2014
-  * @brief   Header file for class X_CUBE_BFUELG1 representing an X-CUBE-BFUELG1
-  *          expansion board
+  * @brief   This file contains the common defines and functions prototypes for
+  *          the x_nucleo_ikc01a1_charger driver
   ******************************************************************************
   * @attention
   *
@@ -34,54 +34,58 @@
   * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   *
   ******************************************************************************
-  */
+  */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_CUBE_BFUELG1_H
-#define __X_CUBE_BFUELG1_H
+#ifndef __X_NUCLEO_IKC01A1_CHARGER_H
+#define __X_NUCLEO_IKC01A1_CHARGER_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_cube_bfuelg1_targets.h"
-#include "x_cube_bfuelg1_charger.h"
-#include "x_cube_bfuelg1_rtc.h"
-#include "x_cube_bfuelg1_i2c.h"
-#include "Components/Common/GasGauge.h"
+#include "x_nucleo_ikc01a1_targets.h"
 
-/* Classes -------------------------------------------------------------------*/
-/** Class X_CUBE_BFUELG1 is intended to represent the battery management
- *  expansion board with the same name.
- *
- *  The expansion board is featuring basically three IPs:\n
- *  -# a battery charger of class L6924D\n
- *  -# a real-time clock (RTC) of class M41T62\n
- *  -# and a gas gauge (GG) of class STC3115\n
- *
- * It is intentionally implemented as a singleton because only one
- * X_CUBE_BFUELG1 at a time might be deployed in a HW component stack.\n
- * In order to get the singleton instance you have to call class method `Instance()`, 
- * e.g.:
- * @code
- * // Battery expansion board singleton instance
- * static X_CUBE_BFUELG1 *battery_expansion_board = X_CUBE_BFUELG1::Instance();
- * @endcode
+/* Typedefs ------------------------------------------------------------------*/
+/** L6924D charger operating states
  */
-class X_CUBE_BFUELG1
-{
-protected:
-    X_CUBE_BFUELG1(void);
+typedef enum charger_conditions {
+	CHARGER_CHARGE_IN_PROGRESS,
+	CHARGER_CHARGE_DONE,
+	CHARGER_IN_STAND_BY,
+	CHARGER_INVALID_STATE
+} charger_conditions_t;
 
-public:
-    static X_CUBE_BFUELG1* Instance(void);
+/* Classes  ------------------------------------------------------------------*/
+/** Class representing the L6924D charger component
+ */
+class L6924D {
+ public:
+        L6924D(void) : discharge(CHARGER_PIN_DISCHARGE), st1(CHARGER_PIN_ST1), st2(CHARGER_PIN_ST2) {
+		discharge = 0;	
+	}
 
-    DevI2C dev_i2c;
+	/** Get charger state
+	 * @returns current charger operatinmg state
+	 */
+	charger_conditions_t GetState(void) {
+		if(!st1 && st2)
+			return CHARGER_CHARGE_IN_PROGRESS;
+		
+		if(st1 && !st2)
+			return CHARGER_CHARGE_DONE;
+		
+		if(st1 && st2)
+			return CHARGER_IN_STAND_BY;
+		
+		return CHARGER_INVALID_STATE;
+	}
 
-    L6924D charger;
-    M41T62 rtc;
-    GasGauge &gg;
+	/** Digital output control discharging operation
+	 */
+	DigitalOut discharge;
 
-private:
-    static X_CUBE_BFUELG1 *_instance;
+ private:
+	DigitalIn st1;
+	DigitalIn st2;
 };
 
-#endif /* __X_CUBE_BFUELG1_H */
+#endif /* __X_NUCLEO_IKC01A1_CHARGER_H */

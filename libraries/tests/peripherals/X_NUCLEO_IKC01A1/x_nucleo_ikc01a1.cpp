@@ -1,10 +1,10 @@
 /**
 ******************************************************************************
-* @file    x_cube_bfuelg1_crtc.h
+* @file    x_nucleo_ikc01a1.cpp
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
-* @brief   C-style types and declaration for RTC component M41T62
+* @brief   Implementation file for the X_NUCLEO_IKC01A1 singleton class
 ******************************************************************************
 * @attention
 *
@@ -34,53 +34,33 @@
 *
 ******************************************************************************
 */ 
+    
+/* Includes ------------------------------------------------------------------*/
+#include "mbed.h"
+#include "x_nucleo_ikc01a1.h"
+#include "stc3115/stc3115.h"
 
-/* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __X_CUBE_BFUELG1_CRTC_H
-#define __X_CUBE_BFUELG1_CRTC_H
+/* Static variables ----------------------------------------------------------*/
+X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::_instance = NULL;
 
-#ifdef __cplusplus
-extern "C" {
-#endif 
-
-	/* Types ---------------------------------------------------------------------*/
-	/** Structure defining Time of Day
-	 */
-	typedef struct {
-		int tm_sec;
-		int tm_min;
-		int tm_hour;
-		int tm_mday;
-		int tm_mon;
-		int tm_year;
-		int tm_wday;
-		int tm_yday;
-		int tm_isdst;
-	} rtc_time_t ;
-   
-	/** Structure defining an alarm
-	 */
-	typedef enum {
-		ONCE_PER_SEC,
-		ONCE_PER_MIN,
-		ONCE_PER_HOUR,
-		ONCE_PER_DAY,
-		ONCE_PER_MONTH,
-		ONCE_PER_YEAR
-	} rtc_repeat_t;
-
-	typedef struct {
-		int alm_sec;
-		int alm_min;
-		int alm_hour;
-		int alm_day;
-		int alm_mon;
-		rtc_repeat_t alm_repeat_mode;
-	} rtc_alarm_t ;
-
-
-#ifdef __cplusplus
+/* Methods -------------------------------------------------------------------*/
+/**
+ * @brief  Constructor
+ */
+X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(void) : dev_i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL),
+	charger(), 
+	rtc(dev_i2c),
+	gg(*(new STC3115(dev_i2c)))
+{
 }
-#endif
 
-#endif // __X_CUBE_BFUELG1_CRTC_H
+/**
+ * @brief  Get singleton instance
+ * @return a pointer to the singleton instance of class X_NUCLEO_IKC01A1
+ */
+ X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(void) {
+	if(_instance == NULL) {
+		_instance = new X_NUCLEO_IKC01A1();
+	}
+	return _instance;
+}

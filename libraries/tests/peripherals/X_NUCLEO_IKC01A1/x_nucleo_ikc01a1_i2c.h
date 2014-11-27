@@ -1,6 +1,6 @@
 /**
 ******************************************************************************
-* @file    x_cube_bfuelg1_i2c.h
+* @file    x_nucleo_ikc01a1_i2c.h
 * @author  AST / EST
 * @version V0.0.1
 * @date    12-November-2014
@@ -37,8 +37,8 @@
 */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_CUBE_BFUELG1_I2C_H
-#define __X_CUBE_BFUELG1_I2C_H
+#ifndef __X_NUCLEO_IKC01A1_I2C_H
+#define __X_NUCLEO_IKC01A1_I2C_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -120,4 +120,4 @@ class DevI2C : public I2C
   }
 };
 
-#endif /* __X_CUBE_BFUELG1_I2C_H */
+#endif /* __X_NUCLEO_IKC01A1_I2C_H */

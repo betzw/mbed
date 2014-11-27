@@ -1,6 +1,6 @@
 /**
 ******************************************************************************
-* @file    x_cube_bfuelg1_rtc.cpp
+* @file    x_nucleo_ikc01a1_rtc.cpp
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
@@ -36,8 +36,8 @@
 */ 
     
 /* Includes ------------------------------------------------------------------*/
-#include "x_cube_bfuelg1.h"
-#include "x_cube_bfuelg1_rtc.h"
+#include "x_nucleo_ikc01a1.h"
+#include "x_nucleo_ikc01a1_rtc.h"
 
 /* Constants -----------------------------------------------------------------*/
 /** Week names 
