@@ -4,7 +4,7 @@
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
-* @brief   Example application for using the X_CUBE_BFUELG1 battery
+* @brief   Example application for using the X_NUCLEO_IKC01A1 battery
 *          mangement expansion board.
 ******************************************************************************
 * @attention
@@ -37,12 +37,12 @@
 */ 
 
 /**
- * @mainpage X_CUBE_BFUELG1 Energy Management Expansion Board firmware package
+ * @mainpage X_NUCLEO_IKC01A1 Energy Management Expansion Board firmware package
  *
  * <b>Introduction</b>
  *
  * This firmware package includes Components Device Drivers, Board Support Package
- * and example application for STMicroelectronics X_CUBE_BFUELG1 Energy Management
+ * and example application for STMicroelectronics X_NUCLEO_IKC01A1 Energy Management
  * Expansion Board
  * 
  * <b>Example Application</b>
@@ -90,7 +90,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "userinterface.h"
-#include "x_cube_bfuelg1.h"
+#include "x_nucleo_ikc01a1.h"
 
 #include <Ticker.h>
 
@@ -103,7 +103,7 @@ namespace {
 #define APP_LOOP_PERIOD 2000 // in ms
 
 /* Static variables ----------------------------------------------------------*/
-static X_CUBE_BFUELG1 *battery_expansion_board = X_CUBE_BFUELG1::Instance();
+static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
 
 static Ticker timer;
 static InterruptIn button(USER_BUTTON);
