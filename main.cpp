@@ -16,31 +16,34 @@
 
 #include "mbed.h"
 #include "BLEDevice.h"
+#include "URIBeacon2Service.h"
+#include "DFUService.h"
+#include "DeviceInformationService.h"
 
 BLEDevice ble;
 
-static const uint8_t BEACON_UUID[] = {0xD8, 0xFE};
-uint8_t urldata[] = {
-    BEACON_UUID[0], BEACON_UUID[1],
-    0x00, // flags
-    0x20, // power
-    0x02, // http://
-    'm',
-    'b',
-    'e',
-    'd',
-    0x08, // .".org"
-};
+void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
+{
+    ble.startAdvertising();
+}
 
 int main(void)
 {
     ble.init();
+    ble.onDisconnection(disconnectionCallback);
 
-    ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, BEACON_UUID, sizeof(BEACON_UUID));
-    ble.accumulateAdvertisingPayload(GapAdvertisingData::SERVICE_DATA, urldata, sizeof(urldata));
+    URIBeacon2Service uriBeacon(ble, "http://developer.mbed.org");
+    if (!uriBeacon.configuredSuccessfully()) {
+        error("failed to accommodate URI");
+    }
+    /* optional use of the API offered by URIBeacon2Service */
+    uriBeacon.setTxPowerLevel(URIBeacon2Service::TX_POWER_MODE_LOW, -4);
+    uriBeacon.useTxPowerMode(URIBeacon2Service::TX_POWER_MODE_LOW);
 
-    ble.setAdvertisingType(GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED);
-    ble.setAdvertisingInterval(1600); /* 1s; in multiples of 0.625ms. */
+    /* Setup auxiliary services. */
+    DFUService dfu(ble); /* To allow over-the-air firmware udpates. optional. */
+    DeviceInformationService deviceInfo(ble, "ARM", "URIBeacon2", "SN1", "hw-rev1", "fw-rev1", "soft-rev1"); /* optional */
+
     ble.startAdvertising();
 
     while (true) {
