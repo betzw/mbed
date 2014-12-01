@@ -16,7 +16,7 @@
 
 #include "mbed.h"
 #include "BLEDevice.h"
-#include "URIBeacon2Service.h"
+#include "URIBeaconConfigService.h"
 #include "DFUService.h"
 #include "DeviceInformationService.h"
 
@@ -32,13 +32,14 @@ int main(void)
     ble.init();
     ble.onDisconnection(disconnectionCallback);
 
-    URIBeacon2Service uriBeacon(ble, "http://developer.mbed.org");
-    if (!uriBeacon.configuredSuccessfully()) {
+    URIBeaconConfigService uriBeaconConfig(ble, "http://www.mbed.org");
+    if (!uriBeaconConfig.configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
-    /* optional use of the API offered by URIBeacon2Service */
-    uriBeacon.setTxPowerLevel(URIBeacon2Service::TX_POWER_MODE_LOW, -4);
-    uriBeacon.useTxPowerMode(URIBeacon2Service::TX_POWER_MODE_LOW);
+    /* optional use of the API offered by URIBeaconConfigService */
+    const int8_t powerLevels[] = {-20, -4, 0, 10};
+    uriBeaconConfig.setTxPowerLevels(powerLevels);
+    uriBeaconConfig.setTxPowerMode(URIBeaconConfigService::TX_POWER_MODE_LOW);
 
     /* Setup auxiliary services. */
     DFUService dfu(ble); /* To allow over-the-air firmware udpates. optional. */
