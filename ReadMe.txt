@@ -24,3 +24,4 @@ git pull mbed-lib master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 mbed-split
+git branch -d mbed-split
