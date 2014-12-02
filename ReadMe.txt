@@ -16,5 +16,11 @@ Mercurial:
 ==========
 git remote add mbed-lib "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/X_NUCLEO_IKC01A1"
 
-git subtree push -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 mbed-lib master
-git subtree pull -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 mbed-lib master
+git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 -b mbed-split
+
+git checkout mbed-split
+git push mbed-lib mbed-split:master
+git pull mbed-lib master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 mbed-split
