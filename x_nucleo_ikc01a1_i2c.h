@@ -92,7 +92,7 @@ class DevI2C : public I2C
    * @brief  Reads a buffer from the I2C peripheral device.
    * @param  pBuffer pointer to data to be read.
    * @param  DaviceAddr specifies the peripheral device slave address
-   *         (correctly masked)..
+   *         (correctly masked).
    * @param  RegisterAddr specifies internal address register to read from.
    * @param  NumByteToRead number of bytes to be read.
    * @retval 0 if ok, -1 if an I2C error has occured
