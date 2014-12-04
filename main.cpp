@@ -17,75 +17,41 @@
 #include "mbed.h"
 #include "BLEDevice.h"
 #include "URIBeaconConfigService.h"
-#include "DFUService.h"
-#include "DeviceInformationService.h"
 
 BLEDevice ble;
 URIBeaconConfigService *uriBeaconConfig;
 
+/*If beacon gets disconnected start advertising again */
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
     ble.startAdvertising();
 }
 
-void switchCallback(void)
-{
-    static bool switched = false;
-    if (!switched) {
-        printf("executing switch\r\n");
-        delete uriBeaconConfig;
-        uriBeaconConfig = NULL;
-
-        static const uint8_t BEACON_UUID[] = {0xD8, 0xFE};
-        static const uint8_t urldata[] = {
-            BEACON_UUID[0],
-            BEACON_UUID[1],
-            0x00, // flags
-            0x20, // power
-            0x00, // http://www.
-            'm',
-            'b',
-            'e',
-            'd',
-            0x08, // .".org"
-        };
-
-        ble.shutdown();
-        ble.init();
-
-        ble.clearAdvertisingPayload();
-        ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, BEACON_UUID, sizeof(BEACON_UUID));
-        ble.accumulateAdvertisingPayload(GapAdvertisingData::SERVICE_DATA, urldata, sizeof(urldata));
-
-        ble.setAdvertisingType(GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED);
-        ble.setAdvertisingInterval(1600); /* 1s; in multiples of 0.625ms. */
-        ble.startAdvertising();
-
-        switched = true;
-    }
-}
-
+/* 
+*  The main loop.
+*  Here we will configure the URI Beacon and start advertising 
+*/
 int main(void)
 {
-    Ticker ticker;
-    ticker.attach(switchCallback, 30);
-
+    /* Initialize BLE base layer*/
     ble.init();
     ble.onDisconnection(disconnectionCallback);
 
-    uriBeaconConfig = new URIBeaconConfigService(ble, "http://www.mbed.org");
+    /* Set the BLE device to be a URI Beacon, set advertising payload 
+       the address after the preamble (www.) can be 17bytes at most.*/    
+    uriBeaconConfig = new URIBeaconConfigService(ble, "http://www.developer.mbed.org");
+    
+    /*Check that the URI Beacon started successfully.*/
     if (!uriBeaconConfig->configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
+    
     /* optional use of the API offered by URIBeaconConfigService */
     const int8_t powerLevels[] = {-20, -4, 0, 10};
-    uriBeaconConfig->setTxPowerLevels(powerLevels);
-    uriBeaconConfig->setTxPowerMode(URIBeaconConfigService::TX_POWER_MODE_LOW);
+    uriBeaconConfig->setTxPowerLevels(powerLevels); // Set TX power levels, Lowest(-20), Low(-4), Medium(0), High(10)
+    uriBeaconConfig->setTxPowerMode(URIBeaconConfigService::TX_POWER_MODE_LOW); // Initialize tranmition in Low power mode
 
-    /* Setup auxiliary services. */
-    DFUService dfu(ble); /* To allow over-the-air firmware udpates. optional. */
-    DeviceInformationService deviceInfo(ble, "ARM", "URIBeacon2", "SN1", "hw-rev1", "fw-rev1", "soft-rev1"); /* optional */
-
+    /*Start advertising the URI Beacon*/
     ble.startAdvertising();
 
     while (true) {
