@@ -1,6 +1,6 @@
 /**
 ******************************************************************************
-* @file    x_cube_bfuelg1.cpp
+* @file    x_cube_mems.cpp
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
@@ -48,7 +48,7 @@ X_CUBE_MEMS* X_CUBE_MEMS::_instance = NULL;
  */
 X_CUBE_MEMS::X_CUBE_MEMS(void) : dev_i2c(PB_9,PB_8),
 	hts221(dev_i2c),
-        lps25h(dev_i2c)
+    lps25h(dev_i2c)
 {
   
 }
