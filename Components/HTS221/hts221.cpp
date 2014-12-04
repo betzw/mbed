@@ -101,9 +101,9 @@ int HTS221::GetTemperature(float* pfData)
 
     T_degC = ((float)(T_out - T0_out))/(T1_out - T0_out) * (T1_degC - T0_degC) + T0_degC;
 
-    temperature_t = (int16_t)(T_degC * pow(10,TEMP_DECIMAL_DIGITS));
+    temperature_t = (int16_t)(T_degC * pow((double)10,(double)TEMP_DECIMAL_DIGITS));
 
-    *pfData = ((float)temperature_t)/pow(10,TEMP_DECIMAL_DIGITS);
+    *pfData = ((float)temperature_t)/pow((double)10,(double)TEMP_DECIMAL_DIGITS);
     
     return ret;
 }
@@ -162,9 +162,9 @@ int HTS221::GetHumidity(float* pfData)
 
     H_rh = ((float)(H_T_out - H0_T0_out))/(H1_T0_out - H0_T0_out) * (H1_rh - H0_rh) + H0_rh;
 
-    humidity_t = (uint16_t)(H_rh * pow(10,HUM_DECIMAL_DIGITS));
+    humidity_t = (uint16_t)(H_rh * pow((double)10,(double)HUM_DECIMAL_DIGITS));
 
-    *pfData = ((float)humidity_t)/pow(10,HUM_DECIMAL_DIGITS);
+    *pfData = ((float)humidity_t)/pow((double)10,(double)HUM_DECIMAL_DIGITS);
     
     return ret;
 }
