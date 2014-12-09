@@ -1,10 +1,10 @@
 /**
 ******************************************************************************
-* @file    x_cube_mems_lis3mdl.h
+* @file    x_cube_mems_lsm6ds0.h
 * @author  AST / EST
 * @version V0.0.1
 * @date    9-December-2014
-* @brief   Header file for component LIS3MDL
+* @brief   Header file for component LSM6DS0
 ******************************************************************************
 * @attention
 *
@@ -35,8 +35,8 @@
 ******************************************************************************
 */
 
-#ifndef __X_CUBE_MEMS_LIS3MDL_H
-#define __X_CUBE_MEMS_LIS3MDL_H
+#ifndef __X_CUBE_MEMS_LSM6DS0_H
+#define __X_CUBE_MEMS_LSM6DS0_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -46,33 +46,37 @@
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a HTS221 sensor component
  */
-class LIS3MDL
+class LSM6DS0
 {
 public:
     /** Constructor
      * @param 
      */
-    LIS3MDL(DevI2C &i2c) : dev_i2c(i2c) {
-        LIS3MDLInitialized = 0;
+    LSM6DS0(DevI2C &i2c) : dev_i2c(i2c) {
+        LSM6DS0Initialized = 0;
         Init();
     };
 
-    void GetAxes(AxesRaw_TypeDef *pData);
-    void GetAxesRaw(int16_t *pData);
+    void Gyro_GetAxes(AxesRaw_TypeDef *pData);
+    void Gyro_GetAxesRaw(int16_t *pData);
+    void Acc_GetAxes(AxesRaw_TypeDef *pData);
+    void Acc_GetAxesRaw(int16_t *pData);
     void    Init(/*HUM_TEMP_InitTypeDef *HTS221_Init*/);
     uint8_t   ReadID(void);
     void      RebootCmd(void);
-
+    //int      Power_OFF(void); 
+    //int      Power_ON(void);
+    //int        LIS3MDL_Calibration();
 private:
     
     uint8_t isInitialized(void)
     {
-        return LIS3MDLInitialized;
+        return LSM6DS0Initialized;
     }
     
     DevI2C &dev_i2c;
-    uint8_t LIS3MDLInitialized;
+    uint8_t LSM6DS0Initialized;
 };
 
-#endif // __X_CUBE_MEMS_LIS3MDL_H
+#endif // __X_CUBE_MEMS_LSM6DS0_H
 

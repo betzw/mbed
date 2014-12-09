@@ -43,6 +43,12 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
+typedef struct {
+    int32_t AXIS_X;
+    int32_t AXIS_Y;
+    int32_t AXIS_Z;
+} AxesRaw_TypeDef;
+
 /* Classes -------------------------------------------------------------------*/
 /** Helper class DevI2C providing some common functionality useful for on-board
  *  communication.

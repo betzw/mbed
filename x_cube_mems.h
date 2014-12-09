@@ -46,6 +46,7 @@
 #include "Components/HTS221/hts221.h"
 #include "Components/LPS25H/lps25h.h"
 #include "Components/LIS3MDL/lis3mdl.h"
+#include "Components/LSM6DS0/lsm6ds0.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_CUBE_MEMS represents the MEMS Sensor expansion board X-NUCLEO-IKS01A1
@@ -73,7 +74,7 @@ public:
     HTS221 hts221;
     LPS25H lps25h;
     LIS3MDL lis3mdl;
-    //LSM6DS0 lsm6ds0;
+    LSM6DS0 lsm6ds0;
 
 private:
     static X_CUBE_MEMS *_instance;
