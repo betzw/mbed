@@ -48,7 +48,8 @@ X_CUBE_MEMS* X_CUBE_MEMS::_instance = NULL;
  */
 X_CUBE_MEMS::X_CUBE_MEMS(void) : dev_i2c(PB_9,PB_8),
 	hts221(dev_i2c),
-    lps25h(dev_i2c)
+    lps25h(dev_i2c),
+    lis3mdl(dev_i2c)
 {
   
 }

@@ -44,8 +44,8 @@
 
 #include "x_cube_mems_i2c.h"
 #include "Components/HTS221/hts221.h"
-#include "Components/LPS25H/lps25h.h"    
-
+#include "Components/LPS25H/lps25h.h"
+#include "Components/LIS3MDL/lis3mdl.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_CUBE_MEMS represents the MEMS Sensor expansion board X-NUCLEO-IKS01A1
@@ -72,7 +72,7 @@ public:
     DevI2C dev_i2c;
     HTS221 hts221;
     LPS25H lps25h;
-    //LIS3MDL lis3mdl;
+    LIS3MDL lis3mdl;
     //LSM6DS0 lsm6ds0;
 
 private:
