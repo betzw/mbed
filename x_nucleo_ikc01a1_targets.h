@@ -41,7 +41,7 @@
 #ifndef _X_NUCLEO_IKC01A1_TARGETS_H_
 #define _X_NUCLEO_IKC01A1_TARGETS_H_
 
-#if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8)
+#if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8) // STM Nucleo Boards
 /*** Charger ***/
 #define CHARGER_PIN_ST1             (PC_2)
 #define CHARGER_PIN_ST2             (PC_3) 
@@ -56,47 +56,32 @@
 /*** RTC ***/
 #define RTC_PIN_IRQ_OUT             (PA_5)
 
-/* M41T62 */
-#define M41T62_SLAVE_ADDRESS        0xD0    /* M41T62 8-bit address byte (0xD0 8 bit)		*/
-
-#define M41T62_SSECONDS             0x00
-#define M41T62_SECONDS              0x01
-#define M41T62_MINUTES              0x02
-#define M41T62_HOURS                0x03
-#define M41T62_WDAY                 0x04
-#define M41T62_DATE                 0x05
-#define M41T62_MONTH                0x06
-#define M41T62_YEAR                 0x07
-#define M41T62_CALIBRATION          0x08
-#define M41T62_WATCHDOG             0x09
-#define M41T62_ALARM_MONTH          0x0A
-#define M41T62_ALARM_DAY            0x0B
-#define M41T62_ALARM_HOUR           0x0C
-#define M41T62_ALARM_MINUTES        0x0D
-#define M41T62_ALARM_SECONDS        0x0E
-#define M41T62_FLAGS                0x0F
-
-#define M41T62_DATETIME_REG_SIZE    (M41T62_YEAR + 1)
-#define M41T62_ALARM_REG_SIZE       (M41T62_FLAGS - M41T62_ALARM_MONTH)
-
-#define M41T62_SEC_ST		    (1 << 7)	/* ST: Stop Bit */
-#define M41T62_ALMON_AFE	    (1 << 7)	/* AFE: AF Enable Bit */
-#define M41T62_ALMON_SQWE	    (1 << 6)	/* SQWE: SQW Enable Bit */
-#define M41T62_ALHOUR_HT	    (1 << 6)	/* HT: Halt Update Bit */
-#define M41T62_FLAGS_ALARMF	    (1 << 6)	/* AF: Alarm Flag Bit */
-#define M41T62_FLAGS_OSCFAIL        (1 << 2)    /* Oscillator fail bit */
-#define M41T62_FLAGS_STOP           (1 << 7)    /* Stop Bit. Used to restart oscillator */
-
 
 /*** Gas Gauge ***/
 #define GG_PIN_ALM                  (PC_7)
 
+#elif defined(TARGET_K64F) // Freescale
 
-#else // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8))
+/*** Charger ***/
+#define CHARGER_PIN_ST1             (PTC11)
+#define CHARGER_PIN_ST2             (PTC10) 
+#define CHARGER_PIN_DISCHARGE       (PTB11)
 
+
+/*** I2C ***/
+#define IKC01A1_PIN_I2C_SCL         (PTE24)
+#define IKC01A1_PIN_I2C_SDA         (PTE25)
+
+
+/*** RTC ***/
+#define RTC_PIN_IRQ_OUT             (PTD1)
+
+
+/*** Gas Gauge ***/
+#define GG_PIN_ALM                  (PTC4)
+
+#else // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8) || defined(TARGET_MCU_K64F))
 #error "Platform not supported!"
-
 #endif // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8))
-
 
 #endif // _X_NUCLEO_IKC01A1_TARGETS_H_
