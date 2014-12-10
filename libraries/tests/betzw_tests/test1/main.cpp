@@ -102,6 +102,10 @@ namespace {
 /* Macros --------------------------------------------------------------------*/
 #define APP_LOOP_PERIOD 2000 // in ms
 
+#if defined(TARGET_K64F)
+#define USER_BUTTON (SW2)
+#endif // !TARGET_MCU_K64F
+
 /* Static variables ----------------------------------------------------------*/
 static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
 

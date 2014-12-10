@@ -914,7 +914,7 @@ TESTS = [
         "id": "betzw_test_1", "description": "1st testing approaches",
         "source_dir": join(TEST_DIR, "betzw_tests", "test1"),
         "dependencies": [MBED_LIBRARIES, join(PERIPHERALS, 'X_NUCLEO_IKC01A1')],
-        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8"],
+        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F"],
         "peripherals": ["X_NUCLEO_IKC01A1"]
     },
 ]

@@ -59,12 +59,14 @@ typedef enum charger_conditions {
  */
 class L6924D {
  public:
-        L6924D(void) : discharge(CHARGER_PIN_DISCHARGE), st1(CHARGER_PIN_ST1), st2(CHARGER_PIN_ST2) {
+        L6924D(void) : discharge(CHARGER_PIN_DISCHARGE), 
+		st1(CHARGER_PIN_ST1, PullNone), 
+		st2(CHARGER_PIN_ST2, PullNone) {
 		discharge = 0;	
 	}
 
 	/** Get charger state
-	 * @returns current charger operatinmg state
+	 * @returns current charger operating state
 	 */
 	charger_conditions_t GetState(void) {
 		if(!st1 && st2)

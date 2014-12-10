@@ -45,6 +45,38 @@
 #include "x_nucleo_ikc01a1_targets.h"
 #include "x_nucleo_ikc01a1_i2c.h"
 
+/* Macros -------------------------------------------------------------------*/
+/* M41T62 */
+#define M41T62_SLAVE_ADDRESS        0xD0    /* M41T62 8-bit address byte (0xD0 8 bit)		*/
+
+#define M41T62_SSECONDS             0x00
+#define M41T62_SECONDS              0x01
+#define M41T62_MINUTES              0x02
+#define M41T62_HOURS                0x03
+#define M41T62_WDAY                 0x04
+#define M41T62_DATE                 0x05
+#define M41T62_MONTH                0x06
+#define M41T62_YEAR                 0x07
+#define M41T62_CALIBRATION          0x08
+#define M41T62_WATCHDOG             0x09
+#define M41T62_ALARM_MONTH          0x0A
+#define M41T62_ALARM_DAY            0x0B
+#define M41T62_ALARM_HOUR           0x0C
+#define M41T62_ALARM_MINUTES        0x0D
+#define M41T62_ALARM_SECONDS        0x0E
+#define M41T62_FLAGS                0x0F
+
+#define M41T62_DATETIME_REG_SIZE    (M41T62_YEAR + 1)
+#define M41T62_ALARM_REG_SIZE       (M41T62_FLAGS - M41T62_ALARM_MONTH)
+
+#define M41T62_SEC_ST		    (1 << 7)	/* ST: Stop Bit */
+#define M41T62_ALMON_AFE	    (1 << 7)	/* AFE: AF Enable Bit */
+#define M41T62_ALMON_SQWE	    (1 << 6)	/* SQWE: SQW Enable Bit */
+#define M41T62_ALHOUR_HT	    (1 << 6)	/* HT: Halt Update Bit */
+#define M41T62_FLAGS_ALARMF	    (1 << 6)	/* AF: Alarm Flag Bit */
+#define M41T62_FLAGS_OSCFAIL        (1 << 2)    /* Oscillator fail bit */
+#define M41T62_FLAGS_STOP           (1 << 7)    /* Stop Bit. Used to restart oscillator */
+
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a M41T62 real-time clock
  */
