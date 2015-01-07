@@ -46,7 +46,7 @@ X_CUBE_MEMS* X_CUBE_MEMS::_instance = NULL;
 /**
  * @brief  Constructor
  */
-X_CUBE_MEMS::X_CUBE_MEMS(void) : dev_i2c(PB_9,PB_8),
+X_CUBE_MEMS::X_CUBE_MEMS(PinName pin_sda, PinName pin_scl) : dev_i2c(pin_sda,pin_scl),
 	hts221(dev_i2c),
     lps25h(dev_i2c),
     lis3mdl(dev_i2c),
@@ -59,9 +59,9 @@ X_CUBE_MEMS::X_CUBE_MEMS(void) : dev_i2c(PB_9,PB_8),
  * @brief  Get singleton instance
  * @return a pointer to the singleton instance of class X_CUBE_MEMS
  */
- X_CUBE_MEMS* X_CUBE_MEMS::Instance(void) {
+ X_CUBE_MEMS* X_CUBE_MEMS::Instance(PinName sda, PinName scl) {
 	if(_instance == NULL) {
-		_instance = new X_CUBE_MEMS();
+		_instance = new X_CUBE_MEMS(sda,scl);
 	}
 	return _instance;
 }

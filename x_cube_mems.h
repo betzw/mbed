@@ -65,10 +65,10 @@
 class X_CUBE_MEMS
 {
 protected:
-    X_CUBE_MEMS(void);
+    X_CUBE_MEMS(PinName pin_sda, PinName pin_scl);
 
 public:
-    static X_CUBE_MEMS* Instance(void);
+    static X_CUBE_MEMS* Instance(PinName sda, PinName scl);
 
     DevI2C dev_i2c;
     HTS221 hts221;
