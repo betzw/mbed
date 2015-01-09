@@ -141,7 +141,7 @@ static const char *getChargerCondition(void) {
 	default:
 		break;
 	}
-	return "!charging";
+	return "invalid";
 }
 
 /* Called in interrupt context, therefore just set a trigger variable */
