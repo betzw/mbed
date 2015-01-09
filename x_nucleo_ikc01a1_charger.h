@@ -60,8 +60,8 @@ typedef enum charger_conditions {
 class L6924D {
  public:
         L6924D(void) : discharge(CHARGER_PIN_DISCHARGE), 
-		st1(CHARGER_PIN_ST1, PullNone), 
-		st2(CHARGER_PIN_ST2, PullNone) {
+		st1(CHARGER_PIN_ST1, PullUp), 
+		st2(CHARGER_PIN_ST2, PullUp) {
 		discharge = 0;	
 	}
 
