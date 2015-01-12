@@ -38,7 +38,7 @@
 #include <stdio.h>
 #include "userinterface.h"
 
-/** @addtogroup STM32xxxx_HAL_Examples
+/** @addtogroup STM32F4xx_HAL_Examples
   * @{
   */
 
@@ -49,64 +49,48 @@
 /** @defgroup X_NUCLEO_IKC01A1_Demonstration_CharacterUserInterface
  * @{
  */
- 
+
+/** @brief Asks user to input an integer number and returns its value
+ * @param message A message to be prompted on the console when asking value
+ * @retval The integer acquired from console
+ */
+static int cuiGetInteger(const char* message)
+{
+	int ret, value;
+	char buf[32];
+		
+	do{
+		printf(message);
+		fflush(stdout);
+		
+		ret = scanf("%u", &value);
+		if(ret != 1){
+		  	/* In case of non-matching characters, eat stdin as IAR and
+		     * TrueStudio won't flush it as Keil does */
+		  	scanf("%s", buf);
+			printf("\r\nPlease insert a valid integer number\r\n");
+		}
+	}while(ret != 1);
+	
+	return value;
+}
+
+
 /** @brief Fills a rtc_time structure according to user input
  * @param time Pointer to the structure to fill
  * @retval none
  */
 void cuiGetTime(rtc_time_t* time)
 {
-	int ret;
-	
 	printf("Please set RTC clock\r\n");
-	do{
-		printf("Enter Year: ");
-		ret = scanf("%u", &time->tm_year);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
 	
-	do{
-		printf("Enter Month [1..12]: ");
-		ret = scanf("%u", &time->tm_mon);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-	
-	do{
-		printf("Enter Month day [1..31]: ");
-		ret = scanf("%u", &time->tm_mday);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-	
-	do{
-		printf("Enter Week Day [1..7]: ");
-		ret = scanf("%u", &time->tm_wday);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-		
-	do{
-		printf("Enter Hours [0..23]: ");
-		ret = scanf("%u", &time->tm_hour);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-	
-	do{
-		printf("Enter Minutes [0..59]: ");
-		ret = scanf("%u", &time->tm_min);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-	
-	do{
-		printf("Enter Seconds [0..59]: ");
-		ret = scanf("%u", &time->tm_sec);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);	
+	time->tm_year = cuiGetInteger("Enter Year:");
+	time->tm_mon = cuiGetInteger("Enter Month [1..12]:");
+	time->tm_mday = cuiGetInteger("Enter Month day [1..31]:");
+	time->tm_wday = cuiGetInteger("Enter Week Day [1..7]:");
+	time->tm_hour = cuiGetInteger("Enter Hours [0..23]:");
+	time->tm_min = cuiGetInteger("Enter Minutes [0..59]:");
+	time->tm_sec = cuiGetInteger("Enter Seconds [0..59]:");
 }
 
 
@@ -119,36 +103,12 @@ void cuiGetTime(rtc_time_t* time)
  */
 void getUserInputParams(int* socThreshold, int* voltageThreshold, int* periodicRtcAlarm, int* enableDischarging)
 {
-	int ret;
-	
-	do{
-		printf("Enter SOC Alarm Threshold [%%]: ");
-		ret = scanf("%i", socThreshold);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-	
-	do{
-		printf("Enter Voltage Alarm Threshold [mV]: ");
-		ret = scanf("%i", voltageThreshold);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-
-	do{
-		printf("Enter periodic RTC alarm [sec]: ");
-		ret = scanf("%i", periodicRtcAlarm);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
-
-	do{
-		printf("Enable discharging [0|1]: ");
-		ret = scanf("%i", enableDischarging);
-		if(ret != 1)
-			printf("\r\n");
-	}while(ret != 1);
+	*socThreshold = cuiGetInteger("Enter SOC Alarm Threshold [%%]: ");
+	*voltageThreshold = cuiGetInteger("Enter Voltage Alarm Threshold [mV]: ");
+	*periodicRtcAlarm = cuiGetInteger("Enter periodic RTC alarm [sec]: ");
+	*enableDischarging = cuiGetInteger("Enable discharging [0|1]: ");
 }
+
 
 /**
   * @}
