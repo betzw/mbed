@@ -84,13 +84,13 @@ void cuiGetTime(rtc_time_t* time)
 {
 	printf("Please set RTC clock\r\n");
 	
-	time->tm_year = cuiGetInteger("Enter Year:");
-	time->tm_mon = cuiGetInteger("Enter Month [1..12]:");
-	time->tm_mday = cuiGetInteger("Enter Month day [1..31]:");
-	time->tm_wday = cuiGetInteger("Enter Week Day [1..7]:");
-	time->tm_hour = cuiGetInteger("Enter Hours [0..23]:");
-	time->tm_min = cuiGetInteger("Enter Minutes [0..59]:");
-	time->tm_sec = cuiGetInteger("Enter Seconds [0..59]:");
+	time->tm_year = cuiGetInteger("Enter Year: ");
+	time->tm_mon = cuiGetInteger("Enter Month [1..12]: ");
+	time->tm_mday = cuiGetInteger("Enter Month day [1..31]: ");
+	time->tm_wday = cuiGetInteger("Enter Week Day [1..7]: ");
+	time->tm_hour = cuiGetInteger("Enter Hours [0..23]: ");
+	time->tm_min = cuiGetInteger("Enter Minutes [0..59]: ");
+	time->tm_sec = cuiGetInteger("Enter Seconds [0..59]: ");
 }
 
 
