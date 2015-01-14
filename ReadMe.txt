@@ -23,8 +23,8 @@ git remote add mbed-lib "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz
 git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 -b mbed-split
 git checkout mbed-split
 
-git push mbed-lib mbed-split:master
 git pull mbed-lib master
+git push mbed-lib mbed-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 mbed-split
@@ -37,8 +37,8 @@ git remote add bm-app "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/c
 git subtree split -P libraries/tests/betzw_tests/test1 -b bm-split
 git checkout bm-split
 
-git push bm-app bm-split:master
 git pull bm-app master
+git push bm-app bm-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
