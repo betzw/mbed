@@ -94,7 +94,7 @@
 #define CC_MODE 			0
 #define MIXED_MODE			0
 #define MAX_HRSOC          	51200  		/* 100% in 1/512% units								*/
-#define MAX_SOC            	1000   		/* 100% in 0.1% units 								*/
+#define MAX_SOC            	100   		/* 100% in % units 								*/
 #define BATT_OK				0
 #define BATT_NOK			1
 #define OK 0
@@ -110,7 +110,7 @@
 typedef struct  {
 	int status;			/* STC3115 status registers 							*/
 	int HRSOC;			/* battery relative SOC (%) in 1/512% 					*/
-	int SOC;            	/* battery relative SOC (%) in 0.1% 					*/
+	int SOC;            	/* battery relative SOC (%) in % 					*/
 	int Voltage;        	/* battery voltage in mV 								*/
 	int Current;        	/* battery current in mA 								*/
 	int Temperature;    	/* battery temperature in 0.1°C 						*/
@@ -131,7 +131,7 @@ typedef struct  {
 	int Cnom;        		/* nominal battery capacity in mAh 						*/
 	int Rsense;      		/* sense resistor in mOhms								*/
 	int RelaxCurrent; 	/* relaxation current(< C/20) in mA						*/
-	int OCVOffset[16];    /* OCV curve adjustment in 0.55mV						*/
+	char OCVOffset[OCVTAB_SIZE];    /* OCV curve adjustment in 0.55mV						*/
 } STC3115_ConfigData_TypeDef;
 
 
