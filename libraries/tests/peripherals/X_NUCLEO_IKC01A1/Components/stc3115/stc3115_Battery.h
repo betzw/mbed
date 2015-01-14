@@ -46,11 +46,11 @@
 /* -------------------------------------------------------------------------------- */
 
 /*Battery parameters define  ------------------------------------------------------ */
-#define CC_CNF			  30
-#define VM_CNF			  34
-#define CNOM			    165
-#define RELAX_CURRENT	17
-#define OCV_OFFSET			{0, -127, -63, 8, 35, 76, 94, 123, 127, 127, 127, 127, 127, 89, -29, -67}
+#define CC_CNF         444    /* CC_CNF = Rsense * Cnom / 49.556 */
+#define VM_CNF         225    /* VM_CNF = Ri * Cnom / 977.78     */
+#define CNOM           2200
+#define RELAX_CURRENT  17
+#define OCV_OFFSET     {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
 	
 /*Application parameters define  -------------------------------------------------- */
 #define VMODE 			MIXED_MODE   

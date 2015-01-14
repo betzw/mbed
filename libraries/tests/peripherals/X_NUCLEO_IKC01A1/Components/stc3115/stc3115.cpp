@@ -48,6 +48,7 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 	dev_i2c(i2c), RAMData(), ConfigData(), BatteryData()
 {
     int ret;
+    int temp[] = OCV_OFFSET;
 
     ConfigData.Vmode = VMODE;
     ConfigData.Alm_SOC = ALM_SOC;
@@ -57,6 +58,9 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
     ConfigData.Cnom = CNOM;
     ConfigData.Rsense = RSENSE;
     ConfigData.RelaxCurrent = RELAX_CURRENT;
+    for(int i = 0; i < OCVTAB_SIZE; i++) {
+	    ConfigData.OCVOffset[i] = (char)temp[i];
+    }
 
     BatteryData.Presence = 1;
 
@@ -213,7 +217,7 @@ int STC3115::ReadBatteryData(void)
     value = data[3];
     value = (value<<8) + data[2];
     BatteryData.HRSOC = value;     /* result in 1/512% */
-    BatteryData.SOC = (value + 256) / 512;
+    BatteryData.SOC = (value + 256) / 512; /* result in 1% */
 
     /* conversion counter */
     value=data[5];

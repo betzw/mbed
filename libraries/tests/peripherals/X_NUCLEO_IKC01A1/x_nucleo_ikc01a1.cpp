@@ -60,6 +60,9 @@ X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(void) : dev_i2c(IKC01A1_PIN_I2C_SDA, IKC01A1_
  */
  X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(void) {
 	if(_instance == NULL) {
+		wait(1); /* betzw - To BE REVIEWED: 
+			    wait a second to give GG time to startup */
+
 		_instance = new X_NUCLEO_IKC01A1();
 	}
 	return _instance;
