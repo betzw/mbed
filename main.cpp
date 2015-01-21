@@ -16,42 +16,35 @@
 
 #include "mbed.h"
 #include "BLEDevice.h"
-#include "URIBeaconConfigService.h"
+#include "nrfURIBeaconConfigService.h"
+#include "DFUService.h"
+#include "DeviceInformationService.h"
 
 BLEDevice ble;
-URIBeaconConfigService *uriBeaconConfig;
 
-/*If beacon gets disconnected start advertising again */
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
     ble.startAdvertising();
 }
 
-/* 
-*  The main loop.
-*  Here we will configure the URI Beacon and start advertising 
-*/
 int main(void)
 {
-    /* Initialize BLE base layer*/
     ble.init();
     ble.onDisconnection(disconnectionCallback);
 
-    /* Set the BLE device to be a URI Beacon, set advertising payload 
-       the address after the preamble (www.) can be 17bytes at most.*/    
-    uriBeaconConfig = new URIBeaconConfigService(ble, "http://www.developer.mbed.org");
-    
-    /*Check that the URI Beacon started successfully.*/
-    if (!uriBeaconConfig->configuredSuccessfully()) {
+    nrfURIBeaconConfigService uriBeaconConfig(ble, "http://www.mbed.org");
+    if (!uriBeaconConfig.configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
-    
     /* optional use of the API offered by URIBeaconConfigService */
     const int8_t powerLevels[] = {-20, -4, 0, 10};
-    uriBeaconConfig->setTxPowerLevels(powerLevels); // Set TX power levels, Lowest(-20), Low(-4), Medium(0), High(10)
-    uriBeaconConfig->setTxPowerMode(URIBeaconConfigService::TX_POWER_MODE_LOW); // Initialize tranmition in Low power mode
+    uriBeaconConfig.setTxPowerLevels(powerLevels);
+    uriBeaconConfig.setTxPowerMode(URIBeaconConfigService::TX_POWER_MODE_LOW);
 
-    /*Start advertising the URI Beacon*/
+    /* Setup auxiliary services. */
+    DFUService dfu(ble); /* To allow over-the-air firmware udpates. optional. */
+    DeviceInformationService deviceInfo(ble, "ARM", "URIBeacon2", "SN1", "hw-rev1", "fw-rev1", "soft-rev1"); /* optional */
+
     ble.startAdvertising();
 
     while (true) {
