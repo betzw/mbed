@@ -1,39 +1,39 @@
 /**
-******************************************************************************
-* @file    stc3115_Driver.h
-* @author  AMS, AST/EST
-* @version V0.0.1
-* @date    30-July-2014
-* @brief   STC3115 driver definition
-******************************************************************************
-* @attention
-*
-* <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
-*
-* Redistribution and use in source and binary forms, with or without modification,
-* are permitted provided that the following conditions are met:
-*   1. Redistributions of source code must retain the above copyright notice,
-*      this list of conditions and the following disclaimer.
-*   2. Redistributions in binary form must reproduce the above copyright notice,
-*      this list of conditions and the following disclaimer in the documentation
-*      and/or other materials provided with the distribution.
-*   3. Neither the name of STMicroelectronics nor the names of its contributors
-*      may be used to endorse or promote products derived from this software
-*      without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-******************************************************************************
-*/ 
+ ******************************************************************************
+ * @file    stc3115_Driver.h
+ * @author  AMS, AST/EST
+ * @version V1.0.0
+ * @date    30-July-2014
+ * @brief   STC3115 driver definition
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of STMicroelectronics nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */ 
 
 
 /* Define to prevent recursive inclusion ---------------------------------------------- */
@@ -94,10 +94,12 @@
 #define CC_MODE 			0
 #define MIXED_MODE			0
 #define MAX_HRSOC          	51200  		/* 100% in 1/512% units								*/
-#define MAX_SOC            	100   		/* 100% in % units 								*/
+#define MAX_SOC            	1000   		/* 100% in 0.1% units 								*/
 #define BATT_OK				0
 #define BATT_NOK			1
 #define OK 0
+#define VoltageFactor  		9011      	/* LSB=2.20mV ~9011/4096 - convert to mV         	*/
+#define CurrentFactor		24084		/* LSB=5.88uV/R= ~24084/R/4096 - convert to mA  	*/
 
 #define RAM_TSTWORD 		0x53A9		/* STC3115 RAM test word 							*/
 #define STC3115_INIT     'I'			/* Gas gauge Init states 							*/
@@ -106,21 +108,6 @@
 
 
 
-/*battery output structure ---------------------------------------------------- */
-typedef struct  {
-	int status;			/* STC3115 status registers 							*/
-	int HRSOC;			/* battery relative SOC (%) in 1/512% 					*/
-	int SOC;            	/* battery relative SOC (%) in % 					*/
-	int Voltage;        	/* battery voltage in mV 								*/
-	int Current;        	/* battery current in mA 								*/
-	int Temperature;    	/* battery temperature in 0.1°C 						*/
-	int ConvCounter;
-	int OCV;				/* battery relax voltage in mV 							*/
-	int Presence;			/* battery presence										*/
-	int ChargeValue;    	/* battery remaining capacity in mAh 					*/
-	int RemTime;        	/* battery remaining operating time during discharge 	*/
-} STC3115_BatteryData_TypeDef;
- 
 /*stc3115 configuration structure --------------------------------------------- */
 typedef struct  {
 	int Vmode;       		/* 1=Voltage mode, 0=mixed mode 						*/
@@ -131,10 +118,24 @@ typedef struct  {
 	int Cnom;        		/* nominal battery capacity in mAh 						*/
 	int Rsense;      		/* sense resistor in mOhms								*/
 	int RelaxCurrent; 	/* relaxation current(< C/20) in mA						*/
-	char OCVOffset[OCVTAB_SIZE];    /* OCV curve adjustment in 0.55mV						*/
+	char OCVOffset[OCVTAB_SIZE];    /* OCV curve adjustment in 0.55mV				*/
 } STC3115_ConfigData_TypeDef;
 
-
+/*battery output structure ---------------------------------------------------- */
+typedef struct  {
+	int status;			/* STC3115 status registers 							*/
+	int HRSOC;			/* battery relative SOC (%) in 1/512% 					*/
+	int SOC;            	/* battery relative SOC (%) in 0.1% 					*/
+	int Voltage;        	/* battery voltage in mV 								*/
+	int Current;        	/* battery current in mA 								*/
+	int Temperature;    	/* battery temperature in 0.1°C 						*/
+	int ConvCounter;        /* STC3115 convertion counter in 0.5s */
+	int OCV;				/* battery relax voltage in mV 							*/
+	int Presence;			/* battery presence										*/
+	int ChargeValue;    	/* battery remaining capacity in mAh 					*/
+	int RemTime;        	/* battery remaining operating time during discharge 	*/
+} STC3115_BatteryData_TypeDef;
+ 
 #endif /* __STC3115_DRV_H */
 
  

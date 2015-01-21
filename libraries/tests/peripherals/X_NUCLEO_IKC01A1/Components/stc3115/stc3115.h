@@ -1,40 +1,40 @@
 /**
-******************************************************************************
-* @file    stc3115.h
-* @author  AST / EST
-* @version V0.0.1
-* @date    22-October-2014
-* @brief   This file contains the common defines and functions prototypes for
-*          the stc3115.cpp driver.
-******************************************************************************
-* @attention
-*
-* <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
-*
-* Redistribution and use in source and binary forms, with or without modification,
-* are permitted provided that the following conditions are met:
-*   1. Redistributions of source code must retain the above copyright notice,
-*      this list of conditions and the following disclaimer.
-*   2. Redistributions in binary form must reproduce the above copyright notice,
-*      this list of conditions and the following disclaimer in the documentation
-*      and/or other materials provided with the distribution.
-*   3. Neither the name of STMicroelectronics nor the names of its contributors
-*      may be used to endorse or promote products derived from this software
-*      without specific prior written permission.
-*
-* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-* AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-* IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-* DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-* FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-* SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-* CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-* OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-* OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*
-******************************************************************************
-*/ 
+ ******************************************************************************
+ * @file    stc3115.h
+ * @author  AST / EST
+ * @version V0.0.1
+ * @date    22-October-2014
+ * @brief   This file contains the common defines and functions prototypes for
+ *          the stc3115.cpp driver.
+ ******************************************************************************
+ * @attention
+ *
+ * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *   1. Redistributions of source code must retain the above copyright notice,
+ *      this list of conditions and the following disclaimer.
+ *   2. Redistributions in binary form must reproduce the above copyright notice,
+ *      this list of conditions and the following disclaimer in the documentation
+ *      and/or other materials provided with the distribution.
+ *   3. Neither the name of STMicroelectronics nor the names of its contributors
+ *      may be used to endorse or promote products derived from this software
+ *      without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+ * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ *
+ ******************************************************************************
+ */ 
 
 /* Define to prevent from recursive inclusion --------------------------------*/
 #ifndef __STC3115_H
@@ -63,7 +63,7 @@ class STC3115 : public GasGauge {
 	virtual void Reset(void);
 	virtual int Stop(void);
 
-	virtual int GetSOC(void) { return BatteryData.SOC; }
+	virtual int GetSOC(void) { return (BatteryData.SOC+5)/10; }
 	virtual int GetOCV(void) { return BatteryData.OCV; }
 	virtual int GetCurrent(void) { return BatteryData.Current; }
 	virtual int GetTemperature(void) { return BatteryData.Temperature; }
@@ -457,7 +457,7 @@ class STC3115 : public GasGauge {
 			}
 		}
 		if(ConfigData.Alm_Vbat !=0) {
-			value = ((ConfigData.Alm_Vbat << 9) / VoltageFactor); /* LSB=8*2.44mV */
+			value = ((long)(ConfigData.Alm_Vbat << 9) / VoltageFactor); /* LSB=8*2.2mV */
 			ret = WriteByte(STC3115_REG_ALARM_VOLTAGE, value);
 			if(ret) {
 				error("I2C error in %s (%d)\n", __func__, __LINE__);
@@ -467,8 +467,8 @@ class STC3115 : public GasGauge {
     
 		/* relaxation timer */
 		if(ConfigData.Rsense !=0 ) {
-			value = ((ConfigData.RelaxCurrent << 9) / 
-				 (24084 / ConfigData.Rsense));   /* LSB=8*5.88uV */
+			value = ((long)(ConfigData.RelaxCurrent << 9) / (CurrentFactor / ConfigData.Rsense));   /* LSB=8*5.88uV */
+
 			ret = WriteByte(STC3115_REG_CURRENT_THRES,value); 
 			if(ret) {
 				error("I2C error in %s (%d)\n", __func__, __LINE__);
