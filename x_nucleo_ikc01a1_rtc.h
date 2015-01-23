@@ -43,7 +43,7 @@
 #include "mbed.h"
 #include "x_nucleo_ikc01a1_crtc.h"
 #include "x_nucleo_ikc01a1_targets.h"
-#include "x_nucleo_ikc01a1_i2c.h"
+#include "DevI2C.h"
 
 /* Macros -------------------------------------------------------------------*/
 /* M41T62 */

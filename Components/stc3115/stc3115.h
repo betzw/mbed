@@ -46,7 +46,7 @@
 #include "mbed.h"
 #include "stc3115_Battery.h"
 #include "stc3115_Driver.h"
-#include "../../x_nucleo_ikc01a1_i2c.h"
+#include "DevI2C.h"
 #include "../Common/GasGauge.h"
 
 /* Macros --------------------------------------------------------------------*/
