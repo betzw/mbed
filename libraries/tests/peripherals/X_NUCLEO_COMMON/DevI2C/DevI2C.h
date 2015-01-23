@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file    x_nucleo_ikc01a1_i2c.h
+ * @file    DevI2C.h
  * @author  AST / EST
  * @version V0.0.1
- * @date    12-November-2014
+ * @date    21-January-2015
  * @brief   Header file for a special I2C class DecI2C which provides some
  *          helper function for on-board communication
  ******************************************************************************
@@ -37,15 +37,15 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKC01A1_I2C_H
-#define __X_NUCLEO_IKC01A1_I2C_H
+#ifndef __DEV_I2C_H
+#define __DEV_I2C_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Helper class DevI2C providing functions for multi-register I2C communication
- *  common for a series I2C devices
+ *  common for a series of I2C devices
  */
 class DevI2C : public I2C
 {
@@ -120,4 +120,4 @@ class DevI2C : public I2C
 	}
 };
 
-#endif /* __X_NUCLEO_IKC01A1_I2C_H */
+#endif /* __DEV_I2C_H */

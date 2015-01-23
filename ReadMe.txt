@@ -43,3 +43,17 @@ git push bm-app bm-split:master
 git checkout betzw_wb
 git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
 git branch -d bm-split
+
+DevI2C:
+-------
+git remote add devi2c-class "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/DevI2C"
+
+git subtree split -P libraries/tests/peripherals/X_NUCLEO_COMMON/DevI2C -b devi2c-split
+git checkout devi2c-split
+
+git pull devi2c-class master
+git push devi2c-class devi2c-split:master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/peripherals/X_NUCLEO_COMMON/DevI2C devi2c-split
+git branch -d devi2c-split
