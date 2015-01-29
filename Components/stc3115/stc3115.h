@@ -379,27 +379,16 @@ class STC3115 : public GasGauge {
 	}
 
 	/**
-	 * @brief Initialize and start the STC3115 at application startup
+	 * @brief calculate the RAM CRC
 	 * @param None
-	 * @retval 0 if ok, -1 if an I2C error has occured
+	 * @retval CRC value
 	 */
-	int Startup(void)
+	int UpdateRamCRC(void)
 	{
 		int res;
-		int ocv;
 		
-		/* check STC310x status */
-		res = Status();
-		if (res<0) return(res);
-		
-		/* read OCV */
-		ocv = ReadWord(STC3115_REG_OCV);
-		
-		SetParam();  /* set STC3115 parameters  */
-		
-		/* rewrite ocv to start SOC with updated OCV curve */
-		res = WriteWord(STC3115_REG_OCV, ocv);
-		
+		res = CalcRamCRC8(RAMData.db,RAM_SIZE-1);
+		RAMData.db[RAM_SIZE-1] = res;   /* last byte holds the CRC */
 		return(res);
 	}
 
@@ -417,131 +406,9 @@ class STC3115 : public GasGauge {
 		
 		/* read REG_MODE and REG_CTRL */
 		value = ReadWord(STC3115_REG_MODE);
-		value &= 0x7fff;   
+		value &= 0x7f7f;   
 		
 		return (value);
-	}
-
-	/**
-	 * @brief Initialize the STC3115 parameters
-	 * @param None
-	 * @retval None
-	 * @note  calls 'error()' in case of I2C error
-	 */
-	void SetParam(void)
-	{
-		int value;
-		int ret;
-
-		/* set GG_RUN=0 before changing algo parameters */
-		ret = WriteByte(STC3115_REG_MODE,STC3115_VMODE);
-		if(ret) {
-			error("I2C error in %s (%d)\n", __func__, __LINE__);
-			return;
-		}
-
-		/* init OCV curve */
-		ret = WriteData((unsigned char *) ConfigData.OCVOffset, 
-				STC3115_REG_OCVTAB, OCVTAB_SIZE);
-		if(ret) {
-			error("I2C error in %s (%d)\n", __func__, __LINE__);
-			return;
-		}
-  
-		/* set alm level if different from default */
-		if(ConfigData.Alm_SOC !=0) {
-			ret = WriteByte(STC3115_REG_ALARM_SOC,ConfigData.Alm_SOC*2); 
-			if(ret) {
-				error("I2C error in %s (%d)\n", __func__, __LINE__);
-				return;
-			}
-		}
-		if(ConfigData.Alm_Vbat !=0) {
-			value = ((long)(ConfigData.Alm_Vbat << 9) / VoltageFactor); /* LSB=8*2.2mV */
-			ret = WriteByte(STC3115_REG_ALARM_VOLTAGE, value);
-			if(ret) {
-				error("I2C error in %s (%d)\n", __func__, __LINE__);
-				return;
-			}
-		}
-    
-		/* relaxation timer */
-		if(ConfigData.Rsense !=0 ) {
-			value = ((long)(ConfigData.RelaxCurrent << 9) / (CurrentFactor / ConfigData.Rsense));   /* LSB=8*5.88uV */
-
-			ret = WriteByte(STC3115_REG_CURRENT_THRES,value); 
-			if(ret) {
-				error("I2C error in %s (%d)\n", __func__, __LINE__);
-				return;
-			}
-		}
-  
-		/* set parameters if different from default, only if a restart is done (battery change) */
-		if(RAMData.reg.CC_cnf !=0) {
-			ret = WriteWord(STC3115_REG_CC_CNF,RAMData.reg.CC_cnf); 
-			if(ret) {
-				error("I2C error in %s (%d)\n", __func__, __LINE__);
-				return;
-			}
-		}
-		if(RAMData.reg.VM_cnf !=0) {
-			ret = WriteWord(STC3115_REG_VM_CNF,RAMData.reg.VM_cnf); 
-			if(ret) {
-				error("I2C error in %s (%d)\n", __func__, __LINE__);
-				return;
-			}
-		}
-		ret = WriteByte(STC3115_REG_CTRL,0x03); /*   clear PORDET, BATFAIL, free ALM pin, reset conv counter */
-		if(ret) {
-			error("I2C error in %s (%d)\n", __func__, __LINE__);
-			return;
-		}
-		
-		ret = WriteByte(STC3115_REG_MODE, STC3115_GG_RUN | 
-				(STC3115_VMODE * ConfigData.Vmode) | 
-				(STC3115_ALM_ENA * ALM_EN));  /*   set GG_RUN=1, set mode, set alm enable */
-		if(ret) {
-			error("I2C error in %s (%d)\n", __func__, __LINE__);
-			return;
-		}
-
-		return;
-	}
-
-	/**
-	 * @brief calculate the RAM CRC
-	 * @param None
-	 * @retval CRC value
-	 */
-	int UpdateRamCRC(void)
-	{
-		int res;
-		
-		res = CalcRamCRC8(RAMData.db,RAM_SIZE-1);
-		RAMData.db[RAM_SIZE-1] = res;   /* last byte holds the CRC */
-		return(res);
-	}
-
-	/**
-	 * @brief Restore STC3115 state
-	 * @param None 
-	 * @retval 0 if OK, -1 if error
-	 */
-	int Restore(void)
-	{
-		int res;
-		
-		/* check STC310x status */
-		res = Status();
-		if (res<0) return(res);
- 
-		/* set STC3115 parameters  */
-		SetParam();  
-
-		/* restore SOC from RAM data */
-		res = WriteWord(STC3115_REG_SOC,RAMData.reg.HRSOC);
-
-		return(res);
 	}
 
 	/**
@@ -567,6 +434,9 @@ class STC3115 : public GasGauge {
 	int ReadBatteryData(void);
 	int AlarmSetVoTh(int);
 	int AlarmSetSOCTh(int);
+	int Restore(void);
+	int Startup(void);
+	void SetParam(void);
 };
 
 #endif /* __STC3115_H */
