@@ -67,38 +67,50 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 		ConfigData.OCVOffset[i] = (char)OCVOffset[i];
 	}
     
-	/* Battery presence status init*/
+	/* Battery presence status init */
 	BatteryData.Presence = 1;
 
-	/* check RAM data validity */
-	ret = ReadRamData();
-	if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
+	if((ReadByte(STC3115_REG_CTRL) & (STC3115_BATFAIL | STC3115_PORDET)) == 0) {
+		/* check RAM data validity */
+		ret = ReadRamData();
+		if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
 
-	if((RAMData.reg.TstWord != RAM_TSTWORD) || (CalcRamCRC8(RAMData.db,RAM_SIZE)!=0)) {
-		/* RAM invalid */
-		InitRamData();
-		ret = Startup();  /* return -1 if I2C error or STC3115 not present */
-	} else {
-		/* check STC3115 status */
-		if((ReadByte(STC3115_REG_CTRL) & (STC3115_BATFAIL | STC3115_PORDET)) != 0 ) {
-			ret = Startup();  /* return -1 if I2C error or STC3115 not present */
-		} else {
-			ret = Restore();  /* recover from last SOC */
+		if((RAMData.reg.TstWord == RAM_TSTWORD) && (CalcRamCRC8(RAMData.db,RAM_SIZE) == 0)) {
+			if(RAMData.reg.STC3115_Status == STC3115_RUNNING) {
+				/* Recover from last SOC */
+				ret = Restore();
+				if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
+				
+				return;
+			}
 		}
-	}
-	if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
+	} 
 
-	//Update RAM status
+	/* Startup from known state */
+	ret = Powerdown();
+	if(ret) error("Initialization failed (%s, %d)\n", __func__, __LINE__);
+
+	InitRamData();
 	RAMData.reg.STC3115_Status = STC3115_INIT;
 	UpdateRamCRC();
 	ret = WriteRamData();
 	if(ret) error("Initialization failed (%s, %d)\n", __func__, __LINE__);
+
+	/* Configure & Handle delays and Resets */
+	SetParam();
+	while(ReadWord(STC3115_REG_COUNTER) <= VCOUNT) {
+		while((ReadByte(STC3115_REG_MODE) & STC3115_GG_RUN) == 0) {
+			wait_ms(100);
+			SetParam();
+		}
+		wait_ms(100);
+	}
 }
 
 /**
  * @brief Periodic Gas Gauge task, to be called e.g. every 5 sec.
  * @param None
- * @retval 1 if data available, 0 if no data, -1 if error
+ * @retval >0 if data available, 0 if no data, -1 if error
  * @note Affects global STC310x data and gas gauge variables
  */
 int STC3115::Task(void)
@@ -136,7 +148,7 @@ int STC3115::Task(void)
 
 	/* check STC3115 running mode */
 	if ((BatteryData.status & STC3115_GG_RUN) == 0) {
-		if(RAMData.reg.STC3115_Status != STC3115_INIT) {
+		if(RAMData.reg.STC3115_Status == STC3115_RUNNING) {
 			/* if RUNNING state, restore STC3115 */
 			res = Restore();
 			if(res) return(res);
@@ -215,10 +227,14 @@ int STC3115::Task(void)
 	res = WriteRamData();
 	if(res) return(res);  /* return if I2C error or STC3115 not responding */
 
-	if (RAMData.reg.STC3115_Status==STC3115_RUNNING)
-		return(1);
-	else
+	if (RAMData.reg.STC3115_Status==STC3115_RUNNING) {
+		if((BatteryData.status & (STC3115_GG_VM<<8)) == 0)
+			return(2); // Coulomb counter mode
+		else
+			return(1); // Voltage mode
+	} else {
 		return(0);  /* only SOC, OCV and voltage are valid */
+	}
 }
 
 /**
@@ -365,4 +381,137 @@ int STC3115::AlarmSetSOCTh(int SOCThresh)
 	if (res != OK) return (!OK);
 
 	return (OK);
+}
+
+/**
+ * @brief Restore STC3115 state
+ * @param None 
+ * @retval 0 if OK, -1 if error
+ */
+int STC3115::Restore(void)
+{
+	int res;
+		
+	/* check STC310x status */
+	res = Status();
+	if (res<0) return(res);
+ 
+	/* set STC3115 parameters  */
+	SetParam();  
+
+	/* restore SOC from RAM data */
+	res = WriteWord(STC3115_REG_SOC,RAMData.reg.HRSOC);
+
+	return(res);
+}
+
+/**
+ * @brief Initialize and start the STC3115 at application startup
+ * @param None
+ * @retval 0 if ok, -1 if an I2C error has occured
+ */
+int STC3115::Startup(void)
+{
+	int res;
+	int ocv;
+
+	/* check STC310x status */
+	res = Status();
+	if (res<0) return(res);
+
+	/* read OCV */
+	ocv = ReadWord(STC3115_REG_OCV);
+
+	SetParam();  /* set STC3115 parameters  */
+
+	/* rewrite ocv to start SOC with updated OCV curve */
+	res = WriteWord(STC3115_REG_OCV, ocv);
+
+	return(res);
+}
+
+/**
+ * @brief Initialize the STC3115 parameters
+ * @param None
+ * @retval None
+ * @note  calls 'error()' in case of I2C error
+ */
+void STC3115::SetParam(void)
+{
+	int value;
+	int ret;
+
+	/* set GG_RUN=0 before changing algo parameters */
+	ret = WriteByte(STC3115_REG_MODE,STC3115_VMODE);
+	if(ret) {
+		error("I2C error in %s (%d)\n", __func__, __LINE__);
+		return;
+	}
+
+	/* init OCV curve */
+	ret = WriteData((unsigned char *) ConfigData.OCVOffset, 
+			STC3115_REG_OCVTAB, OCVTAB_SIZE);
+	if(ret) {
+		error("I2C error in %s (%d)\n", __func__, __LINE__);
+		return;
+	}
+  
+	/* set alm level if different from default */
+	if(ConfigData.Alm_SOC !=0) {
+		ret = WriteByte(STC3115_REG_ALARM_SOC,ConfigData.Alm_SOC*2); 
+		if(ret) {
+			error("I2C error in %s (%d)\n", __func__, __LINE__);
+			return;
+		}
+	}
+	if(ConfigData.Alm_Vbat !=0) {
+		value = ((long)(ConfigData.Alm_Vbat << 9) / VoltageFactor); /* LSB=8*2.2mV */
+		ret = WriteByte(STC3115_REG_ALARM_VOLTAGE, value);
+		if(ret) {
+			error("I2C error in %s (%d)\n", __func__, __LINE__);
+			return;
+		}
+	}
+    
+	/* relaxation timer */
+	if(ConfigData.Rsense !=0 ) {
+		value = ((long)(ConfigData.RelaxCurrent << 9) / (CurrentFactor / ConfigData.Rsense));   /* LSB=8*5.88uV */
+
+		ret = WriteByte(STC3115_REG_CURRENT_THRES,value); 
+		if(ret) {
+			error("I2C error in %s (%d)\n", __func__, __LINE__);
+			return;
+		}
+	}
+  
+	/* set parameters if different from default, only if a restart is done (battery change) */
+	if(RAMData.reg.CC_cnf !=0) {
+		ret = WriteWord(STC3115_REG_CC_CNF,RAMData.reg.CC_cnf); 
+		if(ret) {
+			error("I2C error in %s (%d)\n", __func__, __LINE__);
+			return;
+		}
+	}
+	if(RAMData.reg.VM_cnf !=0) {
+		ret = WriteWord(STC3115_REG_VM_CNF,RAMData.reg.VM_cnf); 
+		if(ret) {
+			error("I2C error in %s (%d)\n", __func__, __LINE__);
+			return;
+		}
+	}
+	ret = WriteByte(STC3115_REG_CTRL,0x03); /*   clear PORDET, BATFAIL, free ALM pin, reset conv counter */
+	if(ret) {
+		error("I2C error in %s (%d)\n", __func__, __LINE__);
+		return;
+	}
+		
+	ret = WriteByte(STC3115_REG_MODE, STC3115_GG_RUN | 
+			(STC3115_VMODE * ConfigData.Vmode) | 
+			(STC3115_ALM_ENA * ALM_EN));  /*   set GG_RUN=1, set mode, set alm enable */
+	if(ret) {
+		error("I2C error in %s (%d)\n", __func__, __LINE__);
+		return;
+	}
+
+	return;
 }
