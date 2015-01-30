@@ -70,21 +70,23 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 	/* Battery presence status init */
 	BatteryData.Presence = 1;
 
-	if((ReadByte(STC3115_REG_CTRL) & (STC3115_BATFAIL | STC3115_PORDET)) == 0) {
-		/* check RAM data validity */
-		ret = ReadRamData();
-		if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
-
-		if((RAMData.reg.TstWord == RAM_TSTWORD) && (CalcRamCRC8(RAMData.db,RAM_SIZE) == 0)) {
-			if(RAMData.reg.STC3115_Status == STC3115_RUNNING) {
-				/* Recover from last SOC */
-				ret = Restore();
-				if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
-				
-				return;
+	if((ReadByte(STC3115_REG_MODE) & STC3115_GG_RUN) != 0) { /* GasGauge is running */
+		if((ReadByte(STC3115_REG_CTRL) & (STC3115_BATFAIL | STC3115_PORDET)) == 0) { /* no GG reset has occurred */
+			/* check RAM data validity */
+			ret = ReadRamData();
+			if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
+			
+			if((RAMData.reg.TstWord == RAM_TSTWORD) && (CalcRamCRC8(RAMData.db,RAM_SIZE) == 0)) { /* RAM data is consistent */
+				if(RAMData.reg.STC3115_Status == STC3115_RUNNING) { /* last saved RAM state was for a valid measurement */
+					/* Recover from last SOC */
+					ret = Restore();
+					if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
+					
+					return;
+				}
 			}
-		}
-	} 
+		} 
+	}
 
 	/* Startup from known state */
 	ret = Powerdown();
