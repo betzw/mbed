@@ -65,12 +65,13 @@
 class X_CUBE_MEMS
 {
 protected:
-    X_CUBE_MEMS(PinName pin_sda, PinName pin_scl);
-
+    //X_CUBE_MEMS(PinName pin_sda, PinName pin_scl);
+    X_CUBE_MEMS(DevI2C *ext_i2c);
+    
 public:
-    static X_CUBE_MEMS* Instance(PinName sda, PinName scl);
+    static X_CUBE_MEMS* Instance(DevI2C *ext_i2c=NULL);
 
-    DevI2C dev_i2c;
+    DevI2C *dev_i2c;
     HTS221 hts221;
     LPS25H lps25h;
     LIS3MDL lis3mdl;

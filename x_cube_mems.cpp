@@ -46,11 +46,12 @@ X_CUBE_MEMS* X_CUBE_MEMS::_instance = NULL;
 /**
  * @brief  Constructor
  */
-X_CUBE_MEMS::X_CUBE_MEMS(PinName pin_sda, PinName pin_scl) : dev_i2c(pin_sda,pin_scl),
-	hts221(dev_i2c),
-    lps25h(dev_i2c),
-    lis3mdl(dev_i2c),
-    lsm6ds0(dev_i2c)
+//X_CUBE_MEMS::X_CUBE_MEMS(PinName pin_sda, PinName pin_scl) : dev_i2c(pin_sda,pin_scl),
+X_CUBE_MEMS::X_CUBE_MEMS(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
+	hts221(*dev_i2c),
+    lps25h(*dev_i2c),
+    lis3mdl(*dev_i2c),
+    lsm6ds0(*dev_i2c)
 {
   
 }
@@ -59,9 +60,11 @@ X_CUBE_MEMS::X_CUBE_MEMS(PinName pin_sda, PinName pin_scl) : dev_i2c(pin_sda,pin
  * @brief  Get singleton instance
  * @return a pointer to the singleton instance of class X_CUBE_MEMS
  */
- X_CUBE_MEMS* X_CUBE_MEMS::Instance(PinName sda, PinName scl) {
+ X_CUBE_MEMS* X_CUBE_MEMS::Instance(DevI2C *ext_i2c) {
 	if(_instance == NULL) {
-		_instance = new X_CUBE_MEMS(sda,scl);
+		if(ext_i2c == NULL)
+			ext_i2c = new DevI2C(D14, D15);
+		_instance = new X_CUBE_MEMS(ext_i2c);
 	}
 	return _instance;
 }
