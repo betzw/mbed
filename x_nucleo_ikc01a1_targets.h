@@ -41,7 +41,7 @@
 #ifndef _X_NUCLEO_IKC01A1_TARGETS_H_
 #define _X_NUCLEO_IKC01A1_TARGETS_H_
 
-#if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8) // STM Nucleo Boards
+#if defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8) // STM Nucleo Boards (use ST Morpho headers)
 /*** Charger ***/
 #define CHARGER_PIN_ST1             (PC_2)
 #define CHARGER_PIN_ST2             (PC_3) 
@@ -60,25 +60,25 @@
 /*** Gas Gauge ***/
 #define GG_PIN_ALM                  (PC_7)
 
-#elif defined(TARGET_K64F) // Freescale
+#elif defined(TARGET_K64F) // Freescale (use Arduino headers)
 
 /*** Charger ***/
-#define CHARGER_PIN_ST1             (PTC11)
-#define CHARGER_PIN_ST2             (PTC10) 
-#define CHARGER_PIN_DISCHARGE       (PTB11)
+#define CHARGER_PIN_ST1             (A4)
+#define CHARGER_PIN_ST2             (A5)
+#define CHARGER_PIN_DISCHARGE       (A3)
 
 
 /*** I2C ***/
-#define IKC01A1_PIN_I2C_SCL         (PTE24)
-#define IKC01A1_PIN_I2C_SDA         (PTE25)
+#define IKC01A1_PIN_I2C_SCL         (D15)
+#define IKC01A1_PIN_I2C_SDA         (D14)
 
 
 /*** RTC ***/
-#define RTC_PIN_IRQ_OUT             (PTD1)
+#define RTC_PIN_IRQ_OUT             (D13)
 
 
 /*** Gas Gauge ***/
-#define GG_PIN_ALM                  (PTC4)
+#define GG_PIN_ALM                  (D9)
 
 #else // !(defined(TARGET_NUCLEO_F401RE) || defined(TARGET_NUCLEO_L053R8) || defined(TARGET_MCU_K64F))
 #error "Platform not supported!"
