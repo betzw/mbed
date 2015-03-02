@@ -104,6 +104,8 @@ namespace {
 
 #if defined(TARGET_K64F)
 #define USER_BUTTON (SW2)
+#elif defined(TARGET_LPC11U68)
+#define USER_BUTTON (P0_16)
 #endif // !TARGET_MCU_K64F
 
 /* Static variables ----------------------------------------------------------*/
@@ -185,7 +187,8 @@ static void init(void) {
 	}
 #endif // TPIU_DEBUG
 
-	/* Set irq handler for button */
+	/* Set mode & irq handler for button */
+	button.mode(PullNone);
 	button.fall(button_irq);
 
 	/* Check whether RTC needs to be configured */
