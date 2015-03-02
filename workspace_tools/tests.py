@@ -916,7 +916,7 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, 
                          join(PERIPHERALS, 'X_NUCLEO_COMMON', 'DevI2C'), 
                          join(PERIPHERALS, 'X_NUCLEO_IKC01A1')],
-        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F"],
+        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F", "LPC11U68"],
         "peripherals": ["X_NUCLEO_IKC01A1"]
     },
 ]

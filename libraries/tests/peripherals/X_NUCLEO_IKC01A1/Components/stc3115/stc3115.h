@@ -158,6 +158,7 @@ class STC3115 : public GasGauge {
 	 *  @param fptr A pointer to a void function, or 0 to set as none
 	 */
 	virtual void AttachIT(void (*fptr)(void)) {
+		alm.mode(PullNone); /* be precise about pin mode */
 		alm.fall(fptr);
 	}
 
