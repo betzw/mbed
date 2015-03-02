@@ -66,8 +66,9 @@ X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
  */
 X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(DevI2C *ext_i2c) {
 	if(_instance == NULL) {
-		if(ext_i2c == NULL)
+		if(ext_i2c == NULL) {
 			ext_i2c = new DevI2C(IKC01A1_PIN_I2C_SDA, IKC01A1_PIN_I2C_SCL);
+		}
 		_instance = new X_NUCLEO_IKC01A1(ext_i2c);
 	}
 	return _instance;
