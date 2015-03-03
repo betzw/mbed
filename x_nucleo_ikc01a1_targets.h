@@ -64,8 +64,8 @@
 
 /*** Charger ***/
 #if defined(TARGET_K64F)
-#define CHARGER_PIN_ST1             (A5) /* moved to closest Arduino connector pin (NOTE: there is currently a bug in file 'PinNames.h' of the mbed porting for this platform) */
-#define CHARGER_PIN_ST2             (A4) /* moved to closest Arduino connector pin (NOTE: there is currently a bug in file 'PinNames.h' of the mbed porting for this platform) */
+#define CHARGER_PIN_ST1             (A4) /* moved to closest Arduino connector pin */
+#define CHARGER_PIN_ST2             (A5) /* moved to closest Arduino connector pin */
 #elif defined(TARGET_LPC11U68)
 #define CHARGER_PIN_ST1             (D7) /* A4 corresponds to P0_5 which conflicts with I2C SDA on this board, therefore need to choose another free (digital) pin */
 #define CHARGER_PIN_ST2             (D6) /* A5 corresponds to P0_4 which conflicts with I2C SCL on this board, therefore need to choose another free (digital) pin */
