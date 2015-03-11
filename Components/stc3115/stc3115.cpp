@@ -67,6 +67,10 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 		ConfigData.OCVOffset[i] = (char)OCVOffset[i];
 	}
     
+	/* check STC3115 status */
+	ret = Status();
+	if(ret<0) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
+
 	/* Battery presence status init */
 	BatteryData.Presence = 1;
 
@@ -81,7 +85,6 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 					/* Recover from last SOC */
 					ret = Restore();
 					if(ret) error("Initialiaztion failed (%s, %d)\n", __func__, __LINE__);
-					
 					return;
 				}
 			}
@@ -89,8 +92,7 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 	}
 
 	/* Startup from known state */
-	ret = Powerdown();
-	if(ret) error("Initialization failed (%s, %d)\n", __func__, __LINE__);
+	Reset();
 
 	InitRamData();
 	RAMData.reg.STC3115_Status = STC3115_INIT;
@@ -102,10 +104,10 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 	SetParam();
 	while(ReadWord(STC3115_REG_COUNTER) <= VCOUNT) {
 		while((ReadByte(STC3115_REG_MODE) & STC3115_GG_RUN) == 0) {
-			wait_ms(100);
+			wait_ms(200);
 			SetParam();
 		}
-		wait_ms(100);
+		wait_ms(200);
 	}
 }
 
@@ -113,7 +115,7 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
  * @brief Periodic Gas Gauge task, to be called e.g. every 5 sec.
  * @param None
  * @retval >0 if data available, 0 if no data, -1 if error
- * @note Affects global STC310x data and gas gauge variables
+ * @note Affects global STC3115 data and gas gauge variables
  */
 int STC3115::Task(void)
 {
@@ -394,7 +396,7 @@ int STC3115::Restore(void)
 {
 	int res;
 		
-	/* check STC310x status */
+	/* check STC3115 status */
 	res = Status();
 	if (res<0) return(res);
  
@@ -402,7 +404,10 @@ int STC3115::Restore(void)
 	SetParam();  
 
 	/* restore SOC from RAM data */
-	res = WriteWord(STC3115_REG_SOC,RAMData.reg.HRSOC);
+	res = 0;
+	if (RAMData.reg.STC3115_Status == STC3115_RUNNING)
+		if (RAMData.reg.HRSOC != 0)
+			res = WriteWord(STC3115_REG_SOC, RAMData.reg.HRSOC);  /* restore HRSOC */
 
 	return(res);
 }
@@ -417,7 +422,7 @@ int STC3115::Startup(void)
 	int res;
 	int ocv;
 
-	/* check STC310x status */
+	/* check STC3115 status */
 	res = Status();
 	if (res<0) return(res);
 
