@@ -18,50 +18,86 @@
 #include "nrf_error.h"
 #include "ConfigParamsPersistence.h"
 
+/**
+ * Nordic specific structure used to store params persistently.
+ * It extends URIBeaconConfigService::Params_t with a persistence signature.
+ */
+struct PersistentParams_t {
+    URIBeaconConfigService::Params_t params;
+    uint32_t                         persistenceSignature; /* This isn't really a parameter, but having the expected
+                                                            * magic value in this field indicates persistence. */
+
+    static const uint32_t MAGIC = 0x1BEAC000;              /* Magic that identifies persistence */
+};
+
+/**
+ * The following is a module-local variable to hold configuration parameters for
+ * short periods during flash access. This is necessary because the pstorage
+ * APIs don't copy in the memory provided as data source. The memory cannot be
+ * freed or reused by the application until this flash access is complete. The
+ * load and store operations in this module initialize persistentParams and then
+ * pass it on to the 'pstorage' APIs.
+ */
+static PersistentParams_t persistentParams;
+
 static pstorage_handle_t pstorageHandle;
 
-/* Dummy callback handler needed by Nordic's pstorage module. */
+/**
+ * Dummy callback handler needed by Nordic's pstorage module. This is called
+ * after every flash access.
+ */
 static void pstorageNotificationCallback(pstorage_handle_t *p_handle,
-                                  uint8_t            op_code,
-                                  uint32_t           result,
-                                  uint8_t *          p_data,
-                                  uint32_t           data_len)
+                                         uint8_t            op_code,
+                                         uint32_t           result,
+                                         uint8_t           *p_data,
+                                         uint32_t           data_len)
 {
     /* APP_ERROR_CHECK(result); */
 }
 
 /* Platform-specific implementation for persistence on the nRF5x. Based on the
  * pstorage module provided by the Nordic SDK. */
-void loadURIBeaconConfigParams(URIBeaconConfigService::Params_t *paramsP)
+bool loadURIBeaconConfigParams(URIBeaconConfigService::Params_t *paramsP)
 {
-    pstorage_init();
-    static pstorage_module_param_t pstorageParams = {
-        .cb          = pstorageNotificationCallback,
-        .block_size  = sizeof(URIBeaconConfigService::Params_t),
-        .block_count = 1
-    };
+    static bool pstorageInitied = false;
+    if (!pstorageInitied) {
+        pstorage_init();
 
-    pstorage_register(&pstorageParams, &pstorageHandle);
-    if (pstorage_load(reinterpret_cast<uint8_t *>(paramsP), &pstorageHandle, sizeof(URIBeaconConfigService::Params_t), 0) != NRF_SUCCESS) {
+        static pstorage_module_param_t pstorageParams = {
+            .cb          = pstorageNotificationCallback,
+            .block_size  = sizeof(PersistentParams_t),
+            .block_count = 1
+        };
+        pstorage_register(&pstorageParams, &pstorageHandle);
+        pstorageInitied = true;
+    }
+
+    if ((pstorage_load(reinterpret_cast<uint8_t *>(&persistentParams), &pstorageHandle, sizeof(PersistentParams_t), 0) != NRF_SUCCESS) ||
+        (persistentParams.persistenceSignature != PersistentParams_t::MAGIC)) {
         // On failure zero out and let the service reset to defaults
         memset(paramsP, 0, sizeof(URIBeaconConfigService::Params_t));
+        return false;
     }
+
+    memcpy(paramsP, &persistentParams.params, sizeof(URIBeaconConfigService::Params_t));
+    return true;
 }
 
 /* Platform-specific implementation for persistence on the nRF5x. Based on the
  * pstorage module provided by the Nordic SDK. */
-void saveURIBeaconConfigParams(URIBeaconConfigService::Params_t *paramsP)
+void saveURIBeaconConfigParams(const URIBeaconConfigService::Params_t *paramsP)
 {
-    if (paramsP->persistenceSignature != URIBeaconConfigService::Params_t::MAGIC) {
-        paramsP->persistenceSignature = URIBeaconConfigService::Params_t::MAGIC;
+    memcpy(&persistentParams.params, paramsP, sizeof(URIBeaconConfigService::Params_t));
+    if (persistentParams.persistenceSignature != PersistentParams_t::MAGIC) {
+        persistentParams.persistenceSignature = PersistentParams_t::MAGIC;
         pstorage_store(&pstorageHandle,
-                       reinterpret_cast<uint8_t *>(paramsP),
-                       sizeof(URIBeaconConfigService::Params_t),
+                       reinterpret_cast<uint8_t *>(&persistentParams),
+                       sizeof(PersistentParams_t),
                        0 /* offset */);
     } else {
         pstorage_update(&pstorageHandle,
-                        reinterpret_cast<uint8_t *>(paramsP),
-                        sizeof(URIBeaconConfigService::Params_t),
+                        reinterpret_cast<uint8_t *>(&persistentParams),
+                        sizeof(PersistentParams_t),
                         0 /* offset */);
     }
 }

@@ -24,6 +24,36 @@
 BLEDevice ble;
 URIBeaconConfigService *uriBeaconConfig;
 
+/**
+ * URIBeaconConfig service can operate in two modes: a configuration mode which
+ * allows a user to update settings over a connection; and normal URIBeacon mode
+ * which involves advertising a URI. Constructing an object from URIBeaconConfig
+ * service sets up advertisements for the configuration mode. It is then up to
+ * the application to switch to URIBeacon mode based on some timeout.
+ *
+ * The following help with this switch.
+ */
+static const int CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS = 60;  // Duration after power-on that config service is available.
+Ticker configAdvertisementTimeoutTicker;
+
+/**
+ * Stop advertising the UriBeaconConfig Service after a delay; and switch to normal URIBeacon.
+ */
+void timeout(void)
+{
+    Gap::GapState_t state;
+    state = ble.getGapState();
+    if (!state.connected) { /* don't switch if we're in a connected state. */
+        uriBeaconConfig->setupURIBeaconAdvertisements();
+        ble.startAdvertising();
+
+        configAdvertisementTimeoutTicker.detach(); /* disable the callback from the timeout Ticker. */
+    }
+}
+
+/**
+ * Callback triggered upon a disconnection event. Needs to re-enable advertisements.
+ */
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
     ble.startAdvertising();
@@ -42,14 +72,15 @@ int main(void)
      * operation.
      */
     URIBeaconConfigService::Params_t params;
-    loadURIBeaconConfigParams(&params);
+    bool fetchedFromPersistentStorage = loadURIBeaconConfigParams(&params);
 
     /* Initialize a URIBeaconConfig service providing config params, default URI, and power levels. */
     static URIBeaconConfigService::PowerLevels_t defaultAdvPowerLevels = {-20, -4, 0, 10}; // Values for ADV packets related to firmware levels
-    uriBeaconConfig = new URIBeaconConfigService(ble, params, "http://uribeacon.org", defaultAdvPowerLevels);
+    uriBeaconConfig = new URIBeaconConfigService(ble, params, !fetchedFromPersistentStorage, "http://uribeacon.org", defaultAdvPowerLevels);
     if (!uriBeaconConfig->configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
+    configAdvertisementTimeoutTicker.attach(timeout, CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS);
 
     // Setup auxiliary services to allow over-the-air firmware updates, etc
     DFUService dfu(ble);

@@ -19,7 +19,6 @@
 
 #include "URIBeaconConfigService.h"
 
-
 /**
  * Generic API to load the URIBeacon configuration parameters from persistent
  * storage. If persistent storage isn't available, the persistenceSignature
@@ -27,19 +26,28 @@
  * a reset to default values.
  *
  * @param[out] paramsP
- *                 The parameters to be filled in from persistence storage.
+ *                 The parameters to be filled in from persistence storage. This
+                   argument can be NULL if the caller is only interested in
+                   discovering the persistence status of params.
+
+ * @return true if params were loaded from persistent storage and have usefully
+ *         initialized fields.
  */
-void loadURIBeaconConfigParams(URIBeaconConfigService::Params_t *paramsP);
+bool loadURIBeaconConfigParams(URIBeaconConfigService::Params_t *paramsP);
 
 /**
  * Generic API to store the URIBeacon configuration parameters to persistent
  * storage. It typically initializes the persistenceSignature member of the
  * params to the MAGIC value to indicate persistence.
  *
+ * @note: the save operation may be asynchronous. It may be a short while before
+ * the request takes affect. Reading back saved configParams may not yield
+ * correct behaviour if attempted soon after a store.
+ *
  * @param[in/out] paramsP
  *                    The params to be saved; persistenceSignature member gets
  *                    updated if persistence is successful.
  */
-void saveURIBeaconConfigParams(URIBeaconConfigService::Params_t *paramsP);
+void saveURIBeaconConfigParams(const URIBeaconConfigService::Params_t *paramsP);
 
 #endif /* #ifndef __BLE_CONFIG_PARAMS_PERSISTENCE_H__*/
