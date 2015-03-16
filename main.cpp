@@ -87,7 +87,7 @@ int main(void)
     DeviceInformationService deviceInfo(ble, "ARM", "UriBeacon", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
 
     ble.startAdvertising(); /* Set the whole thing in motion. After this call a GAP central can scan the URIBeaconConfig
-                             * service, which then automatically switches to the URIBeacon after a timeout. */
+                             * service. This can then be switched to the normal URIBeacon functionality after a timeout. */
 
     while (true) {
         ble.waitForEvent();
