@@ -20,7 +20,7 @@ Mercurial:
 ==========
 Library:
 --------
-git remote add mbed-lib "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/X_NUCLEO_IKC01A1"
+git remote add mbed-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IKC01A1"
 
 git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 -b mbed-split
 git checkout mbed-split
@@ -34,7 +34,7 @@ git branch -d mbed-split
 
 Application:
 ------------
-git remote add bm-app "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/Battery_Monitor"
+git remote add bm-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Battery_Monitor"
 
 git subtree split -P libraries/tests/betzw_tests/test1 -b bm-split
 git checkout bm-split
@@ -48,7 +48,7 @@ git branch -d bm-split
 
 DevI2C:
 -------
-git remote add devi2c-class "hg::http://wobetz:<pwd>@developer.mbed.org/users/wobetz/code/DevI2C"
+git remote add devi2c-class "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/DevI2C"
 
 git subtree split -P libraries/tests/peripherals/X_NUCLEO_COMMON/DevI2C -b devi2c-split
 git checkout devi2c-split
