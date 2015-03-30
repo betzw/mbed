@@ -50,12 +50,12 @@ DevI2C:
 -------
 git remote add devi2c-class "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/DevI2C"
 
-git subtree split -P libraries/tests/peripherals/X_NUCLEO_COMMON/DevI2C -b devi2c-split
+git subtree split -P libraries/tests/libs/X_NUCLEO_COMMON/DevI2C -b devi2c-split
 git checkout devi2c-split
 
 git pull devi2c-class master
 git push devi2c-class devi2c-split:master
 
 git checkout betzw_wb
-git subtree merge -P libraries/tests/peripherals/X_NUCLEO_COMMON/DevI2C devi2c-split
+git subtree merge -P libraries/tests/libs/X_NUCLEO_COMMON/DevI2C devi2c-split
 git branch -d devi2c-split
