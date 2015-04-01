@@ -66,6 +66,10 @@ public:
     //void hwCallback(void *pckt);
     ble_error_t Read_Request_CB(tHalUint16 handle);
     GattCharacteristic* getCharacteristicFromHandle(tHalUint16 charHandle);
+    void HCIDataWrittenEvent(const GattCharacteristicWriteCBParams *params);
+    void HCIDataReadEvent(const GattCharacteristicReadCBParams *params);
+    void HCIEvent(GattServerEvents::gattEvent_e type, uint16_t charHandle);
+    void HCIDataSentEvent(unsigned count);
     
 private:
     static const int MAX_SERVICE_COUNT = 10;

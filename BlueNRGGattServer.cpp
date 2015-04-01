@@ -352,4 +352,21 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(tHalUint16 at
     return p_char;
 }
 
+void BlueNRGGattServer::HCIDataWrittenEvent(const GattCharacteristicWriteCBParams *params) {
+    this->handleDataWrittenEvent(params);
+}
+    
+void BlueNRGGattServer::HCIDataReadEvent(const GattCharacteristicReadCBParams *params) {
+    this->handleDataReadEvent(params);
+}
+
+void BlueNRGGattServer::HCIEvent(GattServerEvents::gattEvent_e type, uint16_t charHandle) {
+    this->handleEvent(type, charHandle);
+}
+
+void BlueNRGGattServer::HCIDataSentEvent(unsigned count) {
+    this->handleDataSentEvent(count);
+}
+
+    
 

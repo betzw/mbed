@@ -281,11 +281,11 @@ extern "C" {
                                 //Now Check if data written in Enable or Disable
                                 if((uint16_t)evt->att_data[0]==1) {
                                     //DEBUG("Notify ENABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
+                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
                                 } 
                                 else {
                                     //DEBUG("Notify DISABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
+                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
                                 }
                             }
                             
@@ -302,7 +302,7 @@ extern "C" {
                                 #if BLUENRG_MS
                                 writeParams.offset=evt->offset;//Not used in BlueNRG?
                                 #endif
-                                BlueNRGGattServer::getInstance().handleDataWrittenEvent(&writeParams);
+                                BlueNRGGattServer::getInstance().HCIDataWrittenEvent(&writeParams);
 
                                 //BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
                                 //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
