@@ -79,6 +79,8 @@ uint16_t g_device_name_char_handle = 0;
 
 /* Private variables ---------------------------------------------------------*/
 volatile uint8_t set_connectable = 1;
+tHalUint8 *bleAddr;
+Gap::addr_type_t addr_type = Gap::ADDR_TYPE_PUBLIC;
 
 /**************************************************************************/
 /*!
@@ -93,7 +95,7 @@ volatile uint8_t set_connectable = 1;
 void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk)
 {
     DEBUG("btle_init>>\n\r"); 
-    tHalUint8 *bleAddr;
+    
     int ret;
     uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
 
@@ -122,7 +124,7 @@ void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk)
     //check if issetAddress is set than set address.
     if(isSetAddress)
     {
-        bleAddr = BlueNRGGap::getInstance().getAddress();
+        BlueNRGGap::getInstance().getAddress(&addr_type, bleAddr);
         
         tHalUint8 bdaddr[BDADDR_SIZE];
         Osal_MemCpy(bdaddr, bleAddr, BDADDR_SIZE);
@@ -240,7 +242,7 @@ extern "C" {
                         BlueNRGGap::getInstance().setConnectionHandle(cc->handle);
                         BlueNRGGap::ConnectionParams_t connectionParams;
                         BlueNRGGap::getInstance().getPreferredConnectionParams(&connectionParams);                                                
-                        BlueNRGGap::getInstance().processConnectionEvent(cc->handle, (const BlueNRGGap::ConnectionParams_t *)&connectionParams);                            
+                        BlueNRGGap::getInstance().processConnectionEvent(cc->handle, addr_type, bleAddr, (const BlueNRGGap::ConnectionParams_t *)&connectionParams);                            
                     }
                     break;
                 }
@@ -292,7 +294,17 @@ extern "C" {
                                         (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
                                             GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
                                 
-                                BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
+                                GattCharacteristicWriteCBParams writeParams;
+                                writeParams.charHandle=evt->attr_handle;
+                                writeParams.op=GattCharacteristicWriteCBParams::GATTS_CHAR_OP_WRITE_REQ;//Where to find this property in BLUENRG?
+                                writeParams.len=evt->data_length;
+                                writeParams.data=evt->att_data;                                                                                    
+                                #if BLUENRG_MS
+                                writeParams.offset=evt->offset;//Not used in BlueNRG?
+                                #endif
+                                BlueNRGGattServer::getInstance().handleDataWrittenEvent(&writeParams);
+
+                                //BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
                                 //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
                                 if ((p_char->getValueAttribute().getValuePtr() != NULL) && (p_char->getValueAttribute().getInitialLength() > 0)) {
                                     BlueNRGGattServer::getInstance().updateValue(p_char->getValueAttribute().getHandle(), 

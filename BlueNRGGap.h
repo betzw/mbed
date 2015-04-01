@@ -60,12 +60,14 @@ public:
     }
 
     /* Functions that must be implemented from Gap */
-    virtual ble_error_t setAddress(addr_type_t   type,
-    const uint8_t address[6]);
-    virtual ble_error_t setAdvertisingData(const GapAdvertisingData &,
-    const GapAdvertisingData &);
+    virtual ble_error_t setAddress(addr_type_t   type, const uint8_t address[6]);
+    virtual ble_error_t getAddress(addr_type_t *typeP, address_t address);
+    virtual ble_error_t setAdvertisingData(const GapAdvertisingData &, const GapAdvertisingData &);
     virtual ble_error_t startAdvertising(const GapAdvertisingParams &);
     virtual ble_error_t stopAdvertising(void);
+    virtual uint16_t    getMinAdvertisingInterval(void) const ;
+    virtual uint16_t    getMinNonConnectableAdvertisingInterval(void) const;
+    virtual uint16_t    getMaxAdvertisingInterval(void) const;
     virtual ble_error_t disconnect(DisconnectionReason_t reason);
     virtual ble_error_t getPreferredConnectionParams(ConnectionParams_t *params);
     virtual ble_error_t setPreferredConnectionParams(const ConnectionParams_t *params);
@@ -80,7 +82,7 @@ public:
     void     setConnectionHandle(uint16_t con_handle);
     uint16_t getConnectionHandle(void);
     
-    tHalUint8* getAddress();
+    //tHalUint8* getAddress();
     bool getIsSetAddress();
 
 private:

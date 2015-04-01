@@ -265,13 +265,13 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
     /* Check interval range */
     if (params.getAdvertisingType() == GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED) {
         /* Min delay is slightly longer for unconnectable devices */
-        if ((params.getInterval() < GAP_ADV_PARAMS_INTERVAL_MIN_NONCON) ||
-                (params.getInterval() > GAP_ADV_PARAMS_INTERVAL_MAX)) {
+        if ((params.getInterval() < GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MIN_NONCON) ||
+                (params.getInterval() > GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MAX)) {
             return BLE_ERROR_PARAM_OUT_OF_RANGE;
         }
     } else {
-        if ((params.getInterval() < GAP_ADV_PARAMS_INTERVAL_MIN) ||
-                (params.getInterval() > GAP_ADV_PARAMS_INTERVAL_MAX)) {
+        if ((params.getInterval() < GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MIN) ||
+                (params.getInterval() > GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MAX)) {
             return BLE_ERROR_PARAM_OUT_OF_RANGE;
         }
     }
@@ -285,7 +285,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
 
     /* Check timeout for other advertising types */
     if ((params.getAdvertisingType() != GapAdvertisingParams::ADV_CONNECTABLE_DIRECTED) &&
-            (params.getTimeout() > GAP_ADV_PARAMS_TIMEOUT_MAX)) {
+            (params.getTimeout() > GapAdvertisingParams::GAP_ADV_PARAMS_TIMEOUT_MAX)) {
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     }
 
@@ -516,11 +516,19 @@ bool BlueNRGGap::getIsSetAddress()
     @endcode
 */
 /**************************************************************************/
-tHalUint8* BlueNRGGap::getAddress() 
+ble_error_t BlueNRGGap::getAddress(addr_type_t *typeP, address_t address) 
 {
+    *typeP = Gap::ADDR_TYPE_PUBLIC;
+    
     if(isSetAddress)
-    return bdaddr; 
-    else return NULL;   
+    {
+        for(int i=0; i<BDADDR_SIZE; i++) {
+            address[i] = bdaddr[i];
+            //DEBUG("i[%d]:0x%x\n\r",i,bdaddr[i]);
+        }
+    }
+        
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
