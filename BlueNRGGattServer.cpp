@@ -369,4 +369,7 @@ void BlueNRGGattServer::HCIDataSentEvent(unsigned count) {
 }
 
     
-
+ble_error_t BlueNRGGattServer::initializeGATTDatabase(void)   {
+    // <TODO>    
+    return (ble_error_t)0;       
+}

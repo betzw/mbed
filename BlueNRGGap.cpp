@@ -730,3 +730,19 @@ ble_error_t BlueNRGGap::getAppearance(uint16_t *appearanceP)
     
     return BLE_ERROR_NONE;    
 }
+
+uint16_t BlueNRGGap::getMaxAdvertisingInterval(void) const  {
+    // <TODO>    
+    return 0;
+} 
+
+uint16_t BlueNRGGap::getMinAdvertisingInterval(void) const {
+    // <TODO>    
+    return 0;    
+}
+
+
+uint16_t BlueNRGGap::getMinNonConnectableAdvertisingInterval(void) const {
+    // <TODO>    
+    return 0;    
+}

@@ -196,3 +196,26 @@ ble_error_t BlueNRGDevice::setTxPower(int8_t txPower)
     aci_hal_set_tx_power_level(enHighPower, paLevel);
     return BLE_ERROR_NONE;    
 }
+
+/**************************************************************************/
+/*!
+    @brief  get permitted Tx power values
+    @param[in] values pointer to pointer to permitted power values
+    @param[in] num number of values   
+*/
+/**************************************************************************/
+void BlueNRGDevice::getPermittedTxPowerValues(const int8_t **values, size_t *num) {
+    // <TODO>
+}
+
+
+/**************************************************************************/
+/*!
+    @brief  shut down the the BLE device
+    @param[out] error if any
+*/
+/**************************************************************************/
+ble_error_t  BlueNRGDevice::shutdown(void) {
+    // <TODO>
+    return (ble_error_t) 0;
+}
