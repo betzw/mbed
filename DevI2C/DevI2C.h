@@ -55,7 +55,7 @@ class DevI2C : public I2C
 	 *  @param sda I2C data line pin
 	 *  @param scl I2C clock line pin
 	 */
- DevI2C(PinName sda, PinName scl) : I2C(sda, scl) {};
+        DevI2C(PinName sda, PinName scl) : I2C(sda, scl) {}
 
 	/**
 	 * @brief  Writes a buffer from the I2C peripheral device.
