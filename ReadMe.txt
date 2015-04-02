@@ -5,7 +5,8 @@ python workspace_tools/make.py -m NUCLEO_L053R8 -t GCC_ARM -d /media/betzw/NUCLE
 python workspace_tools/make.py -m LPC11U68 -t GCC_ARM -d /media/betzw/MBED/ -n betzw_test_1
 python workspace_tools/make.py -m K64F -t GCC_ARM -d /media/betzw/MBED/ -n betzw_test_1
 
-# Note: in order to enable debug in WFI compile with option '-DTPIU_DEBUG'
+# Note: in order to enable debugging compile with option '-o debug-info'
+#       and if you are using WFI compile also with '-DDBG_MCU'
 
 
 Compile mbed:
@@ -14,6 +15,8 @@ python workspace_tools/build.py -m NUCLEO_F401RE -t GCC_ARM
 python workspace_tools/build.py -m NUCLEO_L053R8 -t GCC_ARM
 python workspace_tools/build.py -m LPC11U68 -t GCC_ARM
 python workspace_tools/build.py -m K64F -t GCC_ARM
+
+# Note: in order to enable debugging compile with option '-o debug-info'
 
 
 Mercurial:

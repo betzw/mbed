@@ -109,6 +109,12 @@ namespace {
 #endif // !TARGET_MCU_K64F
 
 /* Static variables ----------------------------------------------------------*/
+#ifdef DBG_MCU
+/* betzw: enable debugging while using sleep modes */
+#include "DbgMCU.h"
+static DbgMCU enable_dbg;
+#endif // DBG_MCU
+
 static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
 
 static Ticker timer;
@@ -172,20 +178,6 @@ static void gg_irq(void) {
 static void init(void) {
 	rtc_time_t time;
 	int ret;
-
-#ifdef TPIU_DEBUG
-	/* betzw: just for debugging */
-	{
-		/* the following code is NOT portable */
-		volatile uint32_t *tpiu_reg = (uint32_t*)0xE0042004;
-		uint32_t tmp = *tpiu_reg;
-
-		tmp &= ~(0xE7);
-		tmp |= 0x27; // Set asynchronous communication via DBGMCU_CR (for ITM/printf)
-		// tmp |= 0xE7; // Set 4-pin tracing via DBGMCU_CR (for ETM)
-		*tpiu_reg = tmp;
-	}
-#endif // TPIU_DEBUG
 
 	/* Set mode & irq handler for button */
 	button.mode(PullNone);
