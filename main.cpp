@@ -87,19 +87,22 @@
  * cleared, whereas Gas Gauge alarms are cleared by pressing the B1 button again
  */
 
-/* Includes ------------------------------------------------------------------*/
+
+/*** Includes ----------------------------------------------------------------- ***/
 #include "mbed.h"
 #include "userinterface.h"
 #include "x_nucleo_ikc01a1.h"
 
 #include <Ticker.h>
 
-/* Constants -----------------------------------------------------------------*/
+
+/*** Constants ---------------------------------------------------------------- ***/
 namespace {
 	const int MS_INTERVALS = 1000;
 }
 
-/* Macros --------------------------------------------------------------------*/
+
+/*** Macros ------------------------------------------------------------------- ***/
 #define APP_LOOP_PERIOD 2000 // in ms
 
 #if defined(TARGET_K64F)
@@ -108,7 +111,8 @@ namespace {
 #define USER_BUTTON (P0_16)
 #endif // !TARGET_MCU_K64F
 
-/* Static variables ----------------------------------------------------------*/
+
+/*** Static variables --------------------------------------------------------- ***/
 #ifdef DBG_MCU
 /* betzw: enable debugging while using sleep modes */
 #include "DbgMCU.h"
@@ -117,7 +121,7 @@ static DbgMCU enable_dbg;
 
 static X_NUCLEO_IKC01A1 *battery_expansion_board = X_NUCLEO_IKC01A1::Instance();
 
-static Ticker timer;
+static Ticker ticker;
 static InterruptIn button(USER_BUTTON);
 
 static volatile bool timer_irq_triggered = false;
@@ -133,7 +137,8 @@ static int dischargingEnabled = 0;
 
 static int main_rtc_irq_triggered = 0;
 
-/* Functions -----------------------------------------------------------------*/
+
+/*** Helper Functions (1/2) ------------------------------------------------------------ ***/
 /* Returns string describing charger state */
 static const char *getChargerCondition(void) {
 	charger_conditions_t state = 
@@ -150,60 +155,6 @@ static const char *getChargerCondition(void) {
 		break;
 	}
 	return "invalid";
-}
-
-/* Called in interrupt context, therefore just set a trigger variable */
-static void timer_irq(void) {
-	timer_irq_triggered = true;
-}
-
-/* Called in interrupt context, therefore just set a trigger variable */
-static void button_irq(void) {
-	button_irq_triggered = true;
-	button.disable_irq();
-}
-
-/* Called in interrupt context, therefore just set a trigger variable */
-static void rtc_irq(void) {
-	rtc_irq_triggered = true;
-	battery_expansion_board->rtc.disable_irq();
-}
-
-/* Called in interrupt context, therefore just set a trigger variable */
-static void gg_irq(void) {
-	gg_irq_triggered = true;
-}
-
-/* Initialization function */
-static void init(void) {
-	rtc_time_t time;
-	int ret;
-
-	/* Set mode & irq handler for button */
-	button.mode(PullNone);
-	button.fall(button_irq);
-
-	/* Check whether RTC needs to be configured */
-	ret = battery_expansion_board->rtc.IsTimeOfDayValid();
-	if(ret < 0) error("I2C error!\n");
-
-	if(ret != 1) {
-		cuiGetTime(&time);
-		battery_expansion_board->rtc.SetTime(&time);
-	}
-	
-	printf("\r\nSTMicroelectronics Energy Management Expansion Board demo application\r\n");
-	
-	battery_expansion_board->rtc.GetTime(&time);
-	printf("Today is %s, %02i %s %02i\r\n", 
-	       battery_expansion_board->rtc.GetWeekName(time.tm_wday), time.tm_mday,
-	       battery_expansion_board->rtc.GetMonthName(time.tm_mon), time.tm_year);
-	
-	/* Attach RTC interrupt handler */
-	battery_expansion_board->rtc.attach_irq(rtc_irq);
-
-	/* Attach GG interrupt handler */
-	battery_expansion_board->gg.AttachIT(gg_irq);
 }
 
 /** @brief Asks user application settings: SoC and Voltage thresholds, RTC Alarm, Discharge on/off
@@ -253,6 +204,32 @@ static void setUserInputParams(void)
 	battery_expansion_board->charger.discharge = dischargingEnabled;
 }
 
+
+/*** Interrupt Handler Top-Halves ------------------------------------------------------ ***/
+/* Called in interrupt context, therefore just set a trigger variable */
+static void timer_irq(void) {
+	timer_irq_triggered = true;
+}
+
+/* Called in interrupt context, therefore just set a trigger variable */
+static void button_irq(void) {
+	button_irq_triggered = true;
+	button.disable_irq();
+}
+
+/* Called in interrupt context, therefore just set a trigger variable */
+static void rtc_irq(void) {
+	rtc_irq_triggered = true;
+	battery_expansion_board->rtc.disable_irq();
+}
+
+/* Called in interrupt context, therefore just set a trigger variable */
+static void gg_irq(void) {
+	gg_irq_triggered = true;
+}
+
+
+/*** Interrupt Handler Bottom-Halves ------------------------------------------------- ***/
 /* Handle button irq
    (here we are in "normal" context, i.e. not in IRQ context)
 */
@@ -364,8 +341,42 @@ static void main_cycle(void) {
 }
 
 
-/* Main function --------------------------------------------------------------*/
-/* Generic main function for enabling WFI in case of 
+/*** Helper Functions (2/2) ------------------------------------------------------------ ***/
+/* Initialization function */
+static void init(void) {
+	rtc_time_t time;
+	int ret;
+
+	/* Set mode & irq handler for button */
+	button.mode(PullNone);
+	button.fall(button_irq);
+
+	/* Check whether RTC needs to be configured */
+	ret = battery_expansion_board->rtc.IsTimeOfDayValid();
+	if(ret < 0) error("I2C error!\n");
+
+	if(ret != 1) {
+		cuiGetTime(&time);
+		battery_expansion_board->rtc.SetTime(&time);
+	}
+	
+	printf("\r\nSTMicroelectronics Energy Management Expansion Board demo application\r\n");
+	
+	battery_expansion_board->rtc.GetTime(&time);
+	printf("Today is %s, %02i %s %02i\r\n", 
+	       battery_expansion_board->rtc.GetWeekName(time.tm_wday), time.tm_mday,
+	       battery_expansion_board->rtc.GetMonthName(time.tm_mon), time.tm_year);
+	
+	/* Attach RTC interrupt handler */
+	battery_expansion_board->rtc.attach_irq(rtc_irq);
+
+	/* Attach GG interrupt handler */
+	battery_expansion_board->gg.AttachIT(gg_irq);
+}
+
+
+/*** Main function ------------------------------------------------------------- ***/
+/* Generic main function/loop for enabling WFI in case of 
    interrupt based cyclic execution
 */
 int main()
@@ -375,7 +386,7 @@ int main()
 	init();
 
 	/* Start timer irq */
-	timer.attach_us(timer_irq, MS_INTERVALS * APP_LOOP_PERIOD);
+	ticker.attach_us(timer_irq, MS_INTERVALS * APP_LOOP_PERIOD);
 
 	while (true) {
 		__disable_irq();
