@@ -204,8 +204,13 @@ ble_error_t BlueNRGDevice::setTxPower(int8_t txPower)
     @param[in] num number of values   
 */
 /**************************************************************************/
-void BlueNRGDevice::getPermittedTxPowerValues(const int8_t **values, size_t *num) {
-    // <TODO>
+void BlueNRGDevice::getPermittedTxPowerValues(const int8_t **valueArrayPP, size_t *countP) {
+        static const int8_t permittedTxValues[] = {
+        -18, -14, -11, -8, -4, -1, 1, 5, -15, -11, -8, -5, -2, 1, 4, 8
+    };
+
+    *valueArrayPP = permittedTxValues;
+    *countP = sizeof(permittedTxValues) / sizeof(int8_t);
 }
 
 
@@ -216,6 +221,5 @@ void BlueNRGDevice::getPermittedTxPowerValues(const int8_t **values, size_t *num
 */
 /**************************************************************************/
 ble_error_t  BlueNRGDevice::shutdown(void) {
-    // <TODO>
-    return (ble_error_t) 0;
+    return reset();
 }
