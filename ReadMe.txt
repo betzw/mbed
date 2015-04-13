@@ -21,33 +21,35 @@ python workspace_tools/build.py -m K64F -t GCC_ARM
 
 Mercurial:
 ==========
-Library:
+Libraries:
+~~~~~~~~~~
+IKC01A1:
 --------
-git remote add mbed-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IKC01A1"
+git remote add ikc01a1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IKC01A1"
 
-git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 -b mbed-split
-git checkout mbed-split
+git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 -b ikc01a1-split
+git checkout ikc01a1-split
 
-git pull mbed-lib master
-git push mbed-lib mbed-split:master
-
-git checkout betzw_wb
-git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 mbed-split
-git branch -d mbed-split
-
-Application:
-------------
-git remote add bm-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Battery_Monitor"
-
-git subtree split -P libraries/tests/betzw_tests/test1 -b bm-split
-git checkout bm-split
-
-git pull bm-app master
-git push bm-app bm-split:master
+git pull ikc01a1-lib master
+git push ikc01a1-lib ikc01a1-split:master
 
 git checkout betzw_wb
-git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
-git branch -d bm-split
+git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 ikc01a1-split
+git branch -d ikc01a1-split
+
+IKS01A1:
+--------
+git remote add iks01a1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IKS01A1"
+
+git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKS01A1 -b iks01a1-split
+git checkout iks01a1-split
+
+git pull iks01a1-lib master
+git push iks01a1-lib iks01a1-split:master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKS01A1 iks01a1-split
+git branch -d iks01a1-split
 
 DevI2C:
 -------
@@ -62,3 +64,19 @@ git push devi2c-class devi2c-split:master
 git checkout betzw_wb
 git subtree merge -P libraries/tests/libs/X_NUCLEO_COMMON/DevI2C devi2c-split
 git branch -d devi2c-split
+
+Applications:
+~~~~~~~~~~~~~
+Battery-Monitor:
+----------------
+git remote add bm-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Battery_Monitor"
+
+git subtree split -P libraries/tests/betzw_tests/test1 -b bm-split
+git checkout bm-split
+
+git pull bm-app master
+git push bm-app bm-split:master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
+git branch -d bm-split
