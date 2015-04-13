@@ -4,12 +4,12 @@
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
- * @brief   Header file for class X_NUCLEO_IKS01A1 representing an X-NUCLEO-IKS01A1
+ * @brief   Header file for class X_NUCLEO_IKS01A1 representing a X-NUCLEO-IKS01A1
  *          expansion board
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+ * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -44,20 +44,27 @@
 #include "mbed.h"
 #include "x_nucleo_iks01a1_targets.h"
 #include "DevI2C.h"
+#include "Common/HumTemp.h"
+#include "Common/Pressure.h"
+#include "Common/Magneto.h"
+#include "Common/Imu6Axis.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_NUCLEO_IKS01A1 is intended to represent the <TODO>
  *  expansion board with the same name.
  *
- *  The expansion board is featuring basically <TODO> IPs:\n
- *  -# <TODO>\n
+ *  The expansion board is featuring basically four IPs:\n
+ *  -# a HTS221 Relative Humidity and Temperature Sensor\n
+ *  -# a LIS3MDL 3-Axis Magnetometer\n
+ *  -# a LPS25H MEMS Pressure Sensor\n
+ *  -# and a LSM6DS0 3D Acceleromenter and 3D Gyroscope\n
  *
  * It is intentionally implemented as a singleton because only one
  * X_NUCLEO_IKS01A1 at a time might be deployed in a HW component stack.\n
  * In order to get the singleton instance you have to call class method `Instance()`, 
  * e.g.:
  * @code
- * // Battery expansion board singleton instance
+ * // Inertial & Environmental expansion board singleton instance
  * static X_NUCLEO_IKS01A1 *<TODO>_expansion_board = X_NUCLEO_IKS01A1::Instance();
  * @endcode
  */
@@ -70,6 +77,11 @@ class X_NUCLEO_IKS01A1
 	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
 
 	DevI2C *dev_i2c;
+
+	HumTemp &ht_sensor;
+	Pressure &pressure_sensor;
+	Magneto &magnetometer;
+	Imu6Axis &gyroscope;
 
  private:
 	static X_NUCLEO_IKS01A1 *_instance;

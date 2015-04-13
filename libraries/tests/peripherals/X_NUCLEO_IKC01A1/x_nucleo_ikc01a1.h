@@ -4,7 +4,7 @@
  * @author  AST / EST
  * @version V0.0.1
  * @date    08-October-2014
- * @brief   Header file for class X_NUCLEO_IKC01A1 representing an X-NUCLEO-IKC01A1
+ * @brief   Header file for class X_NUCLEO_IKC01A1 representing a X-NUCLEO-IKC01A1
  *          expansion board
  ******************************************************************************
  * @attention
@@ -46,7 +46,7 @@
 #include "x_nucleo_ikc01a1_charger.h"
 #include "x_nucleo_ikc01a1_rtc.h"
 #include "DevI2C.h"
-#include "Components/Common/GasGauge.h"
+#include "Common/GasGauge.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_NUCLEO_IKC01A1 is intended to represent the battery management

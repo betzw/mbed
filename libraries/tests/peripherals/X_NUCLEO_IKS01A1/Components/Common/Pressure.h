@@ -1,15 +1,15 @@
 /**
  ******************************************************************************
- * @file    GasGauge.h
+ * @file    Pressure.h
  * @author  AST / EST
  * @version V0.0.1
- * @date    08-October-2014
+ * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a gas gauge
+ *          the interfaces of a pressure sensor
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+ * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -37,43 +37,39 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __GAS_GAUGE_H
-#define __GAS_GAUGE_H
+#ifndef __PRESSURE_CLASS_H
+#define __PRESSURE_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
+#include "pressure.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for GasGauge components
+/** An abstract class for Pressure components
  */
-class GasGauge
+class Pressure
 {
  public:
-	virtual int Task(void) = 0;
-	virtual void Reset(void) = 0;
-	virtual int Stop(void) = 0;
+	virtual PRESSURE_StatusTypeDef Init(PRESSURE_InitTypeDef&) = 0;
 
-	virtual int GetSOC(void) = 0;
-	virtual int GetOCV(void) = 0;
-	virtual int GetCurrent(void) = 0;
-	virtual int GetTemperature(void) = 0;
-	virtual int GetVoltage(void) = 0;
-	virtual int GetChargeValue(void) = 0;
-	virtual int GetPresence(void) = 0;
-	virtual int GetAlarmStatus(void) = 0;
-	virtual int GetITState(void) = 0;
+	virtual PRESSURE_StatusTypeDef PowerOff(void) = 0;
+	virtual PRESSURE_StatusTypeDef ReadID(uint8_t&) = 0;
+	virtual PRESSURE_StatusTypeDef Reset(void) = 0;
 
-	virtual int AlarmSetVoltageThreshold(int) = 0;
-	virtual int AlarmSetSOCThreshold(int) = 0;
+	virtual void ConfigIT(uint16_t) = 0;
+	virtual void EnableIT(uint8_t) = 0;
+	virtual void DisableIT(uint8_t) = 0;
+	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
+	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
-	virtual int GetIT(void) = 0;
-	virtual int EnableIT(void) = 0;
-	virtual int DisableIT(void) = 0;
-	virtual int ClearIT(void) = 0;
+	virtual PRESSURE_StatusTypeDef GetPressure(float&) = 0;
+	virtual PRESSURE_StatusTypeDef GetTemperature(float&) = 0;
+	virtual void SlaveAddrRemap(uint8_t) = 0;
+
 	virtual void AttachIT(void (*fptr)(void)) = 0;
 
  protected:
-	GasGauge(void) {};
+	Pressure(void) {};
 };
 
-#endif /* __GAS_GAUGE_H */
+#endif /* __PRESSURE_CLASS_H */

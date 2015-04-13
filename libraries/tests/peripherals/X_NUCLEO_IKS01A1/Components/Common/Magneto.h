@@ -1,15 +1,15 @@
 /**
  ******************************************************************************
- * @file    GasGauge.h
+ * @file    Magneto.h
  * @author  AST / EST
  * @version V0.0.1
- * @date    08-October-2014
+ * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a gas gauge
+ *          the interfaces of a magnetometer
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+ * <h2><center>&copy; COPYRIGHT(c) 2015 STMicroelectronics</center></h2>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -37,43 +37,25 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __GAS_GAUGE_H
-#define __GAS_GAUGE_H
+#ifndef __MAGNETO_CLASS_H
+#define __MAGNETO_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
+#include "magneto.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for GasGauge components
+/** An abstract class for Magneto components
  */
-class GasGauge
+class Magneto
 {
  public:
-	virtual int Task(void) = 0;
-	virtual void Reset(void) = 0;
-	virtual int Stop(void) = 0;
-
-	virtual int GetSOC(void) = 0;
-	virtual int GetOCV(void) = 0;
-	virtual int GetCurrent(void) = 0;
-	virtual int GetTemperature(void) = 0;
-	virtual int GetVoltage(void) = 0;
-	virtual int GetChargeValue(void) = 0;
-	virtual int GetPresence(void) = 0;
-	virtual int GetAlarmStatus(void) = 0;
-	virtual int GetITState(void) = 0;
-
-	virtual int AlarmSetVoltageThreshold(int) = 0;
-	virtual int AlarmSetSOCThreshold(int) = 0;
-
-	virtual int GetIT(void) = 0;
-	virtual int EnableIT(void) = 0;
-	virtual int DisableIT(void) = 0;
-	virtual int ClearIT(void) = 0;
-	virtual void AttachIT(void (*fptr)(void)) = 0;
+	virtual MAGNETO_StatusTypeDef Init(MAGNETO_InitTypeDef&) = 0;
+	virtual MAGNETO_StatusTypeDef Read_M_ID(uint8_t&) = 0;
+	virtual MAGNETO_StatusTypeDef Get_M_Axes(int32_t&) = 0;
 
  protected:
-	GasGauge(void) {};
+	Magneto(void) {};
 };
 
-#endif /* __GAS_GAUGE_H */
+#endif /* __MAGNETO_CLASS_H */
