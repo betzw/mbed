@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    x_nucleo_iks01a1.h
+ * @file    Magneto.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
- * @brief   Header file for class X_NUCLEO_IKS01A1 representing a X-NUCLEO-IKS01A1
- *          expansion board
+ * @brief   This file contains the abstract class describing in general
+ *          the interfaces of a magnetometer
  ******************************************************************************
  * @attention
  *
@@ -37,54 +37,25 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKS01A1_H
-#define __X_NUCLEO_IKS01A1_H
+#ifndef __MAGNETO_CLASS_H
+#define __MAGNETO_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_nucleo_iks01a1_targets.h"
-#include "DevI2C.h"
-#include "Common/HumTemp.h"
-#include "Common/Pressure.h"
-#include "Common/Magneto.h"
-#include "Common/Imu6Axis.h"
+#include "magneto.h"
 
-/* Classes -------------------------------------------------------------------*/
-/** Class X_NUCLEO_IKS01A1 is intended to represent the <TODO>
- *  expansion board with the same name.
- *
- *  The expansion board is featuring basically four IPs:\n
- *  -# a HTS221 Relative Humidity and Temperature Sensor\n
- *  -# a LIS3MDL 3-Axis Magnetometer\n
- *  -# a LPS25H MEMS Pressure Sensor\n
- *  -# and a LSM6DS0 3D Acceleromenter and 3D Gyroscope\n
- *
- * It is intentionally implemented as a singleton because only one
- * X_NUCLEO_IKS01A1 at a time might be deployed in a HW component stack.\n
- * In order to get the singleton instance you have to call class method `Instance()`, 
- * e.g.:
- * @code
- * // Inertial & Environmental expansion board singleton instance
- * static X_NUCLEO_IKS01A1 *<TODO>_expansion_board = X_NUCLEO_IKS01A1::Instance();
- * @endcode
+/* Classes  ------------------------------------------------------------------*/
+/** An abstract class for Magneto components
  */
-class X_NUCLEO_IKS01A1
+class Magneto
 {
- protected:
-	X_NUCLEO_IKS01A1(DevI2C *ext_i2c);
-
  public:
-	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
+	virtual MAGNETO_StatusTypeDef Init(MAGNETO_InitTypeDef&) = 0;
+	virtual MAGNETO_StatusTypeDef Read_M_ID(uint8_t&) = 0;
+	virtual MAGNETO_StatusTypeDef Get_M_Axes(int32_t&) = 0;
 
-	DevI2C *dev_i2c;
-
-	HumTemp &ht_sensor;
-	Pressure &pressure_sensor;
-	Magneto &magnetometer;
-	Imu6Axis &gyroscope;
-
- private:
-	static X_NUCLEO_IKS01A1 *_instance;
+ protected:
+	Magneto(void) {};
 };
 
-#endif /* __X_NUCLEO_IKS01A1_H */
+#endif /* __MAGNETO_CLASS_H */

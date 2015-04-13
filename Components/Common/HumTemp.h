@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    x_nucleo_iks01a1.h
+ * @file    HumTemp.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
- * @brief   Header file for class X_NUCLEO_IKS01A1 representing a X-NUCLEO-IKS01A1
- *          expansion board
+ * @brief   This file contains the abstract class describing in general
+ *          the interfaces of a humidity and temperature sensor
  ******************************************************************************
  * @attention
  *
@@ -37,54 +37,38 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __X_NUCLEO_IKS01A1_H
-#define __X_NUCLEO_IKS01A1_H
+#ifndef __HUM_TEMP_H
+#define __HUM_TEMP_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_nucleo_iks01a1_targets.h"
-#include "DevI2C.h"
-#include "Common/HumTemp.h"
-#include "Common/Pressure.h"
-#include "Common/Magneto.h"
-#include "Common/Imu6Axis.h"
+#include "hum_temp.h"
 
-/* Classes -------------------------------------------------------------------*/
-/** Class X_NUCLEO_IKS01A1 is intended to represent the <TODO>
- *  expansion board with the same name.
- *
- *  The expansion board is featuring basically four IPs:\n
- *  -# a HTS221 Relative Humidity and Temperature Sensor\n
- *  -# a LIS3MDL 3-Axis Magnetometer\n
- *  -# a LPS25H MEMS Pressure Sensor\n
- *  -# and a LSM6DS0 3D Acceleromenter and 3D Gyroscope\n
- *
- * It is intentionally implemented as a singleton because only one
- * X_NUCLEO_IKS01A1 at a time might be deployed in a HW component stack.\n
- * In order to get the singleton instance you have to call class method `Instance()`, 
- * e.g.:
- * @code
- * // Inertial & Environmental expansion board singleton instance
- * static X_NUCLEO_IKS01A1 *<TODO>_expansion_board = X_NUCLEO_IKS01A1::Instance();
- * @endcode
+/* Classes  ------------------------------------------------------------------*/
+/** An abstract class for HumTemp components
  */
-class X_NUCLEO_IKS01A1
+class HumTemp
 {
- protected:
-	X_NUCLEO_IKS01A1(DevI2C *ext_i2c);
-
  public:
-	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
+	virtual HUM_TEMP_StatusTypeDef Init(HUM_TEMP_InitTypeDef&) = 0;
 
-	DevI2C *dev_i2c;
+	virtual HUM_TEMP_StatusTypeDef PowerOFF(void) = 0;
+	virtual HUM_TEMP_StatusTypeDef ReadID(uint8_t&) = 0;
+	virtual HUM_TEMP_StatusTypeDef Reset(void) = 0;
 
-	HumTemp &ht_sensor;
-	Pressure &pressure_sensor;
-	Magneto &magnetometer;
-	Imu6Axis &gyroscope;
+	virtual void ConfigIT(uint16_t) = 0;
+	virtual void EnableIT(uint8_t) = 0;
+	virtual void DisableIT(uint8_t) = 0;
+	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
+	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
- private:
-	static X_NUCLEO_IKS01A1 *_instance;
+	virtual HUM_TEMP_StatusTypeDef GetHumidity(float&) = 0;
+	virtual HUM_TEMP_StatusTypeDef GetTemperature(float& = 0);
+
+	virtual void AttachIT(void (*fptr)(void)) = 0;
+
+ protected:
+	HumTemp(void) {};
 };
 
-#endif /* __X_NUCLEO_IKS01A1_H */
+#endif /* __HUM_TEMP_H */

@@ -43,6 +43,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
+/* betzw - TODO: find a better place! */
 typedef struct {
     int32_t AXIS_X;
     int32_t AXIS_Y;

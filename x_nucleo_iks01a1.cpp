@@ -1,10 +1,10 @@
 /**
 ******************************************************************************
-* @file    x_cube_mems.cpp
+* @file    x_nucleo_iks01a1.cpp
 * @author  AST / EST
 * @version V0.0.1
 * @date    08-October-2014
-* @brief   Implementation file for the X_CUBE_MEMS singleton class
+* @brief   Implementation file for the X_NUCLEO_IKS01A1 singleton class
 ******************************************************************************
 * @attention
 *
@@ -37,34 +37,39 @@
     
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "x_cube_mems.h"
+#include "x_nucleo_iks01a1.h"
+/* betzw: TO BE REVIEWED */
 
 /* Static variables ----------------------------------------------------------*/
-X_CUBE_MEMS* X_CUBE_MEMS::_instance = NULL;
+X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;
 
 /* Methods -------------------------------------------------------------------*/
 /**
  * @brief  Constructor
  */
-//X_CUBE_MEMS::X_CUBE_MEMS(PinName pin_sda, PinName pin_scl) : dev_i2c(pin_sda,pin_scl),
-X_CUBE_MEMS::X_CUBE_MEMS(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
-	hts221(*dev_i2c),
-    lps25h(*dev_i2c),
-    lis3mdl(*dev_i2c),
-    lsm6ds0(*dev_i2c)
-{
-  
+X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
+	hts221(*dev_i2c), /* betzw: TO BE REVIEWED */
+	lps25h(*dev_i2c),
+	lis3mdl(*dev_i2c),
+	lsm6ds0(*dev_i2c)
+{ 
 }
 
 /**
  * @brief  Get singleton instance
- * @return a pointer to the singleton instance of class X_CUBE_MEMS
+ * @return a pointer to the singleton instance of class X_NUCLEO_IKS01A1
+ * @param  (optional) ext_i2c pointer to instance of DevI2C to be used
+ *         for communication on the expansion board. 
+ *         Taken into account only on the very first call of this function.
+ *         If not provided a new DevI2C will be created with standard
+ *         configuration parameters.
+ *         The used DevI2C object gets saved in instance variable dev_i2c.
  */
- X_CUBE_MEMS* X_CUBE_MEMS::Instance(DevI2C *ext_i2c) {
+ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(DevI2C *ext_i2c) {
 	if(_instance == NULL) {
 		if(ext_i2c == NULL)
-			ext_i2c = new DevI2C(D14, D15);
-		_instance = new X_CUBE_MEMS(ext_i2c);
+			ext_i2c = new DevI2C(IKS01A1_PIN_I2C_SDA, IKS01A1_PIN_I2C_SCL);
+		_instance = new X_NUCLEO_IKS01A1(ext_i2c);
 	}
 	return _instance;
 }
