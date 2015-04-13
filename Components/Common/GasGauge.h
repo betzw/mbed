@@ -49,8 +49,6 @@
 class GasGauge
 {
  public:
-	GasGauge(void) {};
-
 	virtual int Task(void) = 0;
 	virtual void Reset(void) = 0;
 	virtual int Stop(void) = 0;
@@ -73,6 +71,9 @@ class GasGauge
 	virtual int DisableIT(void) = 0;
 	virtual int ClearIT(void) = 0;
 	virtual void AttachIT(void (*fptr)(void)) = 0;
+
+ protected:
+	GasGauge(void) {};
 };
 
 #endif /* __GAS_GAUGE_H */
