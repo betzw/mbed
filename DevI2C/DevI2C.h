@@ -80,11 +80,7 @@ class DevI2C : public I2C
 
 		ret = write(DeviceAddr, (const char*)tmp, NumByteToWrite+1, 0);
 
-		if(ret) {
-			error("%s: dev = %d, reg = %d, num = %d\n",
-			      __func__, DeviceAddr, RegisterAddr, NumByteToWrite);
-			return -1;
-		}
+		if(ret) return -1;
 		return 0;
 	}
 
@@ -111,11 +107,7 @@ class DevI2C : public I2C
 			ret = read(DeviceAddr, (char*)pBuffer, NumByteToRead, 0);
 		}
     
-		if(ret) {
-			error("%s: dev = %d, reg = %d, num = %d\n",
-			      __func__, DeviceAddr, RegisterAddr, NumByteToRead);
-			return -1;
-		}
+		if(ret) return -1;
 		return 0;
 	}
 };
