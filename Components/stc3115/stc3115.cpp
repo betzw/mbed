@@ -46,7 +46,7 @@
 
 /* Methods -------------------------------------------------------------------*/
 /** Constructor
- * @param i2c device I2C used to communicate on battery expansion board
+ * @param i2c device I2C to be used for communication
  */
 STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 	dev_i2c(i2c), RAMData(), ConfigData(), BatteryData()
