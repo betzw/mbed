@@ -983,9 +983,9 @@ TESTS = [
         #"host_test" : "detect_auto",
     },
 
-    # betzw
+    # betzw: Battery Monitor
     {
-        "id": "betzw_test_1", "description": "1st testing approaches",
+        "id": "betzw_test_1", "description": "battery monitor example application",
         "source_dir": join(TEST_DIR, "betzw_tests", "test1"),
         "dependencies": [MBED_LIBRARIES, 
                          join(TEST_STM_LIBS, 'DbgMCU'), 
@@ -993,6 +993,18 @@ TESTS = [
                          join(PERIPHERALS, 'X_NUCLEO_IKC01A1')],
         "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F", "LPC11U68"],
         "peripherals": ["X_NUCLEO_IKC01A1"]
+    },
+
+    # betzw: Environmental
+    {
+        "id": "betzw_test_2", "description": "environmental example application",
+        "source_dir": join(TEST_DIR, "betzw_tests", "test2"),
+        "dependencies": [MBED_LIBRARIES, 
+                         join(TEST_STM_LIBS, 'DbgMCU'), 
+                         join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
+        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8"],
+        "peripherals": ["X_NUCLEO_IKS01A1"]
     },
 ]
 
