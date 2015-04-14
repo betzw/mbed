@@ -50,9 +50,9 @@
 class Magneto
 {
  public:
-	virtual MAGNETO_StatusTypeDef Init(MAGNETO_InitTypeDef&) = 0;
-	virtual MAGNETO_StatusTypeDef Read_M_ID(uint8_t&) = 0;
-	virtual MAGNETO_StatusTypeDef Get_M_Axes(int32_t&) = 0;
+	virtual MAGNETO_StatusTypeDef Init(MAGNETO_InitTypeDef*) = 0;
+	virtual MAGNETO_StatusTypeDef Read_M_ID(uint8_t*) = 0;
+	virtual MAGNETO_StatusTypeDef Get_M_Axes(int32_t*) = 0;
 
  protected:
 	Magneto(void) {};

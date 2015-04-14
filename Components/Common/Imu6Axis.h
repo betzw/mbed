@@ -37,8 +37,8 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __IMU_6AXIS_H
-#define __IMU_6AXIS_H
+#ifndef __IMU_6AXIS_CLASS_H
+#define __IMU_6AXIS_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -50,15 +50,15 @@
 class Imu6Axis
 {
  public:
-	virtual IMU_6AXIS_StatusTypeDef Init(IMU_6AXIS_InitTypeDef&) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Read_XG_ID(uint8_t&) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_X_Axes(int32_t&) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_G_Axes(int32_t&) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_X_Sensitivity(float&) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_G_Sensitivity(float&) = 0;
+	virtual IMU_6AXIS_StatusTypeDef Init(IMU_6AXIS_InitTypeDef*) = 0;
+	virtual IMU_6AXIS_StatusTypeDef Read_XG_ID(uint8_t*) = 0;
+	virtual IMU_6AXIS_StatusTypeDef Get_X_Axes(int32_t*) = 0;
+	virtual IMU_6AXIS_StatusTypeDef Get_G_Axes(int32_t*) = 0;
+	virtual IMU_6AXIS_StatusTypeDef Get_X_Sensitivity(float*) = 0;
+	virtual IMU_6AXIS_StatusTypeDef Get_G_Sensitivity(float*) = 0;
 
  protected:
 	Imu6Axis(void) {};
 };
 
-#endif /* __IMU_6AXIS_H */
+#endif /* __IMU_6AXIS_CLASS_H */

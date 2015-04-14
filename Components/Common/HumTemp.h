@@ -37,8 +37,8 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __HUM_TEMP_H
-#define __HUM_TEMP_H
+#ifndef __HUM_TEMP_CLASS_H
+#define __HUM_TEMP_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
@@ -50,10 +50,10 @@
 class HumTemp
 {
  public:
-	virtual HUM_TEMP_StatusTypeDef Init(HUM_TEMP_InitTypeDef&) = 0;
+	virtual HUM_TEMP_StatusTypeDef Init(HUM_TEMP_InitTypeDef*) = 0;
 
 	virtual HUM_TEMP_StatusTypeDef PowerOFF(void) = 0;
-	virtual HUM_TEMP_StatusTypeDef ReadID(uint8_t&) = 0;
+	virtual HUM_TEMP_StatusTypeDef ReadID(uint8_t*) = 0;
 	virtual HUM_TEMP_StatusTypeDef Reset(void) = 0;
 
 	virtual void ConfigIT(uint16_t) = 0;
@@ -62,8 +62,8 @@ class HumTemp
 	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
 	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
-	virtual HUM_TEMP_StatusTypeDef GetHumidity(float&) = 0;
-	virtual HUM_TEMP_StatusTypeDef GetTemperature(float& = 0);
+	virtual HUM_TEMP_StatusTypeDef GetHumidity(float*) = 0;
+	virtual HUM_TEMP_StatusTypeDef GetTemperature(float*) = 0;
 
 	virtual void AttachIT(void (*fptr)(void)) = 0;
 
@@ -71,4 +71,4 @@ class HumTemp
 	HumTemp(void) {};
 };
 
-#endif /* __HUM_TEMP_H */
+#endif /* __HUM_TEMP_CLASS_H */

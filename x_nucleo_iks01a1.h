@@ -45,13 +45,15 @@
 #include "x_nucleo_iks01a1_targets.h"
 #include "DevI2C.h"
 #include "Common/HumTemp.h"
+#if 0 // betzw: TODO
 #include "Common/Pressure.h"
 #include "Common/Magneto.h"
 #include "Common/Imu6Axis.h"
+#endif 
 
 /* Classes -------------------------------------------------------------------*/
-/** Class X_NUCLEO_IKS01A1 is intended to represent the <TODO>
- *  expansion board with the same name.
+/** Class X_NUCLEO_IKS01A1 is intended to represent the MEMS Inertial & Environmental 
+ *  Nucleo Expansion Board with the same name.
  *
  *  The expansion board is featuring basically four IPs:\n
  *  -# a HTS221 Relative Humidity and Temperature Sensor\n
@@ -79,9 +81,11 @@ class X_NUCLEO_IKS01A1
 	DevI2C *dev_i2c;
 
 	HumTemp &ht_sensor;
+#if 0 // betzw: TODO
 	Pressure &pressure_sensor;
 	Magneto &magnetometer;
 	Imu6Axis &gyroscope;
+#endif // 0
 
  private:
 	static X_NUCLEO_IKS01A1 *_instance;
