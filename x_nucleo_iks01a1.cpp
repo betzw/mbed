@@ -41,6 +41,7 @@
 #include "hts221/hts221_class.h"
 #include "lis3mdl/lis3mdl_class.h"
 #include "lps25h/lps25h_class.h"
+#include "lsm6ds0/lsm6ds0_class.h"
 
 /* Static variables ----------------------------------------------------------*/
 X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;
@@ -53,10 +54,8 @@ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;
 X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 	ht_sensor(*(new HTS221(*dev_i2c))),
 	magnetometer(*(new LIS3MDL(*dev_i2c))),
-	pressure_sensor(*(new LPS25H(*dev_i2c)))
-#if 0 // betzw: TODO
-	lsm6ds0(*dev_i2c)
-#endif // 0
+	pressure_sensor(*(new LPS25H(*dev_i2c))),
+	gyroscope(*(new LSM6DS0(*dev_i2c)))
 { 
 }
 
