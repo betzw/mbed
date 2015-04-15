@@ -47,9 +47,7 @@
 #include "Common/HumTemp.h"
 #include "Common/Magneto.h"
 #include "Common/Pressure.h"
-#if 0 // betzw: TODO
-#include "Common/Imu6Axis.h"
-#endif 
+#include "Common/Imu6Axes.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_NUCLEO_IKS01A1 is intended to represent the MEMS Inertial & Environmental 
@@ -83,9 +81,7 @@ class X_NUCLEO_IKS01A1
 	HumTemp &ht_sensor;
 	Magneto &magnetometer;
 	Pressure &pressure_sensor;
-#if 0 // betzw: TODO
-	Imu6Axis &gyroscope;
-#endif // 0
+	Imu6Axes &gyroscope;
 
  private:
 	static X_NUCLEO_IKS01A1 *_instance;
