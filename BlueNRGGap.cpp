@@ -52,7 +52,7 @@ uint8_t scan_rsp_length = 0;
 uint8_t servUuidlength = 0;
 uint8_t* servUuidData = NULL;
 
-uint32_t advtInterval = 0;
+uint32_t advtInterval = BLUENRG_GAP_ADV_INTERVAL_MAX;
 
 /**************************************************************************/
 /*!
@@ -317,16 +317,16 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
     
     advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application    
     ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
-    0,   // Adv_Interval_Min
-    advtInterval,   // Adv_Interval_Max
-    PUBLIC_ADDR, // Address_Type 
-    NO_WHITE_LIST_USE,  // Adv_Filter_Policy
-    nameLen, //local_name_length, // Local_Name_Length
-    (const char*)name, //local_name, // Local_Name
-    servUuidlength,  //Service_Uuid_Length
-    servUuidData, //Service_Uuid_List
-    0, // Slave_Conn_Interval_Min
-    0);  // Slave_Conn_Interval_Max
+        BLUENRG_GAP_ADV_INTERVAL_MIN,   // Adv_Interval_Min
+        advtInterval,   // Adv_Interval_Max
+        PUBLIC_ADDR, // Address_Type 
+        NO_WHITE_LIST_USE,  // Adv_Filter_Policy
+        nameLen, //local_name_length, // Local_Name_Length
+        (const char*)name, //local_name, // Local_Name
+        servUuidlength,  //Service_Uuid_Length
+        servUuidData, //Service_Uuid_List
+        0, // Slave_Conn_Interval_Min
+        0);  // Slave_Conn_Interval_Max
     
     state.advertising = 1;
 
@@ -731,18 +731,60 @@ ble_error_t BlueNRGGap::getAppearance(uint16_t *appearanceP)
     return BLE_ERROR_NONE;    
 }
 
+/**************************************************************************/
+/*!
+    @brief  Gets the value of maximum advertising interval in ms
+
+    @returns    uint16_t
+
+    @retval     value of maximum advertising interval in ms
+                
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
 uint16_t BlueNRGGap::getMaxAdvertisingInterval(void) const  {
-    // <TODO>    
-    return 0;
+    return advtInterval;
 } 
 
-uint16_t BlueNRGGap::getMinAdvertisingInterval(void) const {
-    // <TODO>    
-    return 0;    
+
+/**************************************************************************/
+/*!
+    @brief  Gets the value of minimum advertising interval in ms
+
+    @returns    uint16_t
+
+    @retval     value of minimum advertising interval in ms
+                
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+uint16_t BlueNRGGap::getMinAdvertisingInterval(void) const {    
+    return 0;    // minimum Advertising interval is 0
 }
 
+/**************************************************************************/
+/*!
+    @brief  Gets the value of minimum non connectable advertising interval in ms
 
-uint16_t BlueNRGGap::getMinNonConnectableAdvertisingInterval(void) const {
-    // <TODO>    
-    return 0;    
+    @returns    uint16_t
+
+    @retval     value of minimum non connectable advertising interval in ms
+                
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+uint16_t BlueNRGGap::getMinNonConnectableAdvertisingInterval(void) const {     
+    return BLE_GAP_ADV_NONCON_INTERVAL_MIN;    
 }

@@ -45,6 +45,11 @@
 #define BLE_CONN_HANDLE_INVALID 0x0
 #define BDADDR_SIZE 6
 
+#define BLUENRG_GAP_ADV_INTERVAL_MIN (0)
+#define BLUENRG_GAP_ADV_INTERVAL_MAX (0)
+#define BLE_GAP_ADV_NONCON_INTERVAL_MIN (0)
+
+
 /**************************************************************************/
 /*!
     \brief
