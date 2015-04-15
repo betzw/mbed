@@ -73,6 +73,18 @@ class X_NUCLEO_IKS01A1
  protected:
 	X_NUCLEO_IKS01A1(DevI2C *ext_i2c);
 
+	bool Init(void) {
+		return (Init_HT() &&
+			Init_MAG() &&
+			Init_PRESS() &&
+			Init_GYRO());
+	}
+
+	bool Init_HT(void);
+	bool Init_MAG(void);
+	bool Init_PRESS(void);
+	bool Init_GYRO(void);
+
  public:
 	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
 
