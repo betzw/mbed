@@ -45,9 +45,9 @@
 #include "x_nucleo_iks01a1_targets.h"
 #include "DevI2C.h"
 #include "Common/HumTemp.h"
+#include "Common/Magneto.h"
 #if 0 // betzw: TODO
 #include "Common/Pressure.h"
-#include "Common/Magneto.h"
 #include "Common/Imu6Axis.h"
 #endif 
 
@@ -81,9 +81,9 @@ class X_NUCLEO_IKS01A1
 	DevI2C *dev_i2c;
 
 	HumTemp &ht_sensor;
+	Magneto &magnetometer;
 #if 0 // betzw: TODO
 	Pressure &pressure_sensor;
-	Magneto &magnetometer;
 	Imu6Axis &gyroscope;
 #endif // 0
 
