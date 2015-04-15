@@ -73,6 +73,7 @@ class LIS3MDL : public Magneto {
 	MAGNETO_StatusTypeDef LIS3MDL_Init(MAGNETO_InitTypeDef *LIS3MDL_Init);
 	MAGNETO_StatusTypeDef LIS3MDL_Read_M_ID(uint8_t *m_id);
 	MAGNETO_StatusTypeDef LIS3MDL_M_GetAxes(int32_t *pData);
+
 	MAGNETO_StatusTypeDef LIS3MDL_M_GetAxesRaw(int16_t *pData);
 
 	/**
@@ -138,8 +139,6 @@ class LIS3MDL : public Magneto {
 	/*** Instance Variables ***/
 	/* IO Device */
 	DevI2C &dev_i2c;
-
-	/* TODO */
 };
 
 #endif // __LIS3MDL_CLASS_H
