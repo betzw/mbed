@@ -64,13 +64,21 @@ namespace {
 
 
 /*** Macros ------------------------------------------------------------------- ***/
-#define APP_LOOP_PERIOD 2000 // in ms
+#define APP_LOOP_PERIOD 1000 // in ms
 
 #if defined(TARGET_K64F)
 #define USER_BUTTON (SW2)
 #elif defined(TARGET_LPC11U68)
 #define USER_BUTTON (P0_16)
 #endif // !TARGET_MCU_K64F
+
+
+/*** Typedefs ----------------------------------------------------------------- ***/
+typedef struct {
+    int32_t AXIS_X;
+    int32_t AXIS_Y;
+    int32_t AXIS_Z;
+} AxesRaw_TypeDef;
 
 
 /*** Static variables --------------------------------------------------------- ***/
@@ -80,7 +88,7 @@ namespace {
 static DbgMCU enable_dbg;
 #endif // DBG_MCU
 
-static X_NUCLEO_IKS01A1 *iks01a1_expansion_board = X_NUCLEO_IKS01A1::Instance();
+static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance();
 
 static Ticker ticker;
 static InterruptIn button(USER_BUTTON);
@@ -88,6 +96,7 @@ static InterruptIn button(USER_BUTTON);
 static volatile bool timer_irq_triggered = false;
 static volatile bool button_irq_triggered = false;
 
+static DigitalOut myled(LED1);
 
 /*** Helper Functions (1/2) ------------------------------------------------------------ ***/
 
@@ -120,11 +129,49 @@ static void handle_button_irq(void) {
 /*** Helper Functions (2/2) ------------------------------------------------------------ ***/
 /* Initialization function */
 static void init(void) {
+	uint8_t hts221_id;
+
 	/* Set mode & irq handler for button */
 	button.mode(PullNone);
 	button.fall(button_irq);
 
-	/* TODO */
+	/* Determine ID of Humidity & Tempreture Sensor */
+	mems_expansion_board->ht_sensor.ReadID(&hts221_id);
+    	printf("HTS221_ID = 0x%x\n\t\r", hts221_id);
+}
+
+/* Main cycle function */
+static void main_cycle(void) {
+	float TEMPERATURE_Value;
+	float HUMIDITY_Value;
+	float PRESSURE_Value;
+	AxesRaw_TypeDef MAG_Value;
+	AxesRaw_TypeDef ACC_Value;
+	AxesRaw_TypeDef GYR_Value;
+	
+	/* Switch LED On */
+	myled = 1;
+
+	/* Determine Environmental Values */
+        mems_expansion_board->ht_sensor.GetTemperature(&TEMPERATURE_Value);
+        mems_expansion_board->ht_sensor.GetHumidity(&HUMIDITY_Value);
+        mems_expansion_board->pressure_sensor.GetPressure(&PRESSURE_Value);
+        mems_expansion_board->magnetometer.Get_M_Axes((int32_t *)&MAG_Value);
+        mems_expansion_board->gyroscope.Get_X_Axes((int32_t *)&ACC_Value);
+        mems_expansion_board->gyroscope.Get_G_Axes((int32_t *)&GYR_Value);
+
+	/* Print Values Out */
+        printf("TEMP: %f HUMIDITY: %f PRESSURE: %f\t\r\n ", 
+	       TEMPERATURE_Value, HUMIDITY_Value, PRESSURE_Value);
+        printf("X_AXIS: %ld, Y_AXIS: %ld, Z_AXIS: %ld\t\r\n ", 
+	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
+        printf("X_ACC: %ld, Y_ACC: %ld, Z_ACC: %ld\t\r\n ", 
+	       ACC_Value.AXIS_X, ACC_Value.AXIS_Y, ACC_Value.AXIS_Z);
+        printf("X_GYR: %ld, Y_GYR: %ld, Z_GYR: %ld\t\r\n ", 
+	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
+	
+	/* Switch LED Off */
+	myled = 0;
 }
 
 
@@ -146,15 +193,11 @@ int main()
 		if(timer_irq_triggered) {
 			timer_irq_triggered = false;
 			__enable_irq();
-			/* TODO */
+			main_cycle();
 		} else if(button_irq_triggered) {
 			button_irq_triggered = false;
 			__enable_irq();
 			handle_button_irq();
-		} else if(0 /* TODO */) {
-			/* TODO */
-			__enable_irq();
-			/* TODO */
 		} else {
 			__WFI();
 			__enable_irq(); /* do NOT enable irqs before WFI to avoid 
