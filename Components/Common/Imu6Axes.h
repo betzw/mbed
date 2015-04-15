@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    Imu6Axis.h
+ * @file    Imu6Axes.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a 6-axis accelerometer and gyroscope
+ *          the interfaces of a 6-axes accelerometer and gyroscope
  ******************************************************************************
  * @attention
  *
@@ -37,28 +37,28 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __IMU_6AXIS_CLASS_H
-#define __IMU_6AXIS_CLASS_H
+#ifndef __IMU_6AXES_CLASS_H
+#define __IMU_6AXES_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "imu_6axis.h"
+#include "imu_6axes.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for Imu6Axis components
+/** An abstract class for Imu6Axes components
  */
-class Imu6Axis
+class Imu6Axes
 {
  public:
-	virtual IMU_6AXIS_StatusTypeDef Init(IMU_6AXIS_InitTypeDef*) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Read_XG_ID(uint8_t*) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_X_Axes(int32_t*) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_G_Axes(int32_t*) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_X_Sensitivity(float*) = 0;
-	virtual IMU_6AXIS_StatusTypeDef Get_G_Sensitivity(float*) = 0;
+	virtual IMU_6AXES_StatusTypeDef Init(IMU_6AXES_InitTypeDef*) = 0;
+	virtual IMU_6AXES_StatusTypeDef Read_XG_ID(uint8_t*) = 0;
+	virtual IMU_6AXES_StatusTypeDef Get_X_Axes(int32_t*) = 0;
+	virtual IMU_6AXES_StatusTypeDef Get_G_Axes(int32_t*) = 0;
+	virtual IMU_6AXES_StatusTypeDef Get_X_Sensitivity(float*) = 0;
+	virtual IMU_6AXES_StatusTypeDef Get_G_Sensitivity(float*) = 0;
 
  protected:
-	Imu6Axis(void) {};
+	Imu6Axes(void) {};
 };
 
-#endif /* __IMU_6AXIS_CLASS_H */
+#endif /* __IMU_6AXES_CLASS_H */
