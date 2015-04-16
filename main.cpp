@@ -64,7 +64,7 @@ namespace {
 
 
 /*** Macros ------------------------------------------------------------------- ***/
-#define APP_LOOP_PERIOD 1000 // in ms
+#define APP_LOOP_PERIOD 1300 // in ms
 
 #if defined(TARGET_K64F)
 #define USER_BUTTON (SW2)
@@ -127,6 +127,20 @@ static void handle_button_irq(void) {
 
 
 /*** Helper Functions (2/2) ------------------------------------------------------------ ***/
+/* print floats & doubles */
+static char *printDouble(char* str, double v, int decimalDigits=2)
+{
+  int i = 1;
+  int intPart, fractPart;
+
+  for (;decimalDigits!=0; i*=10, decimalDigits--);
+  intPart = (int)v;
+  fractPart = (int)((v-(double)(int)v)*i);
+  sprintf(str, "%i.%i", intPart, fractPart);
+
+  return str;
+}
+
 /* Initialization function */
 static void init(void) {
 	uint8_t hts221_id;
@@ -137,7 +151,7 @@ static void init(void) {
 
 	/* Determine ID of Humidity & Tempreture Sensor */
 	mems_expansion_board->ht_sensor.ReadID(&hts221_id);
-    	printf("HTS221_ID = 0x%x\n\t\r", hts221_id);
+    	printf("HTS221_ID = 0x%x (%u)\n", hts221_id, hts221_id);
 }
 
 /* Main cycle function */
@@ -148,9 +162,13 @@ static void main_cycle(void) {
 	AxesRaw_TypeDef MAG_Value;
 	AxesRaw_TypeDef ACC_Value;
 	AxesRaw_TypeDef GYR_Value;
-	
+	char buffer1[32];
+	char buffer2[32];
+	char buffer3[32];
+
 	/* Switch LED On */
 	myled = 1;
+	printf("===\n");
 
 	/* Determine Environmental Values */
         mems_expansion_board->ht_sensor.GetTemperature(&TEMPERATURE_Value);
@@ -161,13 +179,15 @@ static void main_cycle(void) {
         mems_expansion_board->gyroscope.Get_G_Axes((int32_t *)&GYR_Value);
 
 	/* Print Values Out */
-        printf("TEMP: %f HUMIDITY: %f PRESSURE: %f\t\r\n ", 
-	       TEMPERATURE_Value, HUMIDITY_Value, PRESSURE_Value);
-        printf("X_AXIS: %ld, Y_AXIS: %ld, Z_AXIS: %ld\t\r\n ", 
+        printf("TEMP: %s, HUMIDITY: %s, PRESSURE: %s\n", 
+	       printDouble(buffer1, TEMPERATURE_Value), 
+	       printDouble(buffer2, HUMIDITY_Value), 
+	       printDouble(buffer3, PRESSURE_Value));
+        printf("X_MAG: %ld, Y_MAG: %ld, Z_MAG: %ld\n", 
 	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
-        printf("X_ACC: %ld, Y_ACC: %ld, Z_ACC: %ld\t\r\n ", 
+        printf("X_ACC: %ld, Y_ACC: %ld, Z_ACC: %ld\n", 
 	       ACC_Value.AXIS_X, ACC_Value.AXIS_Y, ACC_Value.AXIS_Z);
-        printf("X_GYR: %ld, Y_GYR: %ld, Z_GYR: %ld\t\r\n ", 
+        printf("X_GYR: %ld, Y_GYR: %ld, Z_GYR: %ld\n", 
 	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
 	
 	/* Switch LED Off */
