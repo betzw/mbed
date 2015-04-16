@@ -29,8 +29,11 @@ CORE_LABELS = {
 }
 
 import os
+import binascii
+import struct
 import shutil
 from workspace_tools.patch import patch
+from paths import TOOLS_BOOTLOADERS
 
 class Target:
     def __init__(self):
@@ -513,7 +516,7 @@ class NUCLEO_F091RC(Target):
         self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
-        self.detect_code = ["0731"]
+        self.detect_code = ["0750"]
 
 class NUCLEO_F103RB(Target):
     def __init__(self):
@@ -543,7 +546,7 @@ class NUCLEO_F303RE(Target):
         self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
-        self.detect_code = ["0706"]
+        self.detect_code = ["0745"]
 
 class NUCLEO_F334R8(Target):
     def __init__(self):
@@ -584,6 +587,16 @@ class NUCLEO_L053R8(Target):
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0715"]
+
+class NUCLEO_L073RZ(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['STM', 'STM32L0', 'STM32L073RZ']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        self.detect_code = ["0760"]
 
 class NUCLEO_L152RE(Target):
     def __init__(self):
@@ -692,18 +705,82 @@ class MTS_MDOT_F411RE(Target):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F411RE']
-        self.macros = ['HSE_VALUE=26000000', 'OS_CLOCK=96000000', 'USE_PLL_HSE_EXTC=0']
+        self.macros = ['HSE_VALUE=26000000', 'OS_CLOCK=96000000', 'USE_PLL_HSE_EXTC=0', 'VECT_TAB_OFFSET=0x00010000']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
+
+    def init_hooks(self, hook, toolchain_name):
+        if toolchain_name in ['GCC_ARM', 'ARM_STD', 'ARM_MICRO']:
+            hook.hook_add_binary("post", self.combine_bins)
+
+    # combine application binary with bootloader
+    # bootloader + padding to 64kB + application + md5sum (16 bytes)
+    @staticmethod
+    def combine_bins(t_self, resources, elf, binf):
+        loader = os.path.join(TOOLS_BOOTLOADERS, "MTS_MDOT_F411RE", "bootloader.bin")
+        target = binf + ".tmp"
+        if not os.path.exists(loader):
+            print "Can't find bootloader binary: " + loader
+            return
+        outbin = open(target, 'w+b')
+        part = open(loader, 'rb')
+        data = part.read()
+        outbin.write(data)
+        outbin.write('\xFF' * (64*1024 - len(data)))
+        part.close()
+        part = open(binf, 'rb')
+        data = part.read()
+        outbin.write(data)
+        part.close()
+        outbin.seek(0, 0)
+        data = outbin.read()
+        outbin.seek(0, 1)
+        crc = struct.pack('<I', binascii.crc32(data) & 0xFFFFFFFF)
+        outbin.write(crc)
+        outbin.close()
+        os.remove(binf)
+        os.rename(target, binf)
 
 class MTS_DRAGONFLY_F411RE(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F411RE']
-        self.macros = ['HSE_VALUE=26000000']
+        self.macros = ['HSE_VALUE=26000000', 'VECT_TAB_OFFSET=0x08010000']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "ARM"
+
+    def init_hooks(self, hook, toolchain_name):
+        if toolchain_name in ['GCC_ARM', 'ARM_STD', 'ARM_MICRO']:
+            hook.hook_add_binary("post", self.combine_bins)
+
+    # combine application binary with bootloader
+    # bootloader + padding to 64kB + application + md5sum (16 bytes)
+    @staticmethod
+    def combine_bins(t_self, resources, elf, binf):
+        loader = os.path.join(TOOLS_BOOTLOADERS, "MTS_DRAGONFLY_F411RE", "bootloader.bin")
+        target = binf + ".tmp"
+        if not os.path.exists(loader):
+            print "Can't find bootloader binary: " + loader
+            return
+        outbin = open(target, 'w+b')
+        part = open(loader, 'rb')
+        data = part.read()
+        outbin.write(data)
+        outbin.write('\xFF' * (64*1024 - len(data)))
+        part.close()
+        part = open(binf, 'rb')
+        data = part.read()
+        outbin.write(data)
+        part.close()
+        outbin.seek(0, 0)
+        data = outbin.read()
+        outbin.seek(0, 1)
+        crc = struct.pack('<I', binascii.crc32(data) & 0xFFFFFFFF)
+        outbin.write(crc)
+        outbin.close()
+        os.remove(binf)
+        os.rename(target, binf)
 
 class DISCO_F401VC(Target):
     def __init__(self):
@@ -753,6 +830,8 @@ class NRF51822(Target):
         Target.__init__(self)
         self.core = "Cortex-M0"
         self.extra_labels = ["NORDIC", "NRF51822_MKIT", "MCU_NRF51822", "MCU_NORDIC_16K"]
+        self.common_macros = ['NRF51']
+        self.macros = self.common_macros
         self.supported_toolchains = ["ARM", "GCC_ARM", "IAR"]
         self.is_disk_virtual = True
         self.detect_code = ["1070"]
@@ -806,6 +885,7 @@ class NRF51822_BOOT(NRF51822):
         self.core = "Cortex-M0"
         self.extra_labels = ["NORDIC", "NRF51822_MKIT", "MCU_NRF51822", "MCU_NORDIC_16K", "NRF51822"]
         self.macros = ['TARGET_NRF51822', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.MERGE_SOFT_DEVICE = True
         self.MERGE_BOOTLOADER = True
@@ -816,6 +896,7 @@ class NRF51822_OTA(NRF51822):
         self.core = "Cortex-M0"
         self.extra_labels = ["NORDIC", "NRF51822_MKIT", "MCU_NRF51822", "MCU_NORDIC_16K", "NRF51822"]
         self.macros = ['TARGET_NRF51822', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.MERGE_SOFT_DEVICE = False
 
@@ -824,6 +905,7 @@ class NRF51_DK(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
         self.supported_form_factors = ["ARDUINO"]
 
 class NRF51_DK_BOOT(NRF51822):
@@ -832,6 +914,7 @@ class NRF51_DK_BOOT(NRF51822):
         self.core = "Cortex-M0"
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K', 'NRF51_DK']
         self.macros = ['TARGET_NRF51822', 'TARGET_NRF51_DK', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.MERGE_SOFT_DEVICE = True
         self.MERGE_BOOTLOADER = True
@@ -842,6 +925,7 @@ class NRF51_DK_OTA(NRF51822):
         self.core = "Cortex-M0"
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K', 'NRF51_DK']
         self.macros = ['TARGET_NRF51822', 'TARGET_NRF51_DK', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
         self.supported_toolchains = ["ARM", "GCC_ARM"]
         self.MERGE_SOFT_DEVICE = False
 
@@ -850,12 +934,14 @@ class NRF51_DONGLE(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_32K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class ARCH_BLE(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
         self.supported_form_factors = ["ARDUINO"]
 
 class SEEED_TINY_BLE(NRF51822):
@@ -863,12 +949,14 @@ class SEEED_TINY_BLE(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class SEEED_TINY_BLE_BOOT(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'SEEED_TINY_BLE']
         self.macros = ['TARGET_NRF51822', 'TARGET_SEEED_TINY_BLE', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
         self.MERGE_SOFT_DEVICE = True
         self.MERGE_BOOTLOADER = True
 
@@ -877,6 +965,7 @@ class SEEED_TINY_BLE_OTA(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'SEEED_TINY_BLE']
         self.macros = ['TARGET_NRF51822', 'TARGET_SEEED_TINY_BLE', 'TARGET_OTA_ENABLED']
+        self.macros += self.common_macros
         self.MERGE_SOFT_DEVICE = False
 
 class HRM1017(NRF51822):
@@ -884,12 +973,14 @@ class HRM1017(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class RBLAB_NRF51822(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
         self.supported_form_factors = ["ARDUINO"]
 
 class RBLAB_BLENANO(NRF51822):
@@ -897,12 +988,14 @@ class RBLAB_BLENANO(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class NRF51822_Y5_MBUG(NRF51822):
     def __init__(self):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class XADOW_M0(LPCTarget):
     def __init__(self):
@@ -917,6 +1010,7 @@ class WALLBOT_BLE(NRF51822):
         NRF51822.__init__(self)
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class DELTA_DFCM_NNN40(NRF51822):
     def __init__(self):
@@ -924,6 +1018,7 @@ class DELTA_DFCM_NNN40(NRF51822):
         self.core = "Cortex-M0"
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K']
         self.macros = ['TARGET_NRF51822']
+        self.macros += self.common_macros
 
 class DELTA_DFCM_NNN40_OTA(NRF51822):
     def __init__(self):
@@ -931,14 +1026,7 @@ class DELTA_DFCM_NNN40_OTA(NRF51822):
         self.core = "Cortex-M0"
         self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'DELTA_DFCM_NNN40']
         self.MERGE_SOFT_DEVICE = False
-class DELTA_DFCM_NNN40_OTA(NRF51822):
-    def __init__(self):
-        NRF51822.__init__(self)
-        self.core = "Cortex-M0"
-        self.extra_labels = ['NORDIC', 'MCU_NRF51822', 'MCU_NORDIC_16K', 'DELTA_DFCM_NNN40']
-        self.MERGE_SOFT_DEVICE = False
-
-
+        self.macros += self.common_macros
 ### ARM ###
 
 class ARM_MPS2_M0(Target):
@@ -1014,6 +1102,16 @@ class RZ_A1H(Target):
         return 2
 
 
+### Maxim Integrated ###
+
+class MAXWSNENV(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M3"
+        self.extra_labels = ['Maxim', 'MAX32610']
+        self.macros = ['__SYSTEM_HFX=24000000']
+        self.supported_toolchains = ["GCC_ARM", "IAR", "ARM"]
+        self.default_toolchain = "ARM"
 
 # Get a single instance for each target
 TARGETS = [
@@ -1074,6 +1172,7 @@ TARGETS = [
     NUCLEO_F401RE(),
     NUCLEO_F411RE(),
     NUCLEO_L053R8(),
+    NUCLEO_L073RZ(),
     NUCLEO_L152RE(),
     STM32F3XX(),
     STM32F407(),
@@ -1122,6 +1221,9 @@ TARGETS = [
 
     ### Renesas ###
     RZ_A1H(),
+
+    ### Maxim Integrated ###
+    MAXWSNENV(),
 ]
 
 # Map each target name to its unique instance

@@ -46,11 +46,13 @@ void in_handler() {
       defined(TARGET_NUCLEO_F401RE) || \
       defined(TARGET_NUCLEO_F411RE) || \
       defined(TARGET_NUCLEO_L053R8) || \
+      defined(TARGET_NUCLEO_L073RZ) || \
       defined(TARGET_NUCLEO_L152RE)
 #define PIN_IN      PB_8
 #define PIN_OUT     PC_7
 
-#elif defined(TARGET_DISCO_F407VG) || \
+#elif defined(TARGET_ARCH_MAX) || \
+      defined(TARGET_DISCO_F407VG) || \
       defined(TARGET_DISCO_F429ZI)|| \
       defined(TARGET_DISCO_F401VC)
 #define PIN_OUT    PC_12
@@ -64,6 +66,10 @@ void in_handler() {
 #elif defined(TARGET_FF_ARDUINO)
 #define PIN_OUT    D0
 #define PIN_IN     D7
+
+#elif defined(TARGET_MAXWSNENV)
+#define PIN_OUT    P0_0
+#define PIN_IN     P0_1
 
 #else
 #define PIN_IN      (p5)
