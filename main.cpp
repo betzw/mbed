@@ -66,12 +66,6 @@ namespace {
 /*** Macros ------------------------------------------------------------------- ***/
 #define APP_LOOP_PERIOD 1300 // in ms
 
-#if defined(TARGET_K64F)
-#define USER_BUTTON (SW2)
-#elif defined(TARGET_LPC11U68)
-#define USER_BUTTON (P0_16)
-#endif // !TARGET_MCU_K64F
-
 
 /*** Typedefs ----------------------------------------------------------------- ***/
 typedef struct {
@@ -89,13 +83,8 @@ static DbgMCU enable_dbg;
 #endif // DBG_MCU
 
 static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance();
-
 static Ticker ticker;
-static InterruptIn button(USER_BUTTON);
-
 static volatile bool timer_irq_triggered = false;
-static volatile bool button_irq_triggered = false;
-
 static DigitalOut myled(LED1);
 
 /*** Helper Functions (1/2) ------------------------------------------------------------ ***/
@@ -107,23 +96,8 @@ static void timer_irq(void) {
 	timer_irq_triggered = true;
 }
 
-/* Called in interrupt context, therefore just set a trigger variable */
-static void button_irq(void) {
-	button_irq_triggered = true;
-	button.disable_irq();
-}
-
 
 /*** Interrupt Handler Bottom-Halves ------------------------------------------------- ***/
-/* Handle button irq
-   (here we are in "normal" context, i.e. not in IRQ context)
-*/
-static void handle_button_irq(void) {
-	/* TODO */
-
-	/* Re-enable button irq */
-	button.enable_irq();
-}
 
 
 /*** Helper Functions (2/2) ------------------------------------------------------------ ***/
@@ -144,10 +118,6 @@ static char *printDouble(char* str, double v, int decimalDigits=2)
 /* Initialization function */
 static void init(void) {
 	uint8_t hts221_id;
-
-	/* Set mode & irq handler for button */
-	button.mode(PullNone);
-	button.fall(button_irq);
 
 	/* Determine ID of Humidity & Tempreture Sensor */
 	mems_expansion_board->ht_sensor.ReadID(&hts221_id);
@@ -214,10 +184,6 @@ int main()
 			timer_irq_triggered = false;
 			__enable_irq();
 			main_cycle();
-		} else if(button_irq_triggered) {
-			button_irq_triggered = false;
-			__enable_irq();
-			handle_button_irq();
 		} else {
 			__WFI();
 			__enable_irq(); /* do NOT enable irqs before WFI to avoid 
