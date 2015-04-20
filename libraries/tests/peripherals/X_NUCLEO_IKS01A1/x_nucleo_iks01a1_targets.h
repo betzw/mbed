@@ -41,14 +41,9 @@
 #ifndef _X_NUCLEO_IKS01A1_TARGETS_H_
 #define _X_NUCLEO_IKS01A1_TARGETS_H_
 
-#if defined(TARGET_STM) // STM Nucleo Boards (use ST Morpho headers)
-
 /*** I2C ***/
+/* Use Arduino I2C Connectors */
 #define IKS01A1_PIN_I2C_SCL         (D15)
 #define IKS01A1_PIN_I2C_SDA         (D14)
-
-#else // !defined(TARGET_STM)
-#error "Platform not supported!"
-#endif // !defined(TARGET_STM)
 
 #endif // _X_NUCLEO_IKS01A1_TARGETS_H_

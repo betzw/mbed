@@ -1007,7 +1007,6 @@ TESTS = [
                          join(TEST_STM_LIBS, 'DbgMCU'), 
                          join(TEST_STM_LIBS, 'DevI2C'), 
                          join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
-        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8"],
         "peripherals": ["X_NUCLEO_IKS01A1"]
     },
 ]
