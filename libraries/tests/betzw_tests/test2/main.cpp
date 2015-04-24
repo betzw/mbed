@@ -66,6 +66,13 @@ namespace {
 /*** Macros ------------------------------------------------------------------- ***/
 #define APP_LOOP_PERIOD 1300 // in ms
 
+#if defined(TARGET_STM)
+#define LED_OFF (0)
+#else
+#define LED_OFF (1)
+#endif
+#define LED_ON  (!LED_OFF)
+
 
 /*** Typedefs ----------------------------------------------------------------- ***/
 typedef struct {
@@ -85,7 +92,8 @@ static DbgMCU enable_dbg;
 static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance();
 static Ticker ticker;
 static volatile bool timer_irq_triggered = false;
-static DigitalOut myled(LED1);
+static DigitalOut myled(LED1, LED_OFF);
+
 
 /*** Helper Functions (1/2) ------------------------------------------------------------ ***/
 
@@ -137,7 +145,7 @@ static void main_cycle(void) {
 	char buffer3[32];
 
 	/* Switch LED On */
-	myled = 1;
+	myled = LED_ON;
 	printf("===\n");
 
 	/* Determine Environmental Values */
@@ -161,7 +169,7 @@ static void main_cycle(void) {
 	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
 	
 	/* Switch LED Off */
-	myled = 0;
+	myled = LED_OFF;
 }
 
 
