@@ -52,7 +52,7 @@ STC3115::STC3115(DevI2C &i2c) : GasGauge(), alm(GG_PIN_ALM),
 	dev_i2c(i2c), RAMData(), ConfigData(), BatteryData()
 {
 	int ret;
-	char OCVOffset[] = OCV_OFFSET_TAB;
+	int8_t OCVOffset[] = OCV_OFFSET_TAB;
 
 	/* Fill configuration structure parameters */
 	ConfigData.Vmode = VMODE;
