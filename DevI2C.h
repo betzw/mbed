@@ -64,7 +64,9 @@ class DevI2C : public I2C
 	 * @param  RegisterAddr specifies the internal address register 
 	 *         where to start writing to (must be correctly masked).
 	 * @param  NumByteToWrite number of bytes to be written.
-	 * @retval 0 if ok, -1 if an I2C error has occured
+	 * @retval 0 if ok, 
+	 *         -1 if an I2C error has occured, or
+	 *         -2 on temporary buffer overflow (i.e. NumByteToWrite was too high)
 	 * @note   On some devices if NumByteToWrite is greater
 	 *         than one, the RegisterAddr must be masked correctly!
 	 */
@@ -72,8 +74,10 @@ class DevI2C : public I2C
 		      uint16_t NumByteToWrite)
 	{
 		int ret;
-		uint8_t tmp[32];
+		uint8_t tmp[TEMP_BUF_SIZE];
 	
+		if(NumByteToWrite >= TEMP_BUF_SIZE) return -2;
+		
 		/* First, send device address. Then, send data and STOP condition */
 		tmp[0] = RegisterAddr;
 		memcpy(tmp+1, pBuffer, NumByteToWrite);
@@ -110,6 +114,9 @@ class DevI2C : public I2C
 		if(ret) return -1;
 		return 0;
 	}
+
+ private:
+	static const unsigned int TEMP_BUF_SIZE = 32;
 };
 
 #endif /* __DEV_I2C_H */
