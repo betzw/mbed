@@ -73,7 +73,9 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 	if(_instance == NULL) {
 		if(ext_i2c == NULL)
 			ext_i2c = new DevI2C(IKS01A1_PIN_I2C_SDA, IKS01A1_PIN_I2C_SCL);
-		_instance = new X_NUCLEO_IKS01A1(ext_i2c);
+
+		if(ext_i2c != NULL)
+			_instance = new X_NUCLEO_IKS01A1(ext_i2c);
 	
 		if(_instance != NULL) {
 			bool ret = _instance->Init();
