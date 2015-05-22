@@ -91,3 +91,17 @@ git push bm-app bm-split:master
 git checkout betzw_wb
 git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
 git branch -d bm-split
+
+Sensors-Reader:
+---------------
+git remote add sr-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Sensors_Reader"
+
+git subtree split -P libraries/tests/betzw_tests/test2 -b sr-split
+git checkout sr-split
+
+git pull sr-app master
+git push sr-app sr-split:master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/betzw_tests/test2 sr-split
+git branch -d sr-split
