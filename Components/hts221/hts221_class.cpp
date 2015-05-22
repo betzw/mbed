@@ -283,8 +283,8 @@ HUM_TEMP_StatusTypeDef HTS221::HTS221_GetHumidity(float* pfData)
     H_rh = ( float )(((( H_T_out - H0_T0_out ) * ( H1_rh - H0_rh )) / ( H1_T0_out - H0_T0_out )) + H0_rh );
 
     // Truncate to specific number of decimal digits
-    humidity_t = (uint16_t)(H_rh * pow(10,HUM_DECIMAL_DIGITS));
-    *pfData = ((float)humidity_t)/pow(10,HUM_DECIMAL_DIGITS);
+    humidity_t = (uint16_t)(H_rh * pow(10.0f,HUM_DECIMAL_DIGITS));
+    *pfData = ((float)humidity_t)/pow(10.0f,HUM_DECIMAL_DIGITS);
     
     // Prevent data going below 0% and above 100% due to linear interpolation
     if ( *pfData <   0.0f ) *pfData =   0.0f;
@@ -348,9 +348,9 @@ HUM_TEMP_StatusTypeDef HTS221::HTS221_GetTemperature(float* pfData)
 
     T_degC = ((float)(T_out - T0_out))/(T1_out - T0_out) * (T1_degC - T0_degC) + T0_degC;
 
-    temperature_t = (int16_t)(T_degC * pow(10,TEMP_DECIMAL_DIGITS));
+    temperature_t = (int16_t)(T_degC * pow(10.0f,TEMP_DECIMAL_DIGITS));
 
-    *pfData = ((float)temperature_t)/pow(10,TEMP_DECIMAL_DIGITS);
+    *pfData = ((float)temperature_t)/pow(10.0f,TEMP_DECIMAL_DIGITS);
     
     return HUM_TEMP_OK;
 }
