@@ -5,7 +5,7 @@
  * @version V0.0.1
  * @date    14-April-2015
  * @brief   Example application for using the X_NUCLEO_IKS01A1 
- *          MEMS Inertial & Environmental Nucleo expansion board.
+ *          MEMS Inertial & Environmental Sensor Nucleo expansion board.
  ******************************************************************************
  * @attention
  *
@@ -37,7 +37,7 @@
 */ 
 
 /**
- * @mainpage X_NUCLEO_IKS01A1 MEMS Inertial & Environmental Nucleo Expansion Board firmware package
+ * @mainpage X_NUCLEO_IKS01A1 MEMS Inertial & Environmental Sensor Nucleo Expansion Board Firmware Package
  *
  * <b>Introduction</b>
  *
