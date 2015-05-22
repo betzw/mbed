@@ -4,7 +4,7 @@
  * @author  AST / EST
  * @version V0.0.1
  * @date    21-January-2015
- * @brief   Header file for a special I2C class DecI2C which provides some
+ * @brief   Header file for a special I2C class DevI2C which provides some
  *          helper function for on-board communication
  ******************************************************************************
  * @attention
