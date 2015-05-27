@@ -127,7 +127,7 @@ static char *printDouble(char* str, double v, int decimalDigits=2)
 static void init(void) {
 	uint8_t hts221_id;
 
-	/* Determine ID of Humidity & Tempreture Sensor */
+	/* Determine ID of Humidity & Temperature Sensor */
 	mems_expansion_board->ht_sensor.ReadID(&hts221_id);
     	printf("HTS221_ID = 0x%x (%u)\n", hts221_id, hts221_id);
 }
@@ -137,12 +137,14 @@ static void main_cycle(void) {
 	float TEMPERATURE_Value;
 	float HUMIDITY_Value;
 	float PRESSURE_Value;
+	float PRESSURE_Temp_Value;
 	AxesRaw_TypeDef MAG_Value;
 	AxesRaw_TypeDef ACC_Value;
 	AxesRaw_TypeDef GYR_Value;
 	char buffer1[32];
 	char buffer2[32];
 	char buffer3[32];
+	char buffer4[32];
 
 	/* Switch LED On */
 	myled = LED_ON;
@@ -152,15 +154,17 @@ static void main_cycle(void) {
         mems_expansion_board->ht_sensor.GetTemperature(&TEMPERATURE_Value);
         mems_expansion_board->ht_sensor.GetHumidity(&HUMIDITY_Value);
         mems_expansion_board->pressure_sensor.GetPressure(&PRESSURE_Value);
+        mems_expansion_board->pressure_sensor.GetTemperature(&PRESSURE_Temp_Value);
         mems_expansion_board->magnetometer.Get_M_Axes((int32_t *)&MAG_Value);
         mems_expansion_board->gyroscope.Get_X_Axes((int32_t *)&ACC_Value);
         mems_expansion_board->gyroscope.Get_G_Axes((int32_t *)&GYR_Value);
 
 	/* Print Values Out */
-        printf("TEMP: %s, HUMIDITY: %s, PRESSURE: %s\n", 
+        printf("TEMP: %s, HUMIDITY: %s, PRESSURE (TEMP): %s (%s)\n", 
 	       printDouble(buffer1, TEMPERATURE_Value), 
 	       printDouble(buffer2, HUMIDITY_Value), 
-	       printDouble(buffer3, PRESSURE_Value));
+	       printDouble(buffer3, PRESSURE_Value),
+	       printDouble(buffer4, PRESSURE_Temp_Value));
         printf("X_MAG: %ld, Y_MAG: %ld, Z_MAG: %ld\n", 
 	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
         printf("X_ACC: %ld, Y_ACC: %ld, Z_ACC: %ld\n", 
