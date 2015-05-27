@@ -45,8 +45,8 @@
 #include "x_nucleo_ikc01a1_targets.h"
 #include "x_nucleo_ikc01a1_charger.h"
 #include "x_nucleo_ikc01a1_rtc.h"
+#include "stc3115/stc3115.h"
 #include "DevI2C.h"
-#include "Common/GasGauge.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_NUCLEO_IKC01A1 is intended to represent the battery management
@@ -78,7 +78,7 @@ class X_NUCLEO_IKC01A1
 
 	L6924D charger;
 	M41T62 rtc;
-	GasGauge &gg;
+	STC3115 &gg;
 
  private:
 	static X_NUCLEO_IKC01A1 *_instance;
