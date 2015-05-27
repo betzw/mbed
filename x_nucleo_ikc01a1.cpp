@@ -38,7 +38,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "x_nucleo_ikc01a1.h"
-#include "stc3115/stc3115.h"
 
 /* Static variables ----------------------------------------------------------*/
 X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::_instance = NULL;
