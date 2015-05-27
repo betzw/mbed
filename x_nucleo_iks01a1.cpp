@@ -38,10 +38,6 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "x_nucleo_iks01a1.h"
-#include "hts221/hts221_class.h"
-#include "lis3mdl/lis3mdl_class.h"
-#include "lps25h/lps25h_class.h"
-#include "lsm6ds0/lsm6ds0_class.h"
 
 /* Static variables ----------------------------------------------------------*/
 X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;

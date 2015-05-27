@@ -43,11 +43,11 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "x_nucleo_iks01a1_targets.h"
+#include "hts221/hts221_class.h"
+#include "lis3mdl/lis3mdl_class.h"
+#include "lps25h/lps25h_class.h"
+#include "lsm6ds0/lsm6ds0_class.h"
 #include "DevI2C.h"
-#include "Common/HumTemp.h"
-#include "Common/Magneto.h"
-#include "Common/Pressure.h"
-#include "Common/Imu6Axes.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class X_NUCLEO_IKS01A1 is intended to represent the MEMS Inertial & Environmental 
@@ -90,10 +90,10 @@ class X_NUCLEO_IKS01A1
 
 	DevI2C *dev_i2c;
 
-	HumTemp &ht_sensor;
-	Magneto &magnetometer;
-	Pressure &pressure_sensor;
-	Imu6Axes &gyroscope;
+	HTS221 &ht_sensor;
+	LIS3MDL &magnetometer;
+	LPS25H &pressure_sensor;
+	LSM6DS0 &gyroscope;
 
  private:
 	static X_NUCLEO_IKS01A1 *_instance;
