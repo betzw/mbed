@@ -42,7 +42,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "imu_6axes.h"
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for Imu6Axes components
@@ -50,12 +49,12 @@
 class Imu6Axes
 {
  public:
-	virtual IMU_6AXES_StatusTypeDef Init(IMU_6AXES_InitTypeDef*) = 0;
-	virtual IMU_6AXES_StatusTypeDef Read_XG_ID(uint8_t*) = 0;
-	virtual IMU_6AXES_StatusTypeDef Get_X_Axes(int32_t*) = 0;
-	virtual IMU_6AXES_StatusTypeDef Get_G_Axes(int32_t*) = 0;
-	virtual IMU_6AXES_StatusTypeDef Get_X_Sensitivity(float*) = 0;
-	virtual IMU_6AXES_StatusTypeDef Get_G_Sensitivity(float*) = 0;
+	virtual int Init(void*) = 0;
+	virtual int Read_XG_ID(uint8_t*) = 0;
+	virtual int Get_X_Axes(int32_t*) = 0;
+	virtual int Get_G_Axes(int32_t*) = 0;
+	virtual int Get_X_Sensitivity(float*) = 0;
+	virtual int Get_G_Sensitivity(float*) = 0;
 
  protected:
 	Imu6Axes(void) {};

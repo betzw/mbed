@@ -56,15 +56,15 @@ class LIS3MDL : public Magneto {
 	}
 	
 	/*** Interface Methods ***/
-	virtual MAGNETO_StatusTypeDef Init(MAGNETO_InitTypeDef *init_struct) {
-		return LIS3MDL_Init(init_struct);
+	virtual int Init(void *init_struct) {
+		return LIS3MDL_Init((MAGNETO_InitTypeDef*)init_struct);
 	}
 
-	virtual MAGNETO_StatusTypeDef Read_M_ID(uint8_t *m_id) {
+	virtual int Read_M_ID(uint8_t *m_id) {
 		return LIS3MDL_Read_M_ID(m_id);
 	}
 
-	virtual MAGNETO_StatusTypeDef Get_M_Axes(int32_t *pData) {
+	virtual int Get_M_Axes(int32_t *pData) {
 		return LIS3MDL_M_GetAxes(pData);
 	}
 

@@ -57,19 +57,19 @@ class LPS25H : public Pressure {
 	}
 	
 	/*** Interface Methods ***/
-	virtual PRESSURE_StatusTypeDef Init(PRESSURE_InitTypeDef *init_struct) {
-		return LPS25H_Init(init_struct);
+	virtual int Init(void *init_struct) {
+		return LPS25H_Init((PRESSURE_InitTypeDef*)init_struct);
 	}
 
-	virtual PRESSURE_StatusTypeDef PowerOff(void) {
+	virtual int PowerOff(void) {
 		return LPS25H_PowerOff();
 	}
 
-	virtual PRESSURE_StatusTypeDef ReadID(uint8_t *p_id) {
+	virtual int ReadID(uint8_t *p_id) {
 		return LPS25H_ReadID(p_id);
 	}
 
-	virtual PRESSURE_StatusTypeDef Reset(void) {
+	virtual int Reset(void) {
 		return LPS25H_RebootCmd();
 	}
 
@@ -79,11 +79,11 @@ class LPS25H : public Pressure {
 	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
 	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
     
-	virtual PRESSURE_StatusTypeDef GetPressure(float *pfData) {
+	virtual int GetPressure(float *pfData) {
 		return LPS25H_GetPressure(pfData);
 	}
 
-	virtual PRESSURE_StatusTypeDef GetTemperature(float *pfData) {
+	virtual int GetTemperature(float *pfData) {
 		return LPS25H_GetTemperature(pfData);
 	}
 
