@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    Pressure.h
+ * @file    HumiditySensor.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a pressure sensor
+ *          the interfaces of a humidity sensor
  ******************************************************************************
  * @attention
  *
@@ -37,16 +37,16 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __PRESSURE_CLASS_H
-#define __PRESSURE_CLASS_H
+#ifndef __HUMIDITY_SENSOR_CLASS_H
+#define __HUMIDITY_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for Pressure components
+/** An abstract class for Humidity sensors
  */
-class Pressure
+class HumiditySensor
 {
  public:
 	virtual int Init(void*) = 0;
@@ -61,14 +61,12 @@ class Pressure
 	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
 	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
-	virtual int GetPressure(float*) = 0;
-	virtual int GetTemperature(float*) = 0;
-	virtual void SlaveAddrRemap(uint8_t) = 0;
+	virtual int GetHumidity(float*) = 0;
 
 	virtual void AttachIT(void (*fptr)(void)) = 0;
 
  protected:
-	Pressure(void) {};
+	HumiditySensor(void) {};
 };
 
-#endif /* __PRESSURE_CLASS_H */
+#endif /* __HUMIDITY_SENSOR_CLASS_H */

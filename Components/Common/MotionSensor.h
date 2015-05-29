@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    HumTemp.h
+ * @file    MotionSensor.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a humidity and temperature sensor
+ *          the interfaces of an accelerometer
  ******************************************************************************
  * @attention
  *
@@ -37,37 +37,26 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __HUM_TEMP_CLASS_H
-#define __HUM_TEMP_CLASS_H
+#ifndef __MOTION_SENSOR_CLASS_H
+#define __MOTION_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for HumTemp components
+/** An abstract class for an Accelerometer
  */
-class HumTemp
+class MotionSensor
 {
  public:
 	virtual int Init(void*) = 0;
-
-	virtual int PowerOFF(void) = 0;
 	virtual int ReadID(uint8_t*) = 0;
-	virtual int Reset(void) = 0;
 
-	virtual void ConfigIT(uint16_t) = 0;
-	virtual void EnableIT(uint8_t) = 0;
-	virtual void DisableIT(uint8_t) = 0;
-	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
-	virtual void ClearIT(uint16_t, uint16_t) = 0;
-
-	virtual int GetHumidity(float*) = 0;
-	virtual int GetTemperature(float*) = 0;
-
-	virtual void AttachIT(void (*fptr)(void)) = 0;
+	virtual int Get_X_Axes(int32_t*) = 0;
+	virtual int Get_X_Sensitivity(float*) = 0;
 
  protected:
-	HumTemp(void) {};
+	MotionSensor(void) {};
 };
 
-#endif /* __HUM_TEMP_CLASS_H */
+#endif /* __MOTION_SENSOR_CLASS_H */

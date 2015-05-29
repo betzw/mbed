@@ -41,18 +41,18 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/Magneto.h"
+#include "../Common/MagneticSensor.h"
 #include "lis3mdl.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a LIS3MDL sensor component
  */
-class LIS3MDL : public Magneto {
+class LIS3MDL : public MagneticSensor {
  public:
 	/** Constructor
 	 * @param i2c device I2C to be used for communication
 	 */
-        LIS3MDL(DevI2C &i2c) : Magneto(), dev_i2c(i2c) {
+        LIS3MDL(DevI2C &i2c) : MagneticSensor(), dev_i2c(i2c) {
 	}
 	
 	/*** Interface Methods ***/
@@ -60,7 +60,7 @@ class LIS3MDL : public Magneto {
 		return LIS3MDL_Init((MAGNETO_InitTypeDef*)init_struct);
 	}
 
-	virtual int Read_M_ID(uint8_t *m_id) {
+	virtual int ReadID(uint8_t *m_id) {
 		return LIS3MDL_Read_M_ID(m_id);
 	}
 

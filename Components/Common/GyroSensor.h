@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    Magneto.h
+ * @file    GyroSensor.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a magnetometer
+ *          the interfaces of a gyroscope
  ******************************************************************************
  * @attention
  *
@@ -37,24 +37,26 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __MAGNETO_CLASS_H
-#define __MAGNETO_CLASS_H
+#ifndef __GYRO_SENSOR_CLASS_H
+#define __GYRO_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for Magneto components
+/** An abstract class for a Gyroscope
  */
-class Magneto
+class GyroSensor
 {
  public:
 	virtual int Init(void*) = 0;
-	virtual int Read_M_ID(uint8_t*) = 0;
-	virtual int Get_M_Axes(int32_t*) = 0;
+	virtual int ReadID(uint8_t*) = 0;
+
+	virtual int Get_G_Axes(int32_t*) = 0;
+	virtual int Get_G_Sensitivity(float*) = 0;
 
  protected:
-	Magneto(void) {};
+	GyroSensor(void) {};
 };
 
-#endif /* __MAGNETO_CLASS_H */
+#endif /* __GYRO_SENSOR_CLASS_H */

@@ -41,18 +41,19 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/HumTemp.h"
+#include "../Common/HumiditySensor.h"
+#include "../Common/TempSensor.h"
 #include "hts221.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a HTS221 sensor component
  */
-class HTS221 : public HumTemp {
+class HTS221 : public HumiditySensor, public TempSensor {
  public:
 	/** Constructor
 	 * @param i2c device I2C to be used for communication
 	 */
-        HTS221(DevI2C &i2c) : HumTemp(), dev_i2c(i2c) {
+        HTS221(DevI2C &i2c) : HumiditySensor(), TempSensor(), dev_i2c(i2c) {
 		T0_degC = T1_degC = H0_rh = H1_rh = 0.0;
 		T0_out = T1_out = H0_T0_out = H1_T0_out = 0;
 	}
@@ -62,7 +63,7 @@ class HTS221 : public HumTemp {
 		return HTS221_Init((HUM_TEMP_InitTypeDef*)init_struct);
 	}
 
-	virtual int PowerOFF(void) {
+	virtual int PowerOff(void) {
 		return HTS221_Power_OFF();
 	}
 

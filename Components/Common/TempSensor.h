@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    Imu6Axes.h
+ * @file    TempSensor.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of a 6-axes accelerometer and gyroscope
+ *          the interfaces of a temperature sensor
  ******************************************************************************
  * @attention
  *
@@ -37,27 +37,36 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __IMU_6AXES_CLASS_H
-#define __IMU_6AXES_CLASS_H
+#ifndef __TEMP_SENSOR_CLASS_H
+#define __TEMP_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for Imu6Axes components
+/** An abstract class for Temperature sensors
  */
-class Imu6Axes
+class TempSensor
 {
  public:
 	virtual int Init(void*) = 0;
-	virtual int Read_XG_ID(uint8_t*) = 0;
-	virtual int Get_X_Axes(int32_t*) = 0;
-	virtual int Get_G_Axes(int32_t*) = 0;
-	virtual int Get_X_Sensitivity(float*) = 0;
-	virtual int Get_G_Sensitivity(float*) = 0;
+
+	virtual int PowerOff(void) = 0;
+	virtual int ReadID(uint8_t*) = 0;
+	virtual int Reset(void) = 0;
+
+	virtual void ConfigIT(uint16_t) = 0;
+	virtual void EnableIT(uint8_t) = 0;
+	virtual void DisableIT(uint8_t) = 0;
+	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
+	virtual void ClearIT(uint16_t, uint16_t) = 0;
+
+	virtual int GetTemperature(float*) = 0;
+
+	virtual void AttachIT(void (*fptr)(void)) = 0;
 
  protected:
-	Imu6Axes(void) {};
+	TempSensor(void) {};
 };
 
-#endif /* __IMU_6AXES_CLASS_H */
+#endif /* __TEMP_SENSOR_CLASS_H */
