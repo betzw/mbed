@@ -56,27 +56,27 @@ class LSM6DS0 : public Imu6Axes {
 	}
 	
 	/*** Interface Methods ***/
-	virtual IMU_6AXES_StatusTypeDef Init(IMU_6AXES_InitTypeDef *init_struct) {
-		return LSM6DS0_Init(init_struct);
+	virtual int Init(void *init_struct) {
+		return LSM6DS0_Init((IMU_6AXES_InitTypeDef*)init_struct);
 	}
 
-	virtual IMU_6AXES_StatusTypeDef Read_XG_ID(uint8_t *xg_id) {
+	virtual int Read_XG_ID(uint8_t *xg_id) {
 		return LSM6DS0_Read_XG_ID(xg_id);
 	}
 
-	virtual IMU_6AXES_StatusTypeDef Get_X_Axes(int32_t *pData) {
+	virtual int Get_X_Axes(int32_t *pData) {
 		return LSM6DS0_X_GetAxes(pData);
 	}
 
-	virtual IMU_6AXES_StatusTypeDef Get_G_Axes(int32_t *pData) {
+	virtual int Get_G_Axes(int32_t *pData) {
 		return LSM6DS0_G_GetAxes(pData);
 	}
 
-	virtual IMU_6AXES_StatusTypeDef Get_X_Sensitivity(float *pfData) {
+	virtual int Get_X_Sensitivity(float *pfData) {
 		return LSM6DS0_X_GetSensitivity(pfData);
 	}
 
-	virtual IMU_6AXES_StatusTypeDef Get_G_Sensitivity(float *pfData) {
+	virtual int Get_G_Sensitivity(float *pfData) {
 		return LSM6DS0_G_GetSensitivity(pfData);
 	}
 

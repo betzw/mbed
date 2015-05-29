@@ -42,7 +42,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "hum_temp.h"
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for HumTemp components
@@ -50,11 +49,11 @@
 class HumTemp
 {
  public:
-	virtual HUM_TEMP_StatusTypeDef Init(HUM_TEMP_InitTypeDef*) = 0;
+	virtual int Init(void*) = 0;
 
-	virtual HUM_TEMP_StatusTypeDef PowerOFF(void) = 0;
-	virtual HUM_TEMP_StatusTypeDef ReadID(uint8_t*) = 0;
-	virtual HUM_TEMP_StatusTypeDef Reset(void) = 0;
+	virtual int PowerOFF(void) = 0;
+	virtual int ReadID(uint8_t*) = 0;
+	virtual int Reset(void) = 0;
 
 	virtual void ConfigIT(uint16_t) = 0;
 	virtual void EnableIT(uint8_t) = 0;
@@ -62,8 +61,8 @@ class HumTemp
 	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
 	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
-	virtual HUM_TEMP_StatusTypeDef GetHumidity(float*) = 0;
-	virtual HUM_TEMP_StatusTypeDef GetTemperature(float*) = 0;
+	virtual int GetHumidity(float*) = 0;
+	virtual int GetTemperature(float*) = 0;
 
 	virtual void AttachIT(void (*fptr)(void)) = 0;
 

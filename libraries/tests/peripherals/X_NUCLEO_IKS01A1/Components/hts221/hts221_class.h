@@ -58,19 +58,19 @@ class HTS221 : public HumTemp {
 	}
 	
 	/*** Interface Methods ***/
-	virtual HUM_TEMP_StatusTypeDef Init(HUM_TEMP_InitTypeDef *init_struct) {
-		return HTS221_Init(init_struct);
+	virtual int Init(void *init_struct) {
+		return HTS221_Init((HUM_TEMP_InitTypeDef*)init_struct);
 	}
 
-	virtual HUM_TEMP_StatusTypeDef PowerOFF(void) {
+	virtual int PowerOFF(void) {
 		return HTS221_Power_OFF();
 	}
 
-	virtual HUM_TEMP_StatusTypeDef ReadID(uint8_t *ht_id) {
+	virtual int ReadID(uint8_t *ht_id) {
 		return HTS221_ReadID(ht_id);
 	}
 
-	virtual HUM_TEMP_StatusTypeDef Reset(void) {
+	virtual int Reset(void) {
 		return HTS221_RebootCmd();
 	}
 
@@ -80,11 +80,11 @@ class HTS221 : public HumTemp {
 	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
 	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
 
-	virtual HUM_TEMP_StatusTypeDef GetHumidity(float *pfData) {
+	virtual int GetHumidity(float *pfData) {
 		return HTS221_GetHumidity(pfData);
 	}
 
-	virtual HUM_TEMP_StatusTypeDef GetTemperature(float *pfData) {
+	virtual int GetTemperature(float *pfData) {
 		return HTS221_GetTemperature(pfData);
 	}
 

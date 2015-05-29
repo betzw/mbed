@@ -42,7 +42,6 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
-#include "pressure.h"
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for Pressure components
@@ -50,11 +49,11 @@
 class Pressure
 {
  public:
-	virtual PRESSURE_StatusTypeDef Init(PRESSURE_InitTypeDef*) = 0;
+	virtual int Init(void*) = 0;
 
-	virtual PRESSURE_StatusTypeDef PowerOff(void) = 0;
-	virtual PRESSURE_StatusTypeDef ReadID(uint8_t*) = 0;
-	virtual PRESSURE_StatusTypeDef Reset(void) = 0;
+	virtual int PowerOff(void) = 0;
+	virtual int ReadID(uint8_t*) = 0;
+	virtual int Reset(void) = 0;
 
 	virtual void ConfigIT(uint16_t) = 0;
 	virtual void EnableIT(uint8_t) = 0;
@@ -62,8 +61,8 @@ class Pressure
 	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
 	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
-	virtual PRESSURE_StatusTypeDef GetPressure(float*) = 0;
-	virtual PRESSURE_StatusTypeDef GetTemperature(float*) = 0;
+	virtual int GetPressure(float*) = 0;
+	virtual int GetTemperature(float*) = 0;
 	virtual void SlaveAddrRemap(uint8_t) = 0;
 
 	virtual void AttachIT(void (*fptr)(void)) = 0;
