@@ -41,18 +41,19 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/Imu6Axes.h"
+#include "../Common/GyroSensor.h"
+#include "../Common/MotionSensor.h"
 #include "lsm6ds0.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a LSM6DS0 sensor component
  */
-class LSM6DS0 : public Imu6Axes {
+class LSM6DS0 : public GyroSensor, public MotionSensor {
  public:
 	/** Constructor
 	 * @param i2c device I2C to be used for communication
 	 */
-        LSM6DS0(DevI2C &i2c) : Imu6Axes(), dev_i2c(i2c) {
+        LSM6DS0(DevI2C &i2c) : GyroSensor(), MotionSensor(), dev_i2c(i2c) {
 	}
 	
 	/*** Interface Methods ***/
@@ -60,7 +61,7 @@ class LSM6DS0 : public Imu6Axes {
 		return LSM6DS0_Init((IMU_6AXES_InitTypeDef*)init_struct);
 	}
 
-	virtual int Read_XG_ID(uint8_t *xg_id) {
+	virtual int ReadID(uint8_t *xg_id) {
 		return LSM6DS0_Read_XG_ID(xg_id);
 	}
 

@@ -41,18 +41,19 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/Pressure.h"
+#include "../Common/PressureSensor.h"
+#include "../Common/TempSensor.h"
 #include "lps25h.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a LPS25H sensor component
  */
-class LPS25H : public Pressure {
+class LPS25H : public PressureSensor, public TempSensor {
  public:
 	/** Constructor
 	 * @param i2c device I2C to be used for communication
 	 */
-        LPS25H(DevI2C &i2c) : Pressure(), dev_i2c(i2c) {
+        LPS25H(DevI2C &i2c) : PressureSensor(), TempSensor(), dev_i2c(i2c) {
 		LPS25H_SlaveAddress = LPS25H_ADDRESS_HIGH;
 	}
 	
@@ -87,11 +88,11 @@ class LPS25H : public Pressure {
 		return LPS25H_GetTemperature(pfData);
 	}
 
-	virtual void SlaveAddrRemap(uint8_t SA0_Bit_Status) {
+	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
+
+	void SlaveAddrRemap(uint8_t SA0_Bit_Status) {
 		LPS25H_SlaveAddrRemap(SA0_Bit_Status);
 	}
-
-	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
 
 protected:
 	/*** Methods ***/

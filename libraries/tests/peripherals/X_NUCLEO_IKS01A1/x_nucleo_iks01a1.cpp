@@ -132,7 +132,7 @@ bool X_NUCLEO_IKS01A1::Init_MAG(void) {
 			return false;
 		}
       
-	if(magnetometer.Read_M_ID(&m_id) != MAGNETO_OK)
+	if(magnetometer.ReadID(&m_id) != MAGNETO_OK)
 		{
 			return false;
 		}
@@ -205,7 +205,7 @@ bool X_NUCLEO_IKS01A1::Init_GYRO(void) {
 			return false; 
 		}
             
-	if(gyroscope.Read_XG_ID(&xg_id) != IMU_6AXES_OK)
+	if(gyroscope.ReadID(&xg_id) != IMU_6AXES_OK)
 		{
 			return false;
 		}
