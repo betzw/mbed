@@ -43,8 +43,8 @@
 
 /* Methods -------------------------------------------------------------------*/
 /* betzw - based on:
-           X-CUBE-MEMS1/trunk/Drivers/BSP/Components/lis3mdl/lis3mdl.c: revision #184,
-           X-CUBE-MEMS1/trunk: revision #293
+           X-CUBE-MEMS1/trunk/Drivers/BSP/Components/lis3mdl/lis3mdl.c: revision #400,
+           X-CUBE-MEMS1/trunk: revision #402
 */
 /**
  * @brief  Set LIS3MDL Initialization
@@ -53,68 +53,68 @@
  */
 MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_Init(MAGNETO_InitTypeDef *LIS3MDL_Init)
 {
-    uint8_t tmp1 = 0x00;
-
-    /* Configure the low level interface ---------------------------------------*/
-    if(LIS3MDL_IO_Init() != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    /****** Magnetic sensor *******/
-
-    if(LIS3MDL_IO_Read(&tmp1, LIS3MDL_M_CTRL_REG3_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    /* Conversion mode selection */
-    tmp1 &= ~(LIS3MDL_M_MD_MASK);
-    tmp1 |= LIS3MDL_Init->M_OperatingMode;
-
-    if(LIS3MDL_IO_Write(&tmp1, LIS3MDL_M_CTRL_REG3_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    if(LIS3MDL_IO_Read(&tmp1, LIS3MDL_M_CTRL_REG1_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    /* Output data rate selection */
-    tmp1 &= ~(LIS3MDL_M_DO_MASK);
-    tmp1 |= LIS3MDL_Init->M_OutputDataRate;
-
-    /* X and Y axes Operative mode selection */
-    tmp1 &= ~(LIS3MDL_M_OM_MASK);
-    tmp1 |= LIS3MDL_Init->M_XYOperativeMode;
-
-    if(LIS3MDL_IO_Write(&tmp1, LIS3MDL_M_CTRL_REG1_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    if(LIS3MDL_IO_Read(&tmp1, LIS3MDL_M_CTRL_REG2_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    /* Full scale selection */
-    tmp1 &= ~(LIS3MDL_M_FS_MASK);
-    tmp1 |= LIS3MDL_Init->M_FullScale;
-
-    if(LIS3MDL_IO_Write(&tmp1, LIS3MDL_M_CTRL_REG2_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-    
-    /* Configure interrupt lines */
-    LIS3MDL_IO_ITConfig();
-    
-    return MAGNETO_OK;
-
-    /******************************/
+  uint8_t tmp1 = 0x00;
+  
+  /* Configure the low level interface ---------------------------------------*/
+  if(LIS3MDL_IO_Init() != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  /****** Magnetic sensor *******/
+  
+  if(LIS3MDL_IO_Read(&tmp1, LIS3MDL_M_CTRL_REG3_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  /* Conversion mode selection */
+  tmp1 &= ~(LIS3MDL_M_MD_MASK);
+  tmp1 |= LIS3MDL_Init->M_OperatingMode;
+  
+  if(LIS3MDL_IO_Write(&tmp1, LIS3MDL_M_CTRL_REG3_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  if(LIS3MDL_IO_Read(&tmp1, LIS3MDL_M_CTRL_REG1_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  /* Output data rate selection */
+  tmp1 &= ~(LIS3MDL_M_DO_MASK);
+  tmp1 |= LIS3MDL_Init->M_OutputDataRate;
+  
+  /* X and Y axes Operative mode selection */
+  tmp1 &= ~(LIS3MDL_M_OM_MASK);
+  tmp1 |= LIS3MDL_Init->M_XYOperativeMode;
+  
+  if(LIS3MDL_IO_Write(&tmp1, LIS3MDL_M_CTRL_REG1_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  if(LIS3MDL_IO_Read(&tmp1, LIS3MDL_M_CTRL_REG2_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  /* Full scale selection */
+  tmp1 &= ~(LIS3MDL_M_FS_MASK);
+  tmp1 |= LIS3MDL_Init->M_FullScale;
+  
+  if(LIS3MDL_IO_Write(&tmp1, LIS3MDL_M_CTRL_REG2_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  /* Configure interrupt lines */
+  LIS3MDL_IO_ITConfig();
+  
+  return MAGNETO_OK;
+  
+  /******************************/
 }
 
 
@@ -125,12 +125,12 @@ MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_Init(MAGNETO_InitTypeDef *LIS3MDL_Init)
  */
 MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_Read_M_ID(uint8_t *m_id)
 {
-    if(!m_id)
-    { 
-      return MAGNETO_ERROR; 
-    }
-
-    return LIS3MDL_IO_Read(m_id, LIS3MDL_M_WHO_AM_I_ADDR, 1);
+  if(!m_id)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  return LIS3MDL_IO_Read(m_id, LIS3MDL_M_WHO_AM_I_ADDR, 1);
 }
 
 
@@ -141,30 +141,33 @@ MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_Read_M_ID(uint8_t *m_id)
  */
 MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_M_GetAxesRaw(int16_t *pData)
 {
-    uint8_t tempReg[2] = {0,0};
-
-    if(LIS3MDL_IO_Read(&tempReg[0], (LIS3MDL_M_OUT_X_L_M | LIS3MDL_I2C_MULTIPLEBYTE_CMD), 2) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    pData[0] = ((((int16_t)tempReg[1]) << 8)+(int16_t)tempReg[0]);
-
-    if(LIS3MDL_IO_Read(&tempReg[0], (LIS3MDL_M_OUT_Y_L_M | LIS3MDL_I2C_MULTIPLEBYTE_CMD), 2) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    pData[1] = ((((int16_t)tempReg[1]) << 8)+(int16_t)tempReg[0]);
-
-    if(LIS3MDL_IO_Read(&tempReg[0], (LIS3MDL_M_OUT_Z_L_M | LIS3MDL_I2C_MULTIPLEBYTE_CMD), 2) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    pData[2] = ((((int16_t)tempReg[1]) << 8)+(int16_t)tempReg[0]);
-    
-    return MAGNETO_OK;
+  uint8_t tempReg[2] = {0, 0};
+  
+  if(LIS3MDL_IO_Read(&tempReg[0], (LIS3MDL_M_OUT_X_L_M | LIS3MDL_I2C_MULTIPLEBYTE_CMD),
+                     2) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  pData[0] = ((((int16_t)tempReg[1]) << 8) + (int16_t)tempReg[0]);
+  
+  if(LIS3MDL_IO_Read(&tempReg[0], (LIS3MDL_M_OUT_Y_L_M | LIS3MDL_I2C_MULTIPLEBYTE_CMD),
+                     2) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  pData[1] = ((((int16_t)tempReg[1]) << 8) + (int16_t)tempReg[0]);
+  
+  if(LIS3MDL_IO_Read(&tempReg[0], (LIS3MDL_M_OUT_Z_L_M | LIS3MDL_I2C_MULTIPLEBYTE_CMD),
+                     2) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  pData[2] = ((((int16_t)tempReg[1]) << 8) + (int16_t)tempReg[0]);
+  
+  return MAGNETO_OK;
 }
 
 
@@ -175,41 +178,43 @@ MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_M_GetAxesRaw(int16_t *pData)
  */
 MAGNETO_StatusTypeDef LIS3MDL::LIS3MDL_M_GetAxes(int32_t *pData)
 {
-    uint8_t tempReg = 0x00;
-    int16_t pDataRaw[3];
-    float sensitivity = 0;
-
-    if(LIS3MDL_M_GetAxesRaw(pDataRaw) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    if(LIS3MDL_IO_Read(&tempReg, LIS3MDL_M_CTRL_REG2_M, 1) != MAGNETO_OK)
-    {
-      return MAGNETO_ERROR;
-    }
-
-    tempReg &= LIS3MDL_M_FS_MASK;
-
-    switch(tempReg)
-    {
-      case LIS3MDL_M_FS_4:
-        sensitivity = 0.14;
-        break;
-      case LIS3MDL_M_FS_8:
-        sensitivity = 0.29;
-        break;
-      case LIS3MDL_M_FS_12:
-        sensitivity = 0.43;
-        break;
-      case LIS3MDL_M_FS_16:
-        sensitivity = 0.58;
-        break;
-    }
-
-    pData[0] = (int32_t)(pDataRaw[0] * sensitivity);
-    pData[1] = (int32_t)(pDataRaw[1] * sensitivity);
-    pData[2] = (int32_t)(pDataRaw[2] * sensitivity);
-    
-    return MAGNETO_OK;
+  uint8_t tempReg = 0x00;
+  int16_t pDataRaw[3];
+  float sensitivity = 0;
+  
+  if(LIS3MDL_M_GetAxesRaw(pDataRaw) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  if(LIS3MDL_IO_Read(&tempReg, LIS3MDL_M_CTRL_REG2_M, 1) != MAGNETO_OK)
+  {
+    return MAGNETO_ERROR;
+  }
+  
+  tempReg &= LIS3MDL_M_FS_MASK;
+  
+  switch(tempReg)
+  {
+    case LIS3MDL_M_FS_4:
+      sensitivity = 0.14;
+      break;
+    case LIS3MDL_M_FS_8:
+      sensitivity = 0.29;
+      break;
+    case LIS3MDL_M_FS_12:
+      sensitivity = 0.43;
+      break;
+    case LIS3MDL_M_FS_16:
+      sensitivity = 0.58;
+      break;
+  }
+  
+  pData[0] = (int32_t)(pDataRaw[0] * sensitivity);
+  pData[1] = (int32_t)(pDataRaw[1] * sensitivity);
+  pData[2] = (int32_t)(pDataRaw[2] * sensitivity);
+  
+  return MAGNETO_OK;
 }
+
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

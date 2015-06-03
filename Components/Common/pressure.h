@@ -4,7 +4,7 @@
  * @author  MEMS Application Team
  * @version V1.2.0
  * @date    28-January-2015
- * @brief   This header file contains the functions prototypes for the 
+ * @brief   This header file contains the functions prototypes for the
  *          pressure driver.
  ******************************************************************************
  * @attention
@@ -45,8 +45,8 @@
 extern "C" {
 #endif
 
-    /* Includes ------------------------------------------------------------------*/
-#include <stdint.h> 
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
 
 /** @addtogroup BSP
   * @{
@@ -55,7 +55,7 @@ extern "C" {
 /** @addtogroup Components
   * @{
   */
-    
+
 /** @addtogroup PRESSURE
   * @{
   */
@@ -69,65 +69,69 @@ extern "C" {
  */
 typedef struct
 {
-    uint8_t OutputDataRate;
-    uint8_t PressureResolution;
-    uint8_t TemperatureResolution;
-    uint8_t DiffEnable;
-    uint8_t BlockDataUpdate;
-    uint8_t SPIMode;
+  uint8_t OutputDataRate;
+  uint8_t PressureResolution;
+  uint8_t TemperatureResolution;
+  uint8_t DiffEnable;
+  uint8_t BlockDataUpdate;
+  uint8_t SPIMode;
 } PRESSURE_InitTypeDef;
 
 /**
  * @brief  PRESSURE status enumerator definition
  */
-typedef enum {
-    PRESSURE_OK = 0,
-    PRESSURE_ERROR = 1,
-    PRESSURE_TIMEOUT = 2,
-    PRESSURE_NOT_IMPLEMENTED = 3
+typedef enum
+{
+  PRESSURE_OK = 0,
+  PRESSURE_ERROR = 1,
+  PRESSURE_TIMEOUT = 2,
+  PRESSURE_NOT_IMPLEMENTED = 3
 } PRESSURE_StatusTypeDef;
 
 /**
  * @brief  PRESSURE component id enumerator definition
  */
-typedef enum {
-    PRESSURE_NONE_COMPONENT = 0,
-    PRESSURE_LPS25H_COMPONENT = 1,
-    PRESSURE_LPS25HB_DIL24_COMPONENT = 2
+typedef enum
+{
+  PRESSURE_NONE_COMPONENT = 0,
+  PRESSURE_LPS25H_COMPONENT = 1,
+  PRESSURE_LPS25HB_DIL24_COMPONENT = 2
 } PRESSURE_ComponentTypeDef;
 
 /**
  * @brief  PRESSURE driver extended structure definition
  */
-typedef struct {
-    PRESSURE_ComponentTypeDef id; /* This id must be unique for each component belonging to this class that wants to extend common class */
-    void *pData; /* This pointer is specific for each component */
-}PRESSURE_DrvExtTypeDef;
+typedef struct
+{
+  PRESSURE_ComponentTypeDef
+  id; /* This id must be unique for each component belonging to this class that wants to extend common class */
+  void *pData; /* This pointer is specific for each component */
+} PRESSURE_DrvExtTypeDef;
 
 /**
  * @brief  PRESSURE driver structure definition
  */
 typedef struct
 {
-    PRESSURE_StatusTypeDef       (*Init)(PRESSURE_InitTypeDef *);
-    PRESSURE_StatusTypeDef       (*PowerOff)(void);
-    PRESSURE_StatusTypeDef       (*ReadID)(uint8_t *);
-    PRESSURE_StatusTypeDef       (*Reset)(void);
-    void                         (*ConfigIT)(uint16_t);
-    void                         (*EnableIT)(uint8_t);
-    void                         (*DisableIT)(uint8_t);
-    uint8_t                      (*ITStatus)(uint16_t, uint16_t);
-    void                         (*ClearIT)(uint16_t, uint16_t);
-    PRESSURE_StatusTypeDef       (*GetPressure)(float *);
-    PRESSURE_StatusTypeDef       (*GetTemperature)(float *);
-    void                         (*SlaveAddrRemap)(uint8_t);
-    PRESSURE_DrvExtTypeDef       *extData;
-}PRESSURE_DrvTypeDef;
+  PRESSURE_StatusTypeDef       (*Init)(PRESSURE_InitTypeDef *);
+  PRESSURE_StatusTypeDef       (*PowerOff)(void);
+  PRESSURE_StatusTypeDef       (*ReadID)(uint8_t *);
+  PRESSURE_StatusTypeDef       (*Reset)(void);
+  void                         (*ConfigIT)(uint16_t);
+  void                         (*EnableIT)(uint8_t);
+  void                         (*DisableIT)(uint8_t);
+  uint8_t                      (*ITStatus)(uint16_t, uint16_t);
+  void                         (*ClearIT)(uint16_t, uint16_t);
+  PRESSURE_StatusTypeDef       (*GetPressure)(float *);
+  PRESSURE_StatusTypeDef       (*GetTemperature)(float *);
+  void                         (*SlaveAddrRemap)(uint8_t);
+  PRESSURE_DrvExtTypeDef       *extData;
+} PRESSURE_DrvTypeDef;
 
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
@@ -146,4 +150,4 @@ typedef struct
 
 #endif /* __PRESSURE_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/ 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

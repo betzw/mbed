@@ -69,16 +69,56 @@ class LSM6DS0 : public GyroSensor, public MotionSensor {
 		return LSM6DS0_X_GetAxes(pData);
 	}
 
+	virtual int Get_X_AxesRaw(int16_t *pData) {
+		return LSM6DS0_X_GetAxesRaw(pData);
+	}
+
 	virtual int Get_G_Axes(int32_t *pData) {
 		return LSM6DS0_G_GetAxes(pData);
+	}
+
+	virtual int Get_G_AxesRaw(int16_t *pData) {
+		return LSM6DS0_G_GetAxesRaw(pData);
+	}
+
+	virtual int Get_X_ODR(float *odr) {
+		return LSM6DS0_X_Get_ODR(odr);
+	}
+
+	virtual int Set_X_ODR(float odr) {
+		return LSM6DS0_X_Set_ODR(odr);
 	}
 
 	virtual int Get_X_Sensitivity(float *pfData) {
 		return LSM6DS0_X_GetSensitivity(pfData);
 	}
 
+	virtual int Get_X_FS(float *fullScale) {
+		return LSM6DS0_X_Get_FS(fullScale);
+	}
+
+	virtual int Set_X_FS(float fullScale) {
+		return LSM6DS0_X_Set_FS(fullScale);
+	}
+
+	virtual int Get_G_ODR(float *odr) {
+		return LSM6DS0_G_Get_ODR(odr);
+	}
+
+	virtual int Set_G_ODR(float odr) {
+		return LSM6DS0_G_Set_ODR(odr);
+	}
+
 	virtual int Get_G_Sensitivity(float *pfData) {
 		return LSM6DS0_G_GetSensitivity(pfData);
+	}
+
+	virtual int Get_G_FS(float *fullScale) {
+		return LSM6DS0_G_Get_FS(fullScale);
+	}
+
+	virtual int Set_G_FS(float fullScale) {
+		return LSM6DS0_G_Set_FS(fullScale);
 	}
 
  protected:
@@ -86,12 +126,22 @@ class LSM6DS0 : public GyroSensor, public MotionSensor {
 	IMU_6AXES_StatusTypeDef LSM6DS0_Init(IMU_6AXES_InitTypeDef *LSM6DS0_Init);
 	IMU_6AXES_StatusTypeDef LSM6DS0_Read_XG_ID(uint8_t *xg_id);
 	IMU_6AXES_StatusTypeDef LSM6DS0_X_GetAxes(int32_t *pData);
-	IMU_6AXES_StatusTypeDef LSM6DS0_G_GetAxes(int32_t *pData);
-	IMU_6AXES_StatusTypeDef LSM6DS0_X_GetSensitivity( float *pfData );
-	IMU_6AXES_StatusTypeDef LSM6DS0_G_GetSensitivity( float *pfData );
-	
 	IMU_6AXES_StatusTypeDef LSM6DS0_X_GetAxesRaw(int16_t *pData);
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_GetAxes(int32_t *pData);
 	IMU_6AXES_StatusTypeDef LSM6DS0_G_GetAxesRaw(int16_t *pData);
+	IMU_6AXES_StatusTypeDef LSM6DS0_X_Get_ODR( float *odr );
+	IMU_6AXES_StatusTypeDef LSM6DS0_X_Set_ODR( float odr );
+	IMU_6AXES_StatusTypeDef LSM6DS0_X_GetSensitivity( float *pfData );
+	IMU_6AXES_StatusTypeDef LSM6DS0_X_Get_FS( float *fullScale );
+	IMU_6AXES_StatusTypeDef LSM6DS0_X_Set_FS( float fullScale );
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_Get_ODR( float *odr );
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_Set_ODR( float odr );
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_GetSensitivity( float *pfData );
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_Get_FS( float *fullScale );
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_Set_FS( float fullScale );
+
+	IMU_6AXES_StatusTypeDef LSM6DS0_X_Set_Axes_Status(uint8_t enableX, uint8_t enableY, uint8_t enableZ);
+	IMU_6AXES_StatusTypeDef LSM6DS0_G_Set_Axes_Status(uint8_t enableX, uint8_t enableY, uint8_t enableZ);
 
 	/**
 	 * @brief  Configures LSM6DS0 interrupt lines for NUCLEO boards

@@ -188,17 +188,17 @@ bool X_NUCLEO_IKS01A1::Init_GYRO(void) {
 	uint8_t xg_id = 0;
 
 	/* Configure sensor */
-	InitStructure.G_FullScale       = LSM6DS0_G_FS_2000;
-	InitStructure.G_OutputDataRate  = LSM6DS0_G_ODR_119HZ;
-	InitStructure.G_X_Axis          = LSM6DS0_G_XEN_ENABLE;
-	InitStructure.G_Y_Axis          = LSM6DS0_G_YEN_ENABLE;
-	InitStructure.G_Z_Axis          = LSM6DS0_G_ZEN_ENABLE;
+	InitStructure.G_FullScale       = 2000.0f; /* 2000DPS */
+	InitStructure.G_OutputDataRate  = 119.0f;  /* 119HZ */
+	InitStructure.G_X_Axis          = 1;       /* Enable */
+	InitStructure.G_Y_Axis          = 1;       /* Enable */
+	InitStructure.G_Z_Axis          = 1;       /* Enable */
 
-	InitStructure.X_FullScale       = LSM6DS0_XL_FS_2G;
-	InitStructure.X_OutputDataRate  = LSM6DS0_XL_ODR_119HZ;
-	InitStructure.X_X_Axis          = LSM6DS0_XL_XEN_ENABLE;
-	InitStructure.X_Y_Axis          = LSM6DS0_XL_YEN_ENABLE;
-	InitStructure.X_Z_Axis          = LSM6DS0_XL_ZEN_ENABLE;
+	InitStructure.X_FullScale       = 2.0f;    /* 2G */
+	InitStructure.X_OutputDataRate  = 119.0f;  /* 119HZ */
+	InitStructure.X_X_Axis          = 1;       /* Enable */
+	InitStructure.X_Y_Axis          = 1;       /* Enable */
+	InitStructure.X_Z_Axis          = 1;       /* Enable */
               
 	if(gyroscope.Init(&InitStructure) != IMU_6AXES_OK)
 		{

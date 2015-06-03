@@ -53,6 +53,7 @@ class MagneticSensor
 	virtual int ReadID(uint8_t*) = 0;
 
 	virtual int Get_M_Axes(int32_t*) = 0;
+	virtual int Get_M_AxesRaw(int16_t *) = 0;
 
  protected:
 	MagneticSensor(void) {};

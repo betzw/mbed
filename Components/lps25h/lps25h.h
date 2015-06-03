@@ -3,8 +3,8 @@
  * @file    lps25h.h
  * @author  MEMS Application Team
  * @version V1.2.0
- * @date    28-January-2015
- * @brief   This file contains definitions for the lps25h.c 
+ * @date    11-February-2015
+ * @brief   This file contains definitions for the lps25h.c
  *          firmware driver.
  ******************************************************************************
  * @attention
@@ -45,7 +45,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "../Common/pressure.h"
+#include "pressure.h"
 
 /** @addtogroup BSP
  * @{
@@ -53,8 +53,8 @@ extern "C" {
 
 /** @addtogroup Components
  * @{
- */ 
- 
+ */
+
 /** @addtogroup LPS25H
  * @{
  */
@@ -63,10 +63,10 @@ extern "C" {
  * @{
  */
 #ifndef NULL
-  #define NULL      (void *) 0
+#define NULL      (void *) 0
 #endif
-   
-   
+
+
 /******************************************************************************/
 /*************************** START REGISTER MAPPING  **************************/
 /******************************************************************************/
@@ -402,9 +402,9 @@ extern "C" {
 
 /**
  * @brief Multiple Byte. Mask for enabling multiple byte read/write command.
- */   
-#define LPS25H_I2C_MULTIPLEBYTE_CMD                      ((uint8_t)0x80)  
-  
+ */
+#define LPS25H_I2C_MULTIPLEBYTE_CMD                      ((uint8_t)0x80)
+
 /**
  * @brief Device Address
  */
@@ -524,15 +524,17 @@ extern "C" {
  */
 /* Pressure sensor IO functions */
 extern PRESSURE_StatusTypeDef LPS25H_IO_Init(void);
-extern PRESSURE_StatusTypeDef LPS25H_IO_Write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToWrite);
-extern PRESSURE_StatusTypeDef LPS25H_IO_Read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
+extern PRESSURE_StatusTypeDef LPS25H_IO_Write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr,
+    uint16_t NumByteToWrite);
+extern PRESSURE_StatusTypeDef LPS25H_IO_Read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr,
+    uint16_t NumByteToRead);
 extern void LPS25H_IO_ITConfig( void );
 
 /**
  * @}
  */
 
-/* ------------------------------------------------------- */ 
+/* ------------------------------------------------------- */
 /* Here you should declare the internal struct of          */
 /* extended features of LPS25H. See the example of         */
 /* LSM6DS3 in lsm6ds3.h                                    */
@@ -556,7 +558,7 @@ extern PRESSURE_DrvExtTypeDef LPS25HDrv_ext;
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
