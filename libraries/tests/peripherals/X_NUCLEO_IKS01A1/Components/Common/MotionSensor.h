@@ -52,8 +52,16 @@ class MotionSensor
 	virtual int Init(void*) = 0;
 	virtual int ReadID(uint8_t*) = 0;
 
-	virtual int Get_X_Axes(int32_t*) = 0;
-	virtual int Get_X_Sensitivity(float*) = 0;
+	virtual int Get_X_Axes(int32_t *) = 0;
+	virtual int Get_X_AxesRaw(int16_t *) = 0;
+
+	virtual int Get_X_ODR(float *) = 0;
+	virtual int Set_X_ODR(float) = 0;
+
+	virtual int Get_X_Sensitivity(float *) = 0;
+
+	virtual int Get_X_FS(float *) = 0;
+	virtual int Set_X_FS(float) = 0;
 
  protected:
 	MotionSensor(void) {};

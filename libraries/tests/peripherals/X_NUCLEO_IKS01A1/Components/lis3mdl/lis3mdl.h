@@ -2,9 +2,9 @@
  ******************************************************************************
  * @file    lis3mdl.h
  * @author  MEMS Application Team
- * @version V1.2.0
- * @date    28-January-2015
- * @brief   This file contains definitions for the lis3mdl.c 
+ * @version V1.3.0
+ * @date    28-May-2015
+ * @brief   This file contains definitions for the lis3mdl.c
  *          firmware driver.
  ******************************************************************************
  * @attention
@@ -45,7 +45,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "../Common/magneto.h"
+#include "magneto.h"
 
 /** @addtogroup BSP
  * @{
@@ -53,8 +53,8 @@ extern "C" {
 
 /** @addtogroup Components
  * @{
- */ 
- 
+ */
+
 /** @addtogroup LIS3MDL
  * @{
  */
@@ -63,7 +63,7 @@ extern "C" {
  * @{
  */
 #ifndef NULL
-  #define NULL      (void *) 0
+#define NULL      (void *) 0
 #endif
 
 
@@ -246,7 +246,7 @@ extern "C" {
 
 /**
  * @brief Multiple Byte. Mask for enabling multiple byte read/write command.
- */   
+ */
 #define LIS3MDL_I2C_MULTIPLEBYTE_CMD                      ((uint8_t)0x80)
 
 /**
@@ -254,7 +254,7 @@ extern "C" {
  */
 
 #define LIS3MDL_M_MEMS_ADDRESS                              0x3C    // SAD[1] = 1
-  
+
 /**
  * @brief Device Identifier. Default value of the WHO_AM_I register.
  */
@@ -400,22 +400,24 @@ extern "C" {
 /**
   * @}
   */
-    
+
 /** @defgroup LIS3MDL_Imported_Functions LIS3MDL_Imported_Functions
  * @{
  */
 
 /* Magneto sensor IO functions */
 extern MAGNETO_StatusTypeDef LIS3MDL_IO_Init(void);
-extern MAGNETO_StatusTypeDef LIS3MDL_IO_Write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToWrite);
-extern MAGNETO_StatusTypeDef LIS3MDL_IO_Read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
+extern MAGNETO_StatusTypeDef LIS3MDL_IO_Write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr,
+    uint16_t NumByteToWrite);
+extern MAGNETO_StatusTypeDef LIS3MDL_IO_Read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr,
+    uint16_t NumByteToRead);
 extern void LIS3MDL_IO_ITConfig( void );
 
 /**
  * @}
  */
 
-/* ------------------------------------------------------- */ 
+/* ------------------------------------------------------- */
 /* Here you should declare the internal struct of          */
 /* extended features of LSM6DS0. See the example of        */
 /* LSM6DS3 in lsm6ds3.h                                    */
@@ -439,7 +441,7 @@ extern MAGNETO_DrvExtTypeDef LIS3MDLDrv_ext;
 /**
  * @}
  */
- 
+
 /**
  * @}
  */

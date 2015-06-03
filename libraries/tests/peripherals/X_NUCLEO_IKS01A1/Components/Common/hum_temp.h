@@ -4,7 +4,7 @@
   * @author  MEMS Application Team
   * @version V1.2.0
   * @date    28-January-2015
-  * @brief   This header file contains the functions prototypes for the 
+  * @brief   This header file contains the functions prototypes for the
   *          humidity and temperature driver.
   ******************************************************************************
   * @attention
@@ -35,18 +35,18 @@
   *
   ******************************************************************************
   */
-  
+
 
 /* Define to prevent recursive inclusion -------------------------------------*/
 #ifndef __HUM_TEMP_H
 #define __HUM_TEMP_H
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h> 
+#include <stdint.h>
 
 /** @addtogroup BSP
   * @{
@@ -55,7 +55,7 @@
 /** @addtogroup Components
   * @{
   */
-    
+
 /** @addtogroup HUM_TEMP
   * @{
   */
@@ -64,9 +64,9 @@
   * @{
   */
 
-/** 
-  * @brief  Humidity and temperature init structure definition  
-  */ 
+/**
+  * @brief  Humidity and temperature init structure definition
+  */
 typedef struct
 {
   uint8_t Power_Mode;                         /* Power-down/Sleep/Normal Mode */
@@ -75,39 +75,43 @@ typedef struct
   uint8_t Humidity_Resolutin;                 /* Humidity Resolution */
   uint8_t Temperature_Resolution;             /* Temperature Resolution */
   uint8_t OutputDataRate;                     /* One-shot / 1Hz / 7 Hz / 12.5 Hz */
-}HUM_TEMP_InitTypeDef;
+} HUM_TEMP_InitTypeDef;
 
-/** 
-  * @brief  Humidity and temperature status enumerator definition  
-  */ 
-typedef enum {
-    HUM_TEMP_OK = 0,
-    HUM_TEMP_ERROR = 1,
-    HUM_TEMP_TIMEOUT = 2,
-    HUM_TEMP_NOT_IMPLEMENTED = 3
+/**
+  * @brief  Humidity and temperature status enumerator definition
+  */
+typedef enum
+{
+  HUM_TEMP_OK = 0,
+  HUM_TEMP_ERROR = 1,
+  HUM_TEMP_TIMEOUT = 2,
+  HUM_TEMP_NOT_IMPLEMENTED = 3
 } HUM_TEMP_StatusTypeDef;
 
 /**
  * @brief  Humidity and temperature component id enumerator definition
  */
-typedef enum {
-    HUM_TEMP_NONE_COMPONENT = 0,
-    HUM_TEMP_HTS221_COMPONENT = 1
+typedef enum
+{
+  HUM_TEMP_NONE_COMPONENT = 0,
+  HUM_TEMP_HTS221_COMPONENT = 1
 } HUM_TEMP_ComponentTypeDef;
 
 /**
  * @brief  Humidity and temperature driver extended structure definition
  */
-typedef struct {
-    HUM_TEMP_ComponentTypeDef id; /* This id must be unique for each component belonging to this class that wants to extend common class */
-    void *pData; /* This pointer is specific for each component */
-}HUM_TEMP_DrvExtTypeDef;
-
-/** 
-  * @brief  Humidity and temperature driver structure definition  
-  */ 
 typedef struct
-{  
+{
+  HUM_TEMP_ComponentTypeDef
+  id; /* This id must be unique for each component belonging to this class that wants to extend common class */
+  void *pData; /* This pointer is specific for each component */
+} HUM_TEMP_DrvExtTypeDef;
+
+/**
+  * @brief  Humidity and temperature driver structure definition
+  */
+typedef struct
+{
   HUM_TEMP_StatusTypeDef       (*Init)(HUM_TEMP_InitTypeDef *);
   HUM_TEMP_StatusTypeDef       (*PowerOFF)(void);
   HUM_TEMP_StatusTypeDef       (*ReadID)(uint8_t *);
@@ -120,7 +124,7 @@ typedef struct
   HUM_TEMP_StatusTypeDef       (*GetHumidity)(float *);
   HUM_TEMP_StatusTypeDef       (*GetTemperature)(float *);
   HUM_TEMP_DrvExtTypeDef       *extData;
-}HUM_TEMP_DrvTypeDef;
+} HUM_TEMP_DrvTypeDef;
 
 /**
   * @}
@@ -144,4 +148,4 @@ typedef struct
 
 #endif /* __HUM_TEMP_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/ 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

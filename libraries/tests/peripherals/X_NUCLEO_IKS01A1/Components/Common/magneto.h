@@ -4,7 +4,7 @@
  * @author  MEMS Application Team
  * @version V1.2.0
  * @date    28-January-2015
- * @brief   This header file contains the functions prototypes for the 
+ * @brief   This header file contains the functions prototypes for the
  *          magneto driver.
  ******************************************************************************
  * @attention
@@ -46,7 +46,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h> 
+#include <stdint.h>
 
 /** @addtogroup BSP
   * @{
@@ -55,7 +55,7 @@ extern "C" {
 /** @addtogroup Components
   * @{
   */
-    
+
 /** @addtogroup MAGNETO
   * @{
   */
@@ -69,53 +69,58 @@ extern "C" {
 */
 typedef struct
 {
-    uint8_t M_OutputDataRate;
-    uint8_t M_OperatingMode;
-    uint8_t M_FullScale;
-    uint8_t M_XYOperativeMode;
-}MAGNETO_InitTypeDef;
+  uint8_t M_OutputDataRate;
+  uint8_t M_OperatingMode;
+  uint8_t M_FullScale;
+  uint8_t M_XYOperativeMode;
+} MAGNETO_InitTypeDef;
 
 /**
 * @brief  MAGNETO status enumerator definition
 */
-typedef enum {
-    MAGNETO_OK = 0,
-    MAGNETO_ERROR = 1,
-    MAGNETO_TIMEOUT = 2,
-    MAGNETO_NOT_IMPLEMENTED = 3
+typedef enum
+{
+  MAGNETO_OK = 0,
+  MAGNETO_ERROR = 1,
+  MAGNETO_TIMEOUT = 2,
+  MAGNETO_NOT_IMPLEMENTED = 3
 } MAGNETO_StatusTypeDef;
 
 /**
  * @brief  MAGNETO component id enumerator definition
  */
-typedef enum {
-    MAGNETO_NONE_COMPONENT = 0,
-    MAGNETO_LIS3MDL_COMPONENT = 1
+typedef enum
+{
+  MAGNETO_NONE_COMPONENT = 0,
+  MAGNETO_LIS3MDL_COMPONENT = 1
 } MAGNETO_ComponentTypeDef;
 
 /**
  * @brief  MAGNETO driver extended structure definition
  */
-typedef struct {
-    MAGNETO_ComponentTypeDef id; /* This id must be unique for each component belonging to this class that wants to extend common class */
-    void *pData; /* This pointer is specific for each component */
-}MAGNETO_DrvExtTypeDef;
+typedef struct
+{
+  MAGNETO_ComponentTypeDef
+  id; /* This id must be unique for each component belonging to this class that wants to extend common class */
+  void *pData; /* This pointer is specific for each component */
+} MAGNETO_DrvExtTypeDef;
 
 /**
 * @brief  MAGNETO driver structure definition
 */
 typedef struct
 {
-    MAGNETO_StatusTypeDef                   (*Init)(MAGNETO_InitTypeDef *);
-    MAGNETO_StatusTypeDef                   (*Read_M_ID)(uint8_t *);
-    MAGNETO_StatusTypeDef                   (*Get_M_Axes)(int32_t *);
-    MAGNETO_DrvExtTypeDef                   *extData;
-}MAGNETO_DrvTypeDef;
+  MAGNETO_StatusTypeDef       (*Init)(MAGNETO_InitTypeDef *);
+  MAGNETO_StatusTypeDef       (*Read_M_ID)(uint8_t *);
+  MAGNETO_StatusTypeDef       (*Get_M_Axes)(int32_t *);
+  MAGNETO_StatusTypeDef       (*Get_M_AxesRaw)(int16_t *);
+  MAGNETO_DrvExtTypeDef       *extData;
+} MAGNETO_DrvTypeDef;
 
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
@@ -134,4 +139,4 @@ typedef struct
 
 #endif /* __MAGNETO_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/ 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

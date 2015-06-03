@@ -52,8 +52,16 @@ class GyroSensor
 	virtual int Init(void*) = 0;
 	virtual int ReadID(uint8_t*) = 0;
 
-	virtual int Get_G_Axes(int32_t*) = 0;
-	virtual int Get_G_Sensitivity(float*) = 0;
+	virtual int Get_G_Axes(int32_t *) = 0;
+	virtual int Get_G_AxesRaw(int16_t *) = 0;
+	
+	virtual int Get_G_ODR(float *) = 0;
+	virtual int Set_G_ODR(float) = 0;
+	
+	virtual int Get_G_Sensitivity(float *) = 0;
+	
+	virtual int Get_G_FS(float *) = 0;
+	virtual int Set_G_FS(float) = 0;
 
  protected:
 	GyroSensor(void) {};

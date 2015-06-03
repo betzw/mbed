@@ -2,9 +2,9 @@
  ******************************************************************************
  * @file    lsm6ds0.h
  * @author  MEMS Application Team
- * @version V1.2.0
- * @date    28-January-2015
- * @brief   This file contains definitions for the lsm6ds0.c 
+ * @version V1.3.0
+ * @date    28-May-2015
+ * @brief   This file contains definitions for the lsm6ds0.c
  *          firmware driver.
  ******************************************************************************
  * @attention
@@ -45,7 +45,7 @@ extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "../Common/imu_6axes.h"
+#include "imu_6axes.h"
 
 /** @addtogroup BSP
  * @{
@@ -53,8 +53,8 @@ extern "C" {
 
 /** @addtogroup Components
  * @{
- */ 
- 
+ */
+
 /** @addtogroup LSM6DS0
  * @{
  */
@@ -63,7 +63,7 @@ extern "C" {
  * @{
  */
 #ifndef NULL
-  #define NULL      (void *) 0
+#define NULL      (void *) 0
 #endif
 
 
@@ -91,7 +91,7 @@ extern "C" {
  */
 #define LSM6DS0_XG_INT_CTRL                                 0x0C
 
-    
+
 /**
   * @brief Device identifier register.
   * \code
@@ -289,7 +289,7 @@ extern "C" {
 
 /**
  * @brief Multiple Byte. Mask for enabling multiple byte read/write command.
- */   
+ */
 #define LSM6DS0_I2C_MULTIPLEBYTE_CMD                      ((uint8_t)0x80)
 
 /**
@@ -362,7 +362,7 @@ extern "C" {
 /**
  * @}
  */
- 
+
 /** @defgroup LSM6DS0_XG_Gyroscope_Full_Scale_Selection_CTRL_REG1_G LSM6DS0_XG_Gyroscope_Full_Scale_Selection_CTRL_REG1_G
  * @{
  */
@@ -444,6 +444,7 @@ extern "C" {
 #define LSM6DS0_XL_FS_2G                                ((uint8_t)0x00) /*!< Full scale: +- 2g */
 #define LSM6DS0_XL_FS_4G                                ((uint8_t)0x10) /*!< Full scale: +- 4g */
 #define LSM6DS0_XL_FS_8G                                ((uint8_t)0x18) /*!< Full scale: +- 8g */
+#define LSM6DS0_XL_FS_16G                               ((uint8_t)0x08) /*!< Full scale: +- 16g */
 
 #define LSM6DS0_XL_FS_MASK                              ((uint8_t)0x18)
 /**
@@ -540,7 +541,7 @@ extern "C" {
 /**
  * @}
  */
- 
+
 /**
  * @}
  */
@@ -552,15 +553,17 @@ extern "C" {
 
 /* Six axes sensor IO functions */
 extern IMU_6AXES_StatusTypeDef LSM6DS0_IO_Init(void);
-extern IMU_6AXES_StatusTypeDef LSM6DS0_IO_Write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToWrite);
-extern IMU_6AXES_StatusTypeDef LSM6DS0_IO_Read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr, uint16_t NumByteToRead);
+extern IMU_6AXES_StatusTypeDef LSM6DS0_IO_Write(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr,
+    uint16_t NumByteToWrite);
+extern IMU_6AXES_StatusTypeDef LSM6DS0_IO_Read(uint8_t* pBuffer, uint8_t DeviceAddr, uint8_t RegisterAddr,
+    uint16_t NumByteToRead);
 extern void LSM6DS0_IO_ITConfig( void );
 
 /**
  * @}
  */
 
-/* ------------------------------------------------------- */ 
+/* ------------------------------------------------------- */
 /* Here you should declare the internal struct of          */
 /* extended features of LIS3MDL. See the example of        */
 /* LSM6DS3 in lsm6ds3.h                                    */
@@ -585,7 +588,7 @@ extern IMU_6AXES_DrvExtTypeDef LSM6DS0Drv_ext;
 /**
  * @}
  */
- 
+
 /**
  * @}
  */

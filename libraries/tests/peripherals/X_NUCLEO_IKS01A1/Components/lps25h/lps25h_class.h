@@ -105,7 +105,7 @@ protected:
 	void LPS25H_SlaveAddrRemap(uint8_t SA0_Bit_Status);
 	
 	PRESSURE_StatusTypeDef LPS25H_PowerOn(void);
-	PRESSURE_StatusTypeDef LPS25H_I2C_ReadRawPressure(uint32_t *raw_press);
+	PRESSURE_StatusTypeDef LPS25H_I2C_ReadRawPressure(int32_t *raw_press);
 	PRESSURE_StatusTypeDef LPS25H_I2C_ReadRawTemperature(int16_t *raw_data);
 
 	/**

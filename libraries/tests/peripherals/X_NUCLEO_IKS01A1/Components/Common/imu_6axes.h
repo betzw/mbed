@@ -4,7 +4,7 @@
  * @author  MEMS Application Team
  * @version V1.2.0
  * @date    28-January-2015
- * @brief   This header file contains the functions prototypes for the 
+ * @brief   This header file contains the functions prototypes for the
  *          accelerometer and gyroscope driver.
  ******************************************************************************
  * @attention
@@ -45,8 +45,8 @@
 extern "C" {
 #endif
 
-    /* Includes ------------------------------------------------------------------*/
-#include <stdint.h> 
+/* Includes ------------------------------------------------------------------*/
+#include <stdint.h>
 
 /** @addtogroup BSP
   * @{
@@ -55,7 +55,7 @@ extern "C" {
 /** @addtogroup Components
   * @{
   */
-    
+
 /** @addtogroup IMU_6AXES
   * @{
   */
@@ -63,63 +63,78 @@ extern "C" {
 /** @defgroup IMU_6AXES_Exported_Types
   * @{
   */
-    
+
 /**
  * @brief  IMU_6AXES init structure definition
  */
 typedef struct
 {
-    uint8_t G_OutputDataRate;
-    uint8_t G_FullScale;
-    uint8_t G_X_Axis;
-    uint8_t G_Y_Axis;
-    uint8_t G_Z_Axis;
-    uint8_t X_OutputDataRate;
-    uint8_t X_FullScale;
-    uint8_t X_X_Axis;
-    uint8_t X_Y_Axis;
-    uint8_t X_Z_Axis;
-}IMU_6AXES_InitTypeDef;
+  float G_OutputDataRate;
+  float G_FullScale;
+  uint8_t G_X_Axis;
+  uint8_t G_Y_Axis;
+  uint8_t G_Z_Axis;
+  float X_OutputDataRate;
+  float X_FullScale;
+  uint8_t X_X_Axis;
+  uint8_t X_Y_Axis;
+  uint8_t X_Z_Axis;
+} IMU_6AXES_InitTypeDef;
 
 /**
  * @brief  IMU_6AXES status enumerator definition
  */
-typedef enum {
-    IMU_6AXES_OK = 0,
-    IMU_6AXES_ERROR = 1,
-    IMU_6AXES_TIMEOUT = 2,
-    IMU_6AXES_NOT_IMPLEMENTED = 3
+typedef enum
+{
+  IMU_6AXES_OK = 0,
+  IMU_6AXES_ERROR = 1,
+  IMU_6AXES_TIMEOUT = 2,
+  IMU_6AXES_NOT_IMPLEMENTED = 3
 } IMU_6AXES_StatusTypeDef;
 
 /**
  * @brief  IMU_6AXES component id enumerator definition
  */
-typedef enum {
-    IMU_6AXES_NONE_COMPONENT = 0,
-    IMU_6AXES_LSM6DS0_COMPONENT = 1,
-    IMU_6AXES_LSM6DS3_DIL24_COMPONENT = 2
+typedef enum
+{
+  IMU_6AXES_NONE_COMPONENT = 0,
+  IMU_6AXES_LSM6DS0_COMPONENT = 1,
+  IMU_6AXES_LSM6DS3_DIL24_COMPONENT = 2
 } IMU_6AXES_ComponentTypeDef;
 
 /**
  * @brief  IMU_6AXES driver extended structure definition
  */
-typedef struct {
-    IMU_6AXES_ComponentTypeDef id; /* This id must be unique for each component belonging to this class that wants to extend common class */
-    void *pData; /* This pointer is specific for each component */
-}IMU_6AXES_DrvExtTypeDef;
+typedef struct
+{
+  IMU_6AXES_ComponentTypeDef
+  id; /* This id must be unique for each component belonging to this class that wants to extend common class */
+  void *pData; /* This pointer is specific for each component */
+} IMU_6AXES_DrvExtTypeDef;
 
 /**
  * @brief  IMU_6AXES driver structure definition
  */
-typedef struct {
-    IMU_6AXES_StatusTypeDef                  (*Init)(IMU_6AXES_InitTypeDef *);
-    IMU_6AXES_StatusTypeDef                  (*Read_XG_ID)(uint8_t *);
-    IMU_6AXES_StatusTypeDef                  (*Get_X_Axes)(int32_t *);
-    IMU_6AXES_StatusTypeDef                  (*Get_G_Axes)(int32_t *);
-    IMU_6AXES_StatusTypeDef                  (*Get_X_Sensitivity) (float *);
-    IMU_6AXES_StatusTypeDef                  (*Get_G_Sensitivity) (float *);
-    IMU_6AXES_DrvExtTypeDef                  *extData;
-}IMU_6AXES_DrvTypeDef;
+typedef struct
+{
+  IMU_6AXES_StatusTypeDef       (*Init)(IMU_6AXES_InitTypeDef *);
+  IMU_6AXES_StatusTypeDef       (*Read_XG_ID)(uint8_t *);
+  IMU_6AXES_StatusTypeDef       (*Get_X_Axes)(int32_t *);
+  IMU_6AXES_StatusTypeDef       (*Get_X_AxesRaw)(int16_t *);
+  IMU_6AXES_StatusTypeDef       (*Get_G_Axes)(int32_t *);
+  IMU_6AXES_StatusTypeDef       (*Get_G_AxesRaw)(int16_t *);
+  IMU_6AXES_StatusTypeDef       (*Get_X_ODR) (float *);
+  IMU_6AXES_StatusTypeDef       (*Set_X_ODR) (float);
+  IMU_6AXES_StatusTypeDef       (*Get_X_Sensitivity) (float *);
+  IMU_6AXES_StatusTypeDef       (*Get_X_FS) (float *);
+  IMU_6AXES_StatusTypeDef       (*Set_X_FS) (float);
+  IMU_6AXES_StatusTypeDef       (*Get_G_ODR) (float *);
+  IMU_6AXES_StatusTypeDef       (*Set_G_ODR) (float);
+  IMU_6AXES_StatusTypeDef       (*Get_G_Sensitivity) (float *);
+  IMU_6AXES_StatusTypeDef       (*Get_G_FS) (float *);
+  IMU_6AXES_StatusTypeDef       (*Set_G_FS) (float);
+  IMU_6AXES_DrvExtTypeDef       *extData;
+} IMU_6AXES_DrvTypeDef;
 
 /**
   * @}
@@ -143,4 +158,4 @@ typedef struct {
 
 #endif /* __IMU_6AXES_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/ 
+/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
