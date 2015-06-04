@@ -52,14 +52,14 @@ class MagneticSensor
 	/**
 	 * @brief       Initialization of magnetometer
 	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Init(void *ptr) = 0;
 	
 	/**
 	 * @brief       Get ID of magnetometer
 	 * @param[out]  id Pointer to where to store the ID to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int ReadID(uint8_t *id) = 0;
 
@@ -71,7 +71,7 @@ class MagneticSensor
 	 *              pData[0] corresponds to X-axis,
 	 *              pData[1] corresponds to Y-axis, and
 	 *              pData[2] corresponds to Z-axis.
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_M_Axes(int32_t *pData) = 0;
 
@@ -83,7 +83,7 @@ class MagneticSensor
 	 *              pData[0] corresponds to X-axis,
 	 *              pData[1] corresponds to Y-axis, and
 	 *              pData[2] corresponds to Z-axis.
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_M_AxesRaw(int16_t *pData) = 0;
 };
