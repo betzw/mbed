@@ -52,14 +52,14 @@ class MotionSensor
 	/**
 	 * @brief       Initialization of accelerometer
 	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Init(void *ptr) = 0;
 	
 	/**
 	 * @brief       Get ID of accelerometer
 	 * @param[out]  id Pointer to where to store the ID to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int ReadID(uint8_t *id) = 0;
 
@@ -71,7 +71,7 @@ class MotionSensor
 	 *              pData[0] corresponds to X-axis,
 	 *              pData[1] corresponds to Y-axis, and
 	 *              pData[2] corresponds to Z-axis.
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_X_Axes(int32_t *pData) = 0;
 
@@ -83,28 +83,28 @@ class MotionSensor
 	 *              pData[0] corresponds to X-axis,
 	 *              pData[1] corresponds to Y-axis, and
 	 *              pData[2] corresponds to Z-axis.
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_X_AxesRaw(int16_t *pData) = 0;
 
 	/**
 	 * @brief       Get accelerometer's current sensitivity [mg/LSB]
 	 * @param[out]  pfData Pointer to where the accelerometer's sensitivity is stored to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_X_Sensitivity(float *pfData) = 0;
 
 	/**
 	 * @brief       Get accelerometer's current output data rate [Hz]
 	 * @param[out]  pfData Pointer to where the accelerometer output data rate is stored to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_X_ODR(float *pfData) = 0;
 
 	/**
 	 * @brief      Set accelerometer's output data rate
 	 * @param[in]  odr New value for accelerometer's output data rate in [Hz]
-	 * @retval     0 in case of success, an error code otherwise
+	 * @return     0 in case of success, an error code otherwise
 	 */
 	virtual int Set_X_ODR(float odr) = 0;
 
@@ -112,7 +112,7 @@ class MotionSensor
 	 * @brief       Get accelerometer's full scale value
 	 *              i.e. min/max measurable value [g]
 	 * @param[out]  pfData Pointer to where the accelerometer full scale value is stored to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_X_FS(float *pfData) = 0;
 	
@@ -120,7 +120,7 @@ class MotionSensor
 	 * @brief      Set accelerometer's full scale value
 	 *             i.e. min/max measurable value
 	 * @param[in]  fs New full scale value for accelerometer in [g]
-	 * @retval     0 in case of success, an error code otherwise
+	 * @return     0 in case of success, an error code otherwise
 	 */
 	virtual int Set_X_FS(float fs) = 0;
 };

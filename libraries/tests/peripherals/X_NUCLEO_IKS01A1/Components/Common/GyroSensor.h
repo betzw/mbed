@@ -52,14 +52,14 @@ class GyroSensor
 	/**
 	 * @brief       Initialization of gyroscope
 	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Init(void *ptr) = 0;
 	
 	/**
 	 * @brief       Get ID of gyroscope
 	 * @param[out]  id Pointer to where to store the ID to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int ReadID(uint8_t *id) = 0;
 
@@ -71,7 +71,7 @@ class GyroSensor
 	 *              pData[0] corresponds to X-axis,
 	 *              pData[1] corresponds to Y-axis, and
 	 *              pData[2] corresponds to Z-axis.
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_G_Axes(int32_t *pData) = 0;
 
@@ -83,28 +83,28 @@ class GyroSensor
 	 *              pData[0] corresponds to X-axis,
 	 *              pData[1] corresponds to Y-axis, and
 	 *              pData[2] corresponds to Z-axis.
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_G_AxesRaw(int16_t *pData) = 0;
 
 	/**
 	 * @brief       Get gyroscope's current sensitivity [mdps/LSB]
 	 * @param[out]  pfData Pointer to where the gyroscope's sensitivity is stored to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_G_Sensitivity(float *pfData) = 0;
 	
 	/**
 	 * @brief       Get gyroscope's current output data rate [Hz]
 	 * @param[out]  pfData Pointer to where the gyroscope output data rate is stored to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_G_ODR(float *pfData) = 0;
 
 	/**
 	 * @brief      Set gyroscope's output data rate
 	 * @param[in]  odr New value for gyroscope's output data rate in [Hz]
-	 * @retval     0 in case of success, an error code otherwise
+	 * @return     0 in case of success, an error code otherwise
 	 */
 	virtual int Set_G_ODR(float odr) = 0;
 	
@@ -112,7 +112,7 @@ class GyroSensor
 	 * @brief       Get gyroscope's full scale value
 	 *              i.e. min/max measurable value [dps]
 	 * @param[out]  pfData Pointer to where the gyroscope full scale value is stored to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Get_G_FS(float *pfData) = 0;
 	
@@ -120,7 +120,7 @@ class GyroSensor
 	 * @brief      Set gyroscope's full scale value
 	 *             i.e. min/max measurable value
 	 * @param[in]  fs New full scale value for gyroscope in [dps]
-	 * @retval     0 in case of success, an error code otherwise
+	 * @return     0 in case of success, an error code otherwise
 	 */
 	virtual int Set_G_FS(float fs) = 0;
 };

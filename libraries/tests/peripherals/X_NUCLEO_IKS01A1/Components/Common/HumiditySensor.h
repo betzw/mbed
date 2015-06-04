@@ -52,33 +52,33 @@ class HumiditySensor
 	/**
 	 * @brief       Initialization of humidity sensor
 	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Init(void *ptr) = 0;
 
 	/**
 	 * @brief       Enter sensor shutdown mode
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int PowerOff(void) = 0;
 	
 	/**
 	 * @brief       Get ID of humidity sensor
 	 * @param[out]  id Pointer to where to store the ID to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int ReadID(uint8_t *id) = 0;
 
 	/**
 	 * @brief       Reset sensor
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int Reset(void) = 0;
 
 	/**
 	 * @brief       Get current humidity [%]
 	 * @param[out]  pfData Pointer to where to store humidity to
-	 * @retval      0 in case of success, an error code otherwise
+	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int GetHumidity(float *pfData) = 0;
 
