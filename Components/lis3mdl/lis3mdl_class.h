@@ -81,8 +81,6 @@ class LIS3MDL : public MagneticSensor {
 
 	/**
 	 * @brief  Configures LIS3MDL interrupt lines for NUCLEO boards
-	 * @param  None
-	 * @retval None
 	 */
 	void LIS3MDL_IO_ITConfig(void)
 	{
@@ -91,8 +89,7 @@ class LIS3MDL : public MagneticSensor {
 
 	/**
 	 * @brief  Configures LIS3MDL I2C interface
-	 * @param  None
-	 * @retval MAGNETO_OK in case of success, an error code otherwise
+	 * @return MAGNETO_OK in case of success, an error code otherwise
 	 */
 	MAGNETO_StatusTypeDef LIS3MDL_IO_Init(void)
 	{
@@ -101,10 +98,11 @@ class LIS3MDL : public MagneticSensor {
 
 	/**
 	 * @brief utility function to read data from STC3115
-	 * @param  pBuffer: pointer to data to be read.
-	 * @param  RegisterAddr: specifies internal address register to read from.
-	 * @param  NumByteToRead: number of bytes to be read.
-	 * @retval MAGNETO_OK if ok, MAGNETO_ERROR if an I2C error has occured
+	 * @param  pBuffer pointer to data to be read.
+	 * @param  RegisterAddr specifies internal address register to read from.
+	 * @param  NumByteToRead number of bytes to be read.
+	 * @retval MAGNETO_OK if ok
+	 * @retval MAGNETO_ERROR if an I2C error has occured
 	 */
 	MAGNETO_StatusTypeDef LIS3MDL_IO_Read(uint8_t* pBuffer, 
 					      uint8_t RegisterAddr, uint16_t NumByteToRead)
@@ -121,10 +119,11 @@ class LIS3MDL : public MagneticSensor {
 	
 	/**
 	 * @brief utility function to write data to STC3115
-	 * @param  pBuffer: pointer to buffer to be filled.
-	 * @param  RegisterAddr: specifies internal address register to read from.
-	 * @param  NumByteToWrite: number of bytes to write.
-	 * @retval 0 if ok, -1 if an I2C error has occured
+	 * @param  pBuffer pointer to buffer to be filled.
+	 * @param  RegisterAddr specifies internal address register to read from.
+	 * @param  NumByteToWrite number of bytes to write.
+	 * @retval 0 if ok
+	 * @retval -1 if an I2C error has occured
 	 */
 	MAGNETO_StatusTypeDef LIS3MDL_IO_Write(uint8_t* pBuffer, 
 					       uint8_t RegisterAddr, uint16_t NumByteToWrite)
