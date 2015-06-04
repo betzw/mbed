@@ -154,7 +154,7 @@ class STC3115 : public GasGauge {
 	}
 
 	/** 
-	 *  @brief Attach a function to call when a falling edge occurs on the input
+	 *  @brief Attach a function to be called when a falling edge occurs on the input
 	 *  @param fptr A pointer to a void function, or 0 to set as none
 	 */
 	virtual void AttachIT(void (*fptr)(void)) {

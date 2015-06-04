@@ -41,7 +41,7 @@
 #define __MOTION_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
+#include <stdint.h>
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for an Accelerometer
@@ -49,22 +49,80 @@
 class MotionSensor
 {
  public:
+	/**
+	 * @brief       Initialization of accelerometer
+	 * @param[out]  Pointer to device specific initalization structure
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int Init(void*) = 0;
+	
+	/**
+	 * @brief       Get ID of accelerometer
+	 * @param[out]  Pointer to where to store the ID to
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int ReadID(uint8_t*) = 0;
 
+	/**
+	 * @brief       Get current accelerometer linear acceleration X/Y/Z-axes values 
+	 *              in standard data units [mg]
+	 * @param[out]  Pointer to where to store linear accelerations to.
+	 *              Pointer must point to an array of (at least) three elements, where:
+	 *              ptr[0] corresponds to X-axis
+	 *              ptr[1] corresponds to Y-axis
+	 *              ptr[2] corresponds to Z-axis
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int Get_X_Axes(int32_t *) = 0;
+
+	/**
+	 * @brief       Get current accelerometer raw data X/Y/Z-axes values 
+	 *              in device sepcific LSB units
+	 * @param[out]  Pointer to where to store accelerometer raw data to.
+	 *              Pointer must point to an array of (at least) three elements, where:
+	 *              ptr[0] corresponds to X-axis
+	 *              ptr[1] corresponds to Y-axis
+	 *              ptr[2] corresponds to Z-axis
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int Get_X_AxesRaw(int16_t *) = 0;
 
-	virtual int Get_X_ODR(float *) = 0;
-	virtual int Set_X_ODR(float) = 0;
-
+	/**
+	 * @brief       Get accelerometer's current sensitivity [mg/LSB]
+	 * @param[out]  Pointer to where the accelerometer's sensitivity is stored to
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int Get_X_Sensitivity(float *) = 0;
 
-	virtual int Get_X_FS(float *) = 0;
-	virtual int Set_X_FS(float) = 0;
+	/**
+	 * @brief       Get accelerometer's current output data rate [Hz]
+	 * @param[out]  Pointer to where the accelerometer output data rate is stored to
+	 * @retval      0 in case of success, an error code otherwise
+	 */
+	virtual int Get_X_ODR(float *) = 0;
 
- protected:
-	MotionSensor(void) {};
+	/**
+	 * @brief      Set accelerometer's output data rate
+	 * @param[in]  New value for accelerometer's output data rate in [Hz]
+	 * @retval     0 in case of success, an error code otherwise
+	 */
+	virtual int Set_X_ODR(float) = 0;
+
+	/**
+	 * @brief       Get accelerometer's full scale value
+	 *              i.e. min/max measurable value [g]
+	 * @param[out]  Pointer to where the accelerometer full scale value is stored to
+	 * @retval      0 in case of success, an error code otherwise
+	 */
+	virtual int Get_X_FS(float *) = 0;
+	
+	/**
+	 * @brief      Set accelerometer's full scale value
+	 *             i.e. min/max measurable value
+	 * @param[in]  New full scale value for accelerometer in [g]
+	 * @retval     0 in case of success, an error code otherwise
+	 */
+	virtual int Set_X_FS(float) = 0;
 };
 
 #endif /* __MOTION_SENSOR_CLASS_H */

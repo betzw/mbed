@@ -41,7 +41,7 @@
 #define __PRESSURE_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
+#include <stdint.h>
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for a Pressure Sensor
@@ -49,11 +49,38 @@
 class PressureSensor
 {
  public:
+	/**
+	 * @brief       Initialization of pressure sensor
+	 * @param[out]  Pointer to device specific initalization structure
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int Init(void*) = 0;
 
+	/**
+	 * @brief       Enter sensor shutdown mode
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int PowerOff(void) = 0;
+	
+	/**
+	 * @brief       Get ID of pressure sensor
+	 * @param[out]  Pointer to where to store the ID to
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int ReadID(uint8_t*) = 0;
+
+	/**
+	 * @brief       Reset sensor
+	 * @retval      0 in case of success, an error code otherwise
+	 */
 	virtual int Reset(void) = 0;
+
+	/**
+	 * @brief       Get current pressure [mbar]
+	 * @param[out]  Pointer to where to store pressure to
+	 * @retval      0 in case of success, an error code otherwise
+	 */
+	virtual int GetPressure(float*) = 0;
 
 	virtual void ConfigIT(uint16_t) = 0;
 	virtual void EnableIT(uint8_t) = 0;
@@ -61,12 +88,11 @@ class PressureSensor
 	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
 	virtual void ClearIT(uint16_t, uint16_t) = 0;
 
-	virtual int GetPressure(float*) = 0;
-
+	/**
+	 * @brief       Attach a function to be called when an interrupt occurs
+	 * @param[in]   fptr A pointer to a void function, or 0 to set as none
+	 */
 	virtual void AttachIT(void (*fptr)(void)) = 0;
-
- protected:
-	PressureSensor(void) {};
 };
 
 #endif /* __PRESSURE_SENSOR_CLASS_H */
