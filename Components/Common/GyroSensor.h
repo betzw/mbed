@@ -51,78 +51,78 @@ class GyroSensor
  public:
 	/**
 	 * @brief       Initialization of gyroscope
-	 * @param[out]  Pointer to device specific initalization structure
+	 * @param[out]  ptr Pointer to device specific initalization structure
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Init(void*) = 0;
+	virtual int Init(void *ptr) = 0;
 	
 	/**
 	 * @brief       Get ID of gyroscope
-	 * @param[out]  Pointer to where to store the ID to
+	 * @param[out]  id Pointer to where to store the ID to
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int ReadID(uint8_t*) = 0;
+	virtual int ReadID(uint8_t *id) = 0;
 
 	/**
 	 * @brief       Get current gyroscope angular rate X/Y/Z-axes values 
 	 *              in standard data units [mdps]
-	 * @param[out]  Pointer to where to store angular rates to.
-	 *              Pointer must point to an array of (at least) three elements, where:
-	 *              ptr[0] corresponds to X-axis
-	 *              ptr[1] corresponds to Y-axis
-	 *              ptr[2] corresponds to Z-axis
+	 * @param[out]  pData Pointer to where to store angular rates to.
+	 *              pData must point to an array of (at least) three elements, where:
+	 *              pData[0] corresponds to X-axis,
+	 *              pData[1] corresponds to Y-axis, and
+	 *              pData[2] corresponds to Z-axis.
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_G_Axes(int32_t*) = 0;
+	virtual int Get_G_Axes(int32_t *pData) = 0;
 
 	/**
 	 * @brief       Get current gyroscope raw data X/Y/Z-axes values 
 	 *              in device sepcific LSB units
-	 * @param[out]  Pointer to where to store gyroscope raw data to.
-	 *              Pointer must point to an array of (at least) three elements, where:
-	 *              ptr[0] corresponds to X-axis
-	 *              ptr[1] corresponds to Y-axis
-	 *              ptr[2] corresponds to Z-axis
+	 * @param[out]  pData Pointer to where to store gyroscope raw data to.
+	 *              pData must point to an array of (at least) three elements, where:
+	 *              pData[0] corresponds to X-axis,
+	 *              pData[1] corresponds to Y-axis, and
+	 *              pData[2] corresponds to Z-axis.
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_G_AxesRaw(int16_t*) = 0;
+	virtual int Get_G_AxesRaw(int16_t *pData) = 0;
 
 	/**
 	 * @brief       Get gyroscope's current sensitivity [mdps/LSB]
-	 * @param[out]  Pointer to where the gyroscope's sensitivity is stored to
+	 * @param[out]  pfData Pointer to where the gyroscope's sensitivity is stored to
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_G_Sensitivity(float*) = 0;
+	virtual int Get_G_Sensitivity(float *pfData) = 0;
 	
 	/**
 	 * @brief       Get gyroscope's current output data rate [Hz]
-	 * @param[out]  Pointer to where the gyroscope output data rate is stored to
+	 * @param[out]  pfData Pointer to where the gyroscope output data rate is stored to
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_G_ODR(float*) = 0;
+	virtual int Get_G_ODR(float *pfData) = 0;
 
 	/**
 	 * @brief      Set gyroscope's output data rate
-	 * @param[in]  New value for gyroscope's output data rate in [Hz]
+	 * @param[in]  odr New value for gyroscope's output data rate in [Hz]
 	 * @retval     0 in case of success, an error code otherwise
 	 */
-	virtual int Set_G_ODR(float) = 0;
+	virtual int Set_G_ODR(float odr) = 0;
 	
 	/**
 	 * @brief       Get gyroscope's full scale value
 	 *              i.e. min/max measurable value [dps]
-	 * @param[out]  Pointer to where the gyroscope full scale value is stored to
+	 * @param[out]  pfData Pointer to where the gyroscope full scale value is stored to
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_G_FS(float*) = 0;
+	virtual int Get_G_FS(float *pfData) = 0;
 	
 	/**
 	 * @brief      Set gyroscope's full scale value
 	 *             i.e. min/max measurable value
-	 * @param[in]  New full scale value for gyroscope in [dps]
+	 * @param[in]  fs New full scale value for gyroscope in [dps]
 	 * @retval     0 in case of success, an error code otherwise
 	 */
-	virtual int Set_G_FS(float) = 0;
+	virtual int Set_G_FS(float fs) = 0;
 };
 
 #endif /* __GYRO_SENSOR_CLASS_H */

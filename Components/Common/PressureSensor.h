@@ -51,10 +51,10 @@ class PressureSensor
  public:
 	/**
 	 * @brief       Initialization of pressure sensor
-	 * @param[out]  Pointer to device specific initalization structure
+	 * @param[out]  ptr Pointer to device specific initalization structure
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int Init(void*) = 0;
+	virtual int Init(void *ptr) = 0;
 
 	/**
 	 * @brief       Enter sensor shutdown mode
@@ -64,10 +64,10 @@ class PressureSensor
 	
 	/**
 	 * @brief       Get ID of pressure sensor
-	 * @param[out]  Pointer to where to store the ID to
+	 * @param[out]  id Pointer to where to store the ID to
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int ReadID(uint8_t*) = 0;
+	virtual int ReadID(uint8_t *id) = 0;
 
 	/**
 	 * @brief       Reset sensor
@@ -77,10 +77,10 @@ class PressureSensor
 
 	/**
 	 * @brief       Get current pressure [mbar]
-	 * @param[out]  Pointer to where to store pressure to
+	 * @param[out]  pfData Pointer to where to store pressure to
 	 * @retval      0 in case of success, an error code otherwise
 	 */
-	virtual int GetPressure(float*) = 0;
+	virtual int GetPressure(float *pfData) = 0;
 
 	virtual void ConfigIT(uint16_t) = 0;
 	virtual void EnableIT(uint8_t) = 0;
