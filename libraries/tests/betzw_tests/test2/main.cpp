@@ -165,23 +165,24 @@ static void main_cycle(void) {
         temp_sensor1.GetTemperature(&TEMPERATURE_Value);
         humidity_sensor.GetHumidity(&HUMIDITY_Value);
         pressure_sensor.GetPressure(&PRESSURE_Value);
-        temp_sensor2.GetTemperature(&PRESSURE_Temp_Value);
+        temp_sensor2.GetFahrenheit(&PRESSURE_Temp_Value);
         magnetometer.Get_M_Axes((int32_t *)&MAG_Value);
         accelerometer.Get_X_Axes((int32_t *)&ACC_Value);
         gyroscope.Get_G_Axes((int32_t *)&GYR_Value);
 
 	/* Print Values Out */
-        printf("TEMP: %s, HUMIDITY: %s, PRESSURE (TEMP): %s (%s)\n", 
+        printf("                      X         Y         Z\n"); 
+        printf("MAG [mgauss]: %9ld %9ld %9ld\n", 
+	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
+        printf("ACC [mg]:     %9ld %9ld %9ld\n", 
+	       ACC_Value.AXIS_X, ACC_Value.AXIS_Y, ACC_Value.AXIS_Z);
+        printf("GYR [mdps]:   %9ld %9ld %9ld\n", 
+	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
+        printf("---\nTEMP | HUMIDITY: %s°C | %s%%\nTEMP | PRESSURE: %s°F | %smbar\n", 
 	       printDouble(buffer1, TEMPERATURE_Value), 
 	       printDouble(buffer2, HUMIDITY_Value), 
-	       printDouble(buffer3, PRESSURE_Value),
-	       printDouble(buffer4, PRESSURE_Temp_Value));
-        printf("X_MAG: %ld, Y_MAG: %ld, Z_MAG: %ld\n", 
-	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
-        printf("X_ACC: %ld, Y_ACC: %ld, Z_ACC: %ld\n", 
-	       ACC_Value.AXIS_X, ACC_Value.AXIS_Y, ACC_Value.AXIS_Z);
-        printf("X_GYR: %ld, Y_GYR: %ld, Z_GYR: %ld\n", 
-	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
+	       printDouble(buffer4, PRESSURE_Temp_Value),
+	       printDouble(buffer3, PRESSURE_Value));
 	
 	/* Switch LED Off */
 	myled = LED_OFF;

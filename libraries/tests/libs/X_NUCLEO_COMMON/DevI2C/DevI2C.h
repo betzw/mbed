@@ -65,8 +65,8 @@ class DevI2C : public I2C
 	 *         where to start writing to (must be correctly masked).
 	 * @param  NumByteToWrite number of bytes to be written.
 	 * @retval 0 if ok, 
-	 *         -1 if an I2C error has occured, or
-	 *         -2 on temporary buffer overflow (i.e. NumByteToWrite was too high)
+	 * @retval -1 if an I2C error has occured, or
+	 * @retval -2 on temporary buffer overflow (i.e. NumByteToWrite was too high)
 	 * @note   On some devices if NumByteToWrite is greater
 	 *         than one, the RegisterAddr must be masked correctly!
 	 */
@@ -95,7 +95,8 @@ class DevI2C : public I2C
 	 * @param  RegisterAddr specifies the internal address register 
 	 *         where to start reading from (must be correctly masked).
 	 * @param  NumByteToRead number of bytes to be read.
-	 * @retval 0 if ok, -1 if an I2C error has occured
+	 * @retval 0 if ok, 
+	 * @retval -1 if an I2C error has occured
 	 * @note   On some devices if NumByteToWrite is greater
 	 *         than one, the RegisterAddr must be masked correctly!
 	 */
