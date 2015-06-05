@@ -271,7 +271,7 @@ HUM_TEMP_StatusTypeDef HTS221::HTS221_GetHumidity(float* pfData)
       }
       
     }
-    while(!(tmp && 0x02));
+    while(!(tmp & 0x02));
   }
   
   
@@ -341,7 +341,7 @@ HUM_TEMP_StatusTypeDef HTS221::HTS221_GetTemperature(float* pfData)
       }
       
     }
-    while(!(tmp && 0x01));
+    while(!(tmp & 0x01));
   }
   
   if(HTS221_IO_Read(&tempReg[0], (HTS221_TEMP_OUT_L_ADDR | HTS221_I2C_MULTIPLEBYTE_CMD),

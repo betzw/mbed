@@ -76,11 +76,27 @@ class TempSensor
 	virtual int Reset(void) = 0;
 
 	/**
-	 * @brief       Get current temperature [°C]
+	 * @brief       Get current temperature in degrees Celsius [°C]
 	 * @param[out]  pfData Pointer to where to store temperature to
 	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int GetTemperature(float *pfData) = 0;
+
+	/**
+	 * @brief       Get current temperature in degrees Fahrenheit [°F]
+	 * @param[out]  pfData Pointer to where to store temperature to
+	 * @return      0 in case of success, an error code otherwise
+	 */
+	virtual int GetFahrenheit(float *pfData) {
+		float celsius;
+		int ret;
+
+		ret = GetTemperature(&celsius);
+		if(ret) return ret;
+
+		*pfData = ((celsius * 1.8f) + 32.0f);
+		return 0;
+	}
 
 	virtual void ConfigIT(uint16_t) = 0;
 	virtual void EnableIT(uint8_t) = 0;

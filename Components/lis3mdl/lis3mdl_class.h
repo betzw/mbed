@@ -122,8 +122,8 @@ class LIS3MDL : public MagneticSensor {
 	 * @param  pBuffer pointer to buffer to be filled.
 	 * @param  RegisterAddr specifies internal address register to read from.
 	 * @param  NumByteToWrite number of bytes to write.
-	 * @retval 0 if ok
-	 * @retval -1 if an I2C error has occured
+	 * @retval MAGNETO_OK if ok
+	 * @retval MAGNETO_ERROR if an I2C error has occured
 	 */
 	MAGNETO_StatusTypeDef LIS3MDL_IO_Write(uint8_t* pBuffer, 
 					       uint8_t RegisterAddr, uint16_t NumByteToWrite)
