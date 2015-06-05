@@ -34,6 +34,20 @@ Mercurial:
 ==========
 Libraries:
 ~~~~~~~~~~
+COMMON:
+-------
+git remote add common-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_COMMON"
+
+git subtree split -P libraries/tests/libs/X_NUCLEO_COMMON -b common-split
+git checkout common-split
+
+git pull common-lib master
+git push common-lib common-split:master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/libs/X_NUCLEO_COMMON common-split
+git branch -d common-split
+
 IKC01A1:
 --------
 git remote add ikc01a1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IKC01A1"
@@ -61,20 +75,6 @@ git push iks01a1-lib iks01a1-split:master
 git checkout betzw_wb
 git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKS01A1 iks01a1-split
 git branch -d iks01a1-split
-
-COMMON:
--------
-git remote add common-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_COMMON"
-
-git subtree split -P libraries/tests/libs/X_NUCLEO_COMMON -b common-split
-git checkout common-split
-
-git pull common-lib master
-git push common-lib common-split:master
-
-git checkout betzw_wb
-git subtree merge -P libraries/tests/libs/X_NUCLEO_COMMON common-split
-git branch -d common-split
 
 Applications:
 ~~~~~~~~~~~~~
