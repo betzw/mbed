@@ -67,6 +67,10 @@ class HTS221 : public HumiditySensor, public TempSensor {
 		return HTS221_Init((HUM_TEMP_InitTypeDef*)init_struct);
 	}
 
+	/**
+	 * @brief       Enter sensor shutdown mode
+	 * @return      0 in case of success, an error code otherwise
+	 */
 	virtual int PowerOff(void) {
 		return HTS221_Power_OFF();
 	}
@@ -75,6 +79,10 @@ class HTS221 : public HumiditySensor, public TempSensor {
 		return HTS221_ReadID(ht_id);
 	}
 
+	/**
+	 * @brief       Reset sensor
+	 * @return      0 in case of success, an error code otherwise
+	 */
 	virtual int Reset(void) {
 		return HTS221_RebootCmd();
 	}
@@ -86,13 +94,6 @@ class HTS221 : public HumiditySensor, public TempSensor {
 	virtual int GetTemperature(float *pfData) {
 		return HTS221_GetTemperature(pfData);
 	}
-
-	virtual void ConfigIT(uint16_t) { /* not yet implemented */ }
-	virtual void EnableIT(uint8_t) { /* not yet implemented */ }
-	virtual void DisableIT(uint8_t) { /* not yet implemented */ }
-	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
-	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
-	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
 
  protected:
 	/*** Methods ***/

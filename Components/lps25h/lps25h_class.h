@@ -66,6 +66,10 @@ class LPS25H : public PressureSensor, public TempSensor {
 		return LPS25H_Init((PRESSURE_InitTypeDef*)init_struct);
 	}
 
+	/**
+	 * @brief       Enter sensor shutdown mode
+	 * @return      0 in case of success, an error code otherwise
+	 */
 	virtual int PowerOff(void) {
 		return LPS25H_PowerOff();
 	}
@@ -74,16 +78,14 @@ class LPS25H : public PressureSensor, public TempSensor {
 		return LPS25H_ReadID(p_id);
 	}
 
+	/**
+	 * @brief       Reset sensor
+	 * @return      0 in case of success, an error code otherwise
+	 */
 	virtual int Reset(void) {
 		return LPS25H_RebootCmd();
 	}
 
-	virtual void ConfigIT(uint16_t) { /* not yet implemented */ }
-	virtual void EnableIT(uint8_t) { /* not yet implemented */ }
-	virtual void DisableIT(uint8_t) { /* not yet implemented */ }
-	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
-	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
-    
 	virtual int GetPressure(float *pfData) {
 		return LPS25H_GetPressure(pfData);
 	}
@@ -91,8 +93,6 @@ class LPS25H : public PressureSensor, public TempSensor {
 	virtual int GetTemperature(float *pfData) {
 		return LPS25H_GetTemperature(pfData);
 	}
-
-	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
 
 	void SlaveAddrRemap(uint8_t SA0_Bit_Status) {
 		LPS25H_SlaveAddrRemap(SA0_Bit_Status);

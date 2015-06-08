@@ -76,16 +76,6 @@ class LIS3MDL : public MagneticSensor {
 		return LIS3MDL_M_GetAxesRaw(pData);
 	}
 
-	virtual int PowerOff(void) { /* not yet implemented */ return 0; }
-	virtual int Reset(void) { /* not yet implemented */ return 0; }
-
-	virtual void ConfigIT(uint16_t) { /* not yet implemented */ }
-	virtual void EnableIT(uint8_t) { /* not yet implemented */ }
-	virtual void DisableIT(uint8_t) { /* not yet implemented */ }
-	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
-	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
-	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
-
  protected:
 	/*** Methods ***/
 	MAGNETO_StatusTypeDef LIS3MDL_Init(MAGNETO_InitTypeDef *LIS3MDL_Init);
