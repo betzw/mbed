@@ -138,16 +138,6 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 		return LSM6DS3_Get_Status_Free_Fall_Detection(status);
 	}
 
-	virtual int PowerOff(void) { /* not yet implemented */ return 0; }
-	virtual int Reset(void) { /* not yet implemented */ return 0; }
-
-	virtual void ConfigIT(uint16_t) { /* not yet implemented */ }
-	virtual void EnableIT(uint8_t) { /* not yet implemented */ }
-	virtual void DisableIT(uint8_t) { /* not yet implemented */ }
-	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
-	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
-	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
-
  protected:
 	/*** Methods ***/
 	IMU_6AXES_StatusTypeDef LSM6DS3_Init(IMU_6AXES_InitTypeDef *LSM6DS3_Init);

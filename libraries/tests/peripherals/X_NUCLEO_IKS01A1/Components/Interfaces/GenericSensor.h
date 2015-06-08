@@ -62,35 +62,6 @@ class GenericSensor
 	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int ReadID(uint8_t *id) = 0;
-
-	/*** betzw - TODO / NOTE: beyond code is still WIP and not confirmed yet!!! ***/
-	/**
-	 * @brief       Enter sensor shutdown mode
-	 * @return      0 in case of success, an error code otherwise
-	 * @note        not confirmed yet (WIP)
-	 */
-	virtual int PowerOff(void) = 0;
-	
-	/**
-	 * @brief       Reset sensor
-	 * @return      0 in case of success, an error code otherwise
-	 * @note        not confirmed yet (WIP)
-	 */
-	virtual int Reset(void) = 0;
-
-	/* Interrupt Interface */
-	virtual void ConfigIT(uint16_t) = 0;
-	virtual void EnableIT(uint8_t) = 0;
-	virtual void DisableIT(uint8_t) = 0;
-	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
-	virtual void ClearIT(uint16_t, uint16_t) = 0;
-
-	/**
-	 * @brief       Attach a function to be called when an interrupt occurs
-	 * @param[in]   fptr A pointer to a void function, or 0 to set as none
-	 * @note        not confirmed yet (WIP)
-	 */
-	virtual void AttachIT(void (*fptr)(void)) = 0;
 };
 
 #endif /* __GENERIC_SENSOR_CLASS_H */
