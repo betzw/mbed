@@ -58,6 +58,10 @@ class HTS221 : public HumiditySensor, public TempSensor {
 		T0_out = T1_out = H0_T0_out = H1_T0_out = 0;
 	}
 	
+	/** Destructor
+	 */
+        virtual ~HTS221() {}
+	
 	/*** Interface Methods ***/
 	virtual int Init(void *init_struct) {
 		return HTS221_Init((HUM_TEMP_InitTypeDef*)init_struct);

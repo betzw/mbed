@@ -51,7 +51,8 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 	ht_sensor(new HTS221(*dev_i2c)),
 	magnetometer(new LIS3MDL(*dev_i2c)),
 	pressure_sensor(new LPS25H(*dev_i2c)),
-	gyroscope(new LSM6DS0(*dev_i2c))
+	gyro_lsm6ds0(new LSM6DS0(*dev_i2c)),
+	gyro_lsm6ds3(new LSM6DS3(*dev_i2c))
 { 
 }
 
@@ -85,21 +86,9 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 }
 
 /**
- * @brief  Initialize the singelton's sensors to default settings
- * @return true if initialization successful, false otherwise
+ * @brief  Initialize the singleton's HT sensor
  * @retval true if initialization successful, 
  * @retval false otherwise
- */
-bool X_NUCLEO_IKS01A1::Init(void) {
-	return (Init_HTS221() &&
-		Init_LIS3MDL() &&
-		Init_LPS25H() &&
-		Init_LSM6DS0());
-}
-
-/**
- * @brief  Initialize the singelton HT sensor
- * @return true if initialization successful, false otherwise
  */
 bool X_NUCLEO_IKS01A1::Init_HTS221(void) {
 	uint8_t ht_id = 0;
@@ -126,8 +115,9 @@ bool X_NUCLEO_IKS01A1::Init_HTS221(void) {
 }
 
 /**
- * @brief  Initialize the singelton magnetometer
- * @return true if initialization successful, false otherwise
+ * @brief  Initialize the singleton's magnetometer
+ * @retval true if initialization successful, 
+ * @retval false otherwise
  */
 bool X_NUCLEO_IKS01A1::Init_LIS3MDL(void) {
 	uint8_t m_id = 0;
@@ -157,8 +147,9 @@ bool X_NUCLEO_IKS01A1::Init_LIS3MDL(void) {
 }
 
 /**
- * @brief  Initialize the singelton pressure sensor
- * @return true if initialization successful, false otherwise
+ * @brief  Initialize the singleton's pressure sensor
+ * @retval true if initialization successful, 
+ * @retval false otherwise
  */
 bool X_NUCLEO_IKS01A1::Init_LPS25H(void) {
 	uint8_t p_id = 0;
@@ -190,19 +181,21 @@ bool X_NUCLEO_IKS01A1::Init_LPS25H(void) {
 }
 
 /**
- * @brief  Initialize the singelton gyroscope
- * @return true if initialization successful, false otherwise
+ * @brief  Initialize the singleton's LSM6DS0 gyroscope
+ * @retval true if initialization successful, 
+ * @retval false otherwise
  */
 bool X_NUCLEO_IKS01A1::Init_LSM6DS0(void) {
 	IMU_6AXES_InitTypeDef InitStructure;
 	uint8_t xg_id = 0;
 
 	/* Check presence */
-	if((gyroscope->ReadID(&xg_id) != IMU_6AXES_OK) ||
+	if((gyro_lsm6ds3 != NULL) ||
+	   (gyro_lsm6ds0->ReadID(&xg_id) != IMU_6AXES_OK) ||
 	   (xg_id != I_AM_LSM6DS0_XG))
 		{
-			delete gyroscope;
-			gyroscope = NULL;
+			delete gyro_lsm6ds0;
+			gyro_lsm6ds0 = NULL;
 			return true;
 		}
             
@@ -219,7 +212,46 @@ bool X_NUCLEO_IKS01A1::Init_LSM6DS0(void) {
 	InitStructure.X_Y_Axis          = 1;       /* Enable */
 	InitStructure.X_Z_Axis          = 1;       /* Enable */
               
-	if(gyroscope->Init(&InitStructure) != IMU_6AXES_OK)
+	if(gyro_lsm6ds0->Init(&InitStructure) != IMU_6AXES_OK)
+		{
+			return false; 
+		}
+            
+	return true;
+}
+
+/**
+ * @brief  Initialize the singleton's LSMDS3 gyroscope
+ * @retval true if initialization successful, 
+ * @retval false otherwise
+ */
+bool X_NUCLEO_IKS01A1::Init_LSM6DS3(void) {
+	IMU_6AXES_InitTypeDef InitStructure;
+	uint8_t xg_id = 0;
+
+	/* Check presence */
+	if((gyro_lsm6ds3->ReadID(&xg_id) != IMU_6AXES_OK) ||
+	   (xg_id != I_AM_LSM6DS3_XG))
+		{
+			delete gyro_lsm6ds3;
+			gyro_lsm6ds3 = NULL;
+			return true;
+		}
+            
+	/* Configure sensor */
+	InitStructure.G_FullScale      = 2000.0f; /* 2000DPS */
+	InitStructure.G_OutputDataRate = 104.0f;  /* 104HZ */
+	InitStructure.G_X_Axis         = 1;       /* Enable */
+	InitStructure.G_Y_Axis         = 1;       /* Enable */
+	InitStructure.G_Z_Axis         = 1;       /* Enable */
+        
+	InitStructure.X_FullScale      = 2.0f;    /* 2G */
+	InitStructure.X_OutputDataRate = 104.0f;  /* 104HZ */
+	InitStructure.X_X_Axis         = 1;       /* Enable */
+	InitStructure.X_Y_Axis         = 1;       /* Enable */
+	InitStructure.X_Z_Axis         = 1;       /* Enable */
+        
+	if(gyro_lsm6ds3->Init(&InitStructure) != IMU_6AXES_OK)
 		{
 			return false; 
 		}

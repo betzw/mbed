@@ -55,6 +55,10 @@ class LIS3MDL : public MagneticSensor {
         LIS3MDL(DevI2C &i2c) : MagneticSensor(), dev_i2c(i2c) {
 	}
 	
+	/** Destructor
+	 */
+        virtual ~LIS3MDL() {}
+	
 	/*** Interface Methods ***/
 	virtual int Init(void *init_struct) {
 		return LIS3MDL_Init((MAGNETO_InitTypeDef*)init_struct);
