@@ -41,8 +41,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/GyroSensor.h"
-#include "../Common/MotionSensor.h"
+#include "../Interfaces/GyroSensor.h"
+#include "../Interfaces/MotionSensor.h"
 #include "lsm6ds0.h"
 
 /* Classes -------------------------------------------------------------------*/

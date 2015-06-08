@@ -41,7 +41,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/MagneticSensor.h"
+#include "../Interfaces/MagneticSensor.h"
 #include "lis3mdl.h"
 
 /* Classes -------------------------------------------------------------------*/
