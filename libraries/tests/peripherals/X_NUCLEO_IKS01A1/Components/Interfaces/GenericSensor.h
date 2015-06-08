@@ -1,11 +1,11 @@
 /**
  ******************************************************************************
- * @file    MotionSensor.h
+ * @file    GenericSensor.h
  * @author  AST / EST
  * @version V0.0.1
  * @date    13-April-2015
  * @brief   This file contains the abstract class describing in general
- *          the interfaces of an accelerometer
+ *          the interfaces of a generic sensor
  ******************************************************************************
  * @attention
  *
@@ -37,78 +37,57 @@
  */
 
 /* Define to prevent from recursive inclusion --------------------------------*/
-#ifndef __MOTION_SENSOR_CLASS_H
-#define __MOTION_SENSOR_CLASS_H
+#ifndef __GENERIC_SENSOR_CLASS_H
+#define __GENERIC_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <GenericSensor.h>
+#include <stdint.h>
 
 /* Classes  ------------------------------------------------------------------*/
-/** An abstract class for an Accelerometer
+/** An abstract class for Generic sensors
  */
-class MotionSensor : public GenericSensor
+class GenericSensor
 {
  public:
 	/**
-	 * @brief       Get current accelerometer linear acceleration X/Y/Z-axes values 
-	 *              in standard data units [mg]
-	 * @param[out]  pData Pointer to where to store linear accelerations to.
-	 *              pData must point to an array of (at least) three elements, where:
-	 *              pData[0] corresponds to X-axis,
-	 *              pData[1] corresponds to Y-axis, and
-	 *              pData[2] corresponds to Z-axis.
+	 * @brief       Initialization of sensor
+	 * @param[out]  ptr Pointer to device specific initalization structure
 	 * @return      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_X_Axes(int32_t *pData) = 0;
+	virtual int Init(void *ptr) = 0;
 
 	/**
-	 * @brief       Get current accelerometer raw data X/Y/Z-axes values 
-	 *              in device sepcific LSB units
-	 * @param[out]  pData Pointer to where to store accelerometer raw data to.
-	 *              pData must point to an array of (at least) three elements, where:
-	 *              pData[0] corresponds to X-axis,
-	 *              pData[1] corresponds to Y-axis, and
-	 *              pData[2] corresponds to Z-axis.
+	 * @brief       Enter sensor shutdown mode
 	 * @return      0 in case of success, an error code otherwise
 	 */
-	virtual int Get_X_AxesRaw(int16_t *pData) = 0;
-
-	/**
-	 * @brief       Get accelerometer's current sensitivity [mg/LSB]
-	 * @param[out]  pfData Pointer to where the accelerometer's sensitivity is stored to
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Get_X_Sensitivity(float *pfData) = 0;
-
-	/**
-	 * @brief       Get accelerometer's current output data rate [Hz]
-	 * @param[out]  pfData Pointer to where the accelerometer output data rate is stored to
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Get_X_ODR(float *pfData) = 0;
-
-	/**
-	 * @brief      Set accelerometer's output data rate
-	 * @param[in]  odr New value for accelerometer's output data rate in [Hz]
-	 * @return     0 in case of success, an error code otherwise
-	 */
-	virtual int Set_X_ODR(float odr) = 0;
-
-	/**
-	 * @brief       Get accelerometer's full scale value
-	 *              i.e. min/max measurable value [g]
-	 * @param[out]  pfData Pointer to where the accelerometer full scale value is stored to
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Get_X_FS(float *pfData) = 0;
+	virtual int PowerOff(void) = 0;
 	
 	/**
-	 * @brief      Set accelerometer's full scale value
-	 *             i.e. min/max measurable value
-	 * @param[in]  fs New full scale value for accelerometer in [g]
-	 * @return     0 in case of success, an error code otherwise
+	 * @brief       Get ID of sensor
+	 * @param[out]  id Pointer to where to store the ID to
+	 * @return      0 in case of success, an error code otherwise
 	 */
-	virtual int Set_X_FS(float fs) = 0;
+	virtual int ReadID(uint8_t *id) = 0;
+
+	/**
+	 * @brief       Reset sensor
+	 * @return      0 in case of success, an error code otherwise
+	 */
+	virtual int Reset(void) = 0;
+
+	/* Interrupt Interface */
+	/* betzw - TODO: WIP */
+	virtual void ConfigIT(uint16_t) = 0;
+	virtual void EnableIT(uint8_t) = 0;
+	virtual void DisableIT(uint8_t) = 0;
+	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
+	virtual void ClearIT(uint16_t, uint16_t) = 0;
+
+	/**
+	 * @brief       Attach a function to be called when an interrupt occurs
+	 * @param[in]   fptr A pointer to a void function, or 0 to set as none
+	 */
+	virtual void AttachIT(void (*fptr)(void)) = 0;
 };
 
-#endif /* __MOTION_SENSOR_CLASS_H */
+#endif /* __GENERIC_SENSOR_CLASS_H */

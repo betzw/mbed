@@ -79,12 +79,6 @@ class HTS221 : public HumiditySensor, public TempSensor {
 		return HTS221_RebootCmd();
 	}
 
-	virtual void ConfigIT(uint16_t) { /* not yet implemented */ }
-	virtual void EnableIT(uint8_t) { /* not yet implemented */ }
-	virtual void DisableIT(uint8_t) { /* not yet implemented */ }
-	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
-	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
-
 	virtual int GetHumidity(float *pfData) {
 		return HTS221_GetHumidity(pfData);
 	}
@@ -93,6 +87,11 @@ class HTS221 : public HumiditySensor, public TempSensor {
 		return HTS221_GetTemperature(pfData);
 	}
 
+	virtual void ConfigIT(uint16_t) { /* not yet implemented */ }
+	virtual void EnableIT(uint8_t) { /* not yet implemented */ }
+	virtual void DisableIT(uint8_t) { /* not yet implemented */ }
+	virtual uint8_t ITStatus(uint16_t, uint16_t) { /* not yet implemented */ return 0; }
+	virtual void ClearIT(uint16_t, uint16_t) { /* not yet implemented */ }
 	virtual void AttachIT(void (*fptr)(void)) { /* not yet implemented */ }
 
  protected:

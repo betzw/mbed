@@ -41,28 +41,14 @@
 #define __GYRO_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
+#include <GenericSensor.h>
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for a Gyroscope
  */
-class GyroSensor
+class GyroSensor : public GenericSensor
 {
  public:
-	/**
-	 * @brief       Initialization of gyroscope
-	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Init(void *ptr) = 0;
-	
-	/**
-	 * @brief       Get ID of gyroscope
-	 * @param[out]  id Pointer to where to store the ID to
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int ReadID(uint8_t *id) = 0;
-
 	/**
 	 * @brief       Get current gyroscope angular rate X/Y/Z-axes values 
 	 *              in standard data units [mdps]
