@@ -41,8 +41,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/HumiditySensor.h"
-#include "../Common/TempSensor.h"
+#include "../Interfaces/HumiditySensor.h"
+#include "../Interfaces/TempSensor.h"
 #include "hts221.h"
 
 /* Classes -------------------------------------------------------------------*/

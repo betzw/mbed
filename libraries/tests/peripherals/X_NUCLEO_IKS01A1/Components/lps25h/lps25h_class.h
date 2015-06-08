@@ -41,8 +41,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
-#include "../Common/PressureSensor.h"
-#include "../Common/TempSensor.h"
+#include "../Interfaces/PressureSensor.h"
+#include "../Interfaces/TempSensor.h"
 #include "lps25h.h"
 
 /* Classes -------------------------------------------------------------------*/
