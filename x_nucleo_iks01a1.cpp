@@ -48,10 +48,10 @@ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;
  * @brief  Constructor
  */
 X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
-	ht_sensor(*(new HTS221(*dev_i2c))),
-	magnetometer(*(new LIS3MDL(*dev_i2c))),
-	pressure_sensor(*(new LPS25H(*dev_i2c))),
-	gyroscope(*(new LSM6DS0(*dev_i2c)))
+	ht_sensor(new HTS221(*dev_i2c)),
+	magnetometer(new LIS3MDL(*dev_i2c)),
+	pressure_sensor(new LPS25H(*dev_i2c)),
+	gyroscope(new LSM6DS0(*dev_i2c))
 { 
 }
 
@@ -85,31 +85,43 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 }
 
 /**
+ * @brief  Initialize the singelton's sensors to default settings
+ * @return true if initialization successful, false otherwise
+ * @retval true if initialization successful, 
+ * @retval false otherwise
+ */
+bool X_NUCLEO_IKS01A1::Init(void) {
+	return (Init_HTS221() &&
+		Init_LIS3MDL() &&
+		Init_LPS25H() &&
+		Init_LSM6DS0());
+}
+
+/**
  * @brief  Initialize the singelton HT sensor
  * @return true if initialization successful, false otherwise
  */
-bool X_NUCLEO_IKS01A1::Init_HT(void) {
+bool X_NUCLEO_IKS01A1::Init_HTS221(void) {
 	uint8_t ht_id = 0;
 	HUM_TEMP_InitTypeDef InitStructure;
 
+	/* Check presence */
+	if((ht_sensor->ReadID(&ht_id) != HUM_TEMP_OK) ||
+	   (ht_id != I_AM_HTS221))
+		{
+			delete ht_sensor;
+			ht_sensor = NULL;
+			return true;
+		}
+	
 	/* Configure sensor */
 	InitStructure.OutputDataRate = HTS221_ODR_12_5Hz;
 
-	if(ht_sensor.Init(&InitStructure) != HUM_TEMP_OK)
+	if(ht_sensor->Init(&InitStructure) != HUM_TEMP_OK)
 		{
 			return false;
 		}
       
-	if(ht_sensor.ReadID(&ht_id) != HUM_TEMP_OK)
-		{
-			return false;
-		}
-	
-	if(ht_id != I_AM_HTS221)
-		{
-			return false;
-		}
-
 	return true;
 }
 
@@ -117,31 +129,30 @@ bool X_NUCLEO_IKS01A1::Init_HT(void) {
  * @brief  Initialize the singelton magnetometer
  * @return true if initialization successful, false otherwise
  */
-bool X_NUCLEO_IKS01A1::Init_MAG(void) {
+bool X_NUCLEO_IKS01A1::Init_LIS3MDL(void) {
 	uint8_t m_id = 0;
 	MAGNETO_InitTypeDef InitStructure;
 
+	/* Check presence */
+	if((magnetometer->ReadID(&m_id) != MAGNETO_OK) ||
+	   (m_id != I_AM_LIS3MDL_M))
+		{
+			delete magnetometer;
+			magnetometer = NULL;
+			return true;
+		}
+      
 	/* Configure sensor */
 	InitStructure.M_FullScale = LIS3MDL_M_FS_4;
 	InitStructure.M_OperatingMode = LIS3MDL_M_MD_CONTINUOUS;
 	InitStructure.M_XYOperativeMode = LIS3MDL_M_OM_HP;
 	InitStructure.M_OutputDataRate = LIS3MDL_M_DO_80;
 
-	if(magnetometer.Init(&InitStructure) != MAGNETO_OK)
+	if(magnetometer->Init(&InitStructure) != MAGNETO_OK)
 		{
 			return false;
 		}
       
-	if(magnetometer.ReadID(&m_id) != MAGNETO_OK)
-		{
-			return false;
-		}
-      
-	if(m_id != I_AM_LIS3MDL_M)
-		{
-			return false;
-		}
-
 	return true;
 }
 
@@ -149,10 +160,19 @@ bool X_NUCLEO_IKS01A1::Init_MAG(void) {
  * @brief  Initialize the singelton pressure sensor
  * @return true if initialization successful, false otherwise
  */
-bool X_NUCLEO_IKS01A1::Init_PRESS(void) {
+bool X_NUCLEO_IKS01A1::Init_LPS25H(void) {
 	uint8_t p_id = 0;
 	PRESSURE_InitTypeDef InitStructure;
 	
+	/* Check presence */
+	if((pressure_sensor->ReadID(&p_id) != PRESSURE_OK) ||
+	   (p_id != I_AM_LPS25H))
+		{
+			delete pressure_sensor;
+			pressure_sensor = NULL;
+			return true;
+		}
+            
 	/* Configure sensor */
 	InitStructure.OutputDataRate = LPS25H_ODR_1Hz;
 	InitStructure.BlockDataUpdate = LPS25H_BDU_CONT;
@@ -161,21 +181,11 @@ bool X_NUCLEO_IKS01A1::Init_PRESS(void) {
 	InitStructure.PressureResolution = LPS25H_P_RES_AVG_32;
 	InitStructure.TemperatureResolution = LPS25H_T_RES_AVG_16;
         
-	if(pressure_sensor.Init(&InitStructure) != PRESSURE_OK)
+	if(pressure_sensor->Init(&InitStructure) != PRESSURE_OK)
 		{
 			return false;
 		}
             
-	if(pressure_sensor.ReadID(&p_id) != PRESSURE_OK)
-		{
-			return false;
-		}
-            
-	if(p_id != I_AM_LPS25H)
-		{
-			return false;
-		}
-
 	return true;
 }
 
@@ -183,10 +193,19 @@ bool X_NUCLEO_IKS01A1::Init_PRESS(void) {
  * @brief  Initialize the singelton gyroscope
  * @return true if initialization successful, false otherwise
  */
-bool X_NUCLEO_IKS01A1::Init_GYRO(void) {
+bool X_NUCLEO_IKS01A1::Init_LSM6DS0(void) {
 	IMU_6AXES_InitTypeDef InitStructure;
 	uint8_t xg_id = 0;
 
+	/* Check presence */
+	if((gyroscope->ReadID(&xg_id) != IMU_6AXES_OK) ||
+	   (xg_id != I_AM_LSM6DS0_XG))
+		{
+			delete gyroscope;
+			gyroscope = NULL;
+			return true;
+		}
+            
 	/* Configure sensor */
 	InitStructure.G_FullScale       = 2000.0f; /* 2000DPS */
 	InitStructure.G_OutputDataRate  = 119.0f;  /* 119HZ */
@@ -200,20 +219,10 @@ bool X_NUCLEO_IKS01A1::Init_GYRO(void) {
 	InitStructure.X_Y_Axis          = 1;       /* Enable */
 	InitStructure.X_Z_Axis          = 1;       /* Enable */
               
-	if(gyroscope.Init(&InitStructure) != IMU_6AXES_OK)
+	if(gyroscope->Init(&InitStructure) != IMU_6AXES_OK)
 		{
 			return false; 
 		}
             
-	if(gyroscope.ReadID(&xg_id) != IMU_6AXES_OK)
-		{
-			return false;
-		}
-            
-	if(xg_id != I_AM_LSM6DS0_XG)
-		{
-			return false;
-		}
-
 	return true;
 }
