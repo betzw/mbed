@@ -52,6 +52,7 @@
 
 /*** Includes ----------------------------------------------------------------- ***/
 #include "mbed.h"
+#include "assert.h"
 #include "x_nucleo_iks01a1.h"
 
 #include <Ticker.h>
@@ -90,8 +91,8 @@ static DbgMCU enable_dbg;
 #endif // DBG_MCU
 
 static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance();
-static GyroSensor *gyroscope = mems_expansion_board->gyroscope;
-static MotionSensor *accelerometer = mems_expansion_board->gyroscope;
+static GyroSensor *gyroscope = mems_expansion_board->GetGyroscope();
+static MotionSensor *accelerometer = mems_expansion_board->GetAccelerometer();
 static MagneticSensor *magnetometer = mems_expansion_board->magnetometer;
 static HumiditySensor *humidity_sensor = mems_expansion_board->ht_sensor;;
 static PressureSensor *pressure_sensor = mems_expansion_board->pressure_sensor;
@@ -133,14 +134,30 @@ static char *printDouble(char* str, double v, int decimalDigits=2)
 
 /* Initialization function */
 static void init(void) {
-	uint8_t hts221_id_hum;
-	uint8_t hts221_id_temp;
+	uint8_t id1, id2;
 
 	/* Determine ID of Humidity & Temperature Sensor */
-	CALL_METH(humidity_sensor, ReadID, &hts221_id_hum, 0x0);
-	CALL_METH(temp_sensor1, ReadID, &hts221_id_temp, 0x0);
-    	printf("HTS221_ID (Humidity)    = 0x%x (%u)\n", hts221_id_hum, hts221_id_hum);
-    	printf("HTS221_ID (Temperature) = 0x%x (%u)\n", hts221_id_temp, hts221_id_temp);
+	CALL_METH(humidity_sensor, ReadID, &id1, 0x0);
+	CALL_METH(temp_sensor1, ReadID, &id2, 0x0);
+    	printf("Humidity  | Temperature Sensor ID = %s (0x%x | 0x%x)\n", 
+	       ((id1 == I_AM_HTS221) ? "HTS221 " : "UNKNOWN"),
+	       id1, id2
+	       );
+	assert(id1 == id2);
+
+	/* Determine ID of Gyro & Motion Sensor */
+	assert((mems_expansion_board->gyro_lsm6ds0 == NULL) ||
+	       (mems_expansion_board->gyro_lsm6ds3 == NULL));
+	CALL_METH(gyroscope, ReadID, &id1, 0x0);
+	CALL_METH(accelerometer, ReadID, &id2, 0x0);
+    	printf("Gyroscope | Motion Sensor ID      = %s (0x%x | 0x%x)\n", 
+	       ((id1 == I_AM_LSM6DS3_XG) ? "LSM6DS3" : 
+		((id1 == I_AM_LSM6DS0_XG) ? "LSM6DS0" : "UNKNOWN")),
+	       id1, id2
+	       );
+	assert(id1 == id2);
+
+	wait(1.5);
 }
 
 /* Main cycle function */
