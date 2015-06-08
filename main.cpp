@@ -90,13 +90,13 @@ static DbgMCU enable_dbg;
 #endif // DBG_MCU
 
 static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance();
-static GyroSensor &gyroscope = mems_expansion_board->gyroscope;
-static MotionSensor &accelerometer = mems_expansion_board->gyroscope;
-static MagneticSensor &magnetometer = mems_expansion_board->magnetometer;
-static HumiditySensor &humidity_sensor = mems_expansion_board->ht_sensor;;
-static PressureSensor &pressure_sensor = mems_expansion_board->pressure_sensor;
-static TempSensor &temp_sensor1 = mems_expansion_board->ht_sensor;
-static TempSensor &temp_sensor2 = mems_expansion_board->pressure_sensor;
+static GyroSensor *gyroscope = mems_expansion_board->gyroscope;
+static MotionSensor *accelerometer = mems_expansion_board->gyroscope;
+static MagneticSensor *magnetometer = mems_expansion_board->magnetometer;
+static HumiditySensor *humidity_sensor = mems_expansion_board->ht_sensor;;
+static PressureSensor *pressure_sensor = mems_expansion_board->pressure_sensor;
+static TempSensor *temp_sensor1 = mems_expansion_board->ht_sensor;
+static TempSensor *temp_sensor2 = mems_expansion_board->pressure_sensor;
 
 static Ticker ticker;
 static volatile bool timer_irq_triggered = false;
@@ -137,8 +137,8 @@ static void init(void) {
 	uint8_t hts221_id_temp;
 
 	/* Determine ID of Humidity & Temperature Sensor */
-	humidity_sensor.ReadID(&hts221_id_hum);
-	temp_sensor1.ReadID(&hts221_id_temp);
+	CALL_METH(humidity_sensor, ReadID, &hts221_id_hum, 0x0);
+	CALL_METH(temp_sensor1, ReadID, &hts221_id_temp, 0x0);
     	printf("HTS221_ID (Humidity)    = 0x%x (%u)\n", hts221_id_hum, hts221_id_hum);
     	printf("HTS221_ID (Temperature) = 0x%x (%u)\n", hts221_id_temp, hts221_id_temp);
 }
@@ -162,13 +162,13 @@ static void main_cycle(void) {
 	printf("===\n");
 
 	/* Determine Environmental Values */
-        temp_sensor1.GetTemperature(&TEMPERATURE_Value);
-        humidity_sensor.GetHumidity(&HUMIDITY_Value);
-        pressure_sensor.GetPressure(&PRESSURE_Value);
-        temp_sensor2.GetFahrenheit(&PRESSURE_Temp_Value);
-        magnetometer.Get_M_Axes((int32_t *)&MAG_Value);
-        accelerometer.Get_X_Axes((int32_t *)&ACC_Value);
-        gyroscope.Get_G_Axes((int32_t *)&GYR_Value);
+	CALL_METH(temp_sensor1, GetTemperature, &TEMPERATURE_Value, 0.0f);
+	CALL_METH(humidity_sensor, GetHumidity, &HUMIDITY_Value, 0.0f);
+	CALL_METH(pressure_sensor, GetPressure, &PRESSURE_Value, 0.0f);
+	CALL_METH(temp_sensor2, GetFahrenheit, &PRESSURE_Temp_Value, 0.0f);
+	CALL_METH(magnetometer, Get_M_Axes, (int32_t *)&MAG_Value, 0);
+	CALL_METH(accelerometer, Get_X_Axes, (int32_t *)&ACC_Value, 0);
+	CALL_METH(gyroscope, Get_G_Axes, (int32_t *)&GYR_Value, 0);
 
 	/* Print Values Out */
         printf("                      X         Y         Z\n"); 
