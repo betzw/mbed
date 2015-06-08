@@ -190,7 +190,7 @@ bool X_NUCLEO_IKS01A1::Init_LSM6DS0(void) {
 	uint8_t xg_id = 0;
 
 	/* Check presence */
-	if((gyro_lsm6ds3 != NULL) ||
+	if((gyro_lsm6ds3 != NULL) || // by default do not instantiate two gyroscopes
 	   (gyro_lsm6ds0->ReadID(&xg_id) != IMU_6AXES_OK) ||
 	   (xg_id != I_AM_LSM6DS0_XG))
 		{

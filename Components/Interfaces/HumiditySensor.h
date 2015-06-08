@@ -41,58 +41,20 @@
 #define __HUMIDITY_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
+#include <GenericSensor.h>
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for Humidity sensors
  */
-class HumiditySensor
+class HumiditySensor : public GenericSensor
 {
  public:
-	/**
-	 * @brief       Initialization of humidity sensor
-	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Init(void *ptr) = 0;
-
-	/**
-	 * @brief       Enter sensor shutdown mode
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int PowerOff(void) = 0;
-	
-	/**
-	 * @brief       Get ID of humidity sensor
-	 * @param[out]  id Pointer to where to store the ID to
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int ReadID(uint8_t *id) = 0;
-
-	/**
-	 * @brief       Reset sensor
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Reset(void) = 0;
-
 	/**
 	 * @brief       Get current humidity [%]
 	 * @param[out]  pfData Pointer to where to store humidity to
 	 * @return      0 in case of success, an error code otherwise
 	 */
 	virtual int GetHumidity(float *pfData) = 0;
-
-	virtual void ConfigIT(uint16_t) = 0;
-	virtual void EnableIT(uint8_t) = 0;
-	virtual void DisableIT(uint8_t) = 0;
-	virtual uint8_t ITStatus(uint16_t, uint16_t) = 0;
-	virtual void ClearIT(uint16_t, uint16_t) = 0;
-
-	/**
-	 * @brief       Attach a function to be called when an interrupt occurs
-	 * @param[in]   fptr A pointer to a void function, or 0 to set as none
-	 */
-	virtual void AttachIT(void (*fptr)(void)) = 0;
 };
 
 #endif /* __HUMIDITY_SENSOR_CLASS_H */

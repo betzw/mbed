@@ -41,28 +41,14 @@
 #define __MAGNETIC_SENSOR_CLASS_H
 
 /* Includes ------------------------------------------------------------------*/
-#include <stdint.h>
+#include <GenericSensor.h>
 
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for a magnetometer
  */
-class MagneticSensor
+class MagneticSensor : public GenericSensor
 {
  public:
-	/**
-	 * @brief       Initialization of magnetometer
-	 * @param[out]  ptr Pointer to device specific initalization structure
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int Init(void *ptr) = 0;
-	
-	/**
-	 * @brief       Get ID of magnetometer
-	 * @param[out]  id Pointer to where to store the ID to
-	 * @return      0 in case of success, an error code otherwise
-	 */
-	virtual int ReadID(uint8_t *id) = 0;
-
 	/**
 	 * @brief       Get current magnetometer magnetic X/Y/Z-axes values 
 	 *              in standard data units [mgauss]
