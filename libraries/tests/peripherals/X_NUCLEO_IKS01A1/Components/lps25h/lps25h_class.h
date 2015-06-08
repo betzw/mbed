@@ -57,6 +57,10 @@ class LPS25H : public PressureSensor, public TempSensor {
 		LPS25H_SlaveAddress = LPS25H_ADDRESS_HIGH;
 	}
 	
+	/** Destructor
+	 */
+        virtual ~LPS25H() {}
+	
 	/*** Interface Methods ***/
 	virtual int Init(void *init_struct) {
 		return LPS25H_Init((PRESSURE_InitTypeDef*)init_struct);

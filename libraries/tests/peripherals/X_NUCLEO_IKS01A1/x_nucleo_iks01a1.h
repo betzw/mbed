@@ -47,6 +47,7 @@
 #include "lis3mdl/lis3mdl_class.h"
 #include "lps25h/lps25h_class.h"
 #include "lsm6ds0/lsm6ds0_class.h"
+#include "lsm6ds3/lsm6ds3_class.h"
 #include "DevI2C.h"
 
 /* Macros -------------------------------------------------------------------*/
@@ -65,6 +66,9 @@
  *  -# a LPS25H MEMS Pressure Sensor\n
  *  -# and a LSM6DS0 3D Acceleromenter and 3D Gyroscope\n
  *
+ * The expansion board features also a DIL 24-pin socket which makes it possible
+ * to add further MEMS adapters and other sensors (e.g. UV index). 
+ *
  * It is intentionally implemented as a singleton because only one
  * X_NUCLEO_IKS01A1 at a time might be deployed in a HW component stack.\n
  * In order to get the singleton instance you have to call class method `Instance()`, 
@@ -79,11 +83,36 @@ class X_NUCLEO_IKS01A1
  protected:
 	X_NUCLEO_IKS01A1(DevI2C *ext_i2c);
 
-	bool Init(void);
+	/**
+	 * @brief  Initialize the singleton's sensors to default settings
+	 * @retval true if initialization successful, 
+	 * @retval false otherwise
+	 */
+	bool Init(void) {
+		return (Init_HTS221() &&
+			Init_LIS3MDL() &&
+			Init_LPS25H() &&
+			Init_Gyro());
+	}
+	
+	/**
+	 * @brief  Initialize the singleton's gyroscope
+	 * @retval true if initialization successful, 
+	 * @retval false otherwise
+	 * @note   only one sensor among LSM6DS3 & LSM6DS0 will be instantiated
+	 *         with a preference on LSM6DS3 when available
+	 */
+	bool Init_Gyro(void) {
+		// Note: order is important!
+		return (Init_LSM6DS3() &&
+			Init_LSM6DS0());
+	}
+
 	bool Init_HTS221(void);
 	bool Init_LIS3MDL(void);
 	bool Init_LPS25H(void);
 	bool Init_LSM6DS0(void);
+	bool Init_LSM6DS3(void);
 
  public:
 	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
@@ -93,7 +122,17 @@ class X_NUCLEO_IKS01A1
 	HTS221  *ht_sensor;
 	LIS3MDL *magnetometer;
 	LPS25H  *pressure_sensor;
-	LSM6DS0 *gyroscope;
+
+	GyroSensor *GetGyroscope(void) {
+		return ((gyro_lsm6ds3 == NULL) ? 
+			(GyroSensor*)gyro_lsm6ds0 : (GyroSensor*)gyro_lsm6ds3);
+	}
+	MotionSensor *GetAccelerometer(void) {
+		return ((gyro_lsm6ds3 == NULL) ? 
+			(MotionSensor*)gyro_lsm6ds0 : (MotionSensor*)gyro_lsm6ds3);
+	}
+	LSM6DS0 *gyro_lsm6ds0;
+	LSM6DS3 *gyro_lsm6ds3;
 
  private:
 	static X_NUCLEO_IKS01A1 *_instance;
