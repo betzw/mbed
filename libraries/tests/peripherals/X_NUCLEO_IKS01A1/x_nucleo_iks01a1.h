@@ -49,6 +49,12 @@
 #include "lsm6ds0/lsm6ds0_class.h"
 #include "DevI2C.h"
 
+/* Macros -------------------------------------------------------------------*/
+#define CALL_METH(obj, meth, param, ret) ((obj == NULL) ?		\
+					  ((*(param) = (ret)), 0) :	\
+					  ((obj)->meth(param))		\
+					  )
+
 /* Classes -------------------------------------------------------------------*/
 /** Class X_NUCLEO_IKS01A1 is intended to represent the MEMS Inertial & Environmental 
  *  Nucleo Expansion Board with the same name.
@@ -73,27 +79,21 @@ class X_NUCLEO_IKS01A1
  protected:
 	X_NUCLEO_IKS01A1(DevI2C *ext_i2c);
 
-	bool Init(void) {
-		return (Init_HT() &&
-			Init_MAG() &&
-			Init_PRESS() &&
-			Init_GYRO());
-	}
-
-	bool Init_HT(void);
-	bool Init_MAG(void);
-	bool Init_PRESS(void);
-	bool Init_GYRO(void);
+	bool Init(void);
+	bool Init_HTS221(void);
+	bool Init_LIS3MDL(void);
+	bool Init_LPS25H(void);
+	bool Init_LSM6DS0(void);
 
  public:
 	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
 
-	DevI2C *dev_i2c;
+	DevI2C  *dev_i2c;
 
-	HTS221 &ht_sensor;
-	LIS3MDL &magnetometer;
-	LPS25H &pressure_sensor;
-	LSM6DS0 &gyroscope;
+	HTS221  *ht_sensor;
+	LIS3MDL *magnetometer;
+	LPS25H  *pressure_sensor;
+	LSM6DS0 *gyroscope;
 
  private:
 	static X_NUCLEO_IKS01A1 *_instance;
