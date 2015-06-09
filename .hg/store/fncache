@@ -1,8 +1,10 @@
+data/STM32Nucleo_BLE_Samples.uvprojx.i
 data/BLE_API.lib.i
 data/BLE_BlueNRG.lib.i
 data/main.cpp.i
 data/Samples/SensorService.h.i
 data/Samples/HRMSample.cpp.i
+data/STM32Nucleo_BLE_Samples.uvoptx.i
 data/Samples/Samples.h.i
 data/Samples/SensorService.cpp.i
 data/mbed.bld.i

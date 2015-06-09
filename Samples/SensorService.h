@@ -33,15 +33,15 @@ typedef struct {
 extern AxesRaw_t axes_data;
 
 // Motion Sensor UUIDs
-extern const uint8_t  AccServiceUUID[LENGTH_OF_LONG_UUID];
-extern const uint8_t  AccServiceFreeFallCharacteristicUUID[LENGTH_OF_LONG_UUID];
-extern const uint8_t  AccServiceAccCharacteristicUUID[LENGTH_OF_LONG_UUID];
+extern const uint8_t  AccServiceUUID[UUID::LENGTH_OF_LONG_UUID];
+extern const uint8_t  AccServiceFreeFallCharacteristicUUID[UUID::LENGTH_OF_LONG_UUID];
+extern const uint8_t  AccServiceAccCharacteristicUUID[UUID::LENGTH_OF_LONG_UUID];
 
 // Environmental Sensor UUIDs
-extern const uint8_t  EnvSensServiceUUID[LENGTH_OF_LONG_UUID];
-extern const uint8_t  TempCharacteristicUUID[LENGTH_OF_LONG_UUID];
-extern const uint8_t  PressCharacteristicUUID[LENGTH_OF_LONG_UUID];
-extern const uint8_t  HumidityCharacteristicUUID[LENGTH_OF_LONG_UUID];
+extern const uint8_t  EnvSensServiceUUID[UUID::LENGTH_OF_LONG_UUID];
+extern const uint8_t  TempCharacteristicUUID[UUID::LENGTH_OF_LONG_UUID];
+extern const uint8_t  PressCharacteristicUUID[UUID::LENGTH_OF_LONG_UUID];
+extern const uint8_t  HumidityCharacteristicUUID[UUID::LENGTH_OF_LONG_UUID];
 
 /**
 * @class SensorService
