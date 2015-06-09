@@ -1,1 +1,0 @@
-Add BLUENRG_MS macro dependecy
