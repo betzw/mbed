@@ -291,7 +291,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
     }
 
     tBleStatus ret;
-    const LongUUIDBytes_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
+    //const LongUUIDBytes_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
     /* set scan response data */
     hci_le_set_scan_resp_data(scan_rsp_length, scan_response_payload); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
 
