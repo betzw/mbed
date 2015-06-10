@@ -14,7 +14,7 @@
         <TargetCommonOption>
           <Device>STM32F401RETx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.4.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.3.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IROM(0x08000000,0x80000) IRAM(0x20000000,0x18000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -365,7 +365,7 @@
               <MiscControls>--gnu --no_rtti </MiscControls>
               <Define>TARGET_NUCLEO_F401RE,  TARGET_M4,  TARGET_CORTEX_M,  TARGET_STM,  TARGET_STM32F4,  TARGET_STM32F401RE,  TOOLCHAIN_ARM_MICRO,  TOOLCHAIN_ARM,  __CORTEX_M4,  ARM_MATH_CM4,  __FPU_PRESENT=1,  MBED_BUILD_TIMESTAMP=1433766456.79,  __MBED__=1,  TARGET_FF_ARDUINO,  TARGET_FF_MORPHO,  __ASSERT_MSG,</Define>
               <Undefine></Undefine>
-              <IncludePath>.;  Samples;  ../mbed;  ../mbed/TARGET_NUCLEO_F401RE;  ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO;  ../mbed/TARGET_NUCLEO_F401RE/TARGET_STM;  ../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4;  ../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE;  ../BLE_API;  ../BLE_API/common;  ../BLE_API/services;  ../BLE_API/public;  ../BLE_BlueNRG;  ../BLE_BlueNRG/utils;  ../BLE_BlueNRG/utils/src;  ../BLE_BlueNRG/utils/inc;  ../BLE_BlueNRG/BlueNRG_HCI;  ../BLE_BlueNRG/BlueNRG_HCI/utils;  ../BLE_BlueNRG/BlueNRG_HCI/hci;  ../BLE_BlueNRG/BlueNRG_HCI/hci/controller;  ../BLE_BlueNRG/BlueNRG_HCI/includes;  ../BLE_BlueNRG/platform;  ../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1;  ../BLE_BlueNRG/platform/src;  ../BLE_BlueNRG/platform/inc</IncludePath>
+              <IncludePath>.;  ../Samples;  ../../mbed;  ../../mbed/TARGET_NUCLEO_F401RE;  ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO;  ../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM;  ../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4;  ../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE;  ../../BLE_API;  ../../BLE_API/common;  ../../BLE_API/services;  ../../BLE_API/public;  ../../BLE_BlueNRG;  ../../BLE_BlueNRG/utils;  ../../BLE_BlueNRG/utils/src;  ../../BLE_BlueNRG/utils/inc;  ../../BLE_BlueNRG/BlueNRG_HCI;  ../../BLE_BlueNRG/BlueNRG_HCI/utils;  ../../BLE_BlueNRG/BlueNRG_HCI/hci;  ../../BLE_BlueNRG/BlueNRG_HCI/hci/controller;  ../../BLE_BlueNRG/BlueNRG_HCI/includes;  ../../BLE_BlueNRG/platform;  ../../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1;  ../../BLE_BlueNRG/platform/src;  ../../BLE_BlueNRG/platform/inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -395,156 +395,156 @@
             <TextAddressRange>0x00000000</TextAddressRange>
             <DataAddressRange>0x10000000</DataAddressRange>
             <pXoBase></pXoBase>
-            <ScatterFile>../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f401xe.sct</ScatterFile>
+            <ScatterFile>../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f401xe.sct</ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
             <Misc>
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dma.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dma.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_spdifrx.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_spdifrx.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pcd.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pcd.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_hash.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_hash.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cryp.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cryp.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/sys.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/sys.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_usart.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_usart.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_nor.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_nor.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_uart.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_uart.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_adc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_adc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rcc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rcc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_flash.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_flash.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dac.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dac.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rtc_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rtc_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2c.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2c.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/mbed_overrides.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/mbed_overrides.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_crc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_crc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cec.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cec.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_sdmmc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_sdmmc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_msp_template.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_msp_template.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_fmc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_fmc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_usb.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_usb.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2s_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2s_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/startup_stm32f401xe.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/startup_stm32f401xe.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rtc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rtc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sd.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sd.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_qspi.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_qspi.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sram.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sram.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_fmpi2c.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_fmpi2c.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_iwdg.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_iwdg.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/board.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/board.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pwr_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pwr_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_tim.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_tim.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_eth.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_eth.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_flash_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_flash_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_smartcard.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_smartcard.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dcmi.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dcmi.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sai_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sai_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/system_stm32f4xx.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/system_stm32f4xx.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_gpio.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_gpio.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dcmi_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dcmi_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_tim_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_tim_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sdram.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sdram.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dma_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dma_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/cmsis_nvic.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/cmsis_nvic.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dac_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dac_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_hcd.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_hcd.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pccard.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pccard.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/hal_tick.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/hal_tick.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_hash_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_hash_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_ltdc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_ltdc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dma2d.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_dma2d.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_fmpi2c_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_fmpi2c_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rcc_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rcc_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/retarget.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/retarget.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_spi.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_spi.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cortex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cortex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_irda.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_irda.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_wwdg.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_wwdg.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sai.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_sai.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pcd_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pcd_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pwr.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_pwr.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cryp_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_cryp_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rng.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_rng.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_nand.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_nand.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_fsmc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_ll_fsmc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_flash_ramfunc.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_flash_ramfunc.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_adc_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_adc_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2s.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2s.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_can.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_can.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2c_ex.o
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/stm32f4xx_hal_i2c_ex.o
             
-              ../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/mbed.ar
+              ../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_ARM_MICRO/mbed.ar
             
             </Misc>
             <LinkerInputFile></LinkerInputFile>
@@ -559,7 +559,7 @@
             <File>
               <FileName>list.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/utils/list.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/utils/list.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -607,7 +607,7 @@
             <File>
               <FileName>osal.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/utils/osal.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/utils/osal.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -655,7 +655,7 @@
             <File>
               <FileName>gp_timer.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/utils/gp_timer.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/utils/gp_timer.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -703,7 +703,7 @@
             <File>
               <FileName>hci.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/hci.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/hci.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -751,7 +751,7 @@
             <File>
               <FileName>hci_dma_lp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/hci_dma_lp.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/hci_dma_lp.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -799,7 +799,7 @@
             <File>
               <FileName>bluenrg_IFR.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_IFR.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_IFR.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -847,7 +847,7 @@
             <File>
               <FileName>bluenrg_gap_aci.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gap_aci.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gap_aci.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -895,7 +895,7 @@
             <File>
               <FileName>bluenrg_l2cap_aci.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_l2cap_aci.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_l2cap_aci.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -943,7 +943,7 @@
             <File>
               <FileName>bluenrg_gatt_aci.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gatt_aci.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gatt_aci.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -991,7 +991,7 @@
             <File>
               <FileName>bluenrg_utils.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_utils.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_utils.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1039,7 +1039,7 @@
             <File>
               <FileName>bluenrg_updater_aci.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_updater_aci.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_updater_aci.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1087,7 +1087,7 @@
             <File>
               <FileName>bluenrg_hal_aci.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_hal_aci.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_hal_aci.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1135,7 +1135,7 @@
             <File>
               <FileName>stm32_bluenrg_ble.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1183,7 +1183,7 @@
             <File>
               <FileName>stm32_bluenrg_ble_dma_lp.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble_dma_lp.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble_dma_lp.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1231,7 +1231,7 @@
             <File>
               <FileName>clock.c</FileName>
               <FileType>1</FileType>
-              <FilePath>../BLE_BlueNRG/platform/src/clock.c</FilePath>
+              <FilePath>../../BLE_BlueNRG/platform/src/clock.c</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1279,7 +1279,7 @@
             <File>
               <FileName>main.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>main.cpp</FilePath>
+              <FilePath>../main.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1327,7 +1327,7 @@
             <File>
               <FileName>HRMSample.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>Samples/HRMSample.cpp</FilePath>
+              <FilePath>../Samples/HRMSample.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1375,7 +1375,7 @@
             <File>
               <FileName>SensorDemo.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>Samples/SensorDemo.cpp</FilePath>
+              <FilePath>../Samples/SensorDemo.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1423,7 +1423,7 @@
             <File>
               <FileName>SensorService.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>Samples/SensorService.cpp</FilePath>
+              <FilePath>../Samples/SensorService.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1471,7 +1471,7 @@
             <File>
               <FileName>BLEDevice.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_API/common/BLEDevice.cpp</FilePath>
+              <FilePath>../../BLE_API/common/BLEDevice.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1519,7 +1519,7 @@
             <File>
               <FileName>UARTService.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_API/services/UARTService.cpp</FilePath>
+              <FilePath>../../BLE_API/services/UARTService.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1567,7 +1567,7 @@
             <File>
               <FileName>DFUService.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_API/services/DFUService.cpp</FilePath>
+              <FilePath>../../BLE_API/services/DFUService.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1615,7 +1615,7 @@
             <File>
               <FileName>BlueNRGDevice.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRGDevice.cpp</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRGDevice.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1663,7 +1663,7 @@
             <File>
               <FileName>BlueNRGGap.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRGGap.cpp</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRGGap.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1711,7 +1711,7 @@
             <File>
               <FileName>BlueNRGGattServer.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_BlueNRG/BlueNRGGattServer.cpp</FilePath>
+              <FilePath>../../BLE_BlueNRG/BlueNRGGattServer.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1759,7 +1759,7 @@
             <File>
               <FileName>Payload.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_BlueNRG/utils/src/Payload.cpp</FilePath>
+              <FilePath>../../BLE_BlueNRG/utils/src/Payload.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1807,7 +1807,7 @@
             <File>
               <FileName>Utils.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_BlueNRG/utils/src/Utils.cpp</FilePath>
+              <FilePath>../../BLE_BlueNRG/utils/src/Utils.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>
@@ -1855,7 +1855,7 @@
             <File>
               <FileName>btle.cpp</FileName>
               <FileType>8</FileType>
-              <FilePath>../BLE_BlueNRG/platform/src/btle.cpp</FilePath>
+              <FilePath>../../BLE_BlueNRG/platform/src/btle.cpp</FilePath>
               <FileOption>
                 <CommonProperty>
                   <UseCPPCompiler>2</UseCPPCompiler>

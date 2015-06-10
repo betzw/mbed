@@ -82,32 +82,52 @@
         <Book>
           <Number>0</Number>
           <Title>Getting Started (STM32F401C-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.4.0\MDK/Boards/ST/STM32F401C-Discovery/Documentation/DM00092826.pdf</Path>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.3.0\MDK\Boards\ST\STM32F401C-Discovery\Documentation\DM00092826.pdf</Path>
         </Book>
         <Book>
           <Number>1</Number>
           <Title>User Manual (STM32F401C-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.4.0\MDK/Boards/ST/STM32F401C-Discovery/Documentation/DM00093902.pdf</Path>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.3.0\MDK\Boards\ST\STM32F401C-Discovery\Documentation\DM00093902.pdf</Path>
         </Book>
         <Book>
           <Number>2</Number>
           <Title>Bill of Materials (STM32F401C-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.4.0\MDK/Boards/ST/STM32F401C-Discovery/Documentation/stm32f401c-disco_bom.zip</Path>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.3.0\MDK\Boards\ST\STM32F401C-Discovery\Documentation\stm32f401c-disco_bom.zip</Path>
         </Book>
         <Book>
           <Number>3</Number>
           <Title>Gerber Files (STM32F401C-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.4.0\MDK/Boards/ST/STM32F401C-Discovery/Documentation/stm32f401c-disco_gerber.zip</Path>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.3.0\MDK\Boards\ST\STM32F401C-Discovery\Documentation\stm32f401c-disco_gerber.zip</Path>
         </Book>
         <Book>
           <Number>4</Number>
           <Title>Schematics (STM32F401C-Discovery)</Title>
-          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.4.0\MDK/Boards/ST/STM32F401C-Discovery/Documentation/stm32f401c-disco_sch.zip</Path>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.3.0\MDK\Boards\ST\STM32F401C-Discovery\Documentation\stm32f401c-disco_sch.zip</Path>
         </Book>
         <Book>
           <Number>5</Number>
+          <Title>User Manual (NUCLEO-F401RE)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32NUCLEO_BSP\1.0.0\Documents\DM00105823.pdf</Path>
+        </Book>
+        <Book>
+          <Number>6</Number>
+          <Title>Getting started (NUCLEO-F401RE)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32NUCLEO_BSP\1.0.0\Documents\DM00105925.pdf</Path>
+        </Book>
+        <Book>
+          <Number>7</Number>
+          <Title>Schematics (NUCLEO-F401RE)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32NUCLEO_BSP\1.0.0\Documents\MB1136.pdf</Path>
+        </Book>
+        <Book>
+          <Number>8</Number>
           <Title>STM32F401C-Discovery Web Page (STM32F401C-Discovery)</Title>
           <Path>http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1199/PF259098</Path>
+        </Book>
+        <Book>
+          <Number>9</Number>
+          <Title>Nucleo STM32 F4 series development board (NUCLEO-F401RE)</Title>
+          <Path>http://www.st.com/web/en/catalog/tools/PF260000</Path>
         </Book>
       </Books>
       <DebugOpt>
@@ -231,7 +251,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/utils/list.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/utils/list.c</PathWithFileName>
       <FilenameWithoutPath>list.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -244,7 +264,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/utils/osal.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/utils/osal.c</PathWithFileName>
       <FilenameWithoutPath>osal.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -257,7 +277,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/utils/gp_timer.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/utils/gp_timer.c</PathWithFileName>
       <FilenameWithoutPath>gp_timer.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -270,7 +290,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/hci.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/hci.c</PathWithFileName>
       <FilenameWithoutPath>hci.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -283,7 +303,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/hci_dma_lp.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/hci_dma_lp.c</PathWithFileName>
       <FilenameWithoutPath>hci_dma_lp.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -296,7 +316,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_IFR.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_IFR.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_IFR.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -309,7 +329,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gap_aci.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gap_aci.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_gap_aci.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -322,7 +342,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_l2cap_aci.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_l2cap_aci.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_l2cap_aci.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -335,7 +355,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gatt_aci.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_gatt_aci.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_gatt_aci.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -348,7 +368,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_utils.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_utils.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_utils.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -361,7 +381,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_updater_aci.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_updater_aci.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_updater_aci.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -374,7 +394,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_hal_aci.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRG_HCI/hci/controller/bluenrg_hal_aci.c</PathWithFileName>
       <FilenameWithoutPath>bluenrg_hal_aci.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -387,7 +407,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble.c</PathWithFileName>
       <FilenameWithoutPath>stm32_bluenrg_ble.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -400,7 +420,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble_dma_lp.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1/stm32_bluenrg_ble_dma_lp.c</PathWithFileName>
       <FilenameWithoutPath>stm32_bluenrg_ble_dma_lp.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -413,7 +433,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/platform/src/clock.c</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/platform/src/clock.c</PathWithFileName>
       <FilenameWithoutPath>clock.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -426,7 +446,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>main.cpp</PathWithFileName>
+      <PathWithFileName>../main.cpp</PathWithFileName>
       <FilenameWithoutPath>main.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -439,7 +459,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>Samples/HRMSample.cpp</PathWithFileName>
+      <PathWithFileName>../Samples/HRMSample.cpp</PathWithFileName>
       <FilenameWithoutPath>HRMSample.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -452,7 +472,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>Samples/SensorDemo.cpp</PathWithFileName>
+      <PathWithFileName>../Samples/SensorDemo.cpp</PathWithFileName>
       <FilenameWithoutPath>SensorDemo.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -465,7 +485,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>Samples/SensorService.cpp</PathWithFileName>
+      <PathWithFileName>../Samples/SensorService.cpp</PathWithFileName>
       <FilenameWithoutPath>SensorService.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -478,7 +498,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_API/common/BLEDevice.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_API/common/BLEDevice.cpp</PathWithFileName>
       <FilenameWithoutPath>BLEDevice.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -491,7 +511,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_API/services/UARTService.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_API/services/UARTService.cpp</PathWithFileName>
       <FilenameWithoutPath>UARTService.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -504,7 +524,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_API/services/DFUService.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_API/services/DFUService.cpp</PathWithFileName>
       <FilenameWithoutPath>DFUService.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -517,7 +537,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRGDevice.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRGDevice.cpp</PathWithFileName>
       <FilenameWithoutPath>BlueNRGDevice.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -530,7 +550,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRGGap.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRGGap.cpp</PathWithFileName>
       <FilenameWithoutPath>BlueNRGGap.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -543,7 +563,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/BlueNRGGattServer.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/BlueNRGGattServer.cpp</PathWithFileName>
       <FilenameWithoutPath>BlueNRGGattServer.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -556,7 +576,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/utils/src/Payload.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/utils/src/Payload.cpp</PathWithFileName>
       <FilenameWithoutPath>Payload.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -569,7 +589,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/utils/src/Utils.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/utils/src/Utils.cpp</PathWithFileName>
       <FilenameWithoutPath>Utils.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -582,7 +602,7 @@
       <Focus>0</Focus>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>../BLE_BlueNRG/platform/src/btle.cpp</PathWithFileName>
+      <PathWithFileName>../../BLE_BlueNRG/platform/src/btle.cpp</PathWithFileName>
       <FilenameWithoutPath>btle.cpp</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
