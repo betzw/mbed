@@ -51,7 +51,7 @@
 class LPS25H : public PressureSensor, public TempSensor {
  public:
 	/** Constructor
-	 * @param i2c device I2C to be used for communication
+	 * @param[in] i2c device I2C to be used for communication
 	 */
         LPS25H(DevI2C &i2c) : PressureSensor(), TempSensor(), dev_i2c(i2c) {
 		LPS25H_SlaveAddress = LPS25H_ADDRESS_HIGH;
@@ -114,8 +114,6 @@ protected:
 
 	/**
 	 * @brief  Configures LPS25H interrupt lines for NUCLEO boards
-	 * @param  None
-	 * @retval None
 	 */
 	void LPS25H_IO_ITConfig(void)
 	{
@@ -124,7 +122,6 @@ protected:
 
 	/**
 	 * @brief  Configures LPS25H I2C interface
-	 * @param  None
 	 * @retval PRESSURE_OK in case of success, an error code otherwise
 	 */
 	PRESSURE_StatusTypeDef LPS25H_IO_Init(void)
@@ -133,11 +130,12 @@ protected:
 	}
 
 	/**
-	 * @brief utility function to read data from STC3115
-	 * @param  pBuffer: pointer to data to be read.
-	 * @param  RegisterAddr: specifies internal address register to read from.
-	 * @param  NumByteToRead: number of bytes to be read.
-	 * @retval PRESSURE_OK if ok, PRESSURE_ERROR if an I2C error has occured
+	 * @brief  Utility function to read data from LPS25H
+	 * @param  pBuffer pointer to the byte-array to read data in to
+	 * @param  RegisterAddr specifies internal address register to read from.
+	 * @param  NumByteToRead number of bytes to be read.
+	 * @retval PRESSURE_OK if ok, 
+	 * @retval PRESSURE_ERROR if an I2C error has occured
 	 */
 	PRESSURE_StatusTypeDef LPS25H_IO_Read(uint8_t* pBuffer, 
 					      uint8_t RegisterAddr, uint16_t NumByteToRead)
@@ -153,11 +151,12 @@ protected:
 	}
 	
 	/**
-	 * @brief utility function to write data to STC3115
-	 * @param  pBuffer: pointer to buffer to be filled.
-	 * @param  RegisterAddr: specifies internal address register to read from.
-	 * @param  NumByteToWrite: number of bytes to write.
-	 * @retval 0 if ok, -1 if an I2C error has occured
+	 * @brief  Utility function to write data to LPS25H
+	 * @param  pBuffer pointer to the byte-array data to send
+	 * @param  RegisterAddr specifies internal address register to read from.
+	 * @param  NumByteToWrite number of bytes to write.
+	 * @retval PRESSURE_OK if ok, 
+	 * @retval PRESSURE_ERROR if an I2C error has occured
 	 */
 	PRESSURE_StatusTypeDef LPS25H_IO_Write(uint8_t* pBuffer, 
 					       uint8_t RegisterAddr, uint16_t NumByteToWrite)

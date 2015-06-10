@@ -51,7 +51,7 @@
 class LSM6DS0 : public GyroSensor, public MotionSensor {
  public:
 	/** Constructor
-	 * @param i2c device I2C to be used for communication
+	 * @param[in] i2c device I2C to be used for communication
 	 */
         LSM6DS0(DevI2C &i2c) : GyroSensor(), MotionSensor(), dev_i2c(i2c) {
 	}
@@ -149,8 +149,6 @@ class LSM6DS0 : public GyroSensor, public MotionSensor {
 
 	/**
 	 * @brief  Configures LSM6DS0 interrupt lines for NUCLEO boards
-	 * @param  None
-	 * @retval None
 	 */
 	void LSM6DS0_IO_ITConfig(void)
 	{
@@ -159,7 +157,6 @@ class LSM6DS0 : public GyroSensor, public MotionSensor {
 
 	/**
 	 * @brief  Configures LSM6DS0 I2C interface
-	 * @param  None
 	 * @retval IMU_6AXES_OK in case of success, an error code otherwise
 	 */
 	IMU_6AXES_StatusTypeDef LSM6DS0_IO_Init(void)
@@ -168,11 +165,12 @@ class LSM6DS0 : public GyroSensor, public MotionSensor {
 	}
 
 	/**
-	 * @brief utility function to read data from STC3115
-	 * @param  pBuffer: pointer to data to be read.
-	 * @param  RegisterAddr: specifies internal address register to read from.
-	 * @param  NumByteToRead: number of bytes to be read.
-	 * @retval IMU_6AXES_OK if ok, IMU_6AXES_ERROR if an I2C error has occured
+	 * @brief  Utility function to read data from LSM6DS0
+	 * @param  pBuffer pointer to the byte-array to read data in to
+	 * @param  RegisterAddr specifies internal address register to read from.
+	 * @param  NumByteToRead number of bytes to be read.
+	 * @retval IMU_6AXES_OK if ok, 
+	 * @retval IMU_6AXES_ERROR if an I2C error has occured
 	 */
 	IMU_6AXES_StatusTypeDef LSM6DS0_IO_Read(uint8_t* pBuffer, 
 					      uint8_t RegisterAddr, uint16_t NumByteToRead)
@@ -188,11 +186,12 @@ class LSM6DS0 : public GyroSensor, public MotionSensor {
 	}
 	
 	/**
-	 * @brief utility function to write data to STC3115
-	 * @param  pBuffer: pointer to buffer to be filled.
-	 * @param  RegisterAddr: specifies internal address register to read from.
-	 * @param  NumByteToWrite: number of bytes to write.
-	 * @retval 0 if ok, -1 if an I2C error has occured
+	 * @brief  Utility function to write data to LSM6DS0
+	 * @param  pBuffer pointer to the byte-array data to send
+	 * @param  RegisterAddr specifies internal address register to read from.
+	 * @param  NumByteToWrite number of bytes to write.
+	 * @retval IMU_6AXES_OK if ok, 
+	 * @retval IMU_6AXES_ERROR if an I2C error has occured
 	 */
 	IMU_6AXES_StatusTypeDef LSM6DS0_IO_Write(uint8_t* pBuffer, 
 					       uint8_t RegisterAddr, uint16_t NumByteToWrite)

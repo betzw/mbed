@@ -50,7 +50,7 @@
 class LIS3MDL : public MagneticSensor {
  public:
 	/** Constructor
-	 * @param i2c device I2C to be used for communication
+	 * @param[in] i2c device I2C to be used for communication
 	 */
         LIS3MDL(DevI2C &i2c) : MagneticSensor(), dev_i2c(i2c) {
 	}
@@ -101,11 +101,11 @@ class LIS3MDL : public MagneticSensor {
 	}
 
 	/**
-	 * @brief utility function to read data from STC3115
-	 * @param  pBuffer pointer to data to be read.
+	 * @brief  Utility function to read data from LIS3MDL
+	 * @param  pBuffer pointer to the byte-array to read data in to
 	 * @param  RegisterAddr specifies internal address register to read from.
 	 * @param  NumByteToRead number of bytes to be read.
-	 * @retval MAGNETO_OK if ok
+	 * @retval MAGNETO_OK if ok, 
 	 * @retval MAGNETO_ERROR if an I2C error has occured
 	 */
 	MAGNETO_StatusTypeDef LIS3MDL_IO_Read(uint8_t* pBuffer, 
@@ -122,11 +122,11 @@ class LIS3MDL : public MagneticSensor {
 	}
 	
 	/**
-	 * @brief utility function to write data to STC3115
-	 * @param  pBuffer pointer to buffer to be filled.
+	 * @brief  Utility function to write data to LIS3MDL
+	 * @param  pBuffer pointer to the byte-array data to send
 	 * @param  RegisterAddr specifies internal address register to read from.
 	 * @param  NumByteToWrite number of bytes to write.
-	 * @retval MAGNETO_OK if ok
+	 * @retval MAGNETO_OK if ok, 
 	 * @retval MAGNETO_ERROR if an I2C error has occured
 	 */
 	MAGNETO_StatusTypeDef LIS3MDL_IO_Write(uint8_t* pBuffer, 
