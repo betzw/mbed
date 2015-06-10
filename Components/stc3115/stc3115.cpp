@@ -47,6 +47,7 @@
 /* Methods -------------------------------------------------------------------*/
 /** Constructor
  * @param i2c device I2C to be used for communication
+ * @param irq_pin pin name for alarm interrupt
  */
 STC3115::STC3115(DevI2C &i2c, PinName irq_pin) : GasGauge(), alm(irq_pin),
 	dev_i2c(i2c), RAMData(), ConfigData(), BatteryData()

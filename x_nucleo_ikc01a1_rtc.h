@@ -85,6 +85,7 @@ class M41T62
  public:
 	/** Constructor
 	 * @param i2c device I2C used to communicate on battery expansion board
+	 * @param irq_pin pin name for RTC interrupt
 	 */
         M41T62(DevI2C &i2c, PinName irq_pin) : irq_out(irq_pin),
 		dev_i2c(i2c) {
