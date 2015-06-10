@@ -52,7 +52,7 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 	magnetometer(new LIS3MDL(*dev_i2c)),
 	pressure_sensor(new LPS25H(*dev_i2c)),
 	gyro_lsm6ds0(new LSM6DS0(*dev_i2c)),
-	gyro_lsm6ds3(new LSM6DS3(*dev_i2c))
+	gyro_lsm6ds3(new LSM6DS3(*dev_i2c, IKS01A1_PIN_FF))
 { 
 }
 

@@ -46,4 +46,7 @@
 #define IKS01A1_PIN_I2C_SCL         (D15)
 #define IKS01A1_PIN_I2C_SDA         (D14)
 
+/* Free Fall Detection IRQ */
+#define IKS01A1_PIN_FF              (A2)
+
 #endif // _X_NUCLEO_IKS01A1_TARGETS_H_
