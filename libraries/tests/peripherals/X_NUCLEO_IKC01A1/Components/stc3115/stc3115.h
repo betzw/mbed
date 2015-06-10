@@ -57,7 +57,7 @@
  */
 class STC3115 : public GasGauge {
  public:
-	STC3115(DevI2C &i2c);
+	STC3115(DevI2C &i2c, PinName irq_pin);
  
 	virtual int Task(void);
 	virtual void Reset(void);

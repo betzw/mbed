@@ -48,8 +48,8 @@ X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::_instance = NULL;
  */
 X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 	charger(),
-	rtc(*dev_i2c),
-	gg(*(new STC3115(*dev_i2c)))
+	rtc(*dev_i2c, RTC_PIN_IRQ_OUT),
+	gg(*(new STC3115(*dev_i2c, GG_PIN_ALM)))
 {
 }
 
