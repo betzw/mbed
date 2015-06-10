@@ -65,7 +65,7 @@ namespace {
 
 
 /*** Macros ------------------------------------------------------------------- ***/
-#define APP_LOOP_PERIOD 1300 // in ms
+#define APP_LOOP_PERIOD 3000 // in ms
 
 #if defined(TARGET_STM)
 #define LED_OFF (0)
@@ -100,8 +100,10 @@ static TempSensor *temp_sensor1 = mems_expansion_board->ht_sensor;
 static TempSensor *temp_sensor2 = mems_expansion_board->pressure_sensor;
 
 static Ticker ticker;
-static volatile bool timer_irq_triggered = false;
 static DigitalOut myled(LED1, LED_OFF);
+
+static volatile bool timer_irq_triggered = false;
+static volatile bool ff_irq_triggered = false;
 
 
 /*** Helper Functions (1/2) ------------------------------------------------------------ ***/
@@ -113,8 +115,25 @@ static void timer_irq(void) {
 	timer_irq_triggered = true;
 }
 
+/* Called in interrupt context, therefore just set a trigger variable */
+static void ff_irq(void) {
+	ff_irq_triggered = true;
+
+	/* Disable IRQ until handled */
+	mems_expansion_board->gyro_lsm6ds3->Disable_Free_Fall_Detection_IRQ();
+}
+
 
 /*** Interrupt Handler Bottom-Halves ------------------------------------------------- ***/
+/* Handle Free Fall Interrupt
+   (here we are in "normal" context, i.e. not in IRQ context)
+*/
+static void handle_ff_irq(void) {
+    printf("\nFree Fall Detected!\n\n");
+
+    /* Re-enable IRQ */
+    mems_expansion_board->gyro_lsm6ds3->Enable_Free_Fall_Detection_IRQ();
+}
 
 
 /*** Helper Functions (2/2) ------------------------------------------------------------ ***/
@@ -157,7 +176,11 @@ static void init(void) {
 	       );
 	assert(id1 == id2);
 
-	wait(1.5);
+	/* Register Free Fall Detection IRQ Handler & Enable Detection */
+	if(mems_expansion_board->gyro_lsm6ds3 != NULL) {
+		mems_expansion_board->gyro_lsm6ds3->Attach_Free_Fall_Detection_IRQ(ff_irq);
+		mems_expansion_board->gyro_lsm6ds3->Enable_Free_Fall_Detection();
+	}
 }
 
 /* Main cycle function */
@@ -225,9 +248,13 @@ int main()
 			timer_irq_triggered = false;
 			__enable_irq();
 			main_cycle();
+		} else if(ff_irq_triggered) {
+			ff_irq_triggered = false;
+			__enable_irq();
+			handle_ff_irq();
 		} else {
 			__WFI();
-			__enable_irq(); /* do NOT enable irqs before WFI to avoid 
+                        __enable_irq(); /* do NOT enable irqs before WFI to avoid
 					   opening a window in which you can loose
 					   irq arrivals before going into WFI */
 		}
