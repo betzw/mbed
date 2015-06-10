@@ -53,7 +53,8 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	/** Constructor
 	 * @param i2c device I2C to be used for communication
 	 */
-        LSM6DS3(DevI2C &i2c) : GyroSensor(), MotionSensor(), dev_i2c(i2c) {
+        LSM6DS3(DevI2C &i2c, PinName irq_pin) : GyroSensor(), MotionSensor(), 
+		dev_i2c(i2c), free_fall(irq_pin) {
 	}
 	
 	/** Destructor
@@ -137,6 +138,27 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	IMU_6AXES_StatusTypeDef Get_Status_Free_Fall_Detection(uint8_t *status) {
 		return LSM6DS3_Get_Status_Free_Fall_Detection(status);
 	}
+	
+	/** Attach a function to call when a free fall is detected
+	 *
+	 *  @param fptr A pointer to a void function, or 0 to set as none
+	 */
+	void Attach_Free_Fall_Detection_IRQ(void (*fptr)(void)) {
+		free_fall.mode(PullNone); /* be precise about pin mode */
+		free_fall.rise(fptr);
+	}
+
+	/** Enable Free Fall IRQ
+	 */
+	void Enable_Free_Fall_Detection_IRQ(void) {
+		free_fall.enable_irq();
+	}
+
+	/** Disable free Fall IRQ
+	 */
+	void Disable_Free_Fall_Detection_IRQ(void) {
+		free_fall.disable_irq();
+	}
 
  protected:
 	/*** Methods ***/
@@ -171,7 +193,7 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	 */
 	void LSM6DS3_IO_ITConfig(void)
 	{
-		/* To be implemented */
+		/* done in constructor */
 	}
 
 	/**
@@ -227,6 +249,9 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	/*** Instance Variables ***/
 	/* IO Device */
 	DevI2C &dev_i2c;
+
+	/* Free Fall Detection IRQ */
+	InterruptIn free_fall;
 };
 
 #endif // __LSM6DS3_CLASS_H
