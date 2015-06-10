@@ -34,7 +34,7 @@
 
 typedef __packed struct _hci_uart_pckt{
   uint8_t type;
-  uint8_t data[0];
+  uint8_t data[VARIABLE_SIZE];
 } PACKED hci_uart_pckt;
 #define HCI_HDR_SIZE 1
 
@@ -47,7 +47,7 @@ typedef __packed struct _hci_command_hdr{
 typedef __packed struct _hci_event_pckt{
   uint8_t evt;
   uint8_t plen;
-  uint8_t data[0];
+  uint8_t data[VARIABLE_SIZE];
 } PACKED hci_event_pckt;
 #define HCI_EVENT_HDR_SIZE 	2
 
@@ -462,7 +462,7 @@ typedef __packed struct _evt_encryption_key_refresh_complete{
 #define EVT_LE_META_EVENT	0x3E
 typedef __packed struct _evt_le_meta_event{
   uint8_t subevent;
-  uint8_t data[0];
+  uint8_t data[VARIABLE_SIZE];
 } PACKED evt_le_meta_event;
 #define EVT_LE_META_EVENT_SIZE 1
 
@@ -486,7 +486,7 @@ typedef __packed struct _le_advertising_info{
   uint8_t bdaddr_type;
   tBDAddr bdaddr;
   uint8_t data_length;
-  uint8_t data_RSSI[0]; // RSSI is last octect (signed integer).
+  uint8_t data_RSSI[VARIABLE_SIZE]; // RSSI is last octect (signed integer).
 } PACKED le_advertising_info;
 #define LE_ADVERTISING_INFO_SIZE 9
 

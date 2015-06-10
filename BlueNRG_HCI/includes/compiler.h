@@ -29,6 +29,6 @@
 #endif
 
 /* Change this define to 1 if zero-length arrays are not supported by your compiler. */
-#define VARIABLE_SIZE 0
+#define VARIABLE_SIZE 1
 
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
