@@ -86,7 +86,7 @@ class M41T62
 	/** Constructor
 	 * @param i2c device I2C used to communicate on battery expansion board
 	 */
- M41T62(DevI2C &i2c) : irq_out(RTC_PIN_IRQ_OUT),
+        M41T62(DevI2C &i2c, PinName irq_pin) : irq_out(irq_pin),
 		dev_i2c(i2c) {
 			ClearAlarm();
 			ClearIrq();
