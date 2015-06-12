@@ -59,7 +59,7 @@ class DevI2C : public I2C
 
 	/**
 	 * @brief  Writes a buffer from the I2C peripheral device.
-	 * @param  pBuffer pointer to data to be written.
+	 * @param  pBuffer pointer to the byte-array data to send
 	 * @param  DeviceAddr specifies the peripheral device slave address.
 	 * @param  RegisterAddr specifies the internal address register 
 	 *         where to start writing to (must be correctly masked).
@@ -90,7 +90,7 @@ class DevI2C : public I2C
 
 	/**
 	 * @brief  Reads a buffer from the I2C peripheral device.
-	 * @param  pBuffer pointer to data to be read.
+	 * @param  pBuffer pointer to the byte-array to read data in to
 	 * @param  DaviceAddr specifies the peripheral device slave address.
 	 * @param  RegisterAddr specifies the internal address register 
 	 *         where to start reading from (must be correctly masked).
