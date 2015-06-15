@@ -58,7 +58,7 @@ class DevI2C : public I2C
         DevI2C(PinName sda, PinName scl) : I2C(sda, scl) {}
 
 	/**
-	 * @brief  Writes a buffer from the I2C peripheral device.
+	 * @brief  Writes a buffer towards the I2C peripheral device.
 	 * @param  pBuffer pointer to the byte-array data to send
 	 * @param  DeviceAddr specifies the peripheral device slave address.
 	 * @param  RegisterAddr specifies the internal address register 
