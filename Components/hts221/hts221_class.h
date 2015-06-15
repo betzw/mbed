@@ -41,9 +41,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
+#include "hts221.h"
 #include "../Interfaces/HumiditySensor.h"
 #include "../Interfaces/TempSensor.h"
-#include "hts221.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a HTS221 sensor component
@@ -117,7 +117,7 @@ class HTS221 : public HumiditySensor, public TempSensor {
 
 	/**
 	 * @brief  Configures HTS221 I2C interface
-	 * @retval HUM_TEMP_OK in case of success, an error code otherwise
+	 * @return HUM_TEMP_OK in case of success, an error code otherwise
 	 */
 	HUM_TEMP_StatusTypeDef HTS221_IO_Init(void)
 	{
@@ -125,12 +125,12 @@ class HTS221 : public HumiditySensor, public TempSensor {
 	}
 
 	/**
-	 * @brief  Utility function to read data from HTS221
-	 * @param  pBuffer pointer to the byte-array to read data in to
-	 * @param  RegisterAddr specifies internal address register to read from.
-	 * @param  NumByteToRead number of bytes to be read.
-	 * @retval HUM_TEMP_OK if ok, 
-	 * @retval HUM_TEMP_ERROR if an I2C error has occured
+	 * @brief      Utility function to read data from HTS221
+	 * @param[out] pBuffer pointer to the byte-array to read data in to
+	 * @param[in]  RegisterAddr specifies internal address register to read from.
+	 * @param[in]  NumByteToRead number of bytes to be read.
+	 * @retval     HUM_TEMP_OK if ok, 
+	 * @retval     HUM_TEMP_ERROR if an I2C error has occured
 	 */
 	HUM_TEMP_StatusTypeDef HTS221_IO_Read(uint8_t* pBuffer, 
 					      uint8_t RegisterAddr, uint16_t NumByteToRead)
@@ -146,12 +146,12 @@ class HTS221 : public HumiditySensor, public TempSensor {
 	}
 	
 	/**
-	 * @brief  Utility function to write data to HTS221
-	 * @param  pBuffer pointer to the byte-array data to send
-	 * @param  RegisterAddr specifies internal address register to read from.
-	 * @param  NumByteToWrite number of bytes to write.
-	 * @retval HUM_TEMP_OK if ok, 
-	 * @retval HUM_TEMP_ERROR if an I2C error has occured
+	 * @brief      Utility function to write data to HTS221
+	 * @param[in]  pBuffer pointer to the byte-array data to send
+	 * @param[in]  RegisterAddr specifies internal address register to read from.
+	 * @param[in]  NumByteToWrite number of bytes to write.
+	 * @retval     HUM_TEMP_OK if ok, 
+	 * @retval     HUM_TEMP_ERROR if an I2C error has occured
 	 */
 	HUM_TEMP_StatusTypeDef HTS221_IO_Write(uint8_t* pBuffer, 
 					       uint8_t RegisterAddr, uint16_t NumByteToWrite)
