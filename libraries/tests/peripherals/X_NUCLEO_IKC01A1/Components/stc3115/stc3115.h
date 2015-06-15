@@ -44,9 +44,9 @@
 #include <stdint.h>
 
 #include "mbed.h"
+#include "DevI2C.h"
 #include "stc3115_Battery.h"
 #include "stc3115_Driver.h"
-#include "DevI2C.h"
 #include "../Common/GasGauge.h"
 
 /* Macros --------------------------------------------------------------------*/

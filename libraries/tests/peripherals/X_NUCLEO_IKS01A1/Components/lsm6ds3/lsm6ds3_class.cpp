@@ -36,16 +36,15 @@
 */
 
 /* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
 #include "lsm6ds3_class.h"
 #include "lsm6ds3.h"
-#include "../../x_nucleo_iks01a1_targets.h"
 
 /* Methods -------------------------------------------------------------------*/
 /* betzw - based on:
            X-CUBE-MEMS1/trunk/Drivers/BSP/Components/lsm6ds3/lsm6ds3.c: revision #400,
-           X-CUBE-MEMS1/trunk: revision #410
+           X-CUBE-MEMS1/trunk: revision #416
 */
+
 /**
  * @brief  Set LSM6DS3 Initialization
  * @param  LSM6DS3_Init the configuration setting for the LSM6DS3

@@ -35,18 +35,16 @@
  ******************************************************************************
 */
 
-/* betzw - based on:
-           X-CUBE-MEMS1/trunk/Drivers/BSP/Components/hts221/hts221.c: revision #395,
-           X-CUBE-MEMS1/trunk: revision #402
-*/
-
 /* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
 #include "hts221_class.h"
 #include "hts221.h"
-#include "../../x_nucleo_iks01a1_targets.h"
 
 /* Methods -------------------------------------------------------------------*/
+/* betzw - based on:
+           X-CUBE-MEMS1/trunk/Drivers/BSP/Components/hts221/hts221.c: revision #410,
+           X-CUBE-MEMS1/trunk: revision #416
+*/
+
 /**
  * @brief  HTS221 Calibration procedure
  * @retval HUM_TEMP_OK in case of success, an error code otherwise

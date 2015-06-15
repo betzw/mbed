@@ -54,14 +54,14 @@ X_NUCLEO_IKC01A1::X_NUCLEO_IKC01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 }
 
 /**
- * @brief  Get singleton instance
- * @return a pointer to the singleton instance of class X_NUCLEO_IKC01A1
- * @param  (optional) ext_i2c pointer to instance of DevI2C to be used
- *         for communication on the expansion board. 
- *         Taken into account only on the very first call of this function.
- *         If not provided a new DevI2C will be created with standard
- *         configuration parameters.
- *         The used DevI2C object gets saved in instance variable dev_i2c.
+ * @brief     Get singleton instance
+ * @return    a pointer to the singleton instance of class X_NUCLEO_IKC01A1
+ * @param[in] ext_i2c (optional) pointer to an instance of DevI2C to be used
+ *            for communication on the expansion board. 
+ *            Taken into account only on the very first call of this function.
+ *            If not provided a new DevI2C will be created with standard
+ *            configuration parameters.
+ *            The used DevI2C object gets saved in instance variable dev_i2c.
  */
 X_NUCLEO_IKC01A1* X_NUCLEO_IKC01A1::Instance(DevI2C *ext_i2c) {
 	if(_instance == NULL) {

@@ -41,9 +41,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 #include "DevI2C.h"
+#include "lsm6ds3.h"
 #include "../Interfaces/GyroSensor.h"
 #include "../Interfaces/MotionSensor.h"
-#include "lsm6ds3.h"
 
 /* Classes -------------------------------------------------------------------*/
 /** Class representing a LSM6DS3 sensor component
@@ -159,7 +159,6 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	 *  @param[in] fptr A pointer to a void function, or 0 to set as none
 	 */
 	void Attach_Free_Fall_Detection_IRQ(void (*fptr)(void)) {
-		free_fall.mode(PullNone); /* be precise about pin mode */
 		free_fall.rise(fptr);
 	}
 
@@ -206,12 +205,12 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	 */
 	void LSM6DS3_IO_ITConfig(void)
 	{
-		/* done in constructor */
+		free_fall.mode(PullNone); /* be precise about pin mode */
 	}
 
 	/**
 	 * @brief  Configures LSM6DS3 I2C interface
-	 * @retval IMU_6AXES_OK in case of success, an error code otherwise
+	 * @return IMU_6AXES_OK in case of success, an error code otherwise
 	 */
 	IMU_6AXES_StatusTypeDef LSM6DS3_IO_Init(void)
 	{
@@ -219,12 +218,12 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	}
 
 	/**
-	 * @brief  Utility function to read data from LSM6DS3
-	 * @param  pBuffer pointer to the byte-array to read data in to
-	 * @param  RegisterAddr specifies internal address register to read from.
-	 * @param  NumByteToRead number of bytes to be read.
-	 * @retval IMU_6AXES_OK if ok, 
-	 * @retval IMU_6AXES_ERROR if an I2C error has occured
+	 * @brief      Utility function to read data from LSM6DS3
+	 * @param[out] pBuffer pointer to the byte-array to read data in to
+	 * @param[in]  RegisterAddr specifies internal address register to read from.
+	 * @param[in]  NumByteToRead number of bytes to be read.
+	 * @retval     IMU_6AXES_OK if ok, 
+	 * @retval     IMU_6AXES_ERROR if an I2C error has occured
 	 */
 	IMU_6AXES_StatusTypeDef LSM6DS3_IO_Read(uint8_t* pBuffer, 
 					      uint8_t RegisterAddr, uint16_t NumByteToRead)
@@ -240,12 +239,12 @@ class LSM6DS3 : public GyroSensor, public MotionSensor {
 	}
 	
 	/**
-	 * @brief  Utility function to write data to LSM6DS3
-	 * @param  pBuffer pointer to the byte-array data to send
-	 * @param  RegisterAddr specifies internal address register to read from.
-	 * @param  NumByteToWrite number of bytes to write.
-	 * @retval IMU_6AXES_OK if ok, 
-	 * @retval IMU_6AXES_ERROR if an I2C error has occured
+	 * @brief      Utility function to write data to LSM6DS3
+	 * @param[in]  pBuffer pointer to the byte-array data to send
+	 * @param[in]  RegisterAddr specifies internal address register to read from.
+	 * @param[in]  NumByteToWrite number of bytes to write.
+	 * @retval     IMU_6AXES_OK if ok, 
+	 * @retval     IMU_6AXES_ERROR if an I2C error has occured
 	 */
 	IMU_6AXES_StatusTypeDef LSM6DS3_IO_Write(uint8_t* pBuffer, 
 					       uint8_t RegisterAddr, uint16_t NumByteToWrite)

@@ -36,9 +36,7 @@
  */
 
 /* Includes ------------------------------------------------------------------*/
-#include "mbed.h"
 #include "stc3115.h"
-#include "../../x_nucleo_ikc01a1_targets.h"
 
 #if (RSENSE == 0) || (RINT == 0)
 #error "RSENSE & RINT must not be zero!"
