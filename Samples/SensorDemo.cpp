@@ -32,7 +32,7 @@
  
 BLEDevice  ble;
 DigitalOut led1(LED1);
-DigitalIn mybutton(USER_BUTTON);
+InterruptIn mybutton(USER_BUTTON);
  
 const static char     DEVICE_NAME[]        = "BlueNRG";
 static const uint16_t uuid16_list[]        = {GattService::UUID_HEART_RATE_SERVICE,
@@ -44,14 +44,16 @@ void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reas
 {
     ble.startAdvertising(); // restart advertising
 }
+
+void buttonCallback() {
+    /* Note that the buttonCallback() executes in interrupt context, 
+     * so it is safer to do heavy-weight computation elsewhere. */
+    triggerSensorPolling = true;
+}
  
 void periodicCallback(void)
 {
     led1 = !led1; /* Do blinky on LED1 while we're waiting for BLE events */
- 
-    /* Note that the periodicCallback() executes in interrupt context, so it is safer to do
-     * heavy-weight sensor polling from the main thread. */
-    //triggerSensorPolling = true;
 }
  
 void sensorDemo(void)
@@ -61,7 +63,10 @@ void sensorDemo(void)
     led1 = 1;
     Ticker ticker;
     ticker.attach(periodicCallback, 1); // blink LED every second
- 
+
+    // Attach the address of the callback function to the falling edge
+    mybutton.fall(&buttonCallback);
+
     ble.init();
     ble.onDisconnection(disconnectionCallback);
  
@@ -82,12 +87,7 @@ void sensorDemo(void)
  
     // infinite loop
     while (1) {
-        // check for trigger from periodicCallback()
-        if (mybutton == 0) { // key press
-            DEBUG("Button press\n\r");
-            while (mybutton == 0);
-            triggerSensorPolling = true;
-        }
+        // check for trigger from buttonCallback()
         if (triggerSensorPolling && ble.getGapState().connected) {
             triggerSensorPolling = false;
  
