@@ -51,7 +51,7 @@ class BlueNRGDevice : public BLEDeviceInstanceBase
 {
 
 public:
-    BlueNRGDevice(void);
+    BlueNRGDevice(PinName mosi, PinName miso, PinName sck, PinName cs, PinName rst, PinName irq);
     virtual ~BlueNRGDevice(void);
 
     // <<<ANDREA>>>
@@ -71,9 +71,21 @@ public:
     // <<<ANDREA>>>
     
     bool getIsInitialized(void);
+
+
+    bool dataPresent();
+    int32_t spiRead(uint8_t *buffer, uint8_t buff_size);
+    int32_t spiWrite(uint8_t* data1, uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2);
+    void disable_irq();
+    void enable_irq();																					 
     
 private:
     bool isInitialized;
+
+    SPI         spi_;
+    DigitalOut  nCS_;
+    DigitalOut  rst_;
+    InterruptIn irq_;
 };
 
 #endif

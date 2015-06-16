@@ -38,7 +38,7 @@ extern uint16_t g_gap_service_handle;
 extern uint16_t g_appearance_char_handle;
 extern uint16_t g_device_name_char_handle;
 	
-void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk);
+void btle_init(bool isSetAddress);
 void SPI_Poll(void);
 void User_Process(void);
 void setConnectable(void);

@@ -94,27 +94,16 @@ Gap::AddressType_t addr_type = Gap::ADDR_TYPE_PUBLIC;
     @returns void
 */
 /**************************************************************************/
-void btle_init(bool isSetAddress, PinName mosi, PinName miso, PinName sclk)
+void btle_init(bool isSetAddress)
 {
     DEBUG("btle_init>>\n\r"); 
     
     int ret;
     uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
 
-    //HAL_Init();
-
-    /* Configure the User Button in GPIO Mode */
-    //BSP_PB_Init(BUTTON_KEY, BUTTON_MODE_GPIO);
-
-    /* Configure the system clock */
-    //SystemClock_Config();
-
     /* Delay needed only to be able to acces the JTAG interface after reset
     if it will be disabled later. */
     Clock_Wait(500);
-
-    /* Initialize the BlueNRG SPI driver */
-    BNRG_SPI_Init(D11, D12, D3);
 
     /* Initialize the BlueNRG HCI */
     HCI_Init();

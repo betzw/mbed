@@ -2,8 +2,8 @@
   ******************************************************************************
   * @file    stm32_bluenrg_ble.h
   * @author  CL
-  * @version V1.0.0
-  * @date    04-July-2014
+  * @version V1.0.1
+  * @date    15-June-2014
   * @brief   
   ******************************************************************************
   * @attention
@@ -43,29 +43,10 @@
  extern "C" {
 #endif 	 
 	 
-#ifdef TARGET_NUCLEO_F401RE
-	#include <stdint.h>
-  #include "gp_timer.h"
-  #include "pinmap.h"	 
-	 
-  #include "hal.h"
-  #define SYSCLK_FREQ 84000000
-#endif
-	 
-/* Includes ------------------------------------------------------------------*/ 
-#ifdef USE_STM32F4XX_NUCLEO
-  #include "stm32f4xx_hal.h"
-  #include "stm32f4xx_nucleo.h"
-  #include "stm32f4xx_nucleo_bluenrg.h"
-  #define SYSCLK_FREQ 84000000
-#endif
-   
-#ifdef USE_STM32L0XX_NUCLEO
-  #include "stm32l0xx_hal.h"
-  #include "stm32l0xx_nucleo.h"
-  #include "stm32l0xx_nucleo_bluenrg.h"
-  #define SYSCLK_FREQ 32000000
-#endif
+
+#include <stdint.h>
+#include "gp_timer.h"
+#include "hal.h"
 
 /** @addtogroup BSP
  *  @{
@@ -84,16 +65,12 @@
  */
   
 // FIXME: add prototypes for BlueNRG here
-//void BNRG_SPI_Init(void);
-void BNRG_SPI_Init(PinName mosi, PinName miso, PinName sclk);
 void BlueNRG_RST(void);
 uint8_t BlueNRG_DataPresent(void);
 void    BlueNRG_HW_Bootloader(void);
-int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi,
-                             uint8_t *buffer,
+int32_t BlueNRG_SPI_Read_All(uint8_t *buffer,
                              uint8_t buff_size);
-int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi,
-                          uint8_t* data1,
+int32_t BlueNRG_SPI_Write(uint8_t* data1,
                           uint8_t* data2,
                           uint8_t Nb_bytes1,
                           uint8_t Nb_bytes2);

@@ -25,8 +25,6 @@
 
 #include "stm32_bluenrg_ble.h"
 
-extern SPI_HandleTypeDef SpiHandle;
-
 #if BLE_CONFIG_DBG_ENABLE
 #define PRINTF(...) printf(__VA_ARGS__)
 #else
@@ -113,7 +111,7 @@ void HCI_Process(void)
   }
   if (readPacketListFull) {
     while(BlueNRG_DataPresent()) {
-      data_len = BlueNRG_SPI_Read_All(&SpiHandle, buffer, HCI_READ_PACKET_SIZE);
+      data_len = BlueNRG_SPI_Read_All(buffer, HCI_READ_PACKET_SIZE);
       if(data_len > 0)
         HCI_Event_CB(buffer);
     }
@@ -140,7 +138,7 @@ void HCI_Isr(void)
       /* enqueueing a packet for read */
       list_remove_head (&hciReadPktPool, (tListNode **)&hciReadPacket);
       
-      data_len = BlueNRG_SPI_Read_All(&SpiHandle, hciReadPacket->dataBuff, HCI_READ_PACKET_SIZE);
+      data_len = BlueNRG_SPI_Read_All(hciReadPacket->dataBuff, HCI_READ_PACKET_SIZE);
       if(data_len > 0){                    
         hciReadPacket->data_len = data_len;
         if(HCI_verify(hciReadPacket) == 0)
