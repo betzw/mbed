@@ -42,10 +42,12 @@ git subtree split -P libraries/tests/libs/X_NUCLEO_COMMON -b common-split
 git checkout common-split
 
 git pull common-lib master
+
 git push common-lib common-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/libs/X_NUCLEO_COMMON common-split
+
 git branch -d common-split
 
 IKC01A1:
@@ -56,10 +58,12 @@ git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 -b ikc01a1-spl
 git checkout ikc01a1-split
 
 git pull ikc01a1-lib master
+
 git push ikc01a1-lib ikc01a1-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKC01A1 ikc01a1-split
+
 git branch -d ikc01a1-split
 
 IKS01A1:
@@ -70,10 +74,12 @@ git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKS01A1 -b iks01a1-spl
 git checkout iks01a1-split
 
 git pull iks01a1-lib master
+
 git push iks01a1-lib iks01a1-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IKS01A1 iks01a1-split
+
 git branch -d iks01a1-split
 
 Applications:
@@ -86,10 +92,12 @@ git subtree split -P libraries/tests/betzw_tests/test1 -b bm-split
 git checkout bm-split
 
 git pull bm-app master
+
 git push bm-app bm-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
+
 git branch -d bm-split
 
 Sensors-Reader:
@@ -100,8 +108,10 @@ git subtree split -P libraries/tests/betzw_tests/test2 -b sr-split
 git checkout sr-split
 
 git pull sr-app master
+
 git push sr-app sr-split:master
 
 git checkout betzw_wb
 git subtree merge -P libraries/tests/betzw_tests/test2 sr-split
+
 git branch -d sr-split
