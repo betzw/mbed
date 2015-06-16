@@ -32,8 +32,8 @@
   * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
   */ 
   
-#ifndef __BLUENRG_H__
-#define __BLUENRG_H__
+#ifndef __BLUENRG_DEVICE_H__
+#define __BLUENRG_DEVICE_H__
 
 #define BLUENRG
 #define DEBUG_BLUENRG_USER

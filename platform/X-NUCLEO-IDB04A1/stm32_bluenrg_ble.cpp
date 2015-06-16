@@ -36,9 +36,9 @@
   */ 
   
 /* Includes ------------------------------------------------------------------*/
-#include "Utils.h"
+#include "BlueNRGGap.h"
 #include "BlueNRGDevice.h"
-
+#include "Utils.h"
 
 // FIXME: find a better way to get the instance of the BlueNRG device
 extern BlueNRGDevice bluenrgDeviceInstance;
