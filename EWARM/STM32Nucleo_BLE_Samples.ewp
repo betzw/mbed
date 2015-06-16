@@ -2078,7 +2078,7 @@
       <group>
         <name>X-NUCLEO-IDB04A1</name>
         <file>
-          <name>$PROJ_DIR$\..\..\BLE_BlueNRG\platform\X-NUCLEO-IDB04A1\stm32_bluenrg_ble.c</name>
+          <name>$PROJ_DIR$\..\..\BLE_BlueNRG\platform\X-NUCLEO-IDB04A1\stm32_bluenrg_ble.cpp</name>
         </file>
         <file>
           <name>$PROJ_DIR$\..\..\BLE_BlueNRG\platform\X-NUCLEO-IDB04A1\stm32_bluenrg_ble_dma_lp.c</name>
