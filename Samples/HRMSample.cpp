@@ -32,7 +32,7 @@
 BLEDevice  ble;
 DigitalOut led1(LED1);
  
-const static char     DEVICE_NAME[]        = "HRM_ANDREA";
+const static char     DEVICE_NAME[]        = "HRM";
 static const uint16_t uuid16_list[]        = {GattService::UUID_HEART_RATE_SERVICE,
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
 static volatile bool  triggerSensorPolling = false;
