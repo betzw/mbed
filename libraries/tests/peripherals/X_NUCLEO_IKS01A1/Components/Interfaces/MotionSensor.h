@@ -96,7 +96,7 @@ class MotionSensor : public GenericSensor
 
 	/**
 	 * @brief       Get accelerometer's full scale value
-	 *              i.e. min/max measurable value [g]
+	 *              i.e.\ min/max measurable value [g]
 	 * @param[out]  pfData Pointer to where the accelerometer full scale value is stored to
 	 * @return      0 in case of success, an error code otherwise
 	 */
@@ -104,7 +104,7 @@ class MotionSensor : public GenericSensor
 	
 	/**
 	 * @brief      Set accelerometer's full scale value
-	 *             i.e. min/max measurable value
+	 *             i.e.\ min/max measurable value
 	 * @param[in]  fs New full scale value for accelerometer in [g]
 	 * @return     0 in case of success, an error code otherwise
 	 */
