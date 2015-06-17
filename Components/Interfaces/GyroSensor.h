@@ -96,7 +96,7 @@ class GyroSensor : public GenericSensor
 	
 	/**
 	 * @brief       Get gyroscope's full scale value
-	 *              i.e. min/max measurable value [dps]
+	 *              i.e.\ min/max measurable value [dps]
 	 * @param[out]  pfData Pointer to where the gyroscope full scale value is stored to
 	 * @return      0 in case of success, an error code otherwise
 	 */
@@ -104,7 +104,7 @@ class GyroSensor : public GenericSensor
 	
 	/**
 	 * @brief      Set gyroscope's full scale value
-	 *             i.e. min/max measurable value
+	 *             i.e.\ min/max measurable value
 	 * @param[in]  fs New full scale value for gyroscope in [dps]
 	 * @return     0 in case of success, an error code otherwise
 	 */
