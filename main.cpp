@@ -15,7 +15,7 @@
  */
 
 #include "mbed.h"
-#include "BLEDevice.h"
+#include "BLE.h"
 #include "URIBeaconConfigService.h"
 #include "DFUService.h"
 #include "DeviceInformationService.h"
