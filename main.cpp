@@ -21,7 +21,7 @@
 #include "DeviceInformationService.h"
 #include "ConfigParamsPersistence.h"
 
-BLEDevice ble;
+BLE ble;
 URIBeaconConfigService *uriBeaconConfig;
 
 /**
@@ -45,7 +45,7 @@ void timeout(void)
     state = ble.getGapState();
     if (!state.connected) { /* don't switch if we're in a connected state. */
         uriBeaconConfig->setupURIBeaconAdvertisements();
-        ble.startAdvertising();
+        ble.gap().startAdvertising();
 
         configAdvertisementTimeoutTicker.detach(); /* disable the callback from the timeout Ticker. */
     }
@@ -56,13 +56,13 @@ void timeout(void)
  */
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
-    ble.startAdvertising();
+    ble.gap().startAdvertising();
 }
 
 int main(void)
 {
     ble.init();
-    ble.onDisconnection(disconnectionCallback);
+    ble.gap().onDisconnection(disconnectionCallback);
 
     /*
      * Load parameters from (platform specific) persistent storage. Parameters
@@ -86,8 +86,8 @@ int main(void)
     DFUService dfu(ble);
     DeviceInformationService deviceInfo(ble, "ARM", "UriBeacon", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
 
-    ble.startAdvertising(); /* Set the whole thing in motion. After this call a GAP central can scan the URIBeaconConfig
-                             * service. This can then be switched to the normal URIBeacon functionality after a timeout. */
+    ble.gap().startAdvertising(); /* Set the whole thing in motion. After this call a GAP central can scan the URIBeaconConfig
+                                   * service. This can then be switched to the normal URIBeacon functionality after a timeout. */
 
     while (true) {
         ble.waitForEvent();
