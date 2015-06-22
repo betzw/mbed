@@ -230,6 +230,8 @@ static void main_cycle(void) {
 
 
 /*** Main function ------------------------------------------------------------- ***/
+#define D_SLEEP_VERSION 1
+
 /* Generic main function/loop for enabling WFI in case of 
    interrupt based cyclic execution
 */
@@ -242,6 +244,17 @@ int main()
 	/* Start timer irq */
 	ticker.attach_us(timer_irq, MS_INTERVALS * APP_LOOP_PERIOD);
 
+#if D_SLEEP_VERSION == 1 // version without WFI/WFE and without IRQ synchronization
+	while (true) {
+		if(timer_irq_triggered) {
+			timer_irq_triggered = false;
+			main_cycle();
+		} else if(ff_irq_triggered) {
+			ff_irq_triggered = false;
+			handle_ff_irq();
+		}
+	}
+#elif D_SLEEP_VERSION == 2 // classical version with WFI and with IRQ synchronization
 	while (true) {
 		__disable_irq();
 		if(timer_irq_triggered) {
@@ -259,4 +272,35 @@ int main()
 					   irq arrivals before going into WFI */
 		}
 	}
+#elif D_SLEEP_VERSION == 3 // version with WFE and with IRQ synchronization
+	while (true) {
+		__disable_irq();
+		if(timer_irq_triggered) {
+			timer_irq_triggered = false;
+			__enable_irq();
+			main_cycle();
+		} else if(ff_irq_triggered) {
+			ff_irq_triggered = false;
+			__enable_irq();
+			handle_ff_irq();
+		} else {
+                        __enable_irq();
+			__WFE(); /* assuming that SEVONPEND in the System Control Register is NOT set */
+		}
+	}
+#elif D_SLEEP_VERSION == 4 // version with WFE and without IRQ synchronization
+	while (true) {
+		if(timer_irq_triggered) {
+			timer_irq_triggered = false;
+			main_cycle();
+		} else if(ff_irq_triggered) {
+			ff_irq_triggered = false;
+			handle_ff_irq();
+		} else {
+			__WFE(); /* assuming that SEVONPEND in the System Control Register is NOT set */
+		}
+	}
+#else  // D_SLEEP_VERSION != [1|2|3|4]
+#error "Unsupported D_SLEEP_VERSION selected!"
+#endif // D_SLEEP_VERSION != [1|2|3|4]
 }
