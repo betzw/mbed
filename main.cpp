@@ -230,7 +230,7 @@ static void main_cycle(void) {
 
 
 /*** Main function ------------------------------------------------------------- ***/
-#define D_SLEEP_VERSION 1
+#define D_SLEEP_VERSION 4
 
 /* Generic main function/loop for enabling WFI in case of 
    interrupt based cyclic execution
