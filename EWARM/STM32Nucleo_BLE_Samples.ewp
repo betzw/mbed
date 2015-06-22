@@ -3,7 +3,7 @@
 <project>
   <fileVersion>2</fileVersion>
   <configuration>
-    <name>Debug</name>
+    <name>HRM_SAMPLE</name>
     <toolchain>
       <name>ARM</name>
     </toolchain>
@@ -17,15 +17,15 @@
         <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Debug\Exe</state>
+          <state>HRM_SAMPLE\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Debug\Obj</state>
+          <state>HRM_SAMPLE\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Debug\List</state>
+          <state>HRM_SAMPLE\List</state>
         </option>
         <option>
           <name>Variant</name>
@@ -186,6 +186,7 @@
           <state>__MBED__=1</state>
           <state>TARGET_FF_ARDUINO</state>
           <state>TARGET_FF_MORPHO</state>
+          <state>HRM_SAMPLE_ENABLED</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1053,34 +1054,34 @@
     </settings>
   </configuration>
   <configuration>
-    <name>Release</name>
+    <name>SENSOR_DEMO</name>
     <toolchain>
       <name>ARM</name>
     </toolchain>
-    <debug>0</debug>
+    <debug>1</debug>
     <settings>
       <name>General</name>
       <archiveVersion>3</archiveVersion>
       <data>
         <version>22</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>ExePath</name>
-          <state>Release\Exe</state>
+          <state>SENSOR_DEMO\Exe</state>
         </option>
         <option>
           <name>ObjPath</name>
-          <state>Release\Obj</state>
+          <state>SENSOR_DEMO\Obj</state>
         </option>
         <option>
           <name>ListPath</name>
-          <state>Release\List</state>
+          <state>SENSOR_DEMO\List</state>
         </option>
         <option>
           <name>Variant</name>
           <version>20</version>
-          <state>0</state>
+          <state>40</state>
         </option>
         <option>
           <name>GEndianMode</name>
@@ -1111,25 +1112,25 @@
         <option>
           <name>FPU</name>
           <version>2</version>
-          <state>0</state>
+          <state>5</state>
         </option>
         <option>
           <name>OGCoreOrChip</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GRuntimeLibSelect</name>
           <version>0</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>GRuntimeLibSelectSlave</name>
           <version>0</version>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>RTDescription</name>
-          <state>Use the normal configuration of the C/C++ runtime library. No locale interface, C locale, no file descriptor support, no multibytes in printf and scanf, and no hex floats in strtod.</state>
+          <state>Use the full configuration of the C/C++ runtime library. Full locale interface, C locale, file descriptor support, multibytes in printf and scanf, and hex floats in strtod.</state>
         </option>
         <option>
           <name>OGProductVersion</name>
@@ -1137,7 +1138,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.30.1.53141</state>
+          <state>7.20.1.7306</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -1149,15 +1150,15 @@
         </option>
         <option>
           <name>OGChipSelectEditMenu</name>
-          <state>default    None</state>
+          <state>STM32F401xE	ST STM32F401xE</state>
         </option>
         <option>
           <name>GenLowLevelInterface</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>GEndianModeBE</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OGBufferedTerminalOutput</name>
@@ -1183,17 +1184,17 @@
         </option>
         <option>
           <name>RTConfigPath2</name>
-          <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Normal.h</state>
+          <state>$TOOLKIT_DIR$\INC\c\DLib_Config_Full.h</state>
         </option>
         <option>
           <name>GFPUCoreSlave</name>
           <version>20</version>
-          <state>0</state>
+          <state>40</state>
         </option>
         <option>
           <name>GBECoreSlave</name>
           <version>20</version>
-          <state>0</state>
+          <state>40</state>
         </option>
         <option>
           <name>OGUseCmsis</name>
@@ -1215,14 +1216,28 @@
       <data>
         <version>31</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>CCOptimizationNoSizeConstraints</name>
           <state>0</state>
         </option>
         <option>
           <name>CCDefines</name>
-          <state>NDEBUG</state>
+          <state>TARGET_NUCLEO_F401RE</state>
+          <state>TARGET_M4</state>
+          <state>TARGET_CORTEX_M</state>
+          <state>TARGET_STM</state>
+          <state>TARGET_STM32F4</state>
+          <state>TARGET_STM32F401RE</state>
+          <state>TOOLCHAIN_IAR</state>
+          <state>__CORTEX_M4</state>
+          <state>ARM_MATH_CM4</state>
+          <state>__FPU_PRESENT=1</state>
+          <state>MBED_BUILD_TIMESTAMP=1433856215.33</state>
+          <state>__MBED__=1</state>
+          <state>TARGET_FF_ARDUINO</state>
+          <state>TARGET_FF_MORPHO</state>
+          <state>SENSOR_DEMO_ENABLED</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -1262,7 +1277,7 @@
         </option>
         <option>
           <name>CCDiagSuppress</name>
-          <state></state>
+          <state>Pa050,Pa084,Pa093,Pa082</state>
         </option>
         <option>
           <name>CCDiagRemark</name>
@@ -1283,11 +1298,11 @@
         <option>
           <name>CCAllowList</name>
           <version>1</version>
-          <state>11111110</state>
+          <state>00000000</state>
         </option>
         <option>
           <name>CCDebugInfo</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IEndianMode</name>
@@ -1351,7 +1366,31 @@
         </option>
         <option>
           <name>CCIncludePath2</name>
-          <state></state>
+          <state>$PROJ_DIR$\.</state>
+          <state>$PROJ_DIR$\../Samples</state>
+          <state>$PROJ_DIR$\../../mbed</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE</state>
+          <state>$PROJ_DIR$\../../BLE_API</state>
+          <state>$PROJ_DIR$\../../BLE_API/common</state>
+          <state>$PROJ_DIR$\../../BLE_API/services</state>
+          <state>$PROJ_DIR$\../../BLE_API/public</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/utils</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/utils/src</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/utils/inc</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/BlueNRG_HCI</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/BlueNRG_HCI/utils</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/BlueNRG_HCI/hci</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/BlueNRG_HCI/hci/controller</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/BlueNRG_HCI/includes</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/platform</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/platform/X-NUCLEO-IDB04A1</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/platform/src</state>
+          <state>$PROJ_DIR$\../../BLE_BlueNRG/platform/inc</state>
         </option>
         <option>
           <name>CCStdIncCheck</name>
@@ -1363,7 +1402,7 @@
         </option>
         <option>
           <name>IInterwork2</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IProcessorMode2</name>
@@ -1371,7 +1410,7 @@
         </option>
         <option>
           <name>CCOptLevel</name>
-          <state>3</state>
+          <state>0</state>
         </option>
         <option>
           <name>CCOptStrategy</name>
@@ -1380,7 +1419,7 @@
         </option>
         <option>
           <name>CCOptLevelSlave</name>
-          <state>3</state>
+          <state>0</state>
         </option>
         <option>
           <name>CompilerMisraRules98</name>
@@ -1418,15 +1457,15 @@
         </option>
         <option>
           <name>IccCppDialect</name>
-          <state>1</state>
+          <state>2</state>
         </option>
         <option>
           <name>IccExceptions</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IccRTTI</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IccStaticDestr</name>
@@ -1434,7 +1473,7 @@
         </option>
         <option>
           <name>IccCppInlineSemantics</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IccCmsis</name>
@@ -1442,7 +1481,7 @@
         </option>
         <option>
           <name>IccFloatSemantics</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCNoLiteralPool</name>
@@ -1465,7 +1504,7 @@
       <data>
         <version>9</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>AObjPrefix</name>
           <state>1</state>
@@ -1505,7 +1544,7 @@
         </option>
         <option>
           <name>ADebug</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>AltRegisterNames</name>
@@ -1605,7 +1644,7 @@
         </option>
         <option>
           <name>AIgnoreStdInclude</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>AUserIncludes</name>
@@ -1631,11 +1670,11 @@
       <data>
         <version>1</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>OOCOutputFormat</name>
           <version>2</version>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>OCOutputOverride</name>
@@ -1643,7 +1682,7 @@
         </option>
         <option>
           <name>OOCOutputFile</name>
-          <state>5.srec</state>
+          <state>STM32Nucleo_BLE_Samples.bin</state>
         </option>
         <option>
           <name>OOCCommandLineProducer</name>
@@ -1651,7 +1690,7 @@
         </option>
         <option>
           <name>OOCObjCopyEnable</name>
-          <state>0</state>
+          <state>1</state>
         </option>
       </data>
     </settings>
@@ -1682,7 +1721,7 @@
       <data>
         <version>16</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>IlinkOutputFile</name>
           <state>cpp.out</state>
@@ -1757,11 +1796,11 @@
         </option>
         <option>
           <name>IlinkIcfOverride</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkIcfFile</name>
-          <state>$TOOLKIT_DIR$\CONFIG\generic.icf</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f401xe.icf</state>
         </option>
         <option>
           <name>IlinkIcfFileSlave</name>
@@ -1793,11 +1832,11 @@
         </option>
         <option>
           <name>IlinkUseExtraOptions</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkExtraOptions</name>
-          <state></state>
+          <state>--skip_dynamic_initialization</state>
         </option>
         <option>
           <name>IlinkLowLevelInterfaceSlave</name>
@@ -1809,7 +1848,79 @@
         </option>
         <option>
           <name>IlinkAdditionalLibs</name>
-          <state></state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/mbed.a</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dma.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_spdifrx.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_pcd.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_hash.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_cryp.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_usart.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_nor.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_uart.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_adc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_rcc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_flash.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dac.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_rtc_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_i2c.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/mbed_overrides.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_crc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_cec.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_ll_sdmmc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/cmain.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_msp_template.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_ll_fmc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_ll_usb.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_i2s_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/startup_stm32f401xe.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_rtc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_sd.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_qspi.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_sram.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_fmpi2c.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_iwdg.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/board.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_pwr_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_tim.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_eth.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_flash_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_smartcard.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dcmi.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_sai_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/system_stm32f4xx.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_gpio.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dcmi_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_tim_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_sdram.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dma_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/cmsis_nvic.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dac_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_hcd.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_pccard.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/hal_tick.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_hash_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_ltdc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_dma2d.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_fmpi2c_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_rcc_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/retarget.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_spi.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_cortex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_irda.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_wwdg.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_sai.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_pcd_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_pwr.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_cryp_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_rng.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_nand.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_ll_fsmc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_flash_ramfunc.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_adc_ex.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_i2s.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_can.o</state>
+          <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TOOLCHAIN_IAR/stm32f4xx_hal_i2c_ex.o</state>
         </option>
         <option>
           <name>IlinkOverrideProgramEntryLabel</name>
@@ -1821,7 +1932,7 @@
         </option>
         <option>
           <name>IlinkProgramEntryLabel</name>
-          <state></state>
+          <state>__iar_program_start</state>
         </option>
         <option>
           <name>DoFill</name>
@@ -1912,15 +2023,15 @@
         </option>
         <option>
           <name>IlinkOptInline</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkOptExceptionsAllow</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkOptExceptionsForce</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkCmsis</name>
@@ -1932,11 +2043,11 @@
         </option>
         <option>
           <name>IlinkOptUseVfe</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IlinkOptForceVfe</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>IlinkStackAnalysisEnable</name>
@@ -1972,7 +2083,7 @@
       <data>
         <version>0</version>
         <wantNonLocal>1</wantNonLocal>
-        <debug>0</debug>
+        <debug>1</debug>
         <option>
           <name>IarchiveInputs</name>
           <state></state>
