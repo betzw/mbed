@@ -64,8 +64,8 @@ BlueNRGDevice bluenrgDeviceInstance(PA_7, PA_6, PB_3, PA_1, PA_8, PA_0);
 * BLE-API requires an implementation of the following function in order to
 * obtain its transport handle.
 */
-BLEDeviceInstanceBase *
-createBLEDeviceInstance(void)
+BLEInstanceBase *
+createBLEInstance(void)
 {
     return (&bluenrgDeviceInstance);
 }
@@ -202,6 +202,11 @@ Gap        &BlueNRGDevice::getGap()
     return BlueNRGGap::getInstance();
 }
 
+const Gap  &BlueNRGDevice::getGap() const        
+{
+    return BlueNRGGap::getInstance();
+}
+
 /**************************************************************************/
 /*!
     @brief  get reference to GATT server object
@@ -214,41 +219,16 @@ GattServer &BlueNRGDevice::getGattServer()
     return BlueNRGGattServer::getInstance();
 }
 
-/**************************************************************************/
-/*!
-    @brief  set Tx power level
-    @param[in] txPower Transmission Power level
-    @returns    ble_error_t
-*/
-/**************************************************************************/
-ble_error_t BlueNRGDevice::setTxPower(int8_t txPower)
+const GattServer &BlueNRGDevice::getGattServer() const
 {
-    int8_t enHighPower = 0;
-    int8_t paLevel = 0;    
-    int8_t dbmActuallySet = getHighPowerAndPALevelValue(txPower, enHighPower, paLevel);
-    DEBUG("txPower=%d, dbmActuallySet=%d\n\r", txPower, dbmActuallySet);
-    DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
-    aci_hal_set_tx_power_level(enHighPower, paLevel);
-    return BLE_ERROR_NONE;    
+    return BlueNRGGattServer::getInstance();
 }
 
-/**************************************************************************/
-/*!
-    @brief  get permitted Tx power values
-    @param[in] values pointer to pointer to permitted power values
-    @param[in] num number of values   
-*/
-/**************************************************************************/
-void BlueNRGDevice::getPermittedTxPowerValues(const int8_t **valueArrayPP, size_t *countP) {
-        static const int8_t permittedTxValues[] = {
-        -18, -14, -11, -8, -4, -1, 1, 5, -15, -11, -8, -5, -2, 1, 4, 8
-    };
-
-    *valueArrayPP = permittedTxValues;
-    *countP = sizeof(permittedTxValues) / sizeof(int8_t);
-}
-
-
+//FIXME: TBI (by now just placeholders to let build
+GattClient& BlueNRGDevice::getGattClient() {}
+SecurityManager& BlueNRGDevice::getSecurityManager(){}
+const SecurityManager& BlueNRGDevice::getSecurityManager() const {}
+    
 /**************************************************************************/
 /*!
     @brief  shut down the the BLE device
@@ -257,15 +237,6 @@ void BlueNRGDevice::getPermittedTxPowerValues(const int8_t **valueArrayPP, size_
 /**************************************************************************/
 ble_error_t  BlueNRGDevice::shutdown(void) {
     return reset();
-}
-
-// ANDREA
-ble_error_t BlueNRGDevice::initializeSecurity(bool                          enableBonding,
-                                              bool                          requireMITM,
-                                              Gap::SecurityIOCapabilities_t iocaps,
-                                              const Gap::Passkey_t          passkey) {
-    // Empty by now
-    return BLE_ERROR_NONE;
 }
 																							
 /**
@@ -354,7 +325,7 @@ int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
   unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
   unsigned char header_slave[HEADER_SIZE]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
   
-  unsigned char read_char_buf[MAX_BUFFER_SIZE];
+  //unsigned char read_char_buf[MAX_BUFFER_SIZE];
 
   disable_irq();
 

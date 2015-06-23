@@ -190,7 +190,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         }
 
         /* Update the characteristic handle */
-        uint16_t charHandle = characteristicCount;   
+        //uint16_t charHandle = characteristicCount;   
         
         bleCharHanldeMap.insert(std::pair<uint16_t, uint16_t>(bleCharacteristic, servHandle)); 
         
@@ -199,7 +199,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         DEBUG("added bleCharacteristic handle =%u\n\r", bleCharacteristic);
 
         if ((p_char->getValueAttribute().getValuePtr() != NULL) && (p_char->getValueAttribute().getInitialLength() > 0)) {
-            updateValue(p_char->getValueAttribute().getHandle(), p_char->getValueAttribute().getValuePtr(), p_char->getValueAttribute().getInitialLength(), false /* localOnly */);
+            write(p_char->getValueAttribute().getHandle(), p_char->getValueAttribute().getValuePtr(), p_char->getValueAttribute().getInitialLength(), false /* localOnly */);
         }
 
         // add descriptors now
@@ -290,15 +290,15 @@ ble_error_t BlueNRGGattServer::readValue(Gap::Handle_t connectionHandle, GattAtt
     return BLE_ERROR_NONE;
 }
 
-ble_error_t BlueNRGGattServer::updateValue(Gap::Handle_t connectionHandle, GattAttribute::Handle_t, const uint8_t[], uint16_t, bool localOnly) {
+ble_error_t BlueNRGGattServer::write(Gap::Handle_t connectionHandle, GattAttribute::Handle_t, const uint8_t[], uint16_t, bool localOnly) {
     // Empty by now
     return BLE_ERROR_NONE;
 }
     
-ble_error_t BlueNRGGattServer::updateValue(GattAttribute::Handle_t charHandle, const uint8_t buffer[], uint16_t len, bool localOnly)
+ble_error_t BlueNRGGattServer::write(GattAttribute::Handle_t charHandle, const uint8_t buffer[], uint16_t len, bool localOnly)
 {
     tBleStatus ret;    
-    uint8_t buff[2];
+    //uint8_t buff[2];
 
     DEBUG("updating bleCharacteristic charHandle =%u, corresponding serviceHanle= %u len=%d\n\r", charHandle, bleCharHanldeMap.find(charHandle)->second, len);  
     /*
@@ -349,8 +349,8 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(uint16_t handle)
     //signed short refvalue;
     uint16_t gapConnectionHandle = BlueNRGGap::getInstance().getConnectionHandle();
     
-    GattCharacteristicReadCBParams readParams;
-    readParams.charHandle = handle;                
+    GattReadCallbackParams readParams;
+    readParams.handle = handle;                
 
     //DEBUG("readParams.charHandle = %d\n\r", readParams.charHandle);
     HCIDataReadEvent(&readParams);
@@ -360,6 +360,8 @@ ble_error_t BlueNRGGattServer::Read_Request_CB(uint16_t handle)
         //DEBUG("Calling aci_gatt_allow_read\n\r");
         aci_gatt_allow_read(gapConnectionHandle);
     }
+    
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
@@ -415,11 +417,11 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(uint16_t attr
     return p_char;
 }
 
-void BlueNRGGattServer::HCIDataWrittenEvent(const GattCharacteristicWriteCBParams *params) {
+void BlueNRGGattServer::HCIDataWrittenEvent(const GattWriteCallbackParams *params) {
     this->handleDataWrittenEvent(params);
 }
     
-void BlueNRGGattServer::HCIDataReadEvent(const GattCharacteristicReadCBParams *params) {
+void BlueNRGGattServer::HCIDataReadEvent(const GattReadCallbackParams *params) {
     DEBUG("Called HCIDataReadEvent\n\r");
     this->handleDataReadEvent(params);
 }

@@ -42,42 +42,38 @@
 
 #include "mbed.h"
 #include "blecommon.h"
-#include "BLEDevice.h"
+#include "BLE.h"
 #include "BlueNRGGap.h"
 #include "BlueNRGGattServer.h"
 
 
-class BlueNRGDevice : public BLEDeviceInstanceBase
+class BlueNRGDevice : public BLEInstanceBase
 {
 
 public:
     BlueNRGDevice(PinName mosi, PinName miso, PinName sck, PinName cs, PinName rst, PinName irq);
     virtual ~BlueNRGDevice(void);
 
-    // <<<ANDREA>>>
+    virtual ble_error_t init(void);
+    virtual ble_error_t shutdown(void);   
     virtual const char *getVersion(void);
     virtual Gap&        getGap();
+    virtual const Gap&  getGap() const;
     virtual GattServer& getGattServer();
-    virtual ble_error_t init(void);
-    virtual ble_error_t shutdown(void);
-    virtual ble_error_t reset(void);
-    virtual ble_error_t initializeSecurity(bool                          enableBonding = true,
-                                           bool                          requireMITM   = true,
-                                           Gap::SecurityIOCapabilities_t iocaps        = Gap::IO_CAPS_NONE,
-                                           const Gap::Passkey_t          passkey       = NULL);
-    virtual ble_error_t setTxPower(int8_t txPower);
-    virtual void        getPermittedTxPowerValues(const int8_t **, size_t *);
-    virtual void        waitForEvent(void);    
-    // <<<ANDREA>>>
+    virtual const GattServer& getGattServer() const;
+    virtual GattClient& getGattClient();
+    virtual SecurityManager& getSecurityManager();
+    virtual const SecurityManager& getSecurityManager() const;
+    virtual void        waitForEvent(void);
     
+    ble_error_t reset(void);
     bool getIsInitialized(void);
-
 
     bool dataPresent();
     int32_t spiRead(uint8_t *buffer, uint8_t buff_size);
     int32_t spiWrite(uint8_t* data1, uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2);
     void disable_irq();
-    void enable_irq();																					 
+    void enable_irq();
     
 private:
     bool isInitialized;

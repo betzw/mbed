@@ -203,7 +203,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 const char *deviceAppearance = NULL;                    
                 deviceAppearance = (const char*)loadPtr.getUnitAtIndex(index).getDataPtr();  // to be set later when startAdvertising() is called
                 
-                uint8_t Appearance[2];
+                uint8_t Appearance[2] = {0, 0};
                 uint16_t devP = (uint16_t)*deviceAppearance;
                 STORE_LE_16(Appearance, (uint16_t)devP);
                 
@@ -290,7 +290,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     }
 
-    tBleStatus ret;
+    //tBleStatus ret;
     //const LongUUIDBytes_t HRM_SERVICE_UUID_128 = {0x18, 0x0D};
     /* set scan response data */
     hci_le_set_scan_resp_data(scan_rsp_length, scan_response_payload); /*int hci_le_set_scan_resp_data(uint8_t length, const uint8_t data[]);*/
@@ -413,6 +413,46 @@ ble_error_t BlueNRGGap::disconnect(Gap::DisconnectionReason_t reason)
 
 /**************************************************************************/
 /*!
+    @brief  Disconnects if we are connected to a central device
+
+    @param[in]  reason
+                Disconnection Reason
+                
+    @returns    ble_error_t
+
+    @retval     BLE_ERROR_NONE
+                Everything executed properly
+
+    @section EXAMPLE
+
+    @code
+
+    @endcode
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::disconnect(Handle_t connectionHandle, Gap::DisconnectionReason_t reason)
+{
+    tBleStatus ret;
+    //For Reason codes check BlueTooth HCI Spec
+    
+    if(connectionHandle != BLE_CONN_HANDLE_INVALID) {
+        ret = aci_gap_terminate(connectionHandle, 0x16);//0x16 Connection Terminated by Local Host. 
+
+        if (ret != BLE_STATUS_SUCCESS){
+            DEBUG("Error in GAP termination!!\n\r") ;
+            return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
+            //FIXME: Define Error values equivalent to BlueNRG Error Codes.
+        }
+        
+        //DEBUG("Disconnected from localhost!!\n\r") ;
+        m_connectionHandle = BLE_CONN_HANDLE_INVALID;
+    }
+    
+    return BLE_ERROR_NONE;
+}
+
+/**************************************************************************/
+/*!
     @brief  Sets the 16-bit connection handle
     
     @param[in]  con_handle
@@ -463,7 +503,7 @@ uint16_t BlueNRGGap::getConnectionHandle(void)
 /**************************************************************************/
 ble_error_t BlueNRGGap::setAddress(addr_type_t type, const Address_t address)
 {
-    tBleStatus ret;
+    //tBleStatus ret;
     
     if (type > ADDR_TYPE_RANDOM_PRIVATE_NON_RESOLVABLE) {
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
@@ -656,7 +696,7 @@ ble_error_t BlueNRGGap::setDeviceName(const uint8_t *deviceName)
 /**************************************************************************/
 ble_error_t BlueNRGGap::getDeviceName(uint8_t *deviceName, unsigned *lengthP) 
 {   
-    int ret;
+    //int ret;
     
     if(DeviceName==NULL) 
     return BLE_ERROR_PARAM_OUT_OF_RANGE;
@@ -689,7 +729,7 @@ ble_error_t BlueNRGGap::getDeviceName(uint8_t *deviceName, unsigned *lengthP)
     @endcode
 */
 /**************************************************************************/
-ble_error_t BlueNRGGap::setAppearance(uint16_t appearance)
+ble_error_t BlueNRGGap::setAppearance(GapAdvertisingData::Appearance appearance)
 {
     /* 
     Tested with GapAdvertisingData::GENERIC_PHONE. 
@@ -723,7 +763,7 @@ ble_error_t BlueNRGGap::setAppearance(uint16_t appearance)
     @endcode
 */
 /**************************************************************************/
-ble_error_t BlueNRGGap::getAppearance(uint16_t *appearanceP)
+ble_error_t BlueNRGGap::getAppearance(GapAdvertisingData::Appearance *appearanceP)
 {
     uint16_t devP;
     if(!appearanceP) return BLE_ERROR_PARAM_OUT_OF_RANGE;
@@ -797,18 +837,43 @@ ble_error_t BlueNRGGap::startRadioScan(const GapScanningParams &scanningParams) 
     return BLE_ERROR_NONE; 
 }
 
-ble_error_t BlueNRGGap::getLinkSecurity(Gap::Handle_t connectionHandle, Gap::LinkSecurityStatus_t *securityStatusP) {
-    // Empty by now
-    return BLE_ERROR_NONE; 
-}
-
-ble_error_t BlueNRGGap::purgeAllBondingState(void) {
-    // Empty by now
-    return BLE_ERROR_NONE; 
-}
-
 ble_error_t BlueNRGGap::stopScan() {
     // Empty by now
     return BLE_ERROR_NONE; 
 }
+
+/**************************************************************************/
+/*!
+    @brief  set Tx power level
+    @param[in] txPower Transmission Power level
+    @returns    ble_error_t
+*/
+/**************************************************************************/
+ble_error_t BlueNRGGap::setTxPower(int8_t txPower)
+{
+    int8_t enHighPower = 0;
+    int8_t paLevel = 0;    
+    int8_t dbmActuallySet = getHighPowerAndPALevelValue(txPower, enHighPower, paLevel);
+    DEBUG("txPower=%d, dbmActuallySet=%d\n\r", txPower, dbmActuallySet);
+    DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
+    aci_hal_set_tx_power_level(enHighPower, paLevel);
+    return BLE_ERROR_NONE;    
+}
+
+/**************************************************************************/
+/*!
+    @brief  get permitted Tx power values
+    @param[in] values pointer to pointer to permitted power values
+    @param[in] num number of values   
+*/
+/**************************************************************************/
+void BlueNRGGap::getPermittedTxPowerValues(const int8_t **valueArrayPP, size_t *countP) {
+    static const int8_t permittedTxValues[] = {
+        -18, -14, -11, -8, -4, -1, 1, 5, -15, -11, -8, -5, -2, 1, 4, 8
+    };
+
+    *valueArrayPP = permittedTxValues;
+    *countP = sizeof(permittedTxValues) / sizeof(int8_t);
+}
+
     

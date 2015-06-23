@@ -35,8 +35,8 @@
 
 
 #include "btle.h"
-#include "public/Gap.h"
-#include "public/GapEvents.h"
+#include "ble/Gap.h"
+#include "ble/GapEvents.h"
 #include "BlueNRGGap.h"
 #include "BlueNRGGattServer.h"
 #include "Utils.h"
@@ -293,7 +293,7 @@ extern "C" {
                                 peerAddrType = Gap::ADDR_TYPE_RANDOM_PRIVATE_NON_RESOLVABLE;
                                 break;
                         }                                             
-                        BlueNRGGap::getInstance().processConnectionEvent(cc->handle, peerAddrType, cc->peer_bdaddr, addr_type, bleAddr, (const BlueNRGGap::ConnectionParams_t *)&connectionParams);                            
+                        BlueNRGGap::getInstance().processConnectionEvent(cc->handle, Gap::PERIPHERAL, peerAddrType, cc->peer_bdaddr, addr_type, bleAddr, (const BlueNRGGap::ConnectionParams_t *)&connectionParams);                            
                     }
                     break;
                 }
@@ -303,9 +303,9 @@ extern "C" {
         case EVT_VENDOR:
             {                
                 evt_blue_aci *blue_evt = (evt_blue_aci*)event_pckt->data;
+                //DEBUG("EVT_VENDOR %d\n", blue_evt->ecode);
+                
                 switch(blue_evt->ecode){
-                    
-                DEBUG("EVT_VENDOR %d\n", blue_evt->ecode);
                            
                 case EVT_BLUE_GATT_READ_PERMIT_REQ:
                     {
@@ -348,9 +348,9 @@ extern "C" {
                                         (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
                                             GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
                                 
-                                GattCharacteristicWriteCBParams writeParams;
-                                writeParams.charHandle=evt->attr_handle;
-                                writeParams.op=GattCharacteristicWriteCBParams::GATTS_CHAR_OP_WRITE_REQ;//Where to find this property in BLUENRG?
+                                GattWriteCallbackParams writeParams;
+                                writeParams.handle=evt->attr_handle;
+                                writeParams.writeOp=GattWriteCallbackParams::OP_WRITE_REQ;//Where to find this property in BLUENRG?
                                 writeParams.len=evt->data_length;
                                 writeParams.data=evt->att_data;                                                                                    
                                 #ifdef BLUENRG_MS
@@ -361,8 +361,10 @@ extern "C" {
                                 //BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_WRITTEN, evt->attr_handle);
                                 //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
                                 if ((p_char->getValueAttribute().getValuePtr() != NULL) && (p_char->getValueAttribute().getInitialLength() > 0)) {
-                                    BlueNRGGattServer::getInstance().updateValue(p_char->getValueAttribute().getHandle(), 
-                                    p_char->getValueAttribute().getValuePtr(), p_char->getValueAttribute().getInitialLength(), false /* localOnly */);
+                                    BlueNRGGattServer::getInstance().write(p_char->getValueAttribute().getHandle(),
+                                                                            p_char->getValueAttribute().getValuePtr(),
+                                                                            p_char->getValueAttribute().getInitialLength(),
+                                                                            false /* localOnly */);
                                 }
                             } 
                         }                  

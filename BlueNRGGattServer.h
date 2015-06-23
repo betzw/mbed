@@ -40,7 +40,7 @@
 #include "blecommon.h"
 #include "btle.h"
 #include "GattService.h"
-#include "public/GattServer.h"
+#include "ble/GattServer.h"
 #include <vector>
 #include <map>
 
@@ -62,8 +62,8 @@ public:
     virtual ble_error_t addService(GattService &);
     virtual ble_error_t readValue(GattAttribute::Handle_t attributeHandle, uint8_t buffer[], uint16_t *lengthP);
     virtual ble_error_t readValue(Gap::Handle_t connectionHandle, GattAttribute::Handle_t attributeHandle, uint8_t buffer[], uint16_t *lengthP);
-    virtual ble_error_t updateValue(GattAttribute::Handle_t, const uint8_t[], uint16_t, bool localOnly = false);
-    virtual ble_error_t updateValue(Gap::Handle_t connectionHandle, GattAttribute::Handle_t, const uint8_t[], uint16_t, bool localOnly = false);
+    virtual ble_error_t write(GattAttribute::Handle_t, const uint8_t[], uint16_t, bool localOnly = false);
+    virtual ble_error_t write(Gap::Handle_t connectionHandle, GattAttribute::Handle_t, const uint8_t[], uint16_t, bool localOnly = false);
     virtual ble_error_t initializeGATTDatabase(void);
     
     virtual bool isOnDataReadAvailable() const {
@@ -76,8 +76,8 @@ public:
     //void hwCallback(void *pckt);
     ble_error_t Read_Request_CB(uint16_t handle);
     GattCharacteristic* getCharacteristicFromHandle(uint16_t charHandle);
-    void HCIDataWrittenEvent(const GattCharacteristicWriteCBParams *params);
-    void HCIDataReadEvent(const GattCharacteristicReadCBParams *params);
+    void HCIDataWrittenEvent(const GattWriteCallbackParams *params);
+    void HCIDataReadEvent(const GattReadCallbackParams *params);
     void HCIEvent(GattServerEvents::gattEvent_e type, uint16_t charHandle);
     void HCIDataSentEvent(unsigned count);
     

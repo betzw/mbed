@@ -40,7 +40,7 @@
 #include "btle.h"
 #include "GapAdvertisingParams.h"
 #include "GapAdvertisingData.h"
-#include <public/Gap.h>
+#include <ble/Gap.h>
 
 #define BLE_CONN_HANDLE_INVALID 0x0
 #define BDADDR_SIZE 6
@@ -66,10 +66,10 @@ public:
 
     // <<<ANDREA>>>
     enum AdvType_t {
-        ADV_IND           = Gap::ADV_IND,
-        ADV_DIRECT_IND    = Gap::ADV_DIRECT_IND,
-        ADV_SCAN_IND      = Gap::ADV_SCAN_IND,
-        ADV_NONCONN_IND   = Gap::ADV_NONCONN_IND
+        ADV_IND           = GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED,//Gap::ADV_IND,
+        ADV_DIRECT_IND    = GapAdvertisingParams::ADV_CONNECTABLE_DIRECTED,//Gap::ADV_DIRECT_IND,
+        ADV_SCAN_IND      = GapAdvertisingParams::ADV_SCANNABLE_UNDIRECTED,//Gap::ADV_SCAN_IND,
+        ADV_NONCONN_IND   = GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED//Gap::ADV_NONCONN_IND
     };
     
     /* Functions that must be implemented from Gap */
@@ -83,17 +83,18 @@ public:
     virtual uint16_t    getMinNonConnectableAdvertisingInterval(void) const;
     virtual uint16_t    getMaxAdvertisingInterval(void) const;
     virtual ble_error_t disconnect(DisconnectionReason_t reason);
+    virtual ble_error_t disconnect(Handle_t connectionHandle, DisconnectionReason_t reason);
     virtual ble_error_t getPreferredConnectionParams(ConnectionParams_t *params);
     virtual ble_error_t setPreferredConnectionParams(const ConnectionParams_t *params);
     virtual ble_error_t updateConnectionParams(Handle_t handle, const ConnectionParams_t *params);
 
-    virtual ble_error_t purgeAllBondingState(void);
-    virtual ble_error_t getLinkSecurity(Handle_t connectionHandle, LinkSecurityStatus_t *securityStatusP);
-
     virtual ble_error_t setDeviceName(const uint8_t *deviceName);
     virtual ble_error_t getDeviceName(uint8_t *deviceName, unsigned *lengthP);
-    virtual ble_error_t setAppearance(uint16_t appearance);
-    virtual ble_error_t getAppearance(uint16_t *appearanceP);
+    virtual ble_error_t setAppearance(GapAdvertisingData::Appearance appearance);
+    virtual ble_error_t getAppearance(GapAdvertisingData::Appearance *appearanceP);
+    
+    virtual ble_error_t setTxPower(int8_t txPower);
+    virtual void        getPermittedTxPowerValues(const int8_t **, size_t *);
     // <<<ANDREA>>>
     
 
