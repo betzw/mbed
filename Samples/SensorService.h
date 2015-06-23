@@ -18,7 +18,7 @@
 #define __SENSOR_SERVICE_H__
 
 #include "UUID.h"
-#include "BLEDevice.h"
+#include "BLE.h"
 
 #include "Utils.h"
 
@@ -31,6 +31,8 @@ typedef struct {
 } AxesRaw_t;
 
 extern AxesRaw_t axes_data;
+
+extern const uint16_t SensServiceShortUUID;
 
 // Motion Sensor UUIDs
 extern const uint8_t  AccServiceUUID[UUID::LENGTH_OF_LONG_UUID];
@@ -125,8 +127,8 @@ public:
         ble.updateCharacteristicValue(humidityChar.getValueAttribute().getHandle(), (uint8_t*)&humidity, 2);
     }
 
-    void onDataRead(const GattCharacteristicReadCBParams *params) {
-        uint16_t charHandle = params->charHandle;
+    void onDataRead(const GattReadCallbackParams *params) {
+        uint16_t charHandle = params->handle;
         if (charHandle == accChar.getValueAttribute().getHandle()+1) {
             updateAcc(false);
         } else if (charHandle == tempChar.getValueAttribute().getHandle()+1) {

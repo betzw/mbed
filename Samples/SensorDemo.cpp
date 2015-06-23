@@ -15,12 +15,11 @@
  */
  
 #include "mbed.h"
-#include "BLEDevice.h"
+#include "BLE.h"
 #include "SensorService.h"
 #include "DeviceInformationService.h"
 
 #include "Samples.h"
-#include "Utils.h"
 
 #ifdef SENSOR_DEMO_ENABLED
 
@@ -30,12 +29,12 @@
  * interval.*/
 #define UPDATE_PARAMS_FOR_LONGER_CONNECTION_INTERVAL 0
  
-BLEDevice  ble;
+BLE ble;
 DigitalOut led1(LED1);
 InterruptIn mybutton(USER_BUTTON);
  
 const static char     DEVICE_NAME[]        = "BlueNRG";
-static const uint16_t uuid16_list[]        = {GattService::UUID_HEART_RATE_SERVICE,
+static const uint16_t uuid16_list[]        = {SensServiceShortUUID,
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
 static volatile bool  triggerSensorPolling = false;
 
@@ -58,8 +57,6 @@ void periodicCallback(void)
  
 void sensorDemo(void)
 {
-    uint8_t ret;
-
     led1 = 1;
     Ticker ticker;
     ticker.attach(periodicCallback, 1); // blink LED every second
@@ -78,7 +75,7 @@ void sensorDemo(void)
  
     /* Setup advertising. */
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
-    //ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *)uuid16_list, sizeof(uuid16_list));
+    ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *)uuid16_list, sizeof(uuid16_list));
     ble.accumulateAdvertisingPayload(GapAdvertisingData::UNKNOWN);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LOCAL_NAME, (uint8_t *)DEVICE_NAME, sizeof(DEVICE_NAME));
     ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);

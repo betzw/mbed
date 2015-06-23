@@ -15,7 +15,7 @@
  */
  
 #include "mbed.h"
-#include "BLEDevice.h"
+#include "BLE.h"
 #include "HeartRateService.h"
 #include "DeviceInformationService.h"
  
@@ -29,7 +29,7 @@
  * interval.*/
 #define UPDATE_PARAMS_FOR_LONGER_CONNECTION_INTERVAL 0
  
-BLEDevice  ble;
+BLE ble;
 DigitalOut led1(LED1);
  
 const static char     DEVICE_NAME[]        = "HRM";

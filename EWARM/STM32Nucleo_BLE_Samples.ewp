@@ -182,7 +182,7 @@
           <state>__CORTEX_M4</state>
           <state>ARM_MATH_CM4</state>
           <state>__FPU_PRESENT=1</state>
-          <state>MBED_BUILD_TIMESTAMP=1433856215.33</state>
+          <state>MBED_BUILD_TIMESTAMP=1435062257.51</state>
           <state>__MBED__=1</state>
           <state>TARGET_FF_ARDUINO</state>
           <state>TARGET_FF_MORPHO</state>
@@ -324,9 +324,10 @@
           <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4</state>
           <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE</state>
           <state>$PROJ_DIR$\../../BLE_API</state>
-          <state>$PROJ_DIR$\../../BLE_API/common</state>
-          <state>$PROJ_DIR$\../../BLE_API/services</state>
-          <state>$PROJ_DIR$\../../BLE_API/public</state>
+          <state>$PROJ_DIR$\../../BLE_API/ble</state>
+          <state>$PROJ_DIR$\../../BLE_API/ble/services</state>
+          <state>$PROJ_DIR$\../../BLE_API/source</state>
+          <state>$PROJ_DIR$\../../BLE_API/source/services</state>
           <state>$PROJ_DIR$\../../BLE_BlueNRG</state>
           <state>$PROJ_DIR$\../../BLE_BlueNRG/utils</state>
           <state>$PROJ_DIR$\../../BLE_BlueNRG/utils/src</state>
@@ -422,7 +423,7 @@
         </option>
         <option>
           <name>IccCppInlineSemantics</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IccCmsis</name>
@@ -1233,7 +1234,7 @@
           <state>__CORTEX_M4</state>
           <state>ARM_MATH_CM4</state>
           <state>__FPU_PRESENT=1</state>
-          <state>MBED_BUILD_TIMESTAMP=1433856215.33</state>
+          <state>MBED_BUILD_TIMESTAMP=1435062257.51</state>
           <state>__MBED__=1</state>
           <state>TARGET_FF_ARDUINO</state>
           <state>TARGET_FF_MORPHO</state>
@@ -1375,9 +1376,10 @@
           <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4</state>
           <state>$PROJ_DIR$\../../mbed/TARGET_NUCLEO_F401RE/TARGET_STM/TARGET_STM32F4/TARGET_NUCLEO_F401RE</state>
           <state>$PROJ_DIR$\../../BLE_API</state>
-          <state>$PROJ_DIR$\../../BLE_API/common</state>
-          <state>$PROJ_DIR$\../../BLE_API/services</state>
-          <state>$PROJ_DIR$\../../BLE_API/public</state>
+          <state>$PROJ_DIR$\../../BLE_API/ble</state>
+          <state>$PROJ_DIR$\../../BLE_API/ble/services</state>
+          <state>$PROJ_DIR$\../../BLE_API/source</state>
+          <state>$PROJ_DIR$\../../BLE_API/source/services</state>
           <state>$PROJ_DIR$\../../BLE_BlueNRG</state>
           <state>$PROJ_DIR$\../../BLE_BlueNRG/utils</state>
           <state>$PROJ_DIR$\../../BLE_BlueNRG/utils/src</state>
@@ -1473,7 +1475,7 @@
         </option>
         <option>
           <name>IccCppInlineSemantics</name>
-          <state>1</state>
+          <state>0</state>
         </option>
         <option>
           <name>IccCmsis</name>
@@ -2107,21 +2109,27 @@
   <group>
     <name>BLE_API</name>
     <group>
-      <name>common</name>
+      <name>source</name>
+      <group>
+        <name>services</name>
+        <file>
+          <name>$PROJ_DIR$\..\..\BLE_API\source\services\DFUService.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\BLE_API\source\services\UARTService.cpp</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\..\..\BLE_API\source\services\URIBeaconConfigService.cpp</name>
+        </file>
+      </group>
       <file>
-        <name>$PROJ_DIR$\..\..\BLE_API\common\BLEDevice.cpp</name>
+        <name>$PROJ_DIR$\..\..\BLE_API\source\BLE.cpp</name>
       </file>
-    </group>
-    <group>
-      <name>services</name>
       <file>
-        <name>$PROJ_DIR$\..\..\BLE_API\services\DFUService.cpp</name>
+        <name>$PROJ_DIR$\..\..\BLE_API\source\DiscoveredCharacteristic.cpp</name>
       </file>
       <file>
-        <name>$PROJ_DIR$\..\..\BLE_API\services\UARTService.cpp</name>
-      </file>
-      <file>
-        <name>$PROJ_DIR$\..\..\BLE_API\services\URIBeaconConfigService.cpp</name>
+        <name>$PROJ_DIR$\..\..\BLE_API\source\GapScanningParams.cpp</name>
       </file>
     </group>
   </group>

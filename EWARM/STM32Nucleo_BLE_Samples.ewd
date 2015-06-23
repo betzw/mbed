@@ -77,7 +77,7 @@
         </option>
         <option>
           <name>OCDownloadVerifyAll</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCProductVersion</name>
@@ -1197,7 +1197,7 @@
         </option>
         <option>
           <name>CCCpuClockEdit</name>
-          <state>32.0</state>
+          <state>84.0</state>
         </option>
         <option>
           <name>CCSwoClockAuto</name>
@@ -1422,7 +1422,7 @@
         </option>
         <option>
           <name>OCDownloadVerifyAll</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>OCProductVersion</name>
@@ -2542,7 +2542,7 @@
         </option>
         <option>
           <name>CCCpuClockEdit</name>
-          <state>32.0</state>
+          <state>84.0</state>
         </option>
         <option>
           <name>CCSwoClockAuto</name>
