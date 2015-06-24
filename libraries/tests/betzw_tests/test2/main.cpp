@@ -196,22 +196,23 @@ static void main_cycle(void) {
 	char buffer2[32];
 	char buffer3[32];
 	char buffer4[32];
-
+	unsigned int ret = 0;
+	
 	/* Switch LED On */
 	myled = LED_ON;
 	printf("===\n");
 
 	/* Determine Environmental Values */
-	CALL_METH(temp_sensor1, GetTemperature, &TEMPERATURE_Value, 0.0f);
-	CALL_METH(humidity_sensor, GetHumidity, &HUMIDITY_Value, 0.0f);
-	CALL_METH(pressure_sensor, GetPressure, &PRESSURE_Value, 0.0f);
-	CALL_METH(temp_sensor2, GetFahrenheit, &PRESSURE_Temp_Value, 0.0f);
-	CALL_METH(magnetometer, Get_M_Axes, (int32_t *)&MAG_Value, 0);
-	CALL_METH(accelerometer, Get_X_Axes, (int32_t *)&ACC_Value, 0);
-	CALL_METH(gyroscope, Get_G_Axes, (int32_t *)&GYR_Value, 0);
+	ret |= (!CALL_METH(temp_sensor1, GetTemperature, &TEMPERATURE_Value, 0.0f) ? 0x0 : 0x1);
+	ret |= (!CALL_METH(humidity_sensor, GetHumidity, &HUMIDITY_Value, 0.0f) ? 0x0 : 0x2);;
+	ret |= (!CALL_METH(pressure_sensor, GetPressure, &PRESSURE_Value, 0.0f) ? 0x0 : 0x4);;
+	ret |= (!CALL_METH(temp_sensor2, GetFahrenheit, &PRESSURE_Temp_Value, 0.0f) ? 0x0 : 0x8);;
+	ret |= (!CALL_METH(magnetometer, Get_M_Axes, (int32_t *)&MAG_Value, 0) ? 0x0 : 0x10);;
+	ret |= (!CALL_METH(accelerometer, Get_X_Axes, (int32_t *)&ACC_Value, 0) ? 0x0 : 0x20);;
+	ret |= (!CALL_METH(gyroscope, Get_G_Axes, (int32_t *)&GYR_Value, 0) ? 0x0 : 0x40);
 
 	/* Print Values Out */
-        printf("                      X         Y         Z\n"); 
+        printf("I2C errors: 0x%.2x      X         Y         Z\n", ret); 
         printf("MAG [mgauss]: %9ld %9ld %9ld\n", 
 	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
         printf("ACC [mg]:     %9ld %9ld %9ld\n", 
