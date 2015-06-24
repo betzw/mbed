@@ -749,6 +749,15 @@ class DISCO_L053C8(Target):
         self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
 
+class DISCO_F746NG(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M7F"
+        self.extra_labels = ['STM', 'STM32F7', 'STM32F746', 'STM32F746NG']
+        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.default_toolchain = "uARM"
+        self.detect_code = ["0815"]
+
 class MTS_MDOT_F405RG(Target):
     def __init__(self):
         Target.__init__(self)
@@ -766,7 +775,7 @@ class MTS_MDOT_F411RE(Target):
         self.extra_labels = ['STM', 'STM32F4', 'STM32F411RE']
         self.macros = ['HSE_VALUE=26000000', 'OS_CLOCK=96000000', 'USE_PLL_HSE_EXTC=0', 'VECT_TAB_OFFSET=0x00010000']
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
-        self.default_toolchain = "uARM"
+        self.default_toolchain = "ARM"
 
     def init_hooks(self, hook, toolchain_name):
         if toolchain_name in ['GCC_ARM', 'ARM_STD', 'ARM_MICRO']:
@@ -1358,6 +1367,7 @@ TARGETS = [
     DISCO_F100RB(),
     DISCO_F303VC(),
     DISCO_F334C8(),
+    DISCO_F746NG(),
     DISCO_F407VG(), # STM32F407
     ARCH_MAX(),     # STM32F407
     DISCO_F429ZI(),
