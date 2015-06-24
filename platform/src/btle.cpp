@@ -112,7 +112,7 @@ void btle_init(bool isSetAddress)
     BlueNRG_RST();
 
     /* The Nucleo board must be configured as SERVER */
-    //check if issetAddress is set than set address.
+    //check if isSetAddress is set than set address.
     // ANDREA
     if(isSetAddress)
     {
