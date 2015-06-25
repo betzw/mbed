@@ -65,7 +65,7 @@ namespace {
 
 
 /*** Macros ------------------------------------------------------------------- ***/
-#define APP_LOOP_PERIOD 3000 // in ms
+#define APP_LOOP_PERIOD 500 // in ms
 
 #if defined(TARGET_STM)
 #define LED_OFF (0)
@@ -73,6 +73,15 @@ namespace {
 #define LED_OFF (1)
 #endif
 #define LED_ON  (!LED_OFF)
+
+/*** Debug ---------------------------------------------------------------- ***/
+extern "C" void dbg_set(void);
+extern "C" void dbg_unset(void);
+
+static DigitalOut dbg_gpio(D8, 0);
+
+void dbg_set() { dbg_gpio = 1; }
+void dbg_unset() { dbg_gpio = 0; }
 
 
 /*** Typedefs ----------------------------------------------------------------- ***/
@@ -155,6 +164,9 @@ static char *printDouble(char* str, double v, int decimalDigits=2)
 static void init(void) {
 	uint8_t id1, id2;
 
+	/* Set I2C frequency */
+	mems_expansion_board->dev_i2c->frequency(400000);
+
 	/* Determine ID of Humidity & Temperature Sensor */
 	CALL_METH(humidity_sensor, ReadID, &id1, 0x0);
 	CALL_METH(temp_sensor1, ReadID, &id2, 0x0);
@@ -197,7 +209,8 @@ static void main_cycle(void) {
 	char buffer3[32];
 	char buffer4[32];
 	unsigned int ret = 0;
-	
+	static unsigned int i2c_errors = 0;
+
 	/* Switch LED On */
 	myled = LED_ON;
 	printf("===\n");
@@ -212,7 +225,8 @@ static void main_cycle(void) {
 	ret |= (!CALL_METH(gyroscope, Get_G_Axes, (int32_t *)&GYR_Value, 0) ? 0x0 : 0x40);
 
 	/* Print Values Out */
-        printf("I2C errors: 0x%.2x      X         Y         Z\n", ret); 
+	if(ret) i2c_errors++;
+        printf("I2C err: %3u|0x%.2x     X         Y         Z\n", ret, i2c_errors); 
         printf("MAG [mgauss]: %9ld %9ld %9ld\n", 
 	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
         printf("ACC [mg]:     %9ld %9ld %9ld\n", 

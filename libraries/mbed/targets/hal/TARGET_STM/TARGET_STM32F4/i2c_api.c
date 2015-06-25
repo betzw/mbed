@@ -125,6 +125,8 @@ void i2c_frequency(i2c_t *obj, int hz)
 
 }
 
+extern void dbg_set(void);
+extern void dbg_unset(void);
 inline int i2c_start(i2c_t *obj)
 {
     I2C_TypeDef *i2c = (I2C_TypeDef *)(obj->i2c);
@@ -137,11 +139,13 @@ inline int i2c_start(i2c_t *obj)
 
     // Wait the STOP bit gets cleared
     timeout = FLAG_TIMEOUT;
+    dbg_set();
     while (i2c->CR1 & I2C_CR1_STOP) {
 	    if ((timeout--) == 0) {
 		    return 1;
 	    }
     }
+    dbg_unset();
 
     // Generate the START condition
     i2c->CR1 |= I2C_CR1_START;
