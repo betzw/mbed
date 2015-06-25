@@ -231,7 +231,7 @@ static void main_cycle(void) {
 
 
 /*** Main function ------------------------------------------------------------- ***/
-/* Generic main function/loop for enabling WFI in case of 
+/* Generic main function/loop for enabling WFE in case of 
    interrupt based cyclic execution
 */
 int main()
