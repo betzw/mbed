@@ -23,7 +23,7 @@
 #include "hal_types.h"
 #include "mbed.h"
 
-#define NEED_CONSOLE_OUTPUT 1 /* Set this if you need debug messages on the console; */
+//#define NEED_CONSOLE_OUTPUT 1 /* Set this if you need debug messages on the console; */
  /*it will have an impact on code-size and power consumption. */
 
 #if NEED_CONSOLE_OUTPUT
