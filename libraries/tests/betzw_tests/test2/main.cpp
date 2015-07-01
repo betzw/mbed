@@ -142,11 +142,31 @@ static char *printDouble(char* str, double v, int decimalDigits=2)
 {
   int i = 1;
   int intPart, fractPart;
+  int len;
+  char *ptr;
 
+  /* prepare decimal digits multiplicator */
   for (;decimalDigits!=0; i*=10, decimalDigits--);
+
+  /* calculate integer & fractinal parts */
   intPart = (int)v;
   fractPart = (int)((v-(double)(int)v)*i);
-  sprintf(str, "%i.%i", intPart, fractPart);
+
+  /* fill in integer part */
+  sprintf(str, "%i.", intPart);
+
+  /* prepare fill in of fractional part */
+  len = strlen(str);
+  ptr = &str[len];
+
+  /* fill in leading fractional zeros */
+  for (i/=10;i>1; i/=10, ptr++) {
+	  if(fractPart >= i) break;
+	  *ptr = '0';
+  }
+
+  /* fill in (rest of) fractional part */
+  sprintf(ptr, "%i", fractPart);
 
   return str;
 }
@@ -212,14 +232,14 @@ static void main_cycle(void) {
 	ret |= (!CALL_METH(gyroscope, Get_G_Axes, (int32_t *)&GYR_Value, 0) ? 0x0 : 0x40);
 
 	/* Print Values Out */
-        printf("I2C errors: 0x%.2x      X         Y         Z\n", ret); 
+        printf("I2C [errors]: 0x%.2x    X         Y         Z\n", ret); 
         printf("MAG [mgauss]: %9ld %9ld %9ld\n", 
 	       MAG_Value.AXIS_X, MAG_Value.AXIS_Y, MAG_Value.AXIS_Z);
         printf("ACC [mg]:     %9ld %9ld %9ld\n", 
 	       ACC_Value.AXIS_X, ACC_Value.AXIS_Y, ACC_Value.AXIS_Z);
         printf("GYR [mdps]:   %9ld %9ld %9ld\n", 
 	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
-        printf("---\nTEMP | HUMIDITY: %s°C | %s%%\nTEMP | PRESSURE: %s°F | %smbar\n", 
+        printf("---\nTEMP | HUMIDITY: %s°C |   %s%%\nTEMP | PRESSURE: %s°F | %4smbar\n", 
 	       printDouble(buffer1, TEMPERATURE_Value), 
 	       printDouble(buffer2, HUMIDITY_Value), 
 	       printDouble(buffer4, PRESSURE_Temp_Value),
