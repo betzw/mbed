@@ -326,7 +326,8 @@ extern "C" {
                         DEBUG("CharHandle %d, length: %d, Data: %d\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);       
                         
                         //Extract the GattCharacteristic from p_characteristics[] and find the properties mask
-                        GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle);
+                        //If the char has handle 'x', then the value declaration will have the handle 'x+1'
+                        GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle-1);
                         if(p_char!=NULL) {
                             DEBUG("getProperties 0x%x\n\r",p_char->getProperties());
                             if((p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY

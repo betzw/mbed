@@ -204,6 +204,8 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
 
         // add descriptors now
         uint16_t descHandle = 0;
+        DEBUG("p_char->getDescriptorCount()=%d\n\r", p_char->getDescriptorCount());
+        
         for(uint8_t descIndex=0; descIndex<p_char->getDescriptorCount(); descIndex++) {
             GattAttribute *descriptor = p_char->getDescriptor(descIndex);
             uint16_t shortUUID = descriptor->getUUID().getShortUUID();
@@ -212,6 +214,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
             CHAR_DESC_TYPE_16_BIT, uuidArray, descriptor->getMaxLength(), descriptor->getInitialLength(), 
             descriptor->getValuePtr(), CHAR_DESC_SECURITY_PERMISSION, CHAR_DESC_ACCESS_PERMISSION, GATT_NOTIFY_ATTRIBUTE_WRITE,
             MIN_ENCRY_KEY_SIZE, CHAR_ATTRIBUTE_LEN_IS_FIXED, &descHandle);
+            DEBUG("Adding Descriptor descriptor handle=%d ret=%d\n\r", descHandle, ret);
             if(ret==(tBleStatus)0) {
                 DEBUG("Descriptor added successfully, descriptor handle=%d\n\r", descHandle);
                 descriptor->setHandle(descHandle);
@@ -393,7 +396,8 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(uint16_t attr
     for(i=0; i<characteristicCount; i++)
     {
         handle = p_characteristics[i]->getValueAttribute().getHandle();
-        
+        //DEBUG("Found p_characteristics[%d] handle=%u Properties 0x%x\n\r", i, handle, p_characteristics[i]->getProperties());
+        /*
         if(i==characteristicCount-1)//Last Characteristic check
         {
             if(attrHandle>=bleCharacteristicHandles[handle])
@@ -408,9 +412,15 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(uint16_t attr
             if(attrHandle>=bleCharacteristicHandles[handle] && attrHandle<bleCharacteristicHandles[handle+1])
             {
                 p_char = p_characteristics[i];
-                //DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+                DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
                 break;
             } else continue;
+        }
+        */
+        if(attrHandle == handle) {
+            p_char = p_characteristics[i];
+            DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+            break;
         }
     }
 
