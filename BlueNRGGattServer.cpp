@@ -149,9 +149,6 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
                         GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
             DEBUG("Setting up Gatt GATT_NOTIFY_ATTRIBUTE_WRITE Mask\n\r");
             Gatt_Evt_Mask = Gatt_Evt_Mask | GATT_NOTIFY_ATTRIBUTE_WRITE;
-            
-            // ANDREA -- FIXME: HR control point char is not correctly handled
-            //continue;
         }
         if((p_char->getProperties() &
                     (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_READ|
