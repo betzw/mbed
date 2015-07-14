@@ -17,7 +17,7 @@
 #ifndef __BLE_CONFIG_PARAMS_PERSISTENCE_H__
 #define __BLE_CONFIG_PARAMS_PERSISTENCE_H__
 
-#include "URIBeaconConfigService.h"
+#include "ble/services/URIBeaconConfigService.h"
 
 /**
  * Generic API to load the URIBeacon configuration parameters from persistent
