@@ -55,10 +55,18 @@ extern "C" {
 
 /**
 * The singleton which represents the BlueNRG transport for the BLEDevice.
+* FIXME: find a better way to create the BlueNRG device instance so that 
+* the pin names can be chosen by the users of this class
+*
+* This is using Arduino pins as follows:
+* D11: MOSI line of SPI interface
+* D12: MISO line of SPI interface
+* D3 : SCK line of SPI interface
+* A1 : nCS line of SPI interface
+* D7 : BlueNRG reset
+* A0 : BlueNRG IRQ pin
 */
-// FIXME: find a better way to create the BlueNRG device instance so that 
-// the pin names can be chosen by the users of this class
-BlueNRGDevice bluenrgDeviceInstance(PA_7, PA_6, PB_3, PA_1, PA_8, PA_0);
+BlueNRGDevice bluenrgDeviceInstance(D11, D12, D3, A1, D7, A0);
 
 /**
 * BLE-API requires an implementation of the following function in order to
@@ -73,10 +81,11 @@ createBLEInstance(void)
 /**************************************************************************/
 /**
     @brief  Constructor
-     * @param mosi mbed pin to use for MOSI line of SPI interface.
-     * @param miso mbed pin to use for MISO line of SPI interface.
-     * @param sck mbed pin to use for SCK line of SPI interface.
-     * @param cs mbed pin to use for not chip select line of SPI interface.
+     * @param mosi mbed pin to use for MOSI line of SPI interface
+     * @param miso mbed pin to use for MISO line of SPI interface
+     * @param sck mbed pin to use for SCK line of SPI interface
+     * @param cs mbed pin to use for not chip select line of SPI interface
+     * @param rst mbed pin to use for BlueNRG reset
      * @param irq mbed pin for BlueNRG IRQ
 */
 /**************************************************************************/
