@@ -189,6 +189,14 @@ class LPC11U35_501(LPCTarget):
         self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR" , "IAR"]
         self.default_toolchain = "uARM"
 
+class LPC11U35_501_IBDAP(LPCTarget):
+    def __init__(self):
+        LPCTarget.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['NXP', 'LPC11UXX', 'MCU_LPC11U35_501']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "GCC_CR" , "IAR"]
+        self.default_toolchain = "uARM"
+
 class LPC11U35_Y5_MBUG(LPCTarget):
     def __init__(self):
         LPCTarget.__init__(self)
@@ -437,6 +445,15 @@ class KL25Z(Target):
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
         self.detect_code = ["0200"]
+
+class KL26Z(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['Freescale', 'KLXX']
+        self.supported_toolchains = ["ARM","GCC_ARM","IAR"]
+        self.supported_form_factors = ["ARDUINO"]
+        self.is_disk_virtual = True
 
 class KL43Z(Target):
     def __init__(self):
@@ -1188,7 +1205,7 @@ class ARM_MPS2_M4(ARM_MPS2_Target):
 class ARM_MPS2_M7(ARM_MPS2_Target):
     def __init__(self):
         ARM_MPS2_Target.__init__(self)
-        self.core = "Cortex-M7F"
+        self.core = "Cortex-M4F"
         self.extra_labels = ['ARM_SSG', 'MPS2', 'MPS2_M7']
         self.macros = ['CMSDK_CM7']
         self.supported_toolchains = ["ARM", "GCC_ARM"]
@@ -1326,6 +1343,7 @@ TARGETS = [
     MICRONFCBOARD(), # LPC11U34_421
     LPC11U35_401(),
     LPC11U35_501(),
+    LPC11U35_501_IBDAP(),
     XADOW_M0(),     # LPC11U35_501
     LPC11U35_Y5_MBUG(),
     LPC11U37_501(),
@@ -1355,6 +1373,7 @@ TARGETS = [
     ### Freescale ###
     KL05Z(),
     KL25Z(),
+    KL26Z(),
     KL43Z(),
     KL46Z(),
     K20D50M(),
