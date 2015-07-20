@@ -239,7 +239,7 @@ static void main_cycle(void) {
 	       ACC_Value.AXIS_X, ACC_Value.AXIS_Y, ACC_Value.AXIS_Z);
         printf("GYR [mdps]:   %9ld %9ld %9ld\n", 
 	       GYR_Value.AXIS_X, GYR_Value.AXIS_Y, GYR_Value.AXIS_Z);
-        printf("---\nTEMP | HUMIDITY: %s°C |   %s%%\nTEMP | PRESSURE: %s°F | %4smbar\n", 
+        printf("---\nTEMP | HUMIDITY: %s°C |  %s%%\nTEMP | PRESSURE: %s°F | %4smbar\n", 
 	       printDouble(buffer1, TEMPERATURE_Value), 
 	       printDouble(buffer2, HUMIDITY_Value), 
 	       printDouble(buffer4, PRESSURE_Temp_Value),
