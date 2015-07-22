@@ -72,18 +72,18 @@ int main(void)
      * operation.
      */
     URIBeaconConfigService::Params_t params;
-    bool fetchedFromPersistentStorage = loadURIBeaconConfigParams(&params);
+    bool fetchedFromPersistentStorage = false;
 
     /* Initialize a URIBeaconConfig service providing config params, default URI, and power levels. */
     static URIBeaconConfigService::PowerLevels_t defaultAdvPowerLevels = {-20, -4, 0, 10}; // Values for ADV packets related to firmware levels
-    uriBeaconConfig = new URIBeaconConfigService(ble, params, !fetchedFromPersistentStorage, "http://uribeacon.org", defaultAdvPowerLevels);
+    uriBeaconConfig = new URIBeaconConfigService(ble, params, !fetchedFromPersistentStorage, "http://st.com", defaultAdvPowerLevels);
     if (!uriBeaconConfig->configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
-    configAdvertisementTimeoutTicker.attach(timeout, CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS);
+    //configAdvertisementTimeoutTicker.attach(timeout, CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS);
 
     // Setup auxiliary services to allow over-the-air firmware updates, etc
-    DFUService dfu(ble);
+    //DFUService dfu(ble);
     DeviceInformationService deviceInfo(ble, "ARM", "UriBeacon", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
 
     ble.startAdvertising(); /* Set the whole thing in motion. After this call a GAP central can scan the URIBeaconConfig
