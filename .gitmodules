@@ -1,0 +1,3 @@
+[submodule "libraries/tests/libs/BLE_API"]
+	path = libraries/tests/libs/BLE_API
+	url = http://github.com/mbedmicro/BLE_API/

@@ -8,8 +8,8 @@ python workspace_tools/build.py -t GCC_ARM -m K64F
 # Note: in order to enable debugging compile with option '-o debug-info'
 
 
-Compile test1:
-==============
+Compile ble_tests:
+==================
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_1
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_1
 python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_1
@@ -55,17 +55,17 @@ git branch -d idb0xa1-split
 
 Applications:
 ~~~~~~~~~~~~~
-Sensors-Reader:
----------------
-git remote add sr-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Sensors_Reader"
+BLE-TESTS:
+----------
+git remote add ble-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X-MBED-BLE1"
 
-git subtree split -P libraries/tests/betzw_tests/test2 -b sr-split
-git checkout sr-split
-git pull sr-app master
+git subtree split -P libraries/tests/betzw_tests/ble_tests -b ble-split
+git checkout ble-split
+git pull ble-app master
 
-git push sr-app sr-split:master
+git push ble-app ble-split:master
 
 git checkout ble_wb
-git subtree merge -P libraries/tests/betzw_tests/test2 sr-split
+git subtree merge -P libraries/tests/betzw_tests/ble_tests ble-split
 
-git branch -d sr-split
+git branch -d ble-split
