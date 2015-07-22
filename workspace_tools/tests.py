@@ -19,6 +19,8 @@ from workspace_tools.data.support import *
 
 TEST_CMSIS_LIB = join(TEST_DIR, "cmsis", "lib")
 TEST_MBED_LIB = join(TEST_DIR, "mbed", "env")
+# betzw
+TEST_STM_LIBS = join(TEST_DIR, "libs", "X_NUCLEO_COMMON")
 
 PERIPHERALS = join(TEST_DIR, "peripherals")
 BENCHMARKS_DIR = join(TEST_DIR, "benchmarks")
@@ -1048,6 +1050,19 @@ TESTS = [
         "dependencies": [MBED_LIBRARIES, TEST_MBED_LIB],
         "automated": True,
         #"host_test" : "detect_auto",
+    },
+
+    # betzw: BLE Test App
+    {
+        "id": "betzw_test_1", "description": "BLE test program",
+        "source_dir": join(TEST_DIR, "betzw_tests", "ble_tests"),
+        "dependencies": [MBED_LIBRARIES, 
+                         # join(TEST_STM_LIBS, 'DbgMCU'), 
+                         # join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(TEST_DIR, "libs", "BLE_API"),
+                         join(PERIPHERALS, 'X_NUCLEO_IDB0XA1')],
+        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F", "LPC11U68"],
+        "peripherals": ["X_NUCLEO_IDB0XA1"]
     },
 ]
 
