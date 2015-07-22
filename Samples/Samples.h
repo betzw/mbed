@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-#include "Samples.h"
- 
-int main(void)
-{
-#ifdef HRM_SAMPLE_ENABLED
-    hrmSample();
-#endif /* HRM_SAMPLE_ENABLED */
 
-#ifdef SENSOR_DEMO_ENABLED
-    sensorDemo();
-#endif /* SENSOR_DEMO_ENABLED */
+#ifndef __SAMPLES_H__
+#define __SAMPLES_H__
 
-}
+//#define HRM_SAMPLE_ENABLED
+#define SENSOR_DEMO_ENABLED
+
+void hrmSample(void);
+void sensorDemo(void);
+
+#endif /* __SAMPLES_H__ */
