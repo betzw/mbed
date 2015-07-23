@@ -17,8 +17,8 @@
 #ifndef __SAMPLES_H__
 #define __SAMPLES_H__
 
-//#define HRM_SAMPLE_ENABLED
-#define SENSOR_DEMO_ENABLED
+#define HRM_SAMPLE_ENABLED
+// #define SENSOR_DEMO_ENABLED
 
 void hrmSample(void);
 void sensorDemo(void);
