@@ -104,7 +104,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
     } else { 
         PayloadPtr loadPtr(advData.getPayload(), advData.getPayloadLen());        
         for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {                  
-            PayloadUnit unit = loadPtr.getUnitAtIndex(index);
+            loadPtr.getUnitAtIndex(index);
 
             DEBUG("adData[%d].length=%d\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
             DEBUG("adData[%d].AdType=0x%x\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));                  

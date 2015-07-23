@@ -87,6 +87,7 @@
  * @param[in]  n_bytes2 number of bytes in 2nd buffer
  */
 //void Hal_Write_Serial(const void* data1, const void* data2, uint16_t n_bytes1, uint16_t n_bytes2);
+void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1, int32_t n_bytes2);
 
 /**
  * Enable interrupts from HCI controller.
