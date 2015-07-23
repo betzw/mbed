@@ -243,11 +243,6 @@ const GattServer &BlueNRGDevice::getGattServer() const
     return BlueNRGGattServer::getInstance();
 }
 
-//FIXME: TBI (by now just placeholders to let build
-GattClient& BlueNRGDevice::getGattClient() {}
-SecurityManager& BlueNRGDevice::getSecurityManager(){}
-const SecurityManager& BlueNRGDevice::getSecurityManager() const {}
-
 /**************************************************************************/
 /*!
     @brief  shut down the the BLE device
@@ -338,7 +333,6 @@ int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
     int32_t result = 0;
 
     uint32_t i;
-    volatile uint8_t read_char;
     volatile uint8_t tmpreg;
     
     unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
@@ -364,10 +358,10 @@ int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
 
             /*  Buffer is big enough */
             for (i = 0; i < Nb_bytes1; i++) {
-                read_char = spi_.write(*(data1 + i));
+                spi_.write(*(data1 + i));
             }
             for (i = 0; i < Nb_bytes2; i++) {
-                read_char = spi_.write(*(data2 + i));
+                spi_.write(*(data2 + i));
             }
         } else {
             /* Buffer is too small */
