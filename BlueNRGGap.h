@@ -49,6 +49,8 @@
 #define BLUENRG_GAP_ADV_INTERVAL_MAX (0)
 #define BLE_GAP_ADV_NONCON_INTERVAL_MIN (0)
 
+#define UUID_BUFFER_SIZE 13 //6*2(16-bit UUIDs)+1
+#define ADV_DATA_MAX_SIZE 31
 
 /**************************************************************************/
 /*!
@@ -111,10 +113,19 @@ private:
     uint16_t m_connectionHandle;
     uint8_t bdaddr[BDADDR_SIZE];
     bool isSetAddress;
-    tBleStatus ret;
+    tBleStatus ret; // FIXME: delete this
     uint8_t *DeviceName;
     uint8_t deviceAppearance[2];
 
+    uint8_t *local_name;
+    uint8_t local_name_length;
+
+    uint8_t servUuidlength;
+    uint8_t servUuidData[UUID_BUFFER_SIZE];
+
+    uint8_t AdvLen;
+    uint8_t AdvData[ADV_DATA_MAX_SIZE];
+    
     BlueNRGGap() {
         m_connectionHandle = BLE_CONN_HANDLE_INVALID;
         isSetAddress = false;

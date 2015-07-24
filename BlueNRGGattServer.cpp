@@ -414,7 +414,7 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(uint16_t attr
             } else continue;
         }
         */
-        if(attrHandle == handle) {
+        if(attrHandle == handle+1) {
             p_char = p_characteristics[i];
             DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
             break;
