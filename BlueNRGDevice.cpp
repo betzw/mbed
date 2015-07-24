@@ -61,12 +61,12 @@ extern "C" {
 * This is using Arduino pins as follows:
 * D11: MOSI line of SPI interface
 * D12: MISO line of SPI interface
-* D3 : SCK line of SPI interface
+* D13: SCK line of SPI interface
 * A1 : nCS line of SPI interface
 * D7 : BlueNRG reset
 * A0 : BlueNRG IRQ pin
 */
-BlueNRGDevice bluenrgDeviceInstance(D11, D12, D3, A1, D7, A0);
+BlueNRGDevice bluenrgDeviceInstance(D11, D12, D13, A1, D7, A0);
 
 /**
 * BLE-API requires an implementation of the following function in order to
@@ -127,6 +127,7 @@ BlueNRGDevice::~BlueNRGDevice(void)
 ble_error_t BlueNRGDevice::init(void)
 {
     // Set the interrupt handler for the device
+    irq_.mode(PullNone); // betzw: set irq mode
     irq_.rise(&HCI_Isr);
 
     /* ToDo: Clear memory contents, reset the SD, etc. */
