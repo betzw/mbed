@@ -21,7 +21,7 @@
  
 #include "Samples.h"
 
-#ifdef HRM_SAMPLE_ENABLED
+#ifdef HRM_DEMO_ENABLED
 
 /* Enable the following if you need to throttle the connection interval. This has
  * the effect of reducing energy consumption after a connection is made;
@@ -51,7 +51,7 @@ void periodicCallback(void)
     triggerSensorPolling = true;
 }
  
-void hrmSample(void)
+void hrmDemo(void)
 {
     led1 = 1;
     Ticker ticker;
@@ -69,9 +69,9 @@ void hrmSample(void)
  
     /* Setup advertising. */
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
+    ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LOCAL_NAME, (uint8_t *)DEVICE_NAME, sizeof(DEVICE_NAME));
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *)uuid16_list, sizeof(uuid16_list));
     ble.accumulateAdvertisingPayload(GapAdvertisingData::GENERIC_HEART_RATE_SENSOR);
-    ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LOCAL_NAME, (uint8_t *)DEVICE_NAME, sizeof(DEVICE_NAME));
     ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
     ble.setAdvertisingInterval(1000);
     ble.startAdvertising();
@@ -94,4 +94,4 @@ void hrmSample(void)
     }
 }
  
-#endif /* HRM_SAMPLE_ENABLED */
+#endif /* HRM_DEMO_ENABLED */

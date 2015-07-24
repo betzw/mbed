@@ -17,10 +17,18 @@
 #ifndef __SAMPLES_H__
 #define __SAMPLES_H__
 
-//#define HRM_SAMPLE_ENABLED
-#define SENSOR_DEMO_ENABLED
+//#define HRM_DEMO_ENABLED
+//#define SENSOR_DEMO_ENABLED
+#define URI_BEACON_DEMO_ENABLED
+//#define SAMPLE_DEMO_ENABLED
+//#define BUTTON_DEMO_ENABLED
+//#define LED_DEMO_ENABLED
 
-void hrmSample(void);
+void hrmDemo(void);
 void sensorDemo(void);
+void uriBeaconDemo(void);
+void sampleDemo(void);
+void buttonDemo(void);
+void ledDemo(void);
 
 #endif /* __SAMPLES_H__ */
