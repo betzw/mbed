@@ -56,12 +56,12 @@
 	 Expansion boards modified in this way allow to be used on almost
 	 any Arduino-compliant base board.
 */
-#define IDB0XA1_D13_PATH
+#define IDB0XA1_D13_PATCH
 
-#if defined(IDB0XA1_D13_PATH)
+#if defined(IDB0XA1_D13_PATCH)
 #define IDB0XA1_PIN_SPI_SCK    (D13)
-#else // !defined(IDB0XA1_D13_PATH)
+#else // !defined(IDB0XA1_D13_PATCH)
 #define IDB0XA1_PIN_SPI_SCK    (D3)
-#endif // !defined(IDB0XA1_D13_PATH)
+#endif // !defined(IDB0XA1_D13_PATCH)
 
 #endif // _X_NUCLEO_IDB0XA1_TARGETS_H_
