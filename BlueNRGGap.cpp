@@ -366,12 +366,6 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         return BLE_ERROR_PARAM_OUT_OF_RANGE;
     }
 
-    ret = aci_gap_delete_ad_type(AD_TYPE_FLAGS); 
-    if (ret != BLE_STATUS_SUCCESS){
-        DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
-        return BLE_ERROR_PARAM_OUT_OF_RANGE;
-    }
-
    ret = aci_gap_update_adv_data(AdvLen, AdvData);
    if(BLE_STATUS_SUCCESS!=ret) {
        DEBUG("error occurred while adding adv data (ret=0x%x)\n", ret);
