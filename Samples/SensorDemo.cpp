@@ -19,6 +19,7 @@
 #include "SensorService.h"
 #include "DeviceInformationService.h"
 
+#include "x_nucleo_idb0xa1_targets.h"
 #include "Samples.h"
 
 #ifdef SENSOR_DEMO_ENABLED
@@ -30,9 +31,12 @@
 #define UPDATE_PARAMS_FOR_LONGER_CONNECTION_INTERVAL 0
  
 BLE ble;
-DigitalOut led1(LED1);
 InterruptIn mybutton(USER_BUTTON);
- 
+
+#if !defined(IDB0XA1_D13_PATCH)
+DigitalOut led1(LED1);
+#endif
+
 const static char     DEVICE_NAME[]        = "BlueNRG";
 static const uint16_t uuid16_list[]        = {SensServiceShortUUID,
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
@@ -50,16 +54,20 @@ void buttonCallback() {
     triggerSensorPolling = true;
 }
  
+#if !defined(IDB0XA1_D13_PATCH)
 void periodicCallback(void)
 {
     led1 = !led1; /* Do blinky on LED1 while we're waiting for BLE events */
 }
- 
+#endif
+
 void sensorDemo(void)
 {
+#if !defined(IDB0XA1_D13_PATCH)
     led1 = 1;
     Ticker ticker;
     ticker.attach(periodicCallback, 1); // blink LED every second
+#endif
 
     // Attach the address of the callback function to the falling edge
     mybutton.fall(&buttonCallback);
