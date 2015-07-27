@@ -23,21 +23,6 @@ Mercurial:
 ==========
 Libraries:
 ~~~~~~~~~~
-COMMON:
--------
-git remote add common-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_COMMON"
-
-git subtree split -P libraries/tests/libs/X_NUCLEO_COMMON -b common-split
-git checkout common-split
-git pull common-lib master
-
-git push common-lib common-split:master
-
-git checkout ble_wb
-git subtree merge -P libraries/tests/libs/X_NUCLEO_COMMON common-split
-
-git branch -d common-split
-
 IDB0XA1:
 --------
 git remote add idb0xa1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IDB0XA1"
