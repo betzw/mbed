@@ -310,8 +310,8 @@ extern "C" {
                 case EVT_BLUE_GATT_READ_PERMIT_REQ:
                     {
                         DEBUG("EVT_BLUE_GATT_READ_PERMIT_REQ_OK\n\r");
-                        evt_gatt_read_permit_req *pr = (evt_gatt_read_permit_req*)blue_evt->data;                        
-                        BlueNRGGattServer::getInstance().Read_Request_CB(pr->attr_handle-1);                                                
+                        evt_gatt_read_permit_req *pr = (evt_gatt_read_permit_req*)blue_evt->data;
+                        BlueNRGGattServer::getInstance().Read_Request_CB(pr->attr_handle-CHAR_VALUE_OFFSET);                                                
                     }
                     break;
                     
@@ -323,12 +323,14 @@ extern "C" {
                         DEBUG("EVT_BLUE_GATT_ATTRIBUTE_MODIFIED\n\r");
                         
                         //DEBUG("CharHandle 0x%x, length: 0x%x, Data: 0x%x\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);
-                        DEBUG("CharHandle %d, length: %d, Data: %d\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);       
+                               
                         
                         //Extract the GattCharacteristic from p_characteristics[] and find the properties mask
                         //If the char has handle 'x', then the value declaration will have the handle 'x+1'
+                        /*uint16_t charHandle = evt->attr_handle-CHAR_VALUE_OFFSET;*/
                         GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle);
                         if(p_char!=NULL) {
+                            DEBUG("CharHandle %d, length: %d, Data: %d\n\r",p_char->getValueAttribute().getHandle(), evt->data_length, (uint16_t)evt->att_data[0]);
                             DEBUG("getProperties 0x%x\n\r",p_char->getProperties());
                             if((p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
                                             | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
@@ -336,11 +338,11 @@ extern "C" {
                                 //Now Check if data written in Enable or Disable
                                 if((uint16_t)evt->att_data[0]==1) {
                                     //DEBUG("Notify ENABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, evt->attr_handle);
+                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, p_char->getValueAttribute().getHandle()/*evt->attr_handle*/);
                                 } 
                                 else {
                                     //DEBUG("Notify DISABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, evt->attr_handle);
+                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, p_char->getValueAttribute().getHandle()/*evt->attr_handle*/);
                                 }
                             }
                             
@@ -350,7 +352,7 @@ extern "C" {
                                             GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
                                 
                                 GattWriteCallbackParams writeParams;
-                                writeParams.handle=evt->attr_handle-1;
+                                writeParams.handle=p_char->getValueAttribute().getHandle();/*evt->attr_handle-CHAR_VALUE_OFFSET;*/
                                 writeParams.writeOp=GattWriteCallbackParams::OP_WRITE_REQ;//Where to find this property in BLUENRG?
                                 writeParams.len=evt->data_length;
                                 writeParams.data=evt->att_data;                                                                                    
