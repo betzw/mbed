@@ -21,9 +21,14 @@
 
 #include "BlueNRGGap.h"
 
+#include "x_nucleo_idb0xa1_targets.h"
 #include "Samples.h"
 
-#ifdef SAMPLE_DEMO_ENABLED
+#if defined(SAMPLE_DEMO_ENABLED)
+
+#if defined(IDB0XA1_D13_PATCH)
+#error "LED demo not avilable with patch D13 applied on IDB0XA1 expansion boards!"
+#endif // defined(IDB0XA1_D13_PATCH)
 
 /* Enable the following if you need to throttle the connection interval. This has
  * the effect of reducing energy consumption after a connection is made;
@@ -32,9 +37,9 @@
 #define UPDATE_PARAMS_FOR_LONGER_CONNECTION_INTERVAL 0
  
 BLE ble;
-DigitalOut led1(LED1);
 InterruptIn mybutton(USER_BUTTON);
- 
+DigitalOut led1(LED1);
+
 const static char     DEVICE_NAME[]        = "BlueNRG_Chat";
 const Gap::Address_t  BLE_address_BE       = {0xAA, 0x00, 0x00, 0xE1, 0x80, 0x02};
 static const uint16_t uuid16_list[]        = {SampleServiceShortUUID,

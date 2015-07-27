@@ -18,7 +18,8 @@
 #include "BLE.h"
 #include "HeartRateService.h"
 #include "DeviceInformationService.h"
- 
+
+#include "x_nucleo_idb0xa1_targets.h"
 #include "Samples.h"
 
 #ifdef HRM_DEMO_ENABLED
@@ -30,8 +31,11 @@
 #define UPDATE_PARAMS_FOR_LONGER_CONNECTION_INTERVAL 0
  
 BLE ble;
+
+#if !defined(IDB0XA1_D13_PATCH)
 DigitalOut led1(LED1);
- 
+#endif
+
 const static char     DEVICE_NAME[]        = "HRM";
 static const uint16_t uuid16_list[]        = {GattService::UUID_HEART_RATE_SERVICE,
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
@@ -44,8 +48,10 @@ void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reas
  
 void periodicCallback(void)
 {
+#if !defined(IDB0XA1_D13_PATCH)
     led1 = !led1; /* Do blinky on LED1 while we're waiting for BLE events */
- 
+#endif
+
     /* Note that the periodicCallback() executes in interrupt context, so it is safer to do
      * heavy-weight sensor polling from the main thread. */
     triggerSensorPolling = true;
@@ -53,7 +59,9 @@ void periodicCallback(void)
  
 void hrmDemo(void)
 {
+#if !defined(IDB0XA1_D13_PATCH)
     led1 = 1;
+#endif
     Ticker ticker;
     ticker.attach(periodicCallback, 1); // blink LED every second
 

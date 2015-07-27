@@ -18,13 +18,17 @@
 #include "BLE.h"
 #include "ButtonService.h"
 
+#include "x_nucleo_idb0xa1_targets.h"
 #include "Samples.h"
 
 #ifdef BUTTON_DEMO_ENABLED
 
 BLE         ble;
-DigitalOut  led1(LED1);
 InterruptIn button(USER_BUTTON);
+
+#if !defined(IDB0XA1_D13_PATCH)
+DigitalOut  led1(LED1);
+#endif
 
 const static char     DEVICE_NAME[] = "Button";
 static const uint16_t uuid16_list[] = {ButtonService::BUTTON_SERVICE_UUID};
@@ -46,16 +50,21 @@ void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reas
     ble.gap().startAdvertising();
 }
 
+#if !defined(IDB0XA1_D13_PATCH)
 void periodicCallback(void)
 {
     led1 = !led1; /* Do blinky on LED1 to indicate system aliveness. */
 }
+#endif
 
 void buttonDemo(void)
 {
+#if !defined(IDB0XA1_D13_PATCH)
     led1 = 1;
     Ticker ticker;
     ticker.attach(periodicCallback, 1);
+#endif
+
     button.fall(buttonPressedCallback);
     button.rise(buttonReleasedCallback);
 
