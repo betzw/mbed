@@ -311,7 +311,7 @@ extern "C" {
                     {
                         DEBUG("EVT_BLUE_GATT_READ_PERMIT_REQ_OK\n\r");
                         evt_gatt_read_permit_req *pr = (evt_gatt_read_permit_req*)blue_evt->data;                        
-                        BlueNRGGattServer::getInstance().Read_Request_CB(pr->attr_handle);                                                
+                        BlueNRGGattServer::getInstance().Read_Request_CB(pr->attr_handle-1);                                                
                     }
                     break;
                     
@@ -327,7 +327,7 @@ extern "C" {
                         
                         //Extract the GattCharacteristic from p_characteristics[] and find the properties mask
                         //If the char has handle 'x', then the value declaration will have the handle 'x+1'
-                        GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle-1);
+                        GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle);
                         if(p_char!=NULL) {
                             DEBUG("getProperties 0x%x\n\r",p_char->getProperties());
                             if((p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
@@ -350,7 +350,7 @@ extern "C" {
                                             GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
                                 
                                 GattWriteCallbackParams writeParams;
-                                writeParams.handle=evt->attr_handle;
+                                writeParams.handle=evt->attr_handle-1;
                                 writeParams.writeOp=GattWriteCallbackParams::OP_WRITE_REQ;//Where to find this property in BLUENRG?
                                 writeParams.len=evt->data_length;
                                 writeParams.data=evt->att_data;                                                                                    
