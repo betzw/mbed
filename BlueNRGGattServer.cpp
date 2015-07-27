@@ -309,7 +309,7 @@ ble_error_t BlueNRGGattServer::write(GattAttribute::Handle_t charHandle, const u
     ret = aci_gatt_update_char_value(bleCharHanldeMap.find(charHandle)->second, charHandle, 0, len, buffer);
 
     if (ret != BLE_STATUS_SUCCESS){
-        DEBUG("Error while updating characteristic.\n\r") ;
+        DEBUG("Error while updating characteristic (ret=0x%x).\n\r", ret) ;
         return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
         //FIXME: Define Error values equivalent to BlueNRG Error Codes.
     }
@@ -319,6 +319,7 @@ ble_error_t BlueNRGGattServer::write(GattAttribute::Handle_t charHandle, const u
     GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(charHandle);
     if(p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
                 | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE)) {
+        DEBUG("Generate event after updating\n\r");
         BlueNRGGattServer::getInstance().handleEvent(GattServerEvents::GATT_EVENT_DATA_SENT, charHandle);
     }
 
@@ -387,37 +388,31 @@ GattCharacteristic* BlueNRGGattServer::getCharacteristicFromHandle(uint16_t attr
 {
     GattCharacteristic *p_char = NULL;
     int i;
-    uint16_t handle;
+    uint16_t handle, handle_1;
 
-    //DEBUG("BlueNRGGattServer::getCharacteristicFromHandle()>>Attribute Handle received 0x%x\n\r",attrHandle);
+    DEBUG("BlueNRGGattServer::getCharacteristicFromHandle()>>Attribute Handle received %d\n\r",attrHandle);
     for(i=0; i<characteristicCount; i++)
     {
         handle = p_characteristics[i]->getValueAttribute().getHandle();
-        //DEBUG("Found p_characteristics[%d] handle=%u Properties 0x%x\n\r", i, handle, p_characteristics[i]->getProperties());
-        /*
+        DEBUG("handle(%d)=%d\n\r", i, handle);
         if(i==characteristicCount-1)//Last Characteristic check
         {
-            if(attrHandle>=bleCharacteristicHandles[handle])
+            if(attrHandle>=handle)
             {
                 p_char = p_characteristics[i];
-                DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+                DEBUG("Found Characteristic Properties 0x%x (handle=%d)\n\r",p_char->getProperties(), handle);
                 break;
             }            
         }
         else {
+            handle_1 = p_characteristics[i+1]->getValueAttribute().getHandle();
             //Testing if attribute handle is between two Characteristic Handles
-            if(attrHandle>=bleCharacteristicHandles[handle] && attrHandle<bleCharacteristicHandles[handle+1])
+            if(attrHandle>=handle && attrHandle<handle_1)
             {
                 p_char = p_characteristics[i];
-                DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
+                DEBUG("Found Characteristic Properties 0x%x (handle=%d handle_1=%d)\n\r",p_char->getProperties(), handle, handle_1);
                 break;
             } else continue;
-        }
-        */
-        if(attrHandle == handle+1) {
-            p_char = p_characteristics[i];
-            DEBUG("Found Characteristic Properties 0x%x\n\r",p_char->getProperties());
-            break;
         }
     }
 

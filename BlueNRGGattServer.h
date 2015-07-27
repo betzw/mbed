@@ -46,6 +46,8 @@
 
 #define BLE_TOTAL_CHARACTERISTICS 10
 
+// If the char has handle 'x', then the value declaration will have the handle 'x+1'
+#define CHAR_VALUE_OFFSET 1
 
 using namespace std;
 
