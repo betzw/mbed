@@ -14,16 +14,32 @@
  * limitations under the License.
  */
  
-#include "Samples.h"
+#include "Samples/Samples.h"
  
 int main(void)
 {
-#ifdef HRM_SAMPLE_ENABLED
-    hrmSample();
-#endif /* HRM_SAMPLE_ENABLED */
+#ifdef HRM_DEMO_ENABLED
+    hrmDemo();
+#endif /* HRM_DEMO_ENABLED */
 
 #ifdef SENSOR_DEMO_ENABLED
     sensorDemo();
 #endif /* SENSOR_DEMO_ENABLED */
+
+#ifdef URI_BEACON_DEMO_ENABLED
+    uriBeaconDemo();
+#endif /* URI_BEACON_DEMO_ENABLED */
+
+#ifdef SAMPLE_DEMO_ENABLED
+    sampleDemo();
+#endif /* SAMPLE_DEMO_ENABLED */
+
+#ifdef BUTTON_DEMO_ENABLED
+    buttonDemo();
+#endif /* BUTTON_DEMO_ENABLED */
+
+#ifdef LED_DEMO_ENABLED
+    ledDemo();
+#endif /* LED_DEMO_ENABLED */
 
 }

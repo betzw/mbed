@@ -16,13 +16,12 @@
  
 #include "mbed.h"
 #include "BLE.h"
-#include "SensorService.h"
+#include "HeartRateService.h"
 #include "DeviceInformationService.h"
-
-#include "x_nucleo_idb0xa1_targets.h"
+ 
 #include "Samples.h"
 
-#ifdef SENSOR_DEMO_ENABLED
+#ifdef HRM_DEMO_ENABLED
 
 /* Enable the following if you need to throttle the connection interval. This has
  * the effect of reducing energy consumption after a connection is made;
@@ -31,77 +30,68 @@
 #define UPDATE_PARAMS_FOR_LONGER_CONNECTION_INTERVAL 0
  
 BLE ble;
-InterruptIn mybutton(USER_BUTTON);
-
-#if !defined(IDB0XA1_D13_PATCH)
 DigitalOut led1(LED1);
-#endif
-
-const static char     DEVICE_NAME[]        = "BlueNRG";
-static const uint16_t uuid16_list[]        = {SensServiceShortUUID,
+ 
+const static char     DEVICE_NAME[]        = "HRM";
+static const uint16_t uuid16_list[]        = {GattService::UUID_HEART_RATE_SERVICE,
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
 static volatile bool  triggerSensorPolling = false;
-
-
+ 
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
 {
     ble.startAdvertising(); // restart advertising
 }
-
-void buttonCallback() {
-    /* Note that the buttonCallback() executes in interrupt context, 
-     * so it is safer to do heavy-weight computation elsewhere. */
-    triggerSensorPolling = true;
-}
  
-#if !defined(IDB0XA1_D13_PATCH)
 void periodicCallback(void)
 {
     led1 = !led1; /* Do blinky on LED1 while we're waiting for BLE events */
+ 
+    /* Note that the periodicCallback() executes in interrupt context, so it is safer to do
+     * heavy-weight sensor polling from the main thread. */
+    triggerSensorPolling = true;
 }
-#endif
-
-void sensorDemo(void)
+ 
+void hrmDemo(void)
 {
-#if !defined(IDB0XA1_D13_PATCH)
     led1 = 1;
     Ticker ticker;
     ticker.attach(periodicCallback, 1); // blink LED every second
-#endif
-
-    // Attach the address of the callback function to the falling edge
-    mybutton.fall(&buttonCallback);
 
     ble.init();
     ble.onDisconnection(disconnectionCallback);
  
     /* Setup primary service. */
-    SensorService sensorService(ble);
-    
+    uint8_t hrmCounter = 60; // init HRM to 60bps
+    HeartRateService hrService(ble, hrmCounter, HeartRateService::LOCATION_CHEST);
+ 
     /* Setup auxiliary service. */
     DeviceInformationService deviceInfo(ble, "STM", "Model1", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
  
     /* Setup advertising. */
     ble.accumulateAdvertisingPayload(GapAdvertisingData::BREDR_NOT_SUPPORTED | GapAdvertisingData::LE_GENERAL_DISCOVERABLE);
-    ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *)uuid16_list, sizeof(uuid16_list));
-    ble.accumulateAdvertisingPayload(GapAdvertisingData::UNKNOWN);
     ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LOCAL_NAME, (uint8_t *)DEVICE_NAME, sizeof(DEVICE_NAME));
+    ble.accumulateAdvertisingPayload(GapAdvertisingData::COMPLETE_LIST_16BIT_SERVICE_IDS, (uint8_t *)uuid16_list, sizeof(uuid16_list));
+    ble.accumulateAdvertisingPayload(GapAdvertisingData::GENERIC_HEART_RATE_SENSOR);
     ble.setAdvertisingType(GapAdvertisingParams::ADV_CONNECTABLE_UNDIRECTED);
     ble.setAdvertisingInterval(1000);
     ble.startAdvertising();
  
     // infinite loop
     while (1) {
-        // check for trigger from buttonCallback()
+        // check for trigger from periodicCallback()
         if (triggerSensorPolling && ble.getGapState().connected) {
             triggerSensorPolling = false;
  
-            sensorService.updateAcc(true);
-
+            // Do blocking calls or whatever is necessary for sensor polling.
+            // In our case, we simply update the HRM measurement. 
+            hrmCounter = (rand()&0x1F)+60;
+            
+            // update bpm
+            hrService.updateHeartRate(hrmCounter);
         } else {
             ble.waitForEvent(); // low power wait for event
         }
     }
 }
-
-#endif /* SENSOR_DEMO_ENABLED */
+ 
+#endif /* HRM_DEMO_ENABLED */
