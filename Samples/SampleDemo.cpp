@@ -53,6 +53,10 @@ void buttonCallback() {
     triggerSensorPolling = true;
 }
  
+void sampleDemoCallback() {
+        led1 = !led1;
+}
+
 void sampleDemo(void)
 {
     led1 = 0;
@@ -73,7 +77,7 @@ void sampleDemo(void)
     ble.onDisconnection(disconnectionCallback);
  
     /* Setup primary service. */
-    SampleService sampleService(ble);
+    SampleService sampleService(ble, sampleDemoCallback);
     
     /* Setup auxiliary service. */
     DeviceInformationService deviceInfo(ble, "STM", "Model1", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
