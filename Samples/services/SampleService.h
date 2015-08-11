@@ -47,7 +47,7 @@ public:
     * @param[ref] ble
     *               BLE object for the underlying controller.
     */
-    SampleService(BLE &_ble) :
+    SampleService(BLE &_ble, void (*appCbk)()) :
         ble(_ble),
         receiveBuffer(),
         sendBuffer(),
@@ -60,6 +60,8 @@ public:
         GattCharacteristic *charTable[] = {&txCharacteristic, &rxCharacteristic};
         GattService         sampleService(SampleServiceUUID, charTable, sizeof(charTable) / sizeof(GattCharacteristic *));
 
+                appCallback = appCbk;
+                
         ble.addService(sampleService);
         ble.onDataWritten(this, &SampleService::onDataWritten);
     }
@@ -165,7 +167,9 @@ protected:
      * not used, this method can be used as a callback directly.
      */
     void onDataWritten(const GattWriteCallbackParams *params) {
-      led1 = !led1;
+      if(appCallback) {
+                appCallback();
+            }
       if (params->handle == getRXCharacteristicHandle()) {
         uint16_t bytesRead = params->len;
         if (bytesRead <= BLE_SAMPLE_SERVICE_MAX_DATA_LEN) {
@@ -178,6 +182,7 @@ protected:
 
 protected:
     BLE                &ble;
+        void               (*appCallback)(void);
 
     uint8_t             receiveBuffer[BLE_SAMPLE_SERVICE_MAX_DATA_LEN]; /**< The local buffer into which we receive
                                                                        *   inbound data before forwarding it to the
