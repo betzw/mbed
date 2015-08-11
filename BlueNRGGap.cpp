@@ -102,7 +102,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
     } else { 
         PayloadPtr loadPtr(advData.getPayload(), advData.getPayloadLen());        
         for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {                  
-            loadPtr.getUnitAtIndex(index);
+            PayloadUnit unit = loadPtr.getUnitAtIndex(index);
 
             DEBUG("adData[%d].length=%d\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
             DEBUG("adData[%d].AdType=0x%x\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));                  
@@ -213,7 +213,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 if(buffSize>ADV_DATA_MAX_SIZE-2) {
                     return BLE_ERROR_PARAM_OUT_OF_RANGE;
                 }
-                for(int i=0; i<buffSize+1; i++) {
+                for(unsigned i=0; i<buffSize+1; i++) {
                     DEBUG("Advertising type: SERVICE_DATA loadPtr.getUnitAtIndex(index).getDataPtr()[%d] = 0x%x\n\r", i, loadPtr.getUnitAtIndex(index).getDataPtr()[i]);
                 }
                 AdvLen = buffSize+2; // the total ADV DATA LEN should include two more bytes: the buffer size byte; and the Service Data Type Value byte
@@ -563,7 +563,7 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const Address_t address)
     //Re-Init the BTLE Device with SetAddress as true
     //if(BlueNRGDevice::getIsInitialized())//Re-init only initialization is already done
     // ANDREA
-    //btle_init(isSetAddress, D11, D12, D13);
+    //btle_init(isSetAddress, D11, D12, D3);
     
     //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;
