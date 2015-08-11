@@ -47,7 +47,9 @@
 #define BLE_TOTAL_CHARACTERISTICS 10
 
 // If the char has handle 'x', then the value declaration will have the handle 'x+1'
+// If the char has handle 'x', then the char descriptor declaration will have the handle 'x+2'
 #define CHAR_VALUE_OFFSET 1
+#define CHAR_DESC_OFFSET 2
 
 using namespace std;
 
@@ -58,6 +60,12 @@ public:
         static BlueNRGGattServer m_instance;
         return m_instance;
     }
+    
+    enum HandleEnum_t {
+        CHAR_HANDLE = 0,
+        CHAR_VALUE_HANDLE,
+        CHAR_DESC_HANDLE
+    };
     
     /* Functions that must be implemented from GattServer */
     // <<<ANDREA>>>
