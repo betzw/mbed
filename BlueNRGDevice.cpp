@@ -55,18 +55,17 @@ extern "C" {
 
 /**
 * The singleton which represents the BlueNRG transport for the BLEDevice.
-* FIXME: find a better way to create the BlueNRG device instance so that 
-* the pin names can be chosen by the users of this class
 *
-* This is using Arduino pins as follows:
-* D11: MOSI line of SPI interface
-* D12: MISO line of SPI interface
-* D3 : SCK line of SPI interface
-* A1 : nCS line of SPI interface
-* D7 : BlueNRG reset
-* A0 : BlueNRG IRQ pin
+* See file 'x_nucleo_idb0xa1_targets.h' for details regarding the peripheral pins used!
 */
-BlueNRGDevice bluenrgDeviceInstance(D11, D12, D3, A1, D7, A0);
+#include "x_nucleo_idb0xa1_targets.h"
+
+BlueNRGDevice bluenrgDeviceInstance(IDB0XA1_PIN_SPI_MOSI,
+                                    IDB0XA1_PIN_SPI_MISO,
+                                    IDB0XA1_PIN_SPI_SCK,
+                                    IDB0XA1_PIN_SPI_nCS,
+                                    IDB0XA1_PIN_SPI_RESET,
+                                    IDB0XA1_PIN_SPI_IRQ);
 
 /**
 * BLE-API requires an implementation of the following function in order to
@@ -127,6 +126,7 @@ BlueNRGDevice::~BlueNRGDevice(void)
 ble_error_t BlueNRGDevice::init(void)
 {
     // Set the interrupt handler for the device
+    irq_.mode(PullNone); // betzw: set irq mode
     irq_.rise(&HCI_Isr);
 
     /* ToDo: Clear memory contents, reset the SD, etc. */
