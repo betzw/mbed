@@ -322,37 +322,45 @@ extern "C" {
                         evt_gatt_attr_modified *evt = (evt_gatt_attr_modified*)blue_evt->data;
                         DEBUG("EVT_BLUE_GATT_ATTRIBUTE_MODIFIED\n\r");
                         
-                        //DEBUG("CharHandle 0x%x, length: 0x%x, Data: 0x%x\n\r",evt->attr_handle, evt->data_length, (uint16_t)evt->att_data[0]);
-                               
-                        
                         //Extract the GattCharacteristic from p_characteristics[] and find the properties mask
-                        //If the char has handle 'x', then the value declaration will have the handle 'x+1'
-                        /*uint16_t charHandle = evt->attr_handle-CHAR_VALUE_OFFSET;*/
                         GattCharacteristic *p_char = BlueNRGGattServer::getInstance().getCharacteristicFromHandle(evt->attr_handle);
                         if(p_char!=NULL) {
-                            DEBUG("CharHandle %d, length: %d, Data: %d\n\r",p_char->getValueAttribute().getHandle(), evt->data_length, (uint16_t)evt->att_data[0]);
+                            GattAttribute::Handle_t charHandle = p_char->getValueAttribute().getHandle();
+                            BlueNRGGattServer::HandleEnum_t currentHandle = BlueNRGGattServer::CHAR_HANDLE;
+                            DEBUG("CharHandle %d, length: %d, Data: %d\n\r",charHandle, evt->data_length, (uint16_t)evt->att_data[0]);
                             DEBUG("getProperties 0x%x\n\r",p_char->getProperties());
-                            if((p_char->getProperties() &  (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY
-                                            | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE))) {
+                            if(evt->attr_handle == charHandle+CHAR_VALUE_OFFSET) {
+                                currentHandle = BlueNRGGattServer::CHAR_VALUE_HANDLE;
+                            }
+                            if(evt->attr_handle == charHandle+CHAR_DESC_OFFSET) {
+                                currentHandle = BlueNRGGattServer::CHAR_DESC_HANDLE;
+                            }
+                            DEBUG("currentHandle %d\n\r", currentHandle);
+                            if((p_char->getProperties() & 
+                                (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_INDICATE)) &&
+                                currentHandle == BlueNRGGattServer::CHAR_DESC_HANDLE) {
                                 
+                                DEBUG("*****NOTIFICATION CASE\n\r");
                                 //Now Check if data written in Enable or Disable
                                 if((uint16_t)evt->att_data[0]==1) {
                                     //DEBUG("Notify ENABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, p_char->getValueAttribute().getHandle()/*evt->attr_handle*/);
+                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_ENABLED, p_char->getValueAttribute().getHandle());
                                 } 
                                 else {
                                     //DEBUG("Notify DISABLED\n\r"); 
-                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, p_char->getValueAttribute().getHandle()/*evt->attr_handle*/);
+                                    BlueNRGGattServer::getInstance().HCIEvent(GattServerEvents::GATT_EVENT_UPDATES_DISABLED, p_char->getValueAttribute().getHandle());
                                 }
                             }
                             
                             //Check is attr handle property is WRITEABLE, if yes, generate GATT_EVENT_DATA_WRITTEN Event
                             if((p_char->getProperties() &
-                                        (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE|
-                                            GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE))) {
+                                (GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE_WITHOUT_RESPONSE | GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_WRITE)) &&
+                                currentHandle == BlueNRGGattServer::CHAR_VALUE_HANDLE) {
+                                
+                                DEBUG("*****WRITE CASE\n\r");
                                 
                                 GattWriteCallbackParams writeParams;
-                                writeParams.handle=p_char->getValueAttribute().getHandle();/*evt->attr_handle-CHAR_VALUE_OFFSET;*/
+                                writeParams.handle=p_char->getValueAttribute().getHandle();
                                 writeParams.writeOp=GattWriteCallbackParams::OP_WRITE_REQ;//Where to find this property in BLUENRG?
                                 writeParams.len=evt->data_length;
                                 writeParams.data=evt->att_data;                                                                                    
