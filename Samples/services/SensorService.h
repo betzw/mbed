@@ -129,6 +129,11 @@ public:
 
     void onDataRead(const GattReadCallbackParams *params) {
         uint16_t charHandle = params->handle;
+        DEBUG("onDataRead accChar=%d\n\r", accChar.getValueAttribute().getHandle());
+        DEBUG("onDataRead tempChar=%d\n\r", tempChar.getValueAttribute().getHandle());
+        DEBUG("onDataRead pressChar=%d\n\r", pressChar.getValueAttribute().getHandle());
+        DEBUG("onDataRead humidityChar=%d\n\r", humidityChar.getValueAttribute().getHandle());
+        DEBUG("onDataRead charHandle=%d\n\r", charHandle);
         if (charHandle == accChar.getValueAttribute().getHandle()) {
             updateAcc(false);
         } else if (charHandle == tempChar.getValueAttribute().getHandle()) {

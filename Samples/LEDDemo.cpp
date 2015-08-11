@@ -25,7 +25,7 @@
 #if defined(LED_DEMO_ENABLED)
 
 #if defined(IDB0XA1_D13_PATCH)
-#error "LED demo not avilable with patch D13 applied on IDB0XA1 expansion boards!"
+#error "LED demo not available with patch D13 applied on IDB0XA1 expansion boards!"
 #endif // defined(IDB0XA1_D13_PATCH)
 
 BLE        ble;
