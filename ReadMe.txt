@@ -36,7 +36,7 @@ Libraries:
 ~~~~~~~~~~
 COMMON:
 -------
-git remote add common-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_COMMON"
+git remote add common-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST/code/X_NUCLEO_COMMON"
 
 git subtree split -P libraries/tests/libs/X_NUCLEO_COMMON -b common-split
 git checkout common-split
@@ -66,7 +66,7 @@ git branch -d ikc01a1-split
 
 IKS01A1:
 --------
-git remote add iks01a1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IKS01A1"
+git remote add iks01a1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST/code/X_NUCLEO_IKS01A1"
 
 git subtree split -P libraries/tests/peripherals/X_NUCLEO_IKS01A1 -b iks01a1-split
 git checkout iks01a1-split
@@ -98,7 +98,7 @@ git branch -d bm-split
 
 Sensors-Reader:
 ---------------
-git remote add sr-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Sensors_Reader"
+git remote add sr-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST/code/Sensors_Reader"
 
 git subtree split -P libraries/tests/betzw_tests/test2 -b sr-split
 git checkout sr-split
