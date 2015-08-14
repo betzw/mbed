@@ -46,7 +46,7 @@
 /* Classes  ------------------------------------------------------------------*/
 /** An abstract class for a Pressure Sensor
  */
-class PressureSensor
+class PressureSensor : public GenericSensor
 {
  public:
 	/**
