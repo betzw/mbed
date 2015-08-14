@@ -1064,12 +1064,22 @@ TESTS = [
         "peripherals": ["X_NUCLEO_IKC01A1"]
     },
 
-    # betzw: Environmental
+    # betzw: Environmental (1/2)
     {
         "id": "betzw_test_2", "description": "environmental example application",
         "source_dir": join(TEST_DIR, "betzw_tests", "test2"),
         "dependencies": [MBED_LIBRARIES, 
                          join(TEST_STM_LIBS, 'DbgMCU'), 
+                         join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
+        "peripherals": ["X_NUCLEO_IKS01A1"]
+    },
+
+    # betzw: Environmental (2/2)
+    {
+        "id": "betzw_test_3", "description": "environmental example application",
+        "source_dir": join(TEST_DIR, "betzw_tests", "test3"),
+        "dependencies": [MBED_LIBRARIES, 
                          join(TEST_STM_LIBS, 'DevI2C'), 
                          join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
         "peripherals": ["X_NUCLEO_IKS01A1"]
