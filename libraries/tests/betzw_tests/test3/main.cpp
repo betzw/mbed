@@ -36,19 +36,6 @@
  ******************************************************************************
 */ 
 
-/**
- * @mainpage X_NUCLEO_IKS01A1 MEMS Inertial & Environmental Sensor Nucleo Expansion Board Firmware Package
- *
- * <b>Introduction</b>
- *
- * This firmware package includes Components Device Drivers, Board Support Package
- * and example application for STMicroelectronics X_NUCLEO_IKS01A1 MEMS Inertial & Environmental Nucleo
- * Expansion Board
- * 
- * <b>Example Application</b>
- *
- */
-
 #include "mbed.h"
 #include "x_nucleo_iks01a1.h"
 
@@ -99,7 +86,7 @@ static char *printDouble(char* str, double v, int decimalDigits=2)
 }
 
 
-/* Simplified main function */
+/* Simple main function */
 int main() {
   uint8_t id;
   float value1, value2;
