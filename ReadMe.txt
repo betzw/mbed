@@ -8,8 +8,8 @@ python workspace_tools/build.py -t GCC_ARM -m K64F
 # Note: in order to enable debugging compile with option '-o debug-info'
 
 
-Compile test1:
-==============
+Compile bm_app:
+===============
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_1
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_1
 python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_1
@@ -19,8 +19,8 @@ python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw
 #       and if you are using WFI compile also with '-DDBG_MCU'
 
 
-Compile test2:
-==============
+Compile sr_app:
+===============
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_2
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_2
 python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_2
@@ -30,8 +30,8 @@ python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw
 #       and if you are using WFI compile also with '-DDBG_MCU'
 
 
-Compile test3:
-==============
+Compile hw_iks01a1:
+===================
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_3
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_3
 python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_3
@@ -96,14 +96,14 @@ Battery-Monitor:
 ----------------
 git remote add bm-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/Battery_Monitor"
 
-git subtree split -P libraries/tests/betzw_tests/test1 -b bm-split
+git subtree split -P libraries/tests/betzw_tests/bm_app -b bm-split
 git checkout bm-split
 git pull bm-app master
 
 git push bm-app bm-split:master
 
 git checkout betzw_wb
-git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
+git subtree merge -P libraries/tests/betzw_tests/bm_app bm-split
 
 git branch -d bm-split
 
@@ -111,14 +111,14 @@ Hello World IKS01A1:
 --------------------
 git remote add hwiks01a1-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST/code/HelloWorld_IKS01A1"
 
-git subtree split -P libraries/tests/betzw_tests/test3 -b hwiks01a1-split
+git subtree split -P libraries/tests/betzw_tests/hw_iks01a1 -b hwiks01a1-split
 git checkout hwiks01a1-split
 git pull hwiks01a1-app master
 
 git push hwiks01a1-app hwiks01a1-split:master
 
 git checkout betzw_wb
-git subtree merge -P libraries/tests/betzw_tests/test3 hwiks01a1-split
+git subtree merge -P libraries/tests/betzw_tests/hw_iks01a1 hwiks01a1-split
 
 git branch -d hwiks01a1-split
 
@@ -126,13 +126,13 @@ Sensors-Reader:
 ---------------
 git remote add sr-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST/code/Sensors_Reader"
 
-git subtree split -P libraries/tests/betzw_tests/test2 -b sr-split
+git subtree split -P libraries/tests/betzw_tests/sr_app -b sr-split
 git checkout sr-split
 git pull sr-app master
 
 git push sr-app sr-split:master
 
 git checkout betzw_wb
-git subtree merge -P libraries/tests/betzw_tests/test2 sr-split
+git subtree merge -P libraries/tests/betzw_tests/sr_app sr-split
 
 git branch -d sr-split

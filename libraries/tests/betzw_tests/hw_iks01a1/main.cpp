@@ -36,6 +36,7 @@
  ******************************************************************************
 */ 
 
+/* Includes */
 #include "mbed.h"
 #include "x_nucleo_iks01a1.h"
 
@@ -111,22 +112,22 @@ int main() {
 
     temp_sensor1->GetTemperature(&value1);
     humidity_sensor->GetHumidity(&value2);
-    printf("HTS221: %7s°C,  %s%%\r\n", printDouble(buffer1, value1), printDouble(buffer2, value2));
+    printf("HTS221: [temp] %7s°C,   [hum] %s%%\r\n", printDouble(buffer1, value1), printDouble(buffer2, value2));
     
     temp_sensor2->GetFahrenheit(&value1);
     pressure_sensor->GetPressure(&value2);
-    printf("LPS25H: %7s°F, %smbar\r\n", printDouble(buffer1, value1), printDouble(buffer2, value2));
+    printf("LPS25H: [temp] %7s°F, [press] %smbar\r\n", printDouble(buffer1, value1), printDouble(buffer2, value2));
 
     printf("---\r\n");
 
     magnetometer->Get_M_Axes(axes);
-    printf("LIS3MDL [mgauss]: %6ld, %6ld, %6ld\r\n", axes[0], axes[1], axes[2]);
+    printf("LIS3MDL [mag/mgauss]:  %6ld, %6ld, %6ld\r\n", axes[0], axes[1], axes[2]);
 
     accelerometer->Get_X_Axes(axes);
-    printf("LSM6DS0 [mg]:     %6ld, %6ld, %6ld\r\n", axes[0], axes[1], axes[2]);
+    printf("LSM6DS0 [acc/mg]:      %6ld, %6ld, %6ld\r\n", axes[0], axes[1], axes[2]);
 
     gyroscope->Get_G_Axes(axes);
-    printf("LSM6DS0 [mdps]:   %6ld, %6ld, %6ld\r\n", axes[0], axes[1], axes[2]);
+    printf("LSM6DS0 [gyro/mdps]:   %6ld, %6ld, %6ld\r\n", axes[0], axes[1], axes[2]);
 
     wait(1.5);
   }

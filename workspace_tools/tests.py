@@ -1055,7 +1055,7 @@ TESTS = [
     # betzw: Battery Monitor
     {
         "id": "betzw_test_1", "description": "battery monitor example application",
-        "source_dir": join(TEST_DIR, "betzw_tests", "test1"),
+        "source_dir": join(TEST_DIR, "betzw_tests", "bm_app"),
         "dependencies": [MBED_LIBRARIES, 
                          join(TEST_STM_LIBS, 'DbgMCU'), 
                          join(TEST_STM_LIBS, 'DevI2C'), 
@@ -1067,7 +1067,7 @@ TESTS = [
     # betzw: Environmental (1/2)
     {
         "id": "betzw_test_2", "description": "environmental example application",
-        "source_dir": join(TEST_DIR, "betzw_tests", "test2"),
+        "source_dir": join(TEST_DIR, "betzw_tests", "sr_app"),
         "dependencies": [MBED_LIBRARIES, 
                          join(TEST_STM_LIBS, 'DbgMCU'), 
                          join(TEST_STM_LIBS, 'DevI2C'), 
@@ -1078,7 +1078,7 @@ TESTS = [
     # betzw: Environmental (2/2)
     {
         "id": "betzw_test_3", "description": "environmental example application",
-        "source_dir": join(TEST_DIR, "betzw_tests", "test3"),
+        "source_dir": join(TEST_DIR, "betzw_tests", "hw_iks01a1"),
         "dependencies": [MBED_LIBRARIES, 
                          join(TEST_STM_LIBS, 'DevI2C'), 
                          join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
