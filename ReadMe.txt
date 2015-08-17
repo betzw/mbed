@@ -30,6 +30,17 @@ python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw
 #       and if you are using WFI compile also with '-DDBG_MCU'
 
 
+Compile test3:
+==============
+python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_3
+python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_3
+python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_3
+python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw_test_3
+
+# Note: in order to enable debugging compile with option '-o debug-info'
+#       and if you are using WFI compile also with '-DDBG_MCU'
+
+
 Mercurial:
 ==========
 Libraries:
@@ -95,6 +106,21 @@ git checkout betzw_wb
 git subtree merge -P libraries/tests/betzw_tests/test1 bm-split
 
 git branch -d bm-split
+
+Hello World IKS01A1:
+--------------------
+git remote add hwiks01a1-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST/code/HelloWorld_IKS01A1"
+
+git subtree split -P libraries/tests/betzw_tests/test3 -b hwiks01a1-split
+git checkout hwiks01a1-split
+git pull hwiks01a1-app master
+
+git push hwiks01a1-app hwiks01a1-split:master
+
+git checkout betzw_wb
+git subtree merge -P libraries/tests/betzw_tests/test3 hwiks01a1-split
+
+git branch -d hwiks01a1-split
 
 Sensors-Reader:
 ---------------
