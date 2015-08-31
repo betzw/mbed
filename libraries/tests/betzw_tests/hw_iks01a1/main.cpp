@@ -48,9 +48,9 @@ static GyroSensor *gyroscope = mems_expansion_board->GetGyroscope();
 static MotionSensor *accelerometer = mems_expansion_board->GetAccelerometer();
 static MagneticSensor *magnetometer = mems_expansion_board->magnetometer;
 static HumiditySensor *humidity_sensor = mems_expansion_board->ht_sensor;
-static PressureSensor *pressure_sensor = mems_expansion_board->pressure_sensor;
+static PressureSensor *pressure_sensor = mems_expansion_board->pt_sensor;
 static TempSensor *temp_sensor1 = mems_expansion_board->ht_sensor;
-static TempSensor *temp_sensor2 = mems_expansion_board->pressure_sensor;
+static TempSensor *temp_sensor2 = mems_expansion_board->pt_sensor;
 
 /* Helper function for printing floats & doubles */
 static char *printDouble(char* str, double v, int decimalDigits=2)
