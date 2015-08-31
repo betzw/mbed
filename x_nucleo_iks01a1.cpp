@@ -50,7 +50,7 @@ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;
 X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
 	ht_sensor(new HTS221(*dev_i2c)),
 	magnetometer(new LIS3MDL(*dev_i2c)),
-	pressure_sensor(new LPS25H(*dev_i2c)),
+	pt_sensor(new LPS25H(*dev_i2c)),
 	gyro_lsm6ds0(new LSM6DS0(*dev_i2c)),
 	gyro_lsm6ds3(new LSM6DS3(*dev_i2c, IKS01A1_PIN_FF))
 { 
@@ -156,11 +156,11 @@ bool X_NUCLEO_IKS01A1::Init_LPS25H(void) {
 	PRESSURE_InitTypeDef InitStructure;
 	
 	/* Check presence */
-	if((pressure_sensor->ReadID(&p_id) != PRESSURE_OK) ||
+	if((pt_sensor->ReadID(&p_id) != PRESSURE_OK) ||
 	   (p_id != I_AM_LPS25H))
 		{
-			delete pressure_sensor;
-			pressure_sensor = NULL;
+			delete pt_sensor;
+			pt_sensor = NULL;
 			return true;
 		}
             
@@ -172,7 +172,7 @@ bool X_NUCLEO_IKS01A1::Init_LPS25H(void) {
 	InitStructure.PressureResolution = LPS25H_P_RES_AVG_32;
 	InitStructure.TemperatureResolution = LPS25H_T_RES_AVG_16;
         
-	if(pressure_sensor->Init(&InitStructure) != PRESSURE_OK)
+	if(pt_sensor->Init(&InitStructure) != PRESSURE_OK)
 		{
 			return false;
 		}

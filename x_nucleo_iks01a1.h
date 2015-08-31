@@ -63,7 +63,7 @@
  *  The expansion board is featuring basically four IPs:\n
  *  -# a HTS221 Relative Humidity and Temperature Sensor\n
  *  -# a LIS3MDL 3-Axis Magnetometer\n
- *  -# a LPS25H MEMS Pressure Sensor\n
+ *  -# a LPS25H MEMS Pressure Sensor (and Temperature Sensor)\n
  *  -# and a LSM6DS0 3D Acceleromenter and 3D Gyroscope\n
  *
  * The expansion board features also a DIL 24-pin socket which makes it possible
@@ -121,7 +121,7 @@ class X_NUCLEO_IKS01A1
 
 	HTS221  *ht_sensor;
 	LIS3MDL *magnetometer;
-	LPS25H  *pressure_sensor;
+	LPS25H  *pt_sensor;
 
 	GyroSensor *GetGyroscope(void) {
 		return ((gyro_lsm6ds3 == NULL) ? 
