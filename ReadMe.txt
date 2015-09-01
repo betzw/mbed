@@ -19,6 +19,17 @@ python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw
 #       and if you are using WFI compile also with '-DDBG_MCU'
 
 
+Compile beacon2_test:
+=====================
+python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_2
+python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_2
+python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_2
+python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw_test_2
+
+# Note: in order to enable debugging compile with option '-o debug-info'
+#       and if you are using WFI compile also with '-DDBG_MCU'
+
+
 Mercurial:
 ==========
 Libraries:
@@ -54,3 +65,20 @@ git checkout ble_wb
 git subtree merge -P libraries/tests/betzw_tests/ble_tests ble-split
 
 git branch -d ble-split
+
+
+BLE_URIBeacon2:
+---------------
+git remote add beacon2-app "hg::http://wobetz:<pwd>@developer.mbed.org/users/jslater8/code/BLE_URIBeacon2/"
+
+git subtree split -P libraries/tests/betzw_tests/beacon2_test -b beacon2-split
+git checkout beacon2-split
+git pull beacon2-app master
+
+git push beacon2-app beacon2-split:master
+
+git checkout ble_wb
+git subtree merge -P libraries/tests/betzw_tests/beacon2_test beacon2-split
+
+git branch -d beacon2-split
+

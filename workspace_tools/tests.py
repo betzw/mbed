@@ -1064,6 +1064,19 @@ TESTS = [
         "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F", "LPC11U68"],
         "peripherals": ["X_NUCLEO_IDB0XA1"]
     },
+
+    # betzw: BLE_URIBeacon2 Test App
+    {
+        "id": "betzw_test_2", "description": "BLE_URIBeacon2 test program",
+        "source_dir": join(TEST_DIR, "betzw_tests", "beacon2_test"),
+        "dependencies": [MBED_LIBRARIES, 
+                         # join(TEST_STM_LIBS, 'DbgMCU'), 
+                         # join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(TEST_DIR, "libs", "BLE_API"),
+                         join(PERIPHERALS, 'X_NUCLEO_IDB0XA1')],
+        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F", "LPC11U68"],
+        "peripherals": ["X_NUCLEO_IDB0XA1"]
+    },
 ]
 
 # Group tests with the same goals into categories
