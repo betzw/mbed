@@ -46,6 +46,9 @@
 #include "Utils.h"
 #include "osal.h"
 
+#include "debug.h"
+#include "stm32_bluenrg_ble.h"
+
 extern "C" {
     #include "hci.h"
 }
@@ -303,7 +306,7 @@ int32_t BlueNRGDevice::spiRead(uint8_t *buffer, uint8_t buff_size)
   
 #ifdef PRINT_CSV_FORMAT
   if (len > 0) {
-//    print_csv_time();
+    print_csv_time();
     for (int i=0; i<len; i++) {
       PRINT_CSV(" %02x", buffer[i]);
     }

@@ -76,6 +76,8 @@ int32_t BlueNRG_SPI_Write(uint8_t* data1,
                           uint8_t Nb_bytes2);
 void Clear_SPI_EXTI_Flag(void);
 
+void print_csv_time(void);
+
 /**
  * @}
  */
