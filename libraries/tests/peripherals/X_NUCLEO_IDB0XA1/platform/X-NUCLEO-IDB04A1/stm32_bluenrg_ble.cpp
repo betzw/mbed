@@ -71,10 +71,10 @@ uint8_t BlueNRG_DataPresent(void)
  * @param  None
  * @retval None
  */
-//void print_csv_time(void){
-//  uint32_t ms = ms_counter;
-//  PRINT_CSV("%02d:%02d:%02d.%03d", ms/(60*60*1000)%24, ms/(60*1000)%60, (ms/1000)%60, ms%1000);
-//}
+void print_csv_time(void){
+  uint32_t ms = 0;//ms_counter;
+  PRINT_CSV("%02d:%02d:%02d.%03d", ms/(60*60*1000)%24, ms/(60*1000)%60, (ms/1000)%60, ms%1000);
+}
 
 /**
  * @brief  Writes data to a serial interface.
@@ -92,7 +92,7 @@ void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1,
   Timer_Set(&t, CLOCK_SECOND/10);
 
 #ifdef PRINT_CSV_FORMAT
-//  print_csv_time();
+  print_csv_time();
   for (int i=0; i<n_bytes1; i++) {
     PRINT_CSV(" %02x", ((uint8_t *)data1)[i]);
 	 }

@@ -13,10 +13,10 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-
+ 
 /**
   ******************************************************************************
-  * @file    BlueNRGDevice.cpp
+  * @file    BlueNRGDevice.cpp 
   * @author  STMicroelectronics
   * @brief   Implementation of BLEDeviceInstanceBase
   ******************************************************************************
@@ -30,29 +30,32 @@
   * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
   *
   * <h2><center>&copy; COPYRIGHT 2013 STMicroelectronics</center></h2>
-  */
-
+  */ 
+  
 /** @defgroup BlueNRGDevice
  *  @brief BlueNRG BLE_API Device Adaptation
  *  @{
  */
-
+ 
 #include "mbed.h"
 #include "BlueNRGDevice.h"
 #include "BlueNRGGap.h"
 #include "BlueNRGGattServer.h"
-
+ 
 #include "btle.h"
 #include "Utils.h"
 #include "osal.h"
-
+ 
+#include "debug.h"
+#include "stm32_bluenrg_ble.h"
+ 
 extern "C" {
-#include "hci.h"
+    #include "hci.h"
 }
-
+ 
 #define HEADER_SIZE 5
 #define MAX_BUFFER_SIZE 255
-
+ 
 /**
 * The singleton which represents the BlueNRG transport for the BLEDevice.
 *
@@ -76,7 +79,7 @@ createBLEInstance(void)
 {
     return (&bluenrgDeviceInstance);
 }
-
+ 
 /**************************************************************************/
 /**
     @brief  Constructor
@@ -96,18 +99,18 @@ BlueNRGDevice::BlueNRGDevice(PinName mosi,
                              PinName irq) : spi_(mosi, miso, sck), nCS_(cs), rst_(rst), irq_(irq)
 {
     isInitialized = false;
-
+    
     // Setup the spi for 8 bit data, low clock polarity,
     // 1-edge phase, with an 8MHz clock rate
     spi_.format(8, 0);
     spi_.frequency(8000000);
-
+    
     // Deselect the BlueNRG chip by keeping its nCS signal high
     nCS_ = 1;
-
+ 
     wait_us(500);
 }
-
+ 
 /**************************************************************************/
 /**
     @brief  Destructor
@@ -116,8 +119,8 @@ BlueNRGDevice::BlueNRGDevice(PinName mosi,
 BlueNRGDevice::~BlueNRGDevice(void)
 {
 }
-
-
+ 
+ 
 /**
     @brief  Initialises anything required to start using BLE
     @param[in] void
@@ -128,16 +131,16 @@ ble_error_t BlueNRGDevice::init(void)
     // Set the interrupt handler for the device
     irq_.mode(PullNone); // betzw: set irq mode
     irq_.rise(&HCI_Isr);
-
+ 
     /* ToDo: Clear memory contents, reset the SD, etc. */
     btle_init(BlueNRGGap::getInstance().getIsSetAddress());
-
+    
     isInitialized = true;
     
     return BLE_ERROR_NONE;
 }
-
-
+ 
+ 
 /**
     @brief  Resets the BLE HW, removing any existing services and
             characteristics
@@ -147,26 +150,26 @@ ble_error_t BlueNRGDevice::init(void)
 ble_error_t BlueNRGDevice::reset(void)
 {
     wait_us(500);
-
+ 
     /* Reset BlueNRG SPI interface */
-    rst_ = 0;
+      rst_ = 0;
     wait_us(5);
-    rst_ = 1;
+      rst_ = 1;
     wait_us(5);
-
+ 
     /* Wait for the radio to come back up */
     wait_us(500);
     
     isInitialized = false;
-
+ 
     return BLE_ERROR_NONE;
 }
-
-
+ 
+ 
 /*!
-    @brief  Wait for any BLE Event like BLE Connection, Read Request etc.
+    @brief  Wait for any BLE Event like BLE Connection, Read Request etc.    
     @param[in] void
-    @returns    char *
+    @returns    char *      
 */
 void BlueNRGDevice::waitForEvent(void)
 {
@@ -183,8 +186,8 @@ void BlueNRGDevice::waitForEvent(void)
                                that conrol is given back to main loop before next WFE */
     } while(true);
 }
-
-
+ 
+ 
 /*!
     @brief  get GAP version
     @param[in] void
@@ -196,48 +199,48 @@ const char *BlueNRGDevice::getVersion(void)
     memcpy((void *)version, "1.0.0", 5);
     return version;
 }
-
+ 
 /**************************************************************************/
 /*!
     @brief  get init state
     @param[in] void
-    @returns    bool
+    @returns    bool  
 */
 /**************************************************************************/
 bool BlueNRGDevice::getIsInitialized(void)
 {
     return isInitialized;
 }
-
+ 
 /**************************************************************************/
 /*!
     @brief  get reference to GAP object
     @param[in] void
-    @returns    Gap&
+    @returns    Gap&      
 */
 /**************************************************************************/
 Gap        &BlueNRGDevice::getGap()        
 {
     return BlueNRGGap::getInstance();
 }
-
+ 
 const Gap  &BlueNRGDevice::getGap() const        
 {
     return BlueNRGGap::getInstance();
 }
-
+ 
 /**************************************************************************/
 /*!
     @brief  get reference to GATT server object
     @param[in] void
-    @returns    GattServer&
+    @returns    GattServer&    
 */
 /**************************************************************************/
 GattServer &BlueNRGDevice::getGattServer() 
 {
     return BlueNRGGattServer::getInstance();
 }
-
+ 
 const GattServer &BlueNRGDevice::getGattServer() const
 {
     return BlueNRGGattServer::getInstance();
@@ -252,7 +255,7 @@ const GattServer &BlueNRGDevice::getGattServer() const
 ble_error_t  BlueNRGDevice::shutdown(void) {
     return reset();
 }
-
+                                                                                            
 /**
  * @brief  Reads from BlueNRG SPI buffer and store data into local buffer.
  * @param  buffer   : Buffer where data from SPI are stored
@@ -261,64 +264,64 @@ ble_error_t  BlueNRGDevice::shutdown(void) {
  */
 int32_t BlueNRGDevice::spiRead(uint8_t *buffer, uint8_t buff_size)
 {
-    uint16_t byte_count;
-    uint8_t len = 0;
-    uint8_t char_ff = 0xff;
-    volatile uint8_t read_char;
-
+  uint16_t byte_count;
+  uint8_t len = 0;
+  uint8_t char_ff = 0xff;
+  volatile uint8_t read_char;
+    
     uint8_t i = 0;
     volatile uint8_t tmpreg;
-
-    uint8_t header_master[HEADER_SIZE] = {0x0b, 0x00, 0x00, 0x00, 0x00};
-    uint8_t header_slave[HEADER_SIZE];
-
-    /* Select the chip */
-    nCS_ = 0;
-
-    /* Read the header */
-    for (i = 0; i < 5; i++)
-    {
+ 
+  uint8_t header_master[HEADER_SIZE] = {0x0b, 0x00, 0x00, 0x00, 0x00};
+  uint8_t header_slave[HEADER_SIZE];
+ 
+  /* Select the chip */
+  nCS_ = 0;
+    
+  /* Read the header */  
+  for (i = 0; i < 5; i++)
+  { 
         tmpreg = spi_.write(header_master[i]);
         header_slave[i] = (uint8_t)(tmpreg);
-    }
-
-    if (header_slave[0] == 0x02) {
-        /* device is ready */
-        byte_count = (header_slave[4]<<8)|header_slave[3];
-
-        if (byte_count > 0) {
-
-            /* avoid to read more data that size of the buffer */
-            if (byte_count > buff_size){
-                byte_count = buff_size;
-            }
-
-            for (len = 0; len < byte_count; len++){
-                read_char = spi_.write(char_ff);
+  } 
+    
+  if (header_slave[0] == 0x02) {
+    /* device is ready */
+    byte_count = (header_slave[4]<<8)|header_slave[3];
+  
+    if (byte_count > 0) {
+  
+      /* avoid to read more data that size of the buffer */
+      if (byte_count > buff_size){
+        byte_count = buff_size;
+      }
+  
+      for (len = 0; len < byte_count; len++){
+        read_char = spi_.write(char_ff);
                 buffer[len] = read_char;
-            }
-        }
-    }
-    /* Release CS line to deselect the chip */
-    nCS_ = 1;
-
-    // Add a small delay to give time to the BlueNRG to set the IRQ pin low
-    // to avoid a useless SPI read at the end of the transaction
-    for(volatile int i = 0; i < 2; i++)__NOP();
-
+      }
+    }    
+  }
+  /* Release CS line to deselect the chip */
+  nCS_ = 1;
+    
+  // Add a small delay to give time to the BlueNRG to set the IRQ pin low
+  // to avoid a useless SPI read at the end of the transaction
+  for(volatile int i = 0; i < 2; i++)__NOP();
+  
 #ifdef PRINT_CSV_FORMAT
-    if (len > 0) {
-        //    print_csv_time();
-        for (int i=0; i<len; i++) {
-            PRINT_CSV(" %02x", buffer[i]);
-        }
-        PRINT_CSV("\n");
+  if (len > 0) {
+    print_csv_time();
+    for (int i=0; i<len; i++) {
+      PRINT_CSV(" %02x", buffer[i]);
     }
+    PRINT_CSV("\n");
+  }
 #endif
-
-    return len;
+  
+  return len;   
 }
-
+ 
 /**
  * @brief  Writes data from local buffer to SPI.
  * @param  data1    : First data buffer to be written
@@ -328,69 +331,70 @@ int32_t BlueNRGDevice::spiRead(uint8_t *buffer, uint8_t buff_size)
  * @retval Number of read bytes
  */
 int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
-                                uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
+                          uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
 {  
-    int32_t result = 0;
-
+  int32_t result = 0;
+    
     uint32_t i;
+    volatile uint8_t read_char;
     volatile uint8_t tmpreg;
     
-    unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
-    unsigned char header_slave[HEADER_SIZE]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
-
-    //unsigned char read_char_buf[MAX_BUFFER_SIZE];
-
-    disable_irq();
-
-    /* CS reset */
-    nCS_ = 0;
-
-    /* Exchange header */
-    for (i = 0; i < 5; i++)
-    {
+  unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
+  unsigned char header_slave[HEADER_SIZE]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
+  
+  //unsigned char read_char_buf[MAX_BUFFER_SIZE];
+ 
+  disable_irq();
+ 
+  /* CS reset */
+  nCS_ = 0;
+ 
+  /* Exchange header */  
+  for (i = 0; i < 5; i++)
+  { 
         tmpreg = spi_.write(header_master[i]);
         header_slave[i] = tmpreg;
-    }
-
-    if (header_slave[0] == 0x02) {
-        /* SPI is ready */
-        if (header_slave[1] >= (Nb_bytes1+Nb_bytes2)) {
-
-            /*  Buffer is big enough */
+  } 
+    
+  if (header_slave[0] == 0x02) {
+    /* SPI is ready */
+    if (header_slave[1] >= (Nb_bytes1+Nb_bytes2)) {
+  
+      /*  Buffer is big enough */
             for (i = 0; i < Nb_bytes1; i++) {
-                spi_.write(*(data1 + i));
-            }
-            for (i = 0; i < Nb_bytes2; i++) {
-                spi_.write(*(data2 + i));
-            }
-        } else {
-            /* Buffer is too small */
-            result = -2;
-        }
+                read_char = spi_.write(*(data1 + i));
+      }
+      for (i = 0; i < Nb_bytes2; i++) {
+                read_char = spi_.write(*(data2 + i));
+      }         
     } else {
-        /* SPI is not ready */
-        result = -1;
+      /* Buffer is too small */
+      result = -2;
     }
+  } else {
+    /* SPI is not ready */
+    result = -1;
+  }
     
-    /* Release CS line */
-    //HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
-    nCS_ = 1;
-
-    enable_irq();
+  /* Release CS line */
+  //HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+  nCS_ = 1;
+            
+  enable_irq();
     
-    return result;
+  return result;
 }
-
+ 
 bool BlueNRGDevice::dataPresent()
 {
     return (irq_ == 1);
 }
-
+ 
 void BlueNRGDevice::disable_irq()
 {
     irq_.disable_irq();
 }
-
+ 
 void BlueNRGDevice::enable_irq()
 {
     irq_.enable_irq();

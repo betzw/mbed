@@ -360,21 +360,43 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         0, // Slave_Conn_Interval_Min
         0);  // Slave_Conn_Interval_Max
 
-    ret = aci_gap_delete_ad_type(AD_TYPE_TX_POWER_LEVEL); 
-    if (ret != BLE_STATUS_SUCCESS){
-        DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
-        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    DEBUG("!!!setting discoverable (servUuidlength=0x%x)\n", servUuidlength);
+    if(BLE_STATUS_SUCCESS!=ret) {
+       DEBUG("error occurred while setting discoverable (ret=0x%x)\n", ret);
+       return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
     }
 
-   ret = aci_gap_update_adv_data(AdvLen, AdvData);
-   if(BLE_STATUS_SUCCESS!=ret) {
-       DEBUG("error occurred while adding adv data (ret=0x%x)\n", ret);
-       return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
-   }
+    // Before updating the ADV data, delete COMPLETE_LOCAL_NAME and TX_POWER_LEVEL fields (if present)
+    if(AdvLen>0) {
+      if(name!=NULL) {
+        DEBUG("!!!calling aci_gap_delete_ad_type AD_TYPE_COMPLETE_LOCAL_NAME!!!\n");
+        ret = aci_gap_delete_ad_type(AD_TYPE_COMPLETE_LOCAL_NAME);
+        if (ret != BLE_STATUS_SUCCESS){
+          DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
+          return BLE_ERROR_PARAM_OUT_OF_RANGE;
+        }
+      }
 
-   state.advertising = 1;
+      if(txPowerAdType) {
+        DEBUG("!!!calling aci_gap_delete_ad_type(AD_TYPE_TX_POWER_LEVEL)!!!\n", AdvLen);
+        ret = aci_gap_delete_ad_type(AD_TYPE_TX_POWER_LEVEL);
+        if (ret != BLE_STATUS_SUCCESS){
+          DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
+          return BLE_ERROR_PARAM_OUT_OF_RANGE;
+        }
+      }
+   
+      ret = aci_gap_update_adv_data(AdvLen, AdvData);
+      if(BLE_STATUS_SUCCESS!=ret) {
+        DEBUG("error occurred while adding adv data (ret=0x%x)\n", ret);
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
+      }
+      
+    }
 
-   return BLE_ERROR_NONE;
+    state.advertising = 1;
+
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
@@ -894,13 +916,21 @@ ble_error_t BlueNRGGap::stopScan() {
 /**************************************************************************/
 ble_error_t BlueNRGGap::setTxPower(int8_t txPower)
 {
+    tBleStatus ret;
+    
     int8_t enHighPower = 0;
     int8_t paLevel = 0;    
     int8_t dbmActuallySet = getHighPowerAndPALevelValue(txPower, enHighPower, paLevel);
+    
     DEBUG("txPower=%d, dbmActuallySet=%d\n\r", txPower, dbmActuallySet);
     DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
-    aci_hal_set_tx_power_level(enHighPower, paLevel);
-    return BLE_ERROR_NONE;    
+    ret = aci_hal_set_tx_power_level(enHighPower, paLevel);
+    if(ret!=BLE_STATUS_SUCCESS) {
+      return BLE_ERROR_UNSPECIFIED;
+    }
+    
+    txPowerAdType = true;
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
