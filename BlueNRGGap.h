@@ -119,6 +119,8 @@ private:
 
     uint8_t *local_name;
     uint8_t local_name_length;
+    
+    bool txPowerAdType;
 
     uint8_t servUuidlength;
     uint8_t servUuidData[UUID_BUFFER_SIZE];
