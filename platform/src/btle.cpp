@@ -61,7 +61,7 @@ extern "C" {
 #include "gp_timer.h"
 #include "osal.h"
 #include "sm.h"
-#include "debug.h"
+#include "debug_platform.h"
 
 #ifdef __cplusplus
 }
