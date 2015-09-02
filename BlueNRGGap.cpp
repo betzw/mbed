@@ -102,7 +102,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
     } else { 
         PayloadPtr loadPtr(advData.getPayload(), advData.getPayloadLen());        
         for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {                  
-            loadPtr.getUnitAtIndex(index);
+            PayloadUnit unit = loadPtr.getUnitAtIndex(index);
 
             DEBUG("adData[%d].length=%d\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
             DEBUG("adData[%d].AdType=0x%x\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));                  
@@ -213,7 +213,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 if(buffSize>ADV_DATA_MAX_SIZE-2) {
                     return BLE_ERROR_PARAM_OUT_OF_RANGE;
                 }
-                for(int i=0; i<buffSize+1; i++) {
+                for(unsigned i=0; i<buffSize+1; i++) {
                     DEBUG("Advertising type: SERVICE_DATA loadPtr.getUnitAtIndex(index).getDataPtr()[%d] = 0x%x\n\r", i, loadPtr.getUnitAtIndex(index).getDataPtr()[i]);
                 }
                 AdvLen = buffSize+2; // the total ADV DATA LEN should include two more bytes: the buffer size byte; and the Service Data Type Value byte
@@ -360,21 +360,43 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         0, // Slave_Conn_Interval_Min
         0);  // Slave_Conn_Interval_Max
 
-    ret = aci_gap_delete_ad_type(AD_TYPE_TX_POWER_LEVEL); 
-    if (ret != BLE_STATUS_SUCCESS){
-        DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
-        return BLE_ERROR_PARAM_OUT_OF_RANGE;
+    DEBUG("!!!setting discoverable (servUuidlength=0x%x)\n", servUuidlength);
+    if(BLE_STATUS_SUCCESS!=ret) {
+       DEBUG("error occurred while setting discoverable (ret=0x%x)\n", ret);
+       return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
     }
 
-   ret = aci_gap_update_adv_data(AdvLen, AdvData);
-   if(BLE_STATUS_SUCCESS!=ret) {
-       DEBUG("error occurred while adding adv data (ret=0x%x)\n", ret);
-       return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
-   }
+    // Before updating the ADV data, delete COMPLETE_LOCAL_NAME and TX_POWER_LEVEL fields (if present)
+    if(AdvLen>0) {
+      if(name!=NULL) {
+        DEBUG("!!!calling aci_gap_delete_ad_type AD_TYPE_COMPLETE_LOCAL_NAME!!!\n");
+        ret = aci_gap_delete_ad_type(AD_TYPE_COMPLETE_LOCAL_NAME);
+        if (ret != BLE_STATUS_SUCCESS){
+          DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
+          return BLE_ERROR_PARAM_OUT_OF_RANGE;
+        }
+      }
 
-   state.advertising = 1;
+      if(txPowerAdType) {
+        DEBUG("!!!calling aci_gap_delete_ad_type(AD_TYPE_TX_POWER_LEVEL)!!!\n", AdvLen);
+        ret = aci_gap_delete_ad_type(AD_TYPE_TX_POWER_LEVEL);
+        if (ret != BLE_STATUS_SUCCESS){
+          DEBUG("aci_gap_delete_ad_type failed return=%d\n", ret);
+          return BLE_ERROR_PARAM_OUT_OF_RANGE;
+        }
+      }
+   
+      ret = aci_gap_update_adv_data(AdvLen, AdvData);
+      if(BLE_STATUS_SUCCESS!=ret) {
+        DEBUG("error occurred while adding adv data (ret=0x%x)\n", ret);
+        return BLE_ERROR_PARAM_OUT_OF_RANGE;  // no other suitable error code is available
+      }
+      
+    }
 
-   return BLE_ERROR_NONE;
+    state.advertising = 1;
+
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
@@ -563,7 +585,7 @@ ble_error_t BlueNRGGap::setAddress(addr_type_t type, const Address_t address)
     //Re-Init the BTLE Device with SetAddress as true
     //if(BlueNRGDevice::getIsInitialized())//Re-init only initialization is already done
     // ANDREA
-    //btle_init(isSetAddress, D11, D12, D13);
+    //btle_init(isSetAddress, D11, D12, D3);
     
     //if (ret==BLE_STATUS_SUCCESS)
     return BLE_ERROR_NONE;
@@ -894,13 +916,21 @@ ble_error_t BlueNRGGap::stopScan() {
 /**************************************************************************/
 ble_error_t BlueNRGGap::setTxPower(int8_t txPower)
 {
+    tBleStatus ret;
+    
     int8_t enHighPower = 0;
     int8_t paLevel = 0;    
     int8_t dbmActuallySet = getHighPowerAndPALevelValue(txPower, enHighPower, paLevel);
+    
     DEBUG("txPower=%d, dbmActuallySet=%d\n\r", txPower, dbmActuallySet);
     DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
-    aci_hal_set_tx_power_level(enHighPower, paLevel);
-    return BLE_ERROR_NONE;    
+    ret = aci_hal_set_tx_power_level(enHighPower, paLevel);
+    if(ret!=BLE_STATUS_SUCCESS) {
+      return BLE_ERROR_UNSPECIFIED;
+    }
+    
+    txPowerAdType = true;
+    return BLE_ERROR_NONE;
 }
 
 /**************************************************************************/
