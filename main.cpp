@@ -41,7 +41,7 @@
 #include "x_nucleo_iks01a1.h"
 
 /* Instantiate the expansion board */
-static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance();
+static X_NUCLEO_IKS01A1 *mems_expansion_board = X_NUCLEO_IKS01A1::Instance(D14, D15);
 
 /* Retrieve the composing elements of the expansion board */
 static GyroSensor *gyroscope = mems_expansion_board->GetGyroscope();
