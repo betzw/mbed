@@ -62,9 +62,11 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c, PinName ff_irq_pin) : dev_i2
 
 /**
  * @brief     Get singleton instance
- * @return    a pointer to the initialized singleton instance of class X_NUCLEO_IKS01A1
+ * @return    a pointer to the initialized singleton instance of class X_NUCLEO_IKS01A1.
+ *            A return value of NULL indicates an out of memory situation.
  * @param[in] ext_i2c (optional) pointer to an instance of DevI2C to be used
  *            for communication on the expansion board. 
+ *            Defaults to NULL.
  *            Taken into account only on the very first call of one of the 'Instance' functions.
  *            If not provided a new DevI2C will be created with standard
  *            configuration parameters.
@@ -72,6 +74,8 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c, PinName ff_irq_pin) : dev_i2
  * @param[in] ff_irq_pin (optional) PinName of the pin associated to asynchronous 
  *            (i.e. interrupt based) free fall detection in case a LSM6DS3 3D 
  *            Acceleromenter and 3D Gyroscope is mounted on top of the DIL 24-pin socket.
+ *            Defaults to IKS01A1_PIN_FF.
+ *            Taken into account only on the very first call of one of the 'Instance' functions.
  *            A value of 'NC' will avoid instantiation of the LSM6DS3 even if present.
  */
 X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(DevI2C *ext_i2c, PinName ff_irq_pin) {
@@ -95,7 +99,8 @@ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(DevI2C *ext_i2c, PinName ff_irq_pin
 
 /**
  * @brief     Get singleton instance
- * @return    a pointer to the initialized singleton instance of class X_NUCLEO_IKS01A1
+ * @return    a pointer to the initialized singleton instance of class X_NUCLEO_IKS01A1.
+ *            A return value of NULL indicates an out of memory situation.
  * @param[in] sda I2C data line pin.
  *            Taken into account only on the very first call of one of the 'Instance' functions.
  *            A new DevI2C will be created based on parameters 'sda' and 'scl'.
@@ -107,6 +112,8 @@ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(DevI2C *ext_i2c, PinName ff_irq_pin
  * @param[in] ff_irq_pin (optional) PinName of the pin associated to asynchronous 
  *            (i.e. interrupt based) free fall detection in case a LSM6DS3 3D 
  *            Acceleromenter and 3D Gyroscope is mounted on top of the DIL 24-pin socket.
+ *            Defaults to NC.
+ *            Taken into account only on the very first call of one of the 'Instance' functions.
  *            A value of 'NC' will avoid instantiation of the LSM6DS3 even if present.
  */
 X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(PinName sda, PinName scl, PinName ff_irq_pin) {
