@@ -43,8 +43,8 @@
 
 /*** I2C ***/
 /* Use Arduino I2C Connectors */
-#define IKS01A1_PIN_I2C_SCL         (D15)
 #define IKS01A1_PIN_I2C_SDA         (D14)
+#define IKS01A1_PIN_I2C_SCL         (D15)
 
 /* Free Fall Detection IRQ */
 #define IKS01A1_PIN_FF              (A2)
