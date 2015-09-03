@@ -81,7 +81,7 @@
 class X_NUCLEO_IKS01A1
 {
  protected:
-	X_NUCLEO_IKS01A1(DevI2C *ext_i2c);
+	X_NUCLEO_IKS01A1(DevI2C *ext_i2c, PinName ff_irq_pin);
 
 	/**
 	 * @brief  Initialize the singleton's sensors to default settings
@@ -115,7 +115,9 @@ class X_NUCLEO_IKS01A1
 	bool Init_LSM6DS3(void);
 
  public:
-	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL);
+	static X_NUCLEO_IKS01A1* Instance(DevI2C *ext_i2c = NULL, 
+					  PinName ff_irq_pin = IKS01A1_PIN_FF);
+	static X_NUCLEO_IKS01A1* Instance(PinName sda, PinName scl, PinName ff_irq_pin = NC);
 
 	DevI2C  *dev_i2c;
 

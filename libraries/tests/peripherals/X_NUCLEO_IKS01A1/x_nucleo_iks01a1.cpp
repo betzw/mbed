@@ -47,13 +47,17 @@ X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::_instance = NULL;
 /**
  * @brief  Constructor
  */
-X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
+X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c, PinName ff_irq_pin) : dev_i2c(ext_i2c),
 	ht_sensor(new HTS221(*dev_i2c)),
 	magnetometer(new LIS3MDL(*dev_i2c)),
 	pt_sensor(new LPS25H(*dev_i2c)),
-	gyro_lsm6ds0(new LSM6DS0(*dev_i2c)),
-	gyro_lsm6ds3(new LSM6DS3(*dev_i2c, IKS01A1_PIN_FF))
+	gyro_lsm6ds0(new LSM6DS0(*dev_i2c))
 { 
+	if(ff_irq_pin == NC) {
+		gyro_lsm6ds3 = NULL;
+	} else {
+		gyro_lsm6ds3 = new LSM6DS3(*dev_i2c, ff_irq_pin);
+	}
 }
 
 /**
@@ -61,18 +65,56 @@ X_NUCLEO_IKS01A1::X_NUCLEO_IKS01A1(DevI2C *ext_i2c) : dev_i2c(ext_i2c),
  * @return    a pointer to the initialized singleton instance of class X_NUCLEO_IKS01A1
  * @param[in] ext_i2c (optional) pointer to an instance of DevI2C to be used
  *            for communication on the expansion board. 
- *            Taken into account only on the very first call of this function.
+ *            Taken into account only on the very first call of one of the 'Instance' functions.
  *            If not provided a new DevI2C will be created with standard
  *            configuration parameters.
  *            The used DevI2C object gets saved in instance variable dev_i2c.
+ * @param[in] ff_irq_pin (optional) PinName of the pin associated to asynchronous 
+ *            (i.e. interrupt based) free fall detection in case a LSM6DS3 3D 
+ *            Acceleromenter and 3D Gyroscope is mounted on top of the DIL 24-pin socket.
+ *            A value of 'NC' will avoid instantiation of the LSM6DS3 even if present.
  */
- X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(DevI2C *ext_i2c) {
+X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(DevI2C *ext_i2c, PinName ff_irq_pin) {
 	if(_instance == NULL) {
 		if(ext_i2c == NULL)
 			ext_i2c = new DevI2C(IKS01A1_PIN_I2C_SDA, IKS01A1_PIN_I2C_SCL);
 
 		if(ext_i2c != NULL)
-			_instance = new X_NUCLEO_IKS01A1(ext_i2c);
+			_instance = new X_NUCLEO_IKS01A1(ext_i2c, ff_irq_pin);
+	
+		if(_instance != NULL) {
+			bool ret = _instance->Init();
+			if(!ret) {
+				error("Failed to init X_NUCLEO_IKS01A1 expansion board!\n");
+			}
+		}
+	}
+
+	return _instance;
+}
+
+/**
+ * @brief     Get singleton instance
+ * @return    a pointer to the initialized singleton instance of class X_NUCLEO_IKS01A1
+ * @param[in] sda I2C data line pin.
+ *            Taken into account only on the very first call of one of the 'Instance' functions.
+ *            A new DevI2C will be created based on parameters 'sda' and 'scl'.
+ *            The used DevI2C object gets saved in instance variable dev_i2c.
+ * @param[in] scl I2C clock line pin.
+ *            Taken into account only on the very first call of one of the 'Instance' functions.
+ *            A new DevI2C will be created based on parameters 'sda' and 'scl'.
+ *            The used DevI2C object gets saved in instance variable dev_i2c.
+ * @param[in] ff_irq_pin (optional) PinName of the pin associated to asynchronous 
+ *            (i.e. interrupt based) free fall detection in case a LSM6DS3 3D 
+ *            Acceleromenter and 3D Gyroscope is mounted on top of the DIL 24-pin socket.
+ *            A value of 'NC' will avoid instantiation of the LSM6DS3 even if present.
+ */
+X_NUCLEO_IKS01A1* X_NUCLEO_IKS01A1::Instance(PinName sda, PinName scl, PinName ff_irq_pin) {
+	if(_instance == NULL) {
+		DevI2C *ext_i2c = new DevI2C(sda, scl);
+
+		if(ext_i2c != NULL)
+			_instance = new X_NUCLEO_IKS01A1(ext_i2c, ff_irq_pin);
 	
 		if(_instance != NULL) {
 			bool ret = _instance->Init();
@@ -230,6 +272,8 @@ bool X_NUCLEO_IKS01A1::Init_LSM6DS3(void) {
 	uint8_t xg_id = 0;
 
 	/* Check presence */
+	if(gyro_lsm6ds3 == NULL) return true;
+
 	if((gyro_lsm6ds3->ReadID(&xg_id) != IMU_6AXES_OK) ||
 	   (xg_id != I_AM_LSM6DS3_XG))
 		{
