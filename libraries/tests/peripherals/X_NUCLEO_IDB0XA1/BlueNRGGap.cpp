@@ -347,9 +347,9 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         DEBUG("name=%s\n\r", name);      
     }  
 
-    advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application    
+    advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application  
     ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
-        BLUENRG_GAP_ADV_INTERVAL_MIN,   // Adv_Interval_Min
+        advtInterval,   // Adv_Interval_Min
         advtInterval,   // Adv_Interval_Max
         PUBLIC_ADDR, // Address_Type 
         NO_WHITE_LIST_USE,  // Adv_Filter_Policy
