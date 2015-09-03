@@ -102,7 +102,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
     } else { 
         PayloadPtr loadPtr(advData.getPayload(), advData.getPayloadLen());        
         for(uint8_t index=0; index<loadPtr.getPayloadUnitCount(); index++) {                  
-            loadPtr.getUnitAtIndex(index);
+            PayloadUnit unit = loadPtr.getUnitAtIndex(index);
 
             DEBUG("adData[%d].length=%d\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getLenPtr()));
             DEBUG("adData[%d].AdType=0x%x\n\r", index,(uint8_t)(*loadPtr.getUnitAtIndex(index).getAdTypePtr()));                  
@@ -213,7 +213,7 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 if(buffSize>ADV_DATA_MAX_SIZE-2) {
                     return BLE_ERROR_PARAM_OUT_OF_RANGE;
                 }
-                for(int i=0; i<buffSize+1; i++) {
+                for(unsigned i=0; i<buffSize+1; i++) {
                     DEBUG("Advertising type: SERVICE_DATA loadPtr.getUnitAtIndex(index).getDataPtr()[%d] = 0x%x\n\r", i, loadPtr.getUnitAtIndex(index).getDataPtr()[i]);
                 }
                 AdvLen = buffSize+2; // the total ADV DATA LEN should include two more bytes: the buffer size byte; and the Service Data Type Value byte
@@ -347,9 +347,9 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         DEBUG("name=%s\n\r", name);      
     }  
 
-    advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application    
+    advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application  
     ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
-        BLUENRG_GAP_ADV_INTERVAL_MIN,   // Adv_Interval_Min
+        advtInterval,   // Adv_Interval_Min
         advtInterval,   // Adv_Interval_Max
         PUBLIC_ADDR, // Address_Type 
         NO_WHITE_LIST_USE,  // Adv_Filter_Policy

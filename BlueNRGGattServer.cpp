@@ -206,7 +206,7 @@ ble_error_t BlueNRGGattServer::addService(GattService &service)
         for(uint8_t descIndex=0; descIndex<p_char->getDescriptorCount(); descIndex++) {
             GattAttribute *descriptor = p_char->getDescriptor(descIndex);
             uint16_t shortUUID = descriptor->getUUID().getShortUUID();
-            const uint8_t uuidArray[] = {(uint8_t)((shortUUID>>8)&0xFF), (uint8_t)((shortUUID&0xFF))};
+            const uint8_t uuidArray[] = {(shortUUID>>8)&0xFF, (shortUUID&0xFF)};
             ret = aci_gatt_add_char_desc(service.getHandle(), p_char->getValueAttribute().getHandle(), 
             CHAR_DESC_TYPE_16_BIT, uuidArray, descriptor->getMaxLength(), descriptor->getInitialLength(), 
             descriptor->getValuePtr(), CHAR_DESC_SECURITY_PERMISSION, CHAR_DESC_ACCESS_PERMISSION, GATT_NOTIFY_ATTRIBUTE_WRITE,
