@@ -176,6 +176,8 @@ void BlueNRGDevice::waitForEvent(void)
 	bool must_return = false;
 
 	do {
+                BlueNRGGap::getInstance().Process();                
+        
 		HCI_Process();
 
 		if(must_return) return;

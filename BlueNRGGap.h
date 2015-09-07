@@ -105,6 +105,16 @@ public:
     
     //tHalUint8* getAddress();
     bool getIsSetAddress();
+    
+    Timeout getAdvTimeout(void) const {
+        return advTimeout;
+    }
+    uint8_t getAdvToFlag(void) {
+        return AdvToFlag;
+    }
+    void setAdvToFlag(void);
+    
+    void Process(void);
 
 protected:
     virtual ble_error_t startRadioScan(const GapScanningParams &scanningParams);
@@ -128,6 +138,9 @@ private:
     uint8_t AdvLen;
     uint8_t AdvData[ADV_DATA_MAX_SIZE];
     
+    Timeout advTimeout;
+    bool AdvToFlag;
+
     BlueNRGGap() {
         m_connectionHandle = BLE_CONN_HANDLE_INVALID;
         isSetAddress = false;
