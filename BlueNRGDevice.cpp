@@ -173,6 +173,8 @@ ble_error_t BlueNRGDevice::reset(void)
 */
 void BlueNRGDevice::waitForEvent(void)
 {
+    BlueNRGGap::getInstance().Process();
+    
     HCI_Process();//Send App Events??
     
 }
