@@ -176,6 +176,8 @@ void BlueNRGDevice::waitForEvent(void)
 	bool must_return = false;
 
 	do {
+                BlueNRGGap::getInstance().Process();                
+        
 		HCI_Process();
 
 		if(must_return) return;
@@ -246,6 +248,11 @@ const GattServer &BlueNRGDevice::getGattServer() const
     return BlueNRGGattServer::getInstance();
 }
 
+//FIXME: TBI (by now just placeholders to let build
+GattClient& BlueNRGDevice::getGattClient() {}
+SecurityManager& BlueNRGDevice::getSecurityManager(){}
+const SecurityManager& BlueNRGDevice::getSecurityManager() const {}
+    
 /**************************************************************************/
 /*!
     @brief  shut down the the BLE device

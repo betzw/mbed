@@ -53,6 +53,17 @@ uint8_t scan_rsp_length = 0;
 
 uint32_t advtInterval = BLUENRG_GAP_ADV_INTERVAL_MAX;
 
+/*
+ * Utility to process GAP specific events (e.g., Advertising timeout)
+ */
+void BlueNRGGap::Process(void)
+{    
+    if(AdvToFlag) {
+        stopAdvertising();
+    }
+
+}
+
 /**************************************************************************/
 /*!
     @brief  Sets the advertising parameters and payload for the device. 
@@ -262,7 +273,32 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
     return BLE_ERROR_NONE;
 }
 
+/*
+ * Utility to set ADV timeout flag
+ */
+void BlueNRGGap::setAdvToFlag(void) {
+    AdvToFlag = true;
+}
 
+/*
+ * ADV timeout callback
+ */   
+static void advTimeoutCB(void)
+{
+    Gap::GapState_t state;
+    
+    state = BlueNRGGap::getInstance().getState();
+    if (state.advertising == 1) {
+        
+        BlueNRGGap::getInstance().setAdvToFlag();
+        
+        Timeout t = BlueNRGGap::getInstance().getAdvTimeout();
+        t.detach(); /* disable the callback from the timeout */
+
+    }
+}
+
+    
 /**************************************************************************/
 /*!
     @brief  Starts the BLE HW, initialising any services that were
@@ -298,13 +334,13 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
     /* Check interval range */
     if (params.getAdvertisingType() == GapAdvertisingParams::ADV_NON_CONNECTABLE_UNDIRECTED) {
         /* Min delay is slightly longer for unconnectable devices */
-        if ((params.getInterval() < GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MIN_NONCON) ||
-                (params.getInterval() > GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MAX)) {
+        if ((params.getIntervalInADVUnits() < GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MIN_NONCON) ||
+                (params.getIntervalInADVUnits() > GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MAX)) {
             return BLE_ERROR_PARAM_OUT_OF_RANGE;
         }
     } else {
-        if ((params.getInterval() < GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MIN) ||
-                (params.getInterval() > GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MAX)) {
+        if ((params.getIntervalInADVUnits() < GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MIN) ||
+                (params.getIntervalInADVUnits() > GapAdvertisingParams::GAP_ADV_PARAMS_INTERVAL_MAX)) {
             return BLE_ERROR_PARAM_OUT_OF_RANGE;
         }
     }
@@ -347,7 +383,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         DEBUG("name=%s\n\r", name);      
     }  
 
-    advtInterval = params.getInterval(); // set advtInterval in case it is not already set by user application  
+    advtInterval = params.getIntervalInADVUnits(); // set advtInterval in case it is not already set by user application  
     ret = aci_gap_set_discoverable(params.getAdvertisingType(), // Advertising_Event_Type                                
         advtInterval,   // Adv_Interval_Min
         advtInterval,   // Adv_Interval_Max
@@ -360,6 +396,7 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
         0, // Slave_Conn_Interval_Min
         0);  // Slave_Conn_Interval_Max
 
+    
     DEBUG("!!!setting discoverable (servUuidlength=0x%x)\n", servUuidlength);
     if(BLE_STATUS_SUCCESS!=ret) {
        DEBUG("error occurred while setting discoverable (ret=0x%x)\n", ret);
@@ -396,6 +433,12 @@ ble_error_t BlueNRGGap::startAdvertising(const GapAdvertisingParams &params)
 
     state.advertising = 1;
 
+    AdvToFlag = false;
+    if(params.getTimeout() != 0) {
+        DEBUG("!!! attaching to!!!\n");
+        advTimeout.attach(advTimeoutCB, params.getTimeout());
+    }
+    
     return BLE_ERROR_NONE;
 }
 
@@ -424,7 +467,7 @@ ble_error_t BlueNRGGap::stopAdvertising(void)
         ret = aci_gap_set_non_discoverable();
         
         if (ret != BLE_STATUS_SUCCESS){
-            DEBUG("Error in stopping advertisement!!\n\r") ;
+            DEBUG("Error in stopping advertisement (ret=0x%x)!!\n\r", ret) ;
             return BLE_ERROR_PARAM_OUT_OF_RANGE ; //Not correct Error Value 
             //FIXME: Define Error values equivalent to BlueNRG Error Codes.
         }
