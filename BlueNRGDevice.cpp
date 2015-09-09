@@ -58,18 +58,17 @@ extern "C" {
 
 /**
 * The singleton which represents the BlueNRG transport for the BLEDevice.
-* FIXME: find a better way to create the BlueNRG device instance so that 
-* the pin names can be chosen by the users of this class
 *
-* This is using Arduino pins as follows:
-* D11: MOSI line of SPI interface
-* D12: MISO line of SPI interface
-* D3 : SCK line of SPI interface
-* A1 : nCS line of SPI interface
-* D7 : BlueNRG reset
-* A0 : BlueNRG IRQ pin
+* See file 'x_nucleo_idb0xa1_targets.h' for details regarding the peripheral pins used!
 */
-BlueNRGDevice bluenrgDeviceInstance(D11, D12, D3, A1, D7, A0);
+#include "x_nucleo_idb0xa1_targets.h"
+
+BlueNRGDevice bluenrgDeviceInstance(IDB0XA1_PIN_SPI_MOSI,
+                                    IDB0XA1_PIN_SPI_MISO,
+                                    IDB0XA1_PIN_SPI_SCK,
+                                    IDB0XA1_PIN_SPI_nCS,
+                                    IDB0XA1_PIN_SPI_RESET,
+                                    IDB0XA1_PIN_SPI_IRQ);
 
 /**
 * BLE-API requires an implementation of the following function in order to
@@ -130,6 +129,7 @@ BlueNRGDevice::~BlueNRGDevice(void)
 ble_error_t BlueNRGDevice::init(void)
 {
     // Set the interrupt handler for the device
+	irq_.mode(PullNone); // betzw: set irq mode
     irq_.rise(&HCI_Isr);
 
     /* ToDo: Clear memory contents, reset the SD, etc. */
@@ -173,9 +173,20 @@ ble_error_t BlueNRGDevice::reset(void)
 */
 void BlueNRGDevice::waitForEvent(void)
 {
-    BlueNRGGap::getInstance().Process();
-    
-    HCI_Process();//Send App Events??
+	bool must_return = false;
+
+	do {
+		BlueNRGGap::getInstance().Process();
+		
+		HCI_Process();
+		
+		if(must_return) return;
+
+		__WFE(); /* it is recommended that SEVONPEND in the
+			    System Control Register is NOT set */
+		must_return = true; /* after returning from WFE we must guarantee
+				       that conrol is given back to main loop before next WFE */
+	} while(true);
     
 }
 
@@ -237,12 +248,7 @@ const GattServer &BlueNRGDevice::getGattServer() const
 {
     return BlueNRGGattServer::getInstance();
 }
-
-//FIXME: TBI (by now just placeholders to let build
-GattClient& BlueNRGDevice::getGattClient() {}
-SecurityManager& BlueNRGDevice::getSecurityManager(){}
-const SecurityManager& BlueNRGDevice::getSecurityManager() const {}
-    
+ 
 /**************************************************************************/
 /*!
     @brief  shut down the the BLE device
@@ -331,15 +337,11 @@ int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
                           uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
 {  
   int32_t result = 0;
-	
-	uint32_t i;
-	volatile uint8_t read_char;
-	volatile uint8_t tmpreg;
-    
+  uint32_t i;
+  volatile uint8_t tmpreg;
+  
   unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
   unsigned char header_slave[HEADER_SIZE]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
-  
-  //unsigned char read_char_buf[MAX_BUFFER_SIZE];
 
   disable_irq();
 
@@ -359,10 +361,10 @@ int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
   
       /*  Buffer is big enough */
 			for (i = 0; i < Nb_bytes1; i++) {
-				read_char = spi_.write(*(data1 + i));
+				spi_.write(*(data1 + i));
       }
       for (i = 0; i < Nb_bytes2; i++) {
-				read_char = spi_.write(*(data2 + i));
+				spi_.write(*(data2 + i));
       }			
     } else {
       /* Buffer is too small */

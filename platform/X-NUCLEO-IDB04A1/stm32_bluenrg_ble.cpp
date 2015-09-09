@@ -53,7 +53,6 @@ extern "C" {
 #include "stm32_bluenrg_ble.h"
 #include "gp_timer.h"
 #include "debug.h"
-#include "bluenrg_platform.h"
 
 	
 void BlueNRG_RST(void)
@@ -74,8 +73,10 @@ uint8_t BlueNRG_DataPresent(void)
  * @retval None
  */
 void print_csv_time(void){
+#ifdef PRINT_CSV_FORMAT
   uint32_t ms = 0;//ms_counter;
   PRINT_CSV("%02d:%02d:%02d.%03d", ms/(60*60*1000)%24, ms/(60*1000)%60, (ms/1000)%60, ms%1000);
+#endif
 }
 
 /**
