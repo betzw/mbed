@@ -52,7 +52,7 @@ extern "C" {
 
 #include "stm32_bluenrg_ble.h"
 #include "gp_timer.h"
-#include "debug_hci.h"
+#include "debug.h"
 
 	
 void BlueNRG_RST(void)
