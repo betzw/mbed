@@ -40,7 +40,7 @@
 /* Define to prevent from recursive inclusion --------------------------------*/
 #ifndef _X_NUCLEO_IDB0XA1_TARGETS_H_
 #define _X_NUCLEO_IDB0XA1_TARGETS_H_
- 
+
 /*** SPI ***/
 /* Use Arduino I2C Connectors */
 #define IDB0XA1_PIN_SPI_MOSI   (D11)

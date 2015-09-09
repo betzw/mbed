@@ -46,7 +46,7 @@
 #include "Utils.h"
 #include "osal.h"
 
-#include "debug_hci.h"
+#include "debug.h"
 #include "stm32_bluenrg_ble.h"
 
 extern "C" {
@@ -176,10 +176,10 @@ void BlueNRGDevice::waitForEvent(void)
 	bool must_return = false;
 
 	do {
-                BlueNRGGap::getInstance().Process();                
-        
+		BlueNRGGap::getInstance().Process();
+		
 		HCI_Process();
-
+		
 		if(must_return) return;
 
 		__WFE(); /* it is recommended that SEVONPEND in the
@@ -187,6 +187,7 @@ void BlueNRGDevice::waitForEvent(void)
 		must_return = true; /* after returning from WFE we must guarantee
 				       that conrol is given back to main loop before next WFE */
 	} while(true);
+
 }
  
  
@@ -247,7 +248,7 @@ const GattServer &BlueNRGDevice::getGattServer() const
 {
     return BlueNRGGattServer::getInstance();
 }
-
+ 
 /**************************************************************************/
 /*!
     @brief  shut down the the BLE device
@@ -333,55 +334,54 @@ int32_t BlueNRGDevice::spiRead(uint8_t *buffer, uint8_t buff_size)
  * @retval Number of read bytes
  */
 int32_t BlueNRGDevice::spiWrite(uint8_t* data1,
-				uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
+                          uint8_t* data2, uint8_t Nb_bytes1, uint8_t Nb_bytes2)
 {  
-	int32_t result = 0;
-	
-	uint32_t i;
-	volatile uint8_t tmpreg;
-    
-	unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
-	unsigned char header_slave[HEADER_SIZE]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
+  int32_t result = 0;
+  uint32_t i;
+  volatile uint8_t tmpreg;
   
-	disable_irq();
+  unsigned char header_master[HEADER_SIZE] = {0x0a, 0x00, 0x00, 0x00, 0x00};
+  unsigned char header_slave[HEADER_SIZE]  = {0xaa, 0x00, 0x00, 0x00, 0x00};
 
-	/* CS reset */
-	nCS_ = 0;
+  disable_irq();
 
-	/* Exchange header */  
-	for (i = 0; i < 5; i++)
-		{ 
-			tmpreg = spi_.write(header_master[i]);
-			header_slave[i] = tmpreg;
-		} 
+  /* CS reset */
+  nCS_ = 0;
+
+  /* Exchange header */  
+  for (i = 0; i < 5; i++)
+  { 
+		tmpreg = spi_.write(header_master[i]);
+		header_slave[i] = tmpreg;
+  } 
 	
-	if (header_slave[0] == 0x02) {
-		/* SPI is ready */
-		if (header_slave[1] >= (Nb_bytes1+Nb_bytes2)) {
+  if (header_slave[0] == 0x02) {
+    /* SPI is ready */
+    if (header_slave[1] >= (Nb_bytes1+Nb_bytes2)) {
   
-			/*  Buffer is big enough */
+      /*  Buffer is big enough */
 			for (i = 0; i < Nb_bytes1; i++) {
 				spi_.write(*(data1 + i));
-			}
-			for (i = 0; i < Nb_bytes2; i++) {
+      }
+      for (i = 0; i < Nb_bytes2; i++) {
 				spi_.write(*(data2 + i));
-			}			
-		} else {
-			/* Buffer is too small */
-			result = -2;
-		}
-	} else {
-		/* SPI is not ready */
-		result = -1;
-	}
+      }			
+    } else {
+      /* Buffer is too small */
+      result = -2;
+    }
+  } else {
+    /* SPI is not ready */
+    result = -1;
+  }
     
-	/* Release CS line */
-	//HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
-	nCS_ = 1;
+  /* Release CS line */
+  //HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+  nCS_ = 1;
 			
-	enable_irq();
+  enable_irq();
     
-	return result;
+  return result;
 }
 
 bool BlueNRGDevice::dataPresent()
