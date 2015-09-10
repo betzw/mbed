@@ -68,7 +68,7 @@ extern "C" {
 #endif
 
 
-static void btle_handler(/*ble_evt_t * p_ble_evt*/);
+// static void btle_handler(/*ble_evt_t * p_ble_evt*/);
 void HCI_Input(tHciDataPacket * hciReadPacket);
 
 //#define BDADDR_SIZE 6
@@ -209,10 +209,12 @@ void setConnectable(void)
     @returns
 */
 /**************************************************************************/
+/*
 static void btle_handler()
 {
 
 }
+*/
 
 /*!
     @brief  Not Used
