@@ -37,8 +37,10 @@ URIBeaconConfigService *uriBeaconConfig;
  *
  * The following help with this switch.
  */
-static const int CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS = 60;  // Duration after power-on that config service is available.
+static const int CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS = 1;  // Duration after power-on that config service is available.
 Ticker configAdvertisementTimeoutTicker;
+
+static volatile bool configAdvStopped = false;
 
 /**
  * Stop advertising the UriBeaconConfig Service after a delay; and switch to normal URIBeacon.
@@ -48,8 +50,7 @@ void timeout(void)
     Gap::GapState_t state;
     state = ble.getGapState();
     if (!state.connected) { /* don't switch if we're in a connected state. */
-        uriBeaconConfig->setupURIBeaconAdvertisements();
-        ble.startAdvertising();
+        configAdvStopped = true;
 
         configAdvertisementTimeoutTicker.detach(); /* disable the callback from the timeout Ticker. */
     }
@@ -84,7 +85,7 @@ void uriBeaconDemo(void)
     if (!uriBeaconConfig->configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
-    //configAdvertisementTimeoutTicker.attach(timeout, CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS);
+    configAdvertisementTimeoutTicker.attach(timeout, CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS);
 
     // Setup auxiliary services to allow over-the-air firmware updates, etc
     //DFUService dfu(ble);
@@ -94,7 +95,13 @@ void uriBeaconDemo(void)
                              * service. This can then be switched to the normal URIBeacon functionality after a timeout. */
 
     while (true) {
-        ble.waitForEvent();
+        if(configAdvStopped == true) {
+            configAdvStopped = false;
+            uriBeaconConfig->setupURIBeaconAdvertisements();
+            ble.startAdvertising();
+        } else {
+            ble.waitForEvent();
+        }
     }
 }
 
