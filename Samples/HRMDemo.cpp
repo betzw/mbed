@@ -101,5 +101,5 @@ void hrmDemo(void)
         }
     }
 }
- 
+
 #endif /* HRM_DEMO_ENABLED */
