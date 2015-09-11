@@ -17,7 +17,6 @@
 #include "mbed.h"
 #include "ble/BLE.h"
 #include "ble/services/URIBeaconConfigService.h"
-//#include "ble/services/DFUService.h"
 #include "ble/services/DeviceInformationService.h"
 #include "ConfigParamsPersistence.h"
 
@@ -29,34 +28,7 @@ BLE ble;
 URIBeaconConfigService *uriBeaconConfig;
 
 /**
- * URIBeaconConfig service can operate in two modes: a configuration mode which
- * allows a user to update settings over a connection; and normal URIBeacon mode
- * which involves advertising a URI. Constructing an object from URIBeaconConfig
- * service sets up advertisements for the configuration mode. It is then up to
- * the application to switch to URIBeacon mode based on some timeout.
- *
- * The following help with this switch.
- */
-static const int CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS = 1;  // Duration after power-on that config service is available.
-Ticker configAdvertisementTimeoutTicker;
 
-static volatile bool configAdvStopped = false;
-
-/**
- * Stop advertising the UriBeaconConfig Service after a delay; and switch to normal URIBeacon.
- */
-void timeout(void)
-{
-    Gap::GapState_t state;
-    state = ble.getGapState();
-    if (!state.connected) { /* don't switch if we're in a connected state. */
-        configAdvStopped = true;
-
-        configAdvertisementTimeoutTicker.detach(); /* disable the callback from the timeout Ticker. */
-    }
-}
-
-/**
  * Callback triggered upon a disconnection event. Needs to re-enable advertisements.
  */
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
@@ -77,7 +49,7 @@ void uriBeaconDemo(void)
      * operation.
      */
     URIBeaconConfigService::Params_t params;
-    bool fetchedFromPersistentStorage = false;
+    bool fetchedFromPersistentStorage = loadURIBeaconConfigParams(&params);
 
     /* Initialize a URIBeaconConfig service providing config params, default URI, and power levels. */
     static URIBeaconConfigService::PowerLevels_t defaultAdvPowerLevels = {-20, -4, 0, 10}; // Values for ADV packets related to firmware levels
@@ -85,23 +57,14 @@ void uriBeaconDemo(void)
     if (!uriBeaconConfig->configuredSuccessfully()) {
         error("failed to accommodate URI");
     }
-    configAdvertisementTimeoutTicker.attach(timeout, CONFIG_ADVERTISEMENT_TIMEOUT_SECONDS);
 
-    // Setup auxiliary services to allow over-the-air firmware updates, etc
-    //DFUService dfu(ble);
     DeviceInformationService deviceInfo(ble, "ARM", "UriBeacon", "SN1", "hw-rev1", "fw-rev1", "soft-rev1");
 
-    ble.startAdvertising(); /* Set the whole thing in motion. After this call a GAP central can scan the URIBeaconConfig
-                             * service. This can then be switched to the normal URIBeacon functionality after a timeout. */
+    uriBeaconConfig->setupURIBeaconAdvertisements();
+    ble.startAdvertising(); /* Set the whole thing in motion. After this call a GAP central can scan the URIBeacon service. */
 
     while (true) {
-        if(configAdvStopped == true) {
-            configAdvStopped = false;
-            uriBeaconConfig->setupURIBeaconAdvertisements();
-            ble.startAdvertising();
-        } else {
-            ble.waitForEvent();
-        }
+        ble.waitForEvent();
     }
 }
 
