@@ -22,7 +22,7 @@
 #include "x_nucleo_idb0xa1_targets.h"
 #include "Samples.h"
 
-#if defined(LED_DEMO_ENABLED)
+#ifdef LED_DEMO_ENABLED
 
 #if defined(IDB0XA1_D13_PATCH)
 #error "LED demo not available with patch D13 applied on IDB0XA1 expansion boards!"
