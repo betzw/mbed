@@ -198,10 +198,12 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
             case GapAdvertisingData::TX_POWER_LEVEL:                     /**< TX Power Level (in dBm) */
                 {
                 DEBUG("Advertising type: TX_POWER_LEVEL\n\r");     
-                int8_t dbm = *loadPtr.getUnitAtIndex(index).getDataPtr();
                 int8_t enHighPower = 0;
                 int8_t paLevel = 0;
+#if NEED_CONSOLE_OUTPUT
+                int8_t dbm = *loadPtr.getUnitAtIndex(index).getDataPtr();
                 int8_t dbmActuallySet = getHighPowerAndPALevelValue(dbm, enHighPower, paLevel);
+#endif
                 DEBUG("dbm=%d, dbmActuallySet=%d\n\r", dbm, dbmActuallySet);
                 DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
                 aci_hal_set_tx_power_level(enHighPower, paLevel);
@@ -243,9 +245,11 @@ ble_error_t BlueNRGGap::setAdvertisingData(const GapAdvertisingData &advData, co
                 const char *deviceAppearance = NULL;                    
                 deviceAppearance = (const char*)loadPtr.getUnitAtIndex(index).getDataPtr();  // to be set later when startAdvertising() is called
                 
+#if NEED_CONSOLE_OUTPUT
                 uint8_t Appearance[2] = {0, 0};
                 uint16_t devP = (uint16_t)*deviceAppearance;
                 STORE_LE_16(Appearance, (uint16_t)devP);
+#endif
                 
                 DEBUG("input: deviceAppearance= 0x%x 0x%x..., strlen(deviceAppearance)=%d\n\r", Appearance[1], Appearance[0], (uint8_t)*loadPtr.getUnitAtIndex(index).getLenPtr()-1);         /**< \ref Appearance */
                 
@@ -963,7 +967,9 @@ ble_error_t BlueNRGGap::setTxPower(int8_t txPower)
     
     int8_t enHighPower = 0;
     int8_t paLevel = 0;    
+#if NEED_CONSOLE_OUTPUT
     int8_t dbmActuallySet = getHighPowerAndPALevelValue(txPower, enHighPower, paLevel);
+#endif
     
     DEBUG("txPower=%d, dbmActuallySet=%d\n\r", txPower, dbmActuallySet);
     DEBUG("enHighPower=%d, paLevel=%d\n\r", enHighPower, paLevel);                    
