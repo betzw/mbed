@@ -315,7 +315,7 @@ class LPC810(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC81X']
-        self.supported_toolchains = ["uARM", "IAR"]
+        self.supported_toolchains = ["uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.is_disk_virtual = True
 
@@ -324,7 +324,7 @@ class LPC812(LPCTarget):
         LPCTarget.__init__(self)
         self.core = "Cortex-M0+"
         self.extra_labels = ['NXP', 'LPC81X']
-        self.supported_toolchains = ["uARM", "IAR"]
+        self.supported_toolchains = ["uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO"]
         self.is_disk_virtual = True
@@ -657,9 +657,10 @@ class NUCLEO_F446RE(Target):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F446RE']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        self.detect_code = ["0777"]
 
 class NUCLEO_L053R8(Target):
     def __init__(self):
@@ -1162,6 +1163,27 @@ class ARCH_BLE_OTA(MCU_NRF51_16K_OTA):
         self.macros += ['TARGET_ARCH_BLE']
         self.supported_form_factors = ["ARDUINO"]
 
+class ARCH_LINK(MCU_NRF51_16K):
+    def __init__(self):
+        MCU_NRF51_16K.__init__(self)
+        self.extra_labels += ['ARCH_BLE']
+        self.macros += ['TARGET_ARCH_BLE']
+        self.supported_form_factors = ["ARDUINO"]
+
+class ARCH_LINK_BOOT(MCU_NRF51_16K_BOOT):
+    def __init__(self):
+        MCU_NRF51_16K_BOOT.__init__(self)
+        self.extra_labels += ['ARCH_BLE', 'ARCH_LINK']
+        self.macros += ['TARGET_ARCH_BLE', 'TARGET_ARCH_LINK']
+        self.supported_form_factors = ["ARDUINO"]
+
+class ARCH_LINK_OTA(MCU_NRF51_16K_OTA):
+    def __init__(self):
+        MCU_NRF51_16K_OTA.__init__(self)
+        self.extra_labels += ['ARCH_BLE', 'ARCH_LINK']
+        self.macros += ['TARGET_ARCH_BLE', 'TARGET_ARCH_LINK']
+        self.supported_form_factors = ["ARDUINO"]
+
 class SEEED_TINY_BLE(MCU_NRF51_16K):
     def __init__(self):
         MCU_NRF51_16K.__init__(self)
@@ -1539,8 +1561,17 @@ class SAMR21G18A(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M0+"
-        self.extra_labels = ['Atmel', 'SAM21']
-        self.macros = ['__SAMR21G18A__']
+        self.extra_labels = ['Atmel', 'SAM_CortexM0+', 'SAMR21']
+        self.macros = ['__SAMR21G18A__', 'I2C_MASTER_CALLBACK_MODE=true', 'EXTINT_CALLBACK_MODE=true', 'USART_CALLBACK_MODE=true', 'TC_ASYNC=true']
+        self.supported_toolchains = ["GCC_ARM"]
+        self.default_toolchain = "GCC_ARM"
+
+class SAMD21J18A(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['Atmel', 'SAM_CortexM0+', 'SAMD21']
+        self.macros = ['__SAMD21J18A__', 'I2C_MASTER_CALLBACK_MODE=true', 'EXTINT_CALLBACK_MODE=true', 'USART_CALLBACK_MODE=true', 'TC_ASYNC=true']
         self.supported_toolchains = ["GCC_ARM"]
         self.default_toolchain = "GCC_ARM"
 
@@ -1637,6 +1668,9 @@ TARGETS = [
     ARCH_BLE(),             # nRF51_16K
     ARCH_BLE_BOOT(),        # nRF51_16K
     ARCH_BLE_OTA(),         # nRF51_16K
+    ARCH_LINK(),            # nRF51_16K
+    ARCH_LINK_BOOT(),       # nRF51_16K
+    ARCH_LINK_OTA(),        # nRF51_16K
     SEEED_TINY_BLE(),       # nRF51_16K
     SEEED_TINY_BLE_BOOT(),  # nRF51_16K
     SEEED_TINY_BLE_OTA(),   # nRF51_16K
@@ -1692,7 +1726,9 @@ TARGETS = [
     ### WIZnet ###
     WIZWIKI_W7500(),
 
+    ### Atmel ###
     SAMR21G18A(),
+    SAMD21J18A(),
 ]
 
 # Map each target name to its unique instance
