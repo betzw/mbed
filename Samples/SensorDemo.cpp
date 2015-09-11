@@ -103,5 +103,5 @@ void sensorDemo(void)
         }
     }
 }
- 
+
 #endif /* SENSOR_DEMO_ENABLED */
