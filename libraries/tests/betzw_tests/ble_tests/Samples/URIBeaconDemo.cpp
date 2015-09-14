@@ -28,7 +28,6 @@ BLE ble;
 URIBeaconConfigService *uriBeaconConfig;
 
 /**
-
  * Callback triggered upon a disconnection event. Needs to re-enable advertisements.
  */
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
