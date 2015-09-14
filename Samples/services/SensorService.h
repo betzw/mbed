@@ -153,7 +153,7 @@ private:
 
         AccValueBytes(void) : valueBytes() {
             
-            for(int i=0; i<ACC_BUFF_BYTES; i++) {
+            for(unsigned int i=0; i<ACC_BUFF_BYTES; i++) {
                 valueBytes[i]=0;
             }
         }
