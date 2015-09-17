@@ -41,7 +41,7 @@ DigitalOut led1(LED1);
 InterruptIn mybutton(USER_BUTTON);
  
 const static char     DEVICE_NAME[]        = "BlueNRG_Chat";
-const Gap::Address_t  BLE_address_BE       = {0xAA, 0x00, 0x00, 0xE1, 0x80, 0x02};
+const Gap::Address_t  BLE_address_BE       = {0xDD, 0x00, 0x00, 0xE1, 0x80, 0x02};
 static const uint16_t uuid16_list[]        = {SampleServiceShortUUID,
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
 static volatile bool  triggerSensorPolling = false;
