@@ -302,7 +302,7 @@ ble_error_t BlueNRGGattServer::write(GattAttribute::Handle_t charHandle, const u
 
     DEBUG("updating bleCharacteristic charHandle =%u, corresponding serviceHanle= %u len=%d\n\r", charHandle, bleCharHanldeMap.find(charHandle)->second, len);  
     /*
-    for(int i=0; i<6; i++) {
+    for(int i=0; i<len; i++) {
         DEBUG("buffer[%d]=%d\n\r", i, buffer[i]);
     }
     */
