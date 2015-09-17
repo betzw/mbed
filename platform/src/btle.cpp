@@ -375,8 +375,8 @@ extern "C" {
                                 //Write the actual Data to the Attr Handle? (uint8_1[])evt->att_data contains the data
                                 if ((p_char->getValueAttribute().getValuePtr() != NULL) && (p_char->getValueAttribute().getInitialLength() > 0)) {
                                     BlueNRGGattServer::getInstance().write(p_char->getValueAttribute().getHandle(),
-                                                                            p_char->getValueAttribute().getValuePtr(),
-                                                                            p_char->getValueAttribute().getInitialLength(),
+                                                                            (uint8_t*)evt->att_data,
+                                                                            evt->data_length,
                                                                             false /* localOnly */);
                                 }
                             } 
