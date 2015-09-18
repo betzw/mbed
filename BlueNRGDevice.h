@@ -62,7 +62,7 @@ public:
     virtual GattServer& getGattServer();
     virtual const GattServer& getGattServer() const;
     virtual void        waitForEvent(void);
-    
+
     virtual GattClient& getGattClient() {
         return *gattClient;
     }
@@ -90,7 +90,7 @@ private:
     DigitalOut  nCS_;
     DigitalOut  rst_;
     InterruptIn irq_;
-
+    
     //FIXME: TBI (by now just placeholders to let build
     /*** betzw: placeholders ***/
     GattClient *gattClient;
