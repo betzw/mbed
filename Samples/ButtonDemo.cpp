@@ -33,16 +33,23 @@ DigitalOut  led1(LED1);
 const static char     DEVICE_NAME[] = "Button";
 static const uint16_t uuid16_list[] = {ButtonService::BUTTON_SERVICE_UUID};
 
+enum {
+    RELEASED = 0,
+    PRESSED,
+    IDLE
+    };
+static volatile unsigned int buttonState = IDLE;
+
 ButtonService *buttonServicePtr;
 
 void buttonPressedCallback(void)
 {
-    buttonServicePtr->updateButtonState(true);
+    buttonState = PRESSED;
 }
 
 void buttonReleasedCallback(void)
 {
-    buttonServicePtr->updateButtonState(false);
+    buttonState = RELEASED;
 }
 
 void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
@@ -83,6 +90,10 @@ void buttonDemo(void)
     ble.gap().startAdvertising();
 
     while (true) {
+        if(buttonState!=IDLE) {
+            buttonServicePtr->updateButtonState(buttonState);
+            buttonState = IDLE;
+        }
         ble.waitForEvent();
     }
 }
