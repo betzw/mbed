@@ -36,10 +36,15 @@ Libraries:
 ~~~~~~~~~~
 IDB0XA1:
 --------
-git remote add idb0xa1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IDB0XA1"
+{only oneshot: 
+ git remote add idb0xa1-lib "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X_NUCLEO_IDB0XA1"
+}
+
+[git stash]
 
 git subtree split -P libraries/tests/peripherals/X_NUCLEO_IDB0XA1 -b idb0xa1-split
 git checkout idb0xa1-split
+
 git pull idb0xa1-lib master
 
 git push idb0xa1-lib idb0xa1-split:master
@@ -49,14 +54,22 @@ git subtree merge -P libraries/tests/peripherals/X_NUCLEO_IDB0XA1 idb0xa1-split
 
 git branch -d idb0xa1-split
 
+[git stash pop]
+
+
 Applications:
 ~~~~~~~~~~~~~
 BLE-TESTS:
 ----------
-git remote add ble-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X-MBED-BLE1"
+{only oneshot: 
+ git remote add ble-app "hg::http://wobetz:<pwd>@developer.mbed.org/teams/ST-Expansion-SW-Team/code/X-MBED-BLE1"
+}
+
+[git stash]
 
 git subtree split -P libraries/tests/betzw_tests/ble_tests -b ble-split
 git checkout ble-split
+
 git pull ble-app master
 
 git push ble-app ble-split:master
@@ -66,13 +79,19 @@ git subtree merge -P libraries/tests/betzw_tests/ble_tests ble-split
 
 git branch -d ble-split
 
+[git stash pop]
 
 BLE_URIBeacon2:
 ---------------
-git remote add beacon2-app "hg::http://wobetz:<pwd>@developer.mbed.org/users/jslater8/code/BLE_URIBeacon2/"
+{only oneshot: 
+ git remote add beacon2-app "hg::http://wobetz:<pwd>@developer.mbed.org/users/jslater8/code/BLE_URIBeacon2/"
+}
+
+[git stash]
 
 git subtree split -P libraries/tests/betzw_tests/beacon2_test -b beacon2-split
 git checkout beacon2-split
+
 git pull beacon2-app master
 
 git push beacon2-app beacon2-split:master
@@ -82,3 +101,4 @@ git subtree merge -P libraries/tests/betzw_tests/beacon2_test beacon2-split
 
 git branch -d beacon2-split
 
+[git stash pop]

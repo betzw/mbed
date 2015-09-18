@@ -24,7 +24,7 @@
 #include "ble/BLE.h"
 #include "Utils.h"
 
-extern DigitalOut led1;
+//extern DigitalOut led1;
 
 extern const uint8_t  SampleServiceUUID[UUID::LENGTH_OF_LONG_UUID];
 extern const uint16_t SampleServiceShortUUID;
