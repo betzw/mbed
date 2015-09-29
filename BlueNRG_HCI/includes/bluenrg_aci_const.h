@@ -115,14 +115,18 @@ typedef __packed struct _updater_hw_version_rp{
 #define OCF_GAP_SET_DISCOVERABLE	        0x0083
 
 #define OCF_GAP_SET_DIRECT_CONNECTABLE      0x0084
-typedef __packed struct _gap_set_direct_conectable_cp{
+typedef __packed struct _gap_set_direct_conectable_cp_IDB05A1{
     uint8_t		own_bdaddr_type;
-#if BLUENRG_MS
     uint8_t		directed_adv_type;
-#endif
 	uint8_t		direct_bdaddr_type;
     tBDAddr		direct_bdaddr;
-} PACKED gap_set_direct_conectable_cp;
+} PACKED gap_set_direct_conectable_cp_IDB05A1;
+
+typedef __packed struct _gap_set_direct_conectable_cp_IDB04A1{
+    uint8_t		own_bdaddr_type;
+    uint8_t		direct_bdaddr_type;
+    tBDAddr		direct_bdaddr;
+} PACKED gap_set_direct_conectable_cp_IDB04A1;
 #define GAP_SET_DIRECT_CONNECTABLE_CP_SIZE 8
 
 #define OCF_GAP_SET_IO_CAPABILITY      0x0085
@@ -166,23 +170,17 @@ typedef __packed struct _gap_authorization_response_cp{
 #define GAP_AUTHORIZATION_RESPONSE_CP_SIZE 3
 
 #define OCF_GAP_INIT		        0x008A
-#ifdef BLUENRG_MS
-///@cond BLUENRG_MS
-typedef __packed struct _gap_init_cp{
+typedef __packed struct _gap_init_cp_IDB05A1{
     uint8_t	role;
     uint8_t	privacy_enabled;
     uint8_t device_name_char_len; 
-} PACKED gap_init_cp;
-#define GAP_INIT_CP_SIZE 3
-///@endcond
-#else
-///@cond BLUENRG
-typedef __packed struct _gap_init_cp{
+} PACKED gap_init_cp_IDB05A1;
+#define GAP_INIT_CP_SIZE_IDB05A1 3
+
+typedef __packed struct _gap_init_cp_IDB04A1{
 	uint8_t	role;
-} PACKED gap_init_cp;
-#define GAP_INIT_CP_SIZE 1
-///@endcond
-#endif
+} PACKED gap_init_cp_IDB04A1;
+#define GAP_INIT_CP_SIZE_IDB04A1 1
 typedef __packed struct _gap_init_rp{
     uint8_t		    status;
 	uint16_t		service_handle;
@@ -192,14 +190,15 @@ typedef __packed struct _gap_init_rp{
 #define GAP_INIT_RP_SIZE 7
 
 #define OCF_GAP_SET_NON_CONNECTABLE      0x008B
-typedef __packed struct _gap_set_non_connectable_cp{
+typedef __packed struct _gap_set_non_connectable_cp_IDB05A1{
     uint8_t	advertising_event_type;
-#if BLUENRG_MS
-///@cond BLUENRG_MS
     uint8_t	own_address_type;
-///@endcond
 #endif
-} PACKED gap_set_non_connectable_cp;
+} PACKED gap_set_non_connectable_cp_IDB05A1;
+
+typedef __packed struct _gap_set_non_connectable_cp_IDB04A1{
+    uint8_t	advertising_event_type;
+} PACKED gap_set_non_connectable_cp_IDB04A1;
 
 #define OCF_GAP_SET_UNDIRECTED_CONNECTABLE      0x008C
 typedef __packed struct _gap_set_undirected_connectable_cp{
@@ -252,14 +251,10 @@ typedef __packed struct _gap_terminate_cp{
 #define OCF_GAP_CLEAR_SECURITY_DB   0x0094
 
 #define OCF_GAP_ALLOW_REBOND_DB     0x0095
-#if BLUENRG_MS
-///@cond BLUENRG_MS
-  typedef __packed struct _gap_allow_rebond_cp{
-  uint16_t conn_handle;
-} PACKED gap_allow_rebond_cp;
-///@endcond
-#endif
 
+typedef __packed struct _gap_allow_rebond_cp_IDB05A1{
+  uint16_t conn_handle;
+} PACKED gap_allow_rebond_cp_IDB05A1;
 
 #define OCF_GAP_START_LIMITED_DISCOVERY_PROC   0x0096
 typedef __packed struct _gap_start_limited_discovery_proc_cp{
@@ -298,19 +293,15 @@ typedef __packed struct _gap_start_name_discovery_proc_cp{
 #define OCF_GAP_START_AUTO_CONN_ESTABLISH_PROC  0x0099
 
 #define OCF_GAP_START_GENERAL_CONN_ESTABLISH_PROC  0x009A
-#if BLUENRG_MS
-///@cond BLUENRG_MS
-typedef __packed struct _gap_start_general_conn_establish_proc_cp{
+typedef __packed struct _gap_start_general_conn_establish_proc_cp_IDB05A1{
   uint8_t  scan_type;
   uint16_t scan_interval;
   uint16_t scan_window;
   uint8_t  own_address_type;
   uint8_t  filter_duplicates;
-} PACKED gap_start_general_conn_establish_proc_cp;
-///@endcond
-#else
-///@cond BLUENRG
-typedef __packed struct _gap_start_general_conn_establish_proc_cp{
+} PACKED gap_start_general_conn_establish_proc_cp_IDB05A1;
+
+typedef __packed struct _gap_start_general_conn_establish_proc_cp_IDB04A1{
   uint8_t  scan_type;
   uint16_t scan_interval;
   uint16_t scan_window;
@@ -318,9 +309,7 @@ typedef __packed struct _gap_start_general_conn_establish_proc_cp{
   uint8_t  filter_duplicates;
   uint8_t  use_reconn_addr;
   tBDAddr  reconn_addr;
-} PACKED gap_start_general_conn_establish_proc_cp;
-///@endcond
-#endif
+} PACKED gap_start_general_conn_establish_proc_cp_IDB04A1;
 
 #define OCF_GAP_START_SELECTIVE_CONN_ESTABLISH_PROC  0x009B
 #define GAP_START_SELECTIVE_CONN_ESTABLISH_PROC_CP_SIZE 8
@@ -376,14 +365,10 @@ typedef __packed struct _gap_resolve_private_address_cp{
   tBDAddr address;
 } PACKED gap_resolve_private_address_cp;
 #define GAP_RESOLVE_PRIVATE_ADDRESS_CP_SIZE 6
-#if BLUENRG_MS
-///@cond BLUENRG_MS
 typedef __packed struct _gap_resolve_private_address_rp{
   uint8_t status;
   tBDAddr address;
 } PACKED gap_resolve_private_address_rp;
-///@endcond
-#endif
   
 #define OCF_GAP_SET_BROADCAST_MODE   0x00A1
 #define GAP_SET_BROADCAST_MODE_CP_SIZE 6
@@ -736,9 +721,7 @@ typedef __packed struct _l2cap_conn_param_update_req_cp{
 #define L2CAP_CONN_PARAM_UPDATE_REQ_CP_SIZE 10
 
 #define OCF_L2CAP_CONN_PARAM_UPDATE_RESP  0x0182
-#if BLUENRG_MS
-///@cond BLUENRG_MS
-typedef __packed struct _l2cap_conn_param_update_resp_cp{
+typedef __packed struct _l2cap_conn_param_update_resp_cp_IDB05A1{
   uint16_t conn_handle;
   uint16_t interval_min;
   uint16_t interval_max;
@@ -748,11 +731,9 @@ typedef __packed struct _l2cap_conn_param_update_resp_cp{
   uint16_t max_ce_length;
   uint8_t id;
   uint8_t accept;
-} PACKED l2cap_conn_param_update_resp_cp;
-///@endcond
-#else
-///@cond BLUENRG
-typedef __packed struct _l2cap_conn_param_update_resp_cp{
+} PACKED l2cap_conn_param_update_resp_cp_IDB05A1;
+
+typedef __packed struct _l2cap_conn_param_update_resp_cp_IDB04A1{
   uint16_t conn_handle;
   uint16_t interval_min;
   uint16_t interval_max;
@@ -760,11 +741,7 @@ typedef __packed struct _l2cap_conn_param_update_resp_cp{
   uint16_t timeout_multiplier;
   uint8_t id;
   uint8_t accept;
-} PACKED l2cap_conn_param_update_resp_cp;
-///@endcond
-#endif
-
-#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+} PACKED l2cap_conn_param_update_resp_cp_IDB04A1;
 
 /**
  * @defgroup BlueNRG_Events BlueNRG events (vendor specific)
