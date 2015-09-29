@@ -22,6 +22,10 @@ int main(void)
     hrmDemo();
 #endif /* HRM_DEMO_ENABLED */
 
+#ifdef HT_DEMO_ENABLED
+    htDemo();
+#endif /* HT_DEMO_ENABLED */
+
 #ifdef SENSOR_DEMO_ENABLED
     sensorDemo();
 #endif /* SENSOR_DEMO_ENABLED */

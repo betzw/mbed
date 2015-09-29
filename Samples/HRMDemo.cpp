@@ -41,7 +41,7 @@ static const uint16_t uuid16_list[]        = {GattService::UUID_HEART_RATE_SERVI
                                               GattService::UUID_DEVICE_INFORMATION_SERVICE};
 static volatile bool  triggerSensorPolling = false;
  
-void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
+void disconnectionCallback(const Gap::DisconnectionCallbackParams_t *params)
 {
     ble.startAdvertising(); // restart advertising
 }

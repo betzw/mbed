@@ -18,6 +18,7 @@
 #define __SAMPLES_H__
 
 #define HRM_DEMO_ENABLED
+//#define HT_DEMO_ENABLED
 //#define SENSOR_DEMO_ENABLED
 //#define URI_BEACON_DEMO_ENABLED
 //#define SAMPLE_DEMO_ENABLED
@@ -25,6 +26,7 @@
 //#define LED_DEMO_ENABLED
 
 void hrmDemo(void);
+void htDemo(void);
 void sensorDemo(void);
 void uriBeaconDemo(void);
 void sampleDemo(void);
