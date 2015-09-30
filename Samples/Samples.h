@@ -24,6 +24,7 @@
 //#define SAMPLE_DEMO_ENABLED
 //#define BUTTON_DEMO_ENABLED
 //#define LED_DEMO_ENABLED
+//#define LED_DEMO_CENTRAL_ENABLED
 
 void hrmDemo(void);
 void htDemo(void);
@@ -32,5 +33,6 @@ void uriBeaconDemo(void);
 void sampleDemo(void);
 void buttonDemo(void);
 void ledDemo(void);
+void ledDemoCentral(void);
 
 #endif /* __SAMPLES_H__ */

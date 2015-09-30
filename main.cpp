@@ -46,4 +46,8 @@ int main(void)
     ledDemo();
 #endif /* LED_DEMO_ENABLED */
 
+#ifdef LED_DEMO_CENTRAL_ENABLED
+    ledDemoCentral();
+#endif /* LED_DEMO_CENTRAL_ENABLED */
+
 }
