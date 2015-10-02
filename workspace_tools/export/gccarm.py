@@ -68,6 +68,7 @@ class GccArm(Exporter):
         'ARCH_MAX',
         'DISCO_F429ZI',
         'NUCLEO_F030R8',
+        'NUCLEO_F031K6',
         'NUCLEO_F070RB',
         'NUCLEO_F072RB',
         'NUCLEO_F091RC',
@@ -78,6 +79,7 @@ class GccArm(Exporter):
         'DISCO_L053C8',
         'NUCLEO_L053R8',
         'NUCLEO_L073RZ',
+        'NUCLEO_L476RG',
         'DISCO_F334C8',
         'MAX32600MBED',
         'MAXWSNENV',
@@ -100,6 +102,7 @@ class GccArm(Exporter):
         'SAMR21G18A',
         'TEENSY3_1',
         'SAMD21J18A',
+        'SAMD21G18A',
     ]
 
     DOT_IN_RELATIVE_PATH = True
