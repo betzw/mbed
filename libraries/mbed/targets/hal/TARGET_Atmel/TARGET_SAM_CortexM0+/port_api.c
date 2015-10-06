@@ -1,5 +1,5 @@
 /* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
+ * Copyright (c) 2006-2015 ARM Limited
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,6 +25,10 @@
 #elif defined(TARGET_SAMD21J18A)
 #define PORTA_MASK  0xDBFFFFFF  // mask for available pins in Port A
 #define PORTB_MASK  0xC0C3FFFF  // mask for available pins in Port B
+#elif defined(TARGET_SAMD21G18A)
+#define PORTA_MASK  0xDBFFFFFF  // mask for available pins in Port A
+#define PORTB_MASK  0x00C00F0C  // mask for available pins in Port B
+#else
 #endif
 
 uint32_t start_pin(PortName port)
