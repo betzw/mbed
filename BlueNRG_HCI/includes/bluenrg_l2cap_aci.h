@@ -54,33 +54,38 @@ tBleStatus aci_l2cap_connection_parameter_update_request(uint16_t conn_handle, u
  * @param interval_max The maximum connection interval parameter as received in the l2cap connection update request event.
  * @param slave_latency The slave latency parameter as received in the l2cap connection update request event.
  * @param timeout_multiplier The supervision connection timeout parameter as received in the l2cap connection update request event.
- * @cond BLUENRG_MS
  * @param min_ce_length Minimum length of connection event needed for the LE connection.\n
  * 						Range: 0x0000 - 0xFFFF\n
  * 						Time = N x 0.625 msec.
  * @param max_ce_length Maximum length of connection event needed for the LE connection.\n
  * 						Range: 0x0000 - 0xFFFF\n
  * 						Time = N x 0.625 msec.
- * @endcond
  * @param id Identifier received in @ref EVT_BLUE_L2CAP_CONN_UPD_REQ event.
  * @param accept @arg 0x00: The connection update parameters are not acceptable.
  *               @arg 0x01: The connection update parameters are acceptable.
  * @return Value indicating success or error code.
  */
-#if BLUENRG_MS
-///@cond BLUENRG_MS
-tBleStatus aci_l2cap_connection_parameter_update_response(uint16_t conn_handle, uint16_t interval_min,
+tBleStatus aci_l2cap_connection_parameter_update_response_IDB05A1(uint16_t conn_handle, uint16_t interval_min,
 							 uint16_t interval_max, uint16_t slave_latency,
 							 uint16_t timeout_multiplier, uint16_t min_ce_length, uint16_t max_ce_length,
                                                          uint8_t id, uint8_t accept);
-///@endcond
-#else
-///@cond BLUENRG
-tBleStatus aci_l2cap_connection_parameter_update_response(uint16_t conn_handle, uint16_t interval_min,
+ /**
+ * @brief Accept or reject a connection update.
+ * @note  This command should be sent in response to a @ref EVT_BLUE_L2CAP_CONN_UPD_REQ event from the controller.
+ * 		  The accept parameter has to be set if the connection parameters given in the event are acceptable.
+ * @param conn_handle Handle received in @ref EVT_BLUE_L2CAP_CONN_UPD_REQ event.
+ * @param interval_min The connection interval parameter as received in the l2cap connection update request event
+ * @param interval_max The maximum connection interval parameter as received in the l2cap connection update request event.
+ * @param slave_latency The slave latency parameter as received in the l2cap connection update request event.
+ * @param timeout_multiplier The supervision connection timeout parameter as received in the l2cap connection update request event.
+ * @param id Identifier received in @ref EVT_BLUE_L2CAP_CONN_UPD_REQ event.
+ * @param accept @arg 0x00: The connection update parameters are not acceptable.
+ *               @arg 0x01: The connection update parameters are acceptable.
+ * @return Value indicating success or error code.
+ */
+tBleStatus aci_l2cap_connection_parameter_update_response_IDB04A1(uint16_t conn_handle, uint16_t interval_min,
 							 uint16_t interval_max, uint16_t slave_latency,
 							 uint16_t timeout_multiplier, uint8_t id, uint8_t accept);
-///@endcond
-#endif
 
 /**
  * @}

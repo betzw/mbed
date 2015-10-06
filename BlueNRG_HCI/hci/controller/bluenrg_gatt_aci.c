@@ -1438,8 +1438,7 @@ tBleStatus aci_gatt_read_handle_value(uint16_t attr_handle, uint16_t data_len, u
   return 0;
 }
 
-#if BLUENRG_MS
-tBleStatus aci_gatt_read_handle_value_offset(uint16_t attr_handle, uint8_t offset, uint16_t data_len, uint16_t *data_len_out_p, uint8_t *data)
+tBleStatus aci_gatt_read_handle_value_offset_IDB05A1(uint16_t attr_handle, uint8_t offset, uint16_t data_len, uint16_t *data_len_out_p, uint8_t *data)
 {
   struct hci_request rq;
   gatt_read_handle_val_offset_cp cp;
@@ -1471,5 +1470,3 @@ tBleStatus aci_gatt_read_handle_value_offset(uint16_t attr_handle, uint8_t offse
 
   return 0; 
 }
-#endif
-

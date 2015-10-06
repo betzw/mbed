@@ -27,11 +27,10 @@
 #define MIN(a,b)            ((a) < (b) )? (a) : (b)
 #define MAX(a,b)            ((a) > (b) )? (a) : (b)
 
-#ifdef BLUENRG_MS
-tBleStatus aci_gap_init(uint8_t role, uint8_t privacy_enabled, uint8_t device_name_char_len, uint16_t* service_handle, uint16_t* dev_name_char_handle, uint16_t* appearance_char_handle)
+tBleStatus aci_gap_init_IDB05A1(uint8_t role, uint8_t privacy_enabled, uint8_t device_name_char_len, uint16_t* service_handle, uint16_t* dev_name_char_handle, uint16_t* appearance_char_handle)
 {
   struct hci_request rq;
-  gap_init_cp cp;
+  gap_init_cp_IDB05A1 cp;
   gap_init_rp resp;
  
   cp.role = role;
@@ -61,11 +60,10 @@ tBleStatus aci_gap_init(uint8_t role, uint8_t privacy_enabled, uint8_t device_na
   
   return 0;
 }
-#else
-tBleStatus aci_gap_init(uint8_t role, uint16_t* service_handle, uint16_t* dev_name_char_handle, uint16_t* appearance_char_handle)
+tBleStatus aci_gap_init_IDB04A1(uint8_t role, uint16_t* service_handle, uint16_t* dev_name_char_handle, uint16_t* appearance_char_handle)
 {
   struct hci_request rq;
-  gap_init_cp cp;
+  gap_init_cp_IDB04A1 cp;
   gap_init_rp resp;
 
   cp.role = role;
@@ -93,7 +91,6 @@ tBleStatus aci_gap_init(uint8_t role, uint16_t* service_handle, uint16_t* dev_na
   
   return 0;
 }
-#endif
 
 tBleStatus aci_gap_set_non_discoverable(void)
 {
@@ -121,7 +118,7 @@ tBleStatus aci_gap_set_limited_discoverable(uint8_t AdvType, uint16_t AdvIntervM
   uint8_t status;    
   uint8_t buffer[40];
   uint8_t indx = 0;
-
+    
   if((unsigned int)(LocalNameLen + ServiceUUIDLen + 14) > sizeof(buffer))
     return BLE_STATUS_INVALID_PARAMS;
 
@@ -243,20 +240,38 @@ tBleStatus aci_gap_set_discoverable(uint8_t AdvType, uint16_t AdvIntervMin, uint
   return 0;
 }
 
-#if BLUENRG_MS
-tBleStatus aci_gap_set_direct_connectable(uint8_t own_addr_type, uint8_t directed_adv_type, uint8_t initiator_addr_type, const uint8_t *initiator_addr)
-#else
-tBleStatus aci_gap_set_direct_connectable(uint8_t own_addr_type, uint8_t initiator_addr_type, const uint8_t *initiator_addr)
-#endif
+tBleStatus aci_gap_set_direct_connectable_IDB05A1(uint8_t own_addr_type, uint8_t directed_adv_type, uint8_t initiator_addr_type, const uint8_t *initiator_addr)
 {
   struct hci_request rq;
-  gap_set_direct_conectable_cp cp;
+  gap_set_direct_conectable_cp_IDB05A1 cp;
   uint8_t status;    
 
   cp.own_bdaddr_type = own_addr_type;
-#if BLUENRG_MS
   cp.directed_adv_type = directed_adv_type;
-#endif  
+  cp.direct_bdaddr_type = initiator_addr_type;
+  Osal_MemCpy(cp.direct_bdaddr, initiator_addr, 6);
+
+  Osal_MemSet(&rq, 0, sizeof(rq));
+  rq.ogf = OGF_VENDOR_CMD;
+  rq.ocf = OCF_GAP_SET_DIRECT_CONNECTABLE;
+  rq.cparam = &cp;
+  rq.clen = sizeof(cp);
+  rq.rparam = &status;
+  rq.rlen = 1;
+    
+  if (hci_send_req(&rq, FALSE) < 0)
+    return BLE_STATUS_TIMEOUT;
+    
+  return status;
+}
+
+tBleStatus aci_gap_set_direct_connectable_IDB04A1(uint8_t own_addr_type, uint8_t initiator_addr_type, const uint8_t *initiator_addr)
+{
+  struct hci_request rq;
+  gap_set_direct_conectable_cp_IDB04A1 cp;
+  uint8_t status;    
+
+  cp.own_bdaddr_type = own_addr_type; 
   cp.direct_bdaddr_type = initiator_addr_type;
   Osal_MemCpy(cp.direct_bdaddr, initiator_addr, 6);
 
@@ -406,20 +421,35 @@ tBleStatus aci_gap_authorization_response(uint16_t conn_handle, uint8_t authoriz
   return status;
 }
 
-#if BLUENRG_MS
-tBleStatus aci_gap_set_non_connectable(uint8_t adv_type, uint8_t own_address_type)
-#else
-tBleStatus aci_gap_set_non_connectable(uint8_t adv_type)
-#endif
+tBleStatus aci_gap_set_non_connectable_IDB05A1(uint8_t adv_type, uint8_t own_address_type)
 {
   struct hci_request rq;
-  gap_set_non_connectable_cp cp;    
+  gap_set_non_connectable_cp_IDB05A1 cp;    
   uint8_t status;
     
   cp.advertising_event_type = adv_type;  
-#if BLUENRG_MS
   cp.own_address_type = own_address_type;
-#endif
+  Osal_MemSet(&rq, 0, sizeof(rq));
+  rq.ogf = OGF_VENDOR_CMD;
+  rq.ocf = OCF_GAP_SET_NON_CONNECTABLE;
+  rq.cparam = &cp;
+  rq.clen = sizeof(cp);
+  rq.rparam = &status;
+  rq.rlen = 1;
+  
+  if (hci_send_req(&rq, FALSE) < 0)
+    return BLE_STATUS_TIMEOUT;
+  
+  return status;
+}
+
+tBleStatus aci_gap_set_non_connectable_IDB04A1(uint8_t adv_type)
+{
+  struct hci_request rq;
+  gap_set_non_connectable_cp_IDB04A1 cp;    
+  uint8_t status;
+    
+  cp.advertising_event_type = adv_type;  
 
   Osal_MemSet(&rq, 0, sizeof(rq));
   rq.ogf = OGF_VENDOR_CMD;
@@ -623,11 +653,10 @@ tBleStatus aci_gap_clear_security_database(void)
   return status;
 }
 
-#if BLUENRG_MS
-tBleStatus aci_gap_allow_rebond(uint16_t conn_handle)
+tBleStatus aci_gap_allow_rebond_IDB05A1(uint16_t conn_handle)
 {
   struct hci_request rq;
-  gap_allow_rebond_cp cp;
+  gap_allow_rebond_cp_IDB05A1 cp;
   uint8_t status;
   
   cp.conn_handle = conn_handle;
@@ -645,8 +674,7 @@ tBleStatus aci_gap_allow_rebond(uint16_t conn_handle)
 
   return status;
 }
-#else  
-tBleStatus aci_gap_allow_rebond(void)
+tBleStatus aci_gap_allow_rebond_IDB04A1(void)
 {
   struct hci_request rq;
   uint8_t status;
@@ -662,7 +690,6 @@ tBleStatus aci_gap_allow_rebond(void)
 
   return status;
 }
-#endif
 
 tBleStatus aci_gap_start_limited_discovery_proc(uint16_t scanInterval, uint16_t scanWindow,
 						uint8_t own_address_type, uint8_t filterDuplicates)
@@ -757,9 +784,7 @@ tBleStatus aci_gap_start_name_discovery_proc(uint16_t scanInterval, uint16_t sca
   return status;
 }
 
-#if BLUENRG_MS
-
-tBleStatus aci_gap_start_auto_conn_establish_proc(uint16_t scanInterval, uint16_t scanWindow,
+tBleStatus aci_gap_start_auto_conn_establish_proc_IDB05A1(uint16_t scanInterval, uint16_t scanWindow,
 						 uint8_t own_bdaddr_type, uint16_t conn_min_interval,	
 						 uint16_t conn_max_interval, uint16_t conn_latency,	
 						 uint16_t supervision_timeout, uint16_t min_conn_length, 
@@ -831,9 +856,7 @@ tBleStatus aci_gap_start_auto_conn_establish_proc(uint16_t scanInterval, uint16_
   return status;  
 }
 
-#else
-
-tBleStatus aci_gap_start_auto_conn_establish_proc(uint16_t scanInterval, uint16_t scanWindow,
+tBleStatus aci_gap_start_auto_conn_establish_proc_IDB04A1(uint16_t scanInterval, uint16_t scanWindow,
 						 uint8_t own_bdaddr_type, uint16_t conn_min_interval,	
 						 uint16_t conn_max_interval, uint16_t conn_latency,	
 						 uint16_t supervision_timeout, uint16_t min_conn_length, 
@@ -913,14 +936,11 @@ tBleStatus aci_gap_start_auto_conn_establish_proc(uint16_t scanInterval, uint16_
   return status;  
 }
 
-#endif
-
-#if BLUENRG_MS
-tBleStatus aci_gap_start_general_conn_establish_proc(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window,
+tBleStatus aci_gap_start_general_conn_establish_proc_IDB05A1(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window,
 						 uint8_t own_address_type, uint8_t filter_duplicates)
 {
   struct hci_request rq;
-  gap_start_general_conn_establish_proc_cp cp;
+  gap_start_general_conn_establish_proc_cp_IDB05A1 cp;
   uint8_t status;  
 
   cp.scan_type = scan_type;
@@ -943,12 +963,11 @@ tBleStatus aci_gap_start_general_conn_establish_proc(uint8_t scan_type, uint16_t
 
   return status;
 }
-#else
-tBleStatus aci_gap_start_general_conn_establish_proc(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window,
+tBleStatus aci_gap_start_general_conn_establish_proc_IDB04A1(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window,
 						 uint8_t own_address_type, uint8_t filter_duplicates, uint8_t use_reconn_addr, const tBDAddr reconn_addr)
 {
   struct hci_request rq;
-  gap_start_general_conn_establish_proc_cp cp;
+  gap_start_general_conn_establish_proc_cp_IDB04A1 cp;
   uint8_t status;  
 
   cp.scan_type = scan_type;
@@ -973,7 +992,6 @@ tBleStatus aci_gap_start_general_conn_establish_proc(uint8_t scan_type, uint16_t
 
   return status;
 }
-#endif
 
 tBleStatus aci_gap_start_selective_conn_establish_proc(uint8_t scan_type, uint16_t scan_interval, uint16_t scan_window,
 						 uint8_t own_address_type, uint8_t filter_duplicates, uint8_t num_whitelist_entries,
@@ -1124,8 +1142,7 @@ tBleStatus aci_gap_send_pairing_request(uint16_t conn_handle, uint8_t force_rebo
   return status;
 }
 
-#if BLUENRG_MS
-tBleStatus aci_gap_resolve_private_address(const tBDAddr private_address, tBDAddr actual_address)
+tBleStatus aci_gap_resolve_private_address_IDB05A1(const tBDAddr private_address, tBDAddr actual_address)
 {
   struct hci_request rq;
   gap_resolve_private_address_cp cp;
@@ -1151,8 +1168,7 @@ tBleStatus aci_gap_resolve_private_address(const tBDAddr private_address, tBDAdd
 
   return 0;
 }
-#else
-tBleStatus aci_gap_resolve_private_address(const tBDAddr address)
+tBleStatus aci_gap_resolve_private_address_IDB04A1(const tBDAddr address)
 {
   struct hci_request rq;
   gap_resolve_private_address_cp cp;
@@ -1173,7 +1189,6 @@ tBleStatus aci_gap_resolve_private_address(const tBDAddr address)
 
   return status;
 }
-#endif
   
 tBleStatus aci_gap_set_broadcast_mode(uint16_t adv_interv_min, uint16_t adv_interv_max, uint8_t adv_type,
 				  uint8_t own_addr_type, uint8_t adv_data_length, const uint8_t *adv_data,  uint8_t num_whitelist_entries,
