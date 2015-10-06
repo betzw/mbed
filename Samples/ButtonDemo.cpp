@@ -52,7 +52,7 @@ void buttonReleasedCallback(void)
     buttonState = RELEASED;
 }
 
-void disconnectionCallback(Gap::Handle_t handle, Gap::DisconnectionReason_t reason)
+void disconnectionCallback(const Gap::DisconnectionCallbackParams_t *params)
 {
     ble.gap().startAdvertising();
 }
