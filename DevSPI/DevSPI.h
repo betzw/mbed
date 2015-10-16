@@ -44,8 +44,8 @@
 #include "mbed.h"
 
 /* Classes -------------------------------------------------------------------*/
-/** Helper class DevSPI providing functions for multi-register SPI communication
- *  common for a series of SPI devices.
+/** Helper class DevSPI providing functions for SPI communication common for a
+ *  series of SPI devices.
  */
 class DevSPI : public SPI
 {
