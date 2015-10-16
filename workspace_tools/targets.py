@@ -572,6 +572,16 @@ class NUCLEO_F031K6(Target):
         self.supported_form_factors = ["ARDUINO"]
         self.detect_code = ["0791"]
 
+class NUCLEO_F042K6(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['STM', 'STM32F0', 'STM32F042K6']
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO"]
+        self.detect_code = ["0785"]
+
 class NUCLEO_F070RB(Target):
     def __init__(self):
         Target.__init__(self)
@@ -621,6 +631,17 @@ class NUCLEO_F302R8(Target):
         self.default_toolchain = "uARM"
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0705"]
+
+class NUCLEO_F303K8(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F3', 'STM32F303K8']
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO"]
+        self.detect_code = ["0775"]
+
 
 class NUCLEO_F303RE(Target):
     def __init__(self):
@@ -1594,6 +1615,14 @@ class WIZWIKI_W7500P(Target):
         self.default_toolchain = "ARM"
         self.supported_form_factors = ["ARDUINO"]
 
+class WIZWIKI_W7500ECO(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0"
+        self.extra_labels = ['WIZNET', 'W7500x', 'WIZwiki_W7500ECO']
+        self.supported_toolchains = ["uARM", "ARM"]
+        self.default_toolchain = "ARM"
+		
 class SAMR21G18A(Target):
     def __init__(self):
         Target.__init__(self)
@@ -1676,11 +1705,13 @@ TARGETS = [
     ### STMicro ###
     NUCLEO_F030R8(),
     NUCLEO_F031K6(),
+    NUCLEO_F042K6(),
     NUCLEO_F070RB(),
     NUCLEO_F072RB(),
     NUCLEO_F091RC(),
     NUCLEO_F103RB(),
     NUCLEO_F302R8(),
+    NUCLEO_F303K8(),
     NUCLEO_F303RE(),
     NUCLEO_F334R8(),
     NUCLEO_F401RE(),
@@ -1781,6 +1812,7 @@ TARGETS = [
     ### WIZnet ###
     WIZWIKI_W7500(),
     WIZWIKI_W7500P(),
+    WIZWIKI_W7500ECO(),
 
     ### Atmel ###
     SAMR21G18A(),
