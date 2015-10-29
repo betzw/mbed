@@ -52,7 +52,7 @@
 
 /*** Includes ----------------------------------------------------------------- ***/
 #include "mbed.h"
-#include "assert.h"
+#include "mbed_assert.h"
 #include "x_nucleo_iks01a1.h"
 
 #include <Ticker.h>
@@ -182,11 +182,11 @@ static void init(void) {
 	       ((id1 == I_AM_HTS221) ? "HTS221 " : "UNKNOWN"),
 	       id1, id2
 	       );
-	assert(id1 == id2);
+	MBED_ASSERT(id1 == id2);
 
 	/* Determine ID of Gyro & Motion Sensor */
-	assert((mems_expansion_board->gyro_lsm6ds0 == NULL) ||
-	       (mems_expansion_board->gyro_lsm6ds3 == NULL));
+	MBED_ASSERT((mems_expansion_board->gyro_lsm6ds0 == NULL) ||
+		    (mems_expansion_board->gyro_lsm6ds3 == NULL));
 	CALL_METH(gyroscope, ReadID, &id1, 0x0);
 	CALL_METH(accelerometer, ReadID, &id2, 0x0);
     	printf("Gyroscope | Motion Sensor ID      = %s (0x%x | 0x%x)\n", 
@@ -194,7 +194,7 @@ static void init(void) {
 		((id1 == I_AM_LSM6DS0_XG) ? "LSM6DS0" : "UNKNOWN")),
 	       id1, id2
 	       );
-	assert(id1 == id2);
+	MBED_ASSERT(id1 == id2);
 
 	/* Register Free Fall Detection IRQ Handler & Enable Detection */
 	if(mems_expansion_board->gyro_lsm6ds3 != NULL) {
