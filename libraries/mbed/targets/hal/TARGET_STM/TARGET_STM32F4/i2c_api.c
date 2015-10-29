@@ -135,8 +135,7 @@ inline int i2c_start(i2c_t *obj)
     // Clear Acknowledge failure flag
     __HAL_I2C_CLEAR_FLAG(&I2cHandle, I2C_FLAG_AF);
 
-    // Generate the START condition
-    // Note: we are also removing an eventual pending STOP bit
+    // Generate the START condition and remove an eventual pending STOP bit
     i2c->CR1 = ((i2c->CR1 & ~I2C_CR1_STOP) | I2C_CR1_START);
 
     // Wait the START condition has been correctly sent
