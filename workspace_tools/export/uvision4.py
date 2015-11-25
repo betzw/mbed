@@ -52,6 +52,7 @@ class Uvision4(Exporter):
         'NUCLEO_F303RE',
         'NUCLEO_F334R8',
         'NUCLEO_F401RE',
+        'NUCLEO_F410RB',
         'NUCLEO_F411RE',
         'NUCLEO_F446RE',
         'NUCLEO_L053R8',
@@ -69,6 +70,8 @@ class Uvision4(Exporter):
         'ARCH_PRO',
         'ARCH_BLE',
         'DISCO_F407VG',
+        'DISCO_F429ZI',
+        'DISCO_F469NI',
         'DISCO_L053C8',
         'DISCO_F334C8',
         'DISCO_F746NG',
@@ -85,6 +88,10 @@ class Uvision4(Exporter):
         'MAX32600MBED',
         'MOTE_L152RC',
         'NZ32SC151',
+        'SAMR21G18A',
+        'SAMD21J18A',
+        'SAMD21G18A',
+        'SAML21J18A',
     ]
 
     USING_MICROLIB = [
@@ -104,15 +111,18 @@ class Uvision4(Exporter):
         'NUCLEO_F303RE',
         'NUCLEO_F334R8',
         'NUCLEO_F401RE',
+        'NUCLEO_F410RB',
         'NUCLEO_F411RE',
         'NUCLEO_F446RE',
         'NUCLEO_L053R8',
         'NUCLEO_L073RZ',
         'NUCLEO_L152RE',
         'NUCLEO_L476RG',
-        'DISCO_L053C8',
         'DISCO_F334C8',
+        'DISCO_F429ZI',
+        'DISCO_F469NI',
         'DISCO_F746NG',
+        'DISCO_L053C8',
         'DISCO_L476VG',
         'LPC1549',
         'LPC11U68',
@@ -121,6 +131,10 @@ class Uvision4(Exporter):
         'LPC11U37H_401',
         'MOTE_L152RC',
         'NZ32SC151',
+        'SAMR21G18A',
+        'SAMD21J18A',
+        'SAMD21G18A',
+        'SAML21J18A',
     ]
 
     FILE_TYPES = {

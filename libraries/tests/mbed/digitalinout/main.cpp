@@ -19,6 +19,7 @@ DigitalInOut d2(D7);
       defined(TARGET_NUCLEO_F303RE) || \
       defined(TARGET_NUCLEO_F334R8) || \
       defined(TARGET_NUCLEO_F401RE) || \
+      defined(TARGET_NUCLEO_F410RB) || \
       defined(TARGET_NUCLEO_F411RE) || \
       defined(TARGET_NUCLEO_F446RE) || \
       defined(TARGET_NUCLEO_L053R8) || \
@@ -66,6 +67,10 @@ DigitalInOut d2(PC1);
 #elif defined(TARGET_SAMR21G18A) || defined(TARGET_SAMD21J18A) || defined(TARGET_SAMD21G18A)
 DigitalInOut d1(PB02);
 DigitalInOut d2(PB03);
+
+#elif defined(TARGET_SAML21J18A))
+DigitalInOut d1(PA06);
+DigitalInOut d2(PA07);
 
 #else
 DigitalInOut d1(p5);

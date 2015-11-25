@@ -673,6 +673,16 @@ class NUCLEO_F401RE(Target):
         self.supported_form_factors = ["ARDUINO", "MORPHO"]
         self.detect_code = ["0720"]
 
+class NUCLEO_F410RB(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F410RB']
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO", "MORPHO"]
+        self.detect_code = ["0740"]
+
 class NUCLEO_F411RE(Target):
     def __init__(self):
         Target.__init__(self)
@@ -815,8 +825,18 @@ class DISCO_F429ZI(Target):
         Target.__init__(self)
         self.core = "Cortex-M4F"
         self.extra_labels = ['STM', 'STM32F4', 'STM32F429', 'STM32F429ZI']
-        self.supported_toolchains = ["GCC_ARM", "IAR"]
+        self.supported_toolchains = ["ARM", "uARM", "GCC_ARM", "IAR"]
         self.default_toolchain = "GCC_ARM"
+
+class DISCO_F469NI(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M4F"
+        self.extra_labels = ['STM', 'STM32F4', 'STM32F469', 'STM32F469NI']
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
+        self.default_toolchain = "uARM"
+        self.supported_form_factors = ["ARDUINO"]
+        self.detect_code = ["0788"]
 
 class DISCO_L053C8(Target):
     def __init__(self):
@@ -831,7 +851,7 @@ class DISCO_F746NG(Target):
         Target.__init__(self)
         self.core = "Cortex-M7"
         self.extra_labels = ['STM', 'STM32F7', 'STM32F746', 'STM32F746NG']
-        self.supported_toolchains = ["ARM", "uARM", "IAR"]
+        self.supported_toolchains = ["ARM", "uARM", "IAR", "GCC_ARM"]
         self.default_toolchain = "uARM"
         self.detect_code = ["0815"]
 
@@ -1630,27 +1650,36 @@ class SAMR21G18A(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M0+"
-        self.extra_labels = ['Atmel', 'SAM_CortexM0+', 'SAMR21']
+        self.extra_labels = ['Atmel', 'SAM_CortexM0P', 'SAMR21']
         self.macros = ['__SAMR21G18A__', 'I2C_MASTER_CALLBACK_MODE=true', 'EXTINT_CALLBACK_MODE=true', 'USART_CALLBACK_MODE=true', 'TC_ASYNC=true']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
         self.default_toolchain = "ARM"
 
 class SAMD21J18A(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M0+"
-        self.extra_labels = ['Atmel', 'SAM_CortexM0+', 'SAMD21']
+        self.extra_labels = ['Atmel', 'SAM_CortexM0P', 'SAMD21']
         self.macros = ['__SAMD21J18A__', 'I2C_MASTER_CALLBACK_MODE=true', 'EXTINT_CALLBACK_MODE=true', 'USART_CALLBACK_MODE=true', 'TC_ASYNC=true']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
         self.default_toolchain = "ARM"
 
 class SAMD21G18A(Target):
     def __init__(self):
         Target.__init__(self)
         self.core = "Cortex-M0+"
-        self.extra_labels = ['Atmel', 'SAM_CortexM0+', 'SAMD21']
+        self.extra_labels = ['Atmel', 'SAM_CortexM0P', 'SAMD21']
         self.macros = ['__SAMD21G18A__', 'I2C_MASTER_CALLBACK_MODE=true', 'EXTINT_CALLBACK_MODE=true', 'USART_CALLBACK_MODE=true', 'TC_ASYNC=true']
-        self.supported_toolchains = ["GCC_ARM"]
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
+        self.default_toolchain = "ARM"
+
+class SAML21J18A(Target):
+    def __init__(self):
+        Target.__init__(self)
+        self.core = "Cortex-M0+"
+        self.extra_labels = ['Atmel', 'SAM_CortexM0P', 'SAML21']
+        self.macros = ['__SAML21J18A__', 'I2C_MASTER_CALLBACK_MODE=true', 'EXTINT_CALLBACK_MODE=true', 'USART_CALLBACK_MODE=true', 'TC_ASYNC=true']
+        self.supported_toolchains = ["GCC_ARM", "ARM", "uARM"]
         self.default_toolchain = "ARM"
 
 
@@ -1718,6 +1747,7 @@ TARGETS = [
     NUCLEO_F303RE(),
     NUCLEO_F334R8(),
     NUCLEO_F401RE(),
+    NUCLEO_F410RB(),
     NUCLEO_F411RE(),
     ELMO_F411RE(),
     NUCLEO_F446RE(),
@@ -1735,6 +1765,7 @@ TARGETS = [
     DISCO_F407VG(),     # STM32F407
     ARCH_MAX(),         # STM32F407
     DISCO_F429ZI(),
+    DISCO_F469NI(),
     DISCO_L053C8(),
     DISCO_L476VG(),
     MTS_MDOT_F405RG(),
@@ -1821,6 +1852,7 @@ TARGETS = [
     SAMR21G18A(),
     SAMD21J18A(),
     SAMD21G18A(),
+    SAML21J18A(),
 ]
 
 # Map each target name to its unique instance

@@ -44,6 +44,7 @@ void in_handler() {
       defined(TARGET_NUCLEO_F303RE) || \
       defined(TARGET_NUCLEO_F334R8) || \
       defined(TARGET_NUCLEO_F401RE) || \
+      defined(TARGET_NUCLEO_F410RB) || \
       defined(TARGET_NUCLEO_F411RE) || \
       defined(TARGET_NUCLEO_F446RE) || \
       defined(TARGET_NUCLEO_L053R8) || \
@@ -95,6 +96,10 @@ void in_handler() {
 #elif defined(TARGET_SAMR21G18A) || defined(TARGET_SAMD21J18A) || defined(TARGET_SAMD21G18A)
 #define PIN_OUT    PB02
 #define PIN_IN     PB03
+
+#elif defined(TARGET_SAML21J18A) 
+#define PIN_OUT    PA02
+#define PIN_IN     PA03
 
 #else
 #define PIN_IN      (p5)
