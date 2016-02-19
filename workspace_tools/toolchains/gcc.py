@@ -18,7 +18,7 @@ import re
 from os.path import join, basename, splitext
 
 from workspace_tools.toolchains import mbedToolchain
-from workspace_tools.settings import GCC_ARM_PATH, GCC_CR_PATH, GCC_CS_PATH, CW_EWL_PATH, CW_GCC_PATH
+from workspace_tools.settings import GCC_ARM_PATH, GCC_CR_PATH
 from workspace_tools.settings import GOANNA_PATH
 from workspace_tools.hooks import hook_tool
 
@@ -37,6 +37,8 @@ class GCC(mbedToolchain):
             cpu = "cortex-m0plus"
         elif target.core == "Cortex-M4F":
             cpu = "cortex-m4"
+        elif target.core == "Cortex-M7F":
+            cpu = "cortex-m7"
         else:
             cpu = target.core.lower()
 
@@ -46,6 +48,9 @@ class GCC(mbedToolchain):
 
         if target.core == "Cortex-M4F":
             self.cpu.append("-mfpu=fpv4-sp-d16")
+            self.cpu.append("-mfloat-abi=softfp")
+        elif target.core == "Cortex-M7F":
+            self.cpu.append("-mfpu=fpv5-d16")
             self.cpu.append("-mfloat-abi=softfp")
 
         if target.core == "Cortex-A9":
@@ -208,50 +213,3 @@ class GCC_CR(GCC):
             self.ld.extend(["-u _printf_float", "-u _scanf_float"])
         self.ld += ["-nostdlib"]
 
-
-class GCC_CS(GCC):
-    def __init__(self, target, options=None, notify=None, macros=None, silent=False, extra_verbose=False):
-        GCC.__init__(self, target, options, notify, macros, silent, GCC_CS_PATH, extra_verbose=extra_verbose)
-
-
-class GCC_CW(GCC):
-    ARCH_LIB = {
-        "Cortex-M0+": "armv6-m",
-    }
-
-    def __init__(self, target, options=None, notify=None, macros=None, silent=False, extra_verbose=False):
-        GCC.__init__(self, target, options, notify, macros, silent, CW_GCC_PATH, extra_verbose=extra_verbose)
-
-
-class GCC_CW_EWL(GCC_CW):
-    def __init__(self, target, options=None, notify=None, macros=None, silent=False, extra_verbose=False):
-        GCC_CW.__init__(self, target, options, notify, macros, silent, extra_verbose=extra_verbose)
-
-        # Compiler
-        common = [
-            '-mfloat-abi=soft',
-            '-nostdinc', '-I%s' % join(CW_EWL_PATH, "EWL_C", "include"),
-        ]
-        self.cc += common + [
-            '-include', join(CW_EWL_PATH, "EWL_C", "include", 'lib_c99.prefix')
-        ]
-        self.cppc += common + [
-            '-nostdinc++', '-I%s' % join(CW_EWL_PATH, "EWL_C++", "include"),
-            '-include', join(CW_EWL_PATH, "EWL_C++", "include", 'lib_ewl_c++.prefix')
-        ]
-
-        # Linker
-        self.sys_libs = []
-        self.CIRCULAR_DEPENDENCIES = False
-        self.ld = [join(CW_GCC_PATH, "arm-none-eabi-g++"),
-            "-Xlinker --gc-sections",
-            "-L%s" % join(CW_EWL_PATH, "lib", GCC_CW.ARCH_LIB[target.core]),
-            "-n", "-specs=ewl_c++.specs", "-mfloat-abi=soft",
-            "-Xlinker --undefined=__pformatter_", "-Xlinker --defsym=__pformatter=__pformatter_",
-            "-Xlinker --undefined=__sformatter", "-Xlinker --defsym=__sformatter=__sformatter",
-        ] + self.cpu
-
-
-class GCC_CW_NEWLIB(GCC_CW):
-    def __init__(self, target, options=None, notify=None, macros=None, silent=False, extra_verbose=False):
-        GCC_CW.__init__(self, target, options, notify, macros, silent, extra_verbose=extra_verbose)
