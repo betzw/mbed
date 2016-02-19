@@ -2,8 +2,8 @@
  ******************************************************************************
  * @file    DevSPI.h
  * @author  AST / Software Platforms and Cloud
- * @version V0.0.1
- * @date    September 24th, 2015
+ * @version V1.0.1
+ * @date    February 11th, 2016
  * @brief   Header file for a special SPI class DevSPI which provides some
  *          helper function for on-board communication.
  ******************************************************************************
@@ -58,10 +58,8 @@ class DevSPI : public SPI
      */
     DevSPI(PinName mosi, PinName miso, PinName sclk) : SPI(mosi, miso, sclk)
     {
-        bits = 9;
-        mode = 0;
-        frequency_hz = 1E6;
-        setup_done = false;
+        /* Set default configuration. */
+        setup(8, 3, 1E6);
     }
 
     /*
@@ -87,10 +85,10 @@ class DevSPI : public SPI
      */
     void setup(int bits, int mode = 0, int frequency_hz = 1E6)
     {
+        /* Set given configuration. */
         format(bits, mode);
         frequency(frequency_hz);
-        setup_done = true;
-    }
+     }
 
     /**
      * @brief      Writes a buffer to the SPI peripheral device.
@@ -103,18 +101,14 @@ class DevSPI : public SPI
      */
     int spi_write(uint8_t* pBuffer, DigitalOut ssel, uint16_t NumBytesToWrite)
     {
-        /* Setup. */
-        if (!setup_done)
-        {
-            ssel = 1;
-            setup(8, 3, 1E6);
-            setup_done = true;
-        }
-
         /* Select the chip. */
         ssel = 0;
         
         /* Write data. */
+        if (_bits == 16)
+            for (int i = 0; i < NumBytesToWrite; i += 2)
+                write(((uint16_t *) pBuffer)[i]);
+        else if(_bits == 8)
         for (int i = 0; i < NumBytesToWrite; i++)
             write(pBuffer[i]);
 
@@ -135,18 +129,14 @@ class DevSPI : public SPI
      */
     int spi_read(uint8_t* pBuffer, DigitalOut ssel, uint16_t NumBytesToRead)
     {
-        /* Setup. */
-        if (!setup_done)
-        {
-            ssel = 1;
-            setup(8, 3, 1E6);
-            setup_done = true;
-        }
-
         /* Select the chip. */
         ssel = 0;
         
         /* Read data. */
+        if (_bits == 16)
+            for (int i = 0; i < NumBytesToRead; i += 2)
+                ((uint16_t *) pBuffer)[i] = write(0x00);
+        else if(_bits == 8)
         for (int i = 0; i < NumBytesToRead; i++)
             pBuffer[i] = write(0x00);
 
@@ -168,18 +158,14 @@ class DevSPI : public SPI
      */
     int spi_read_write(uint8_t* pBufferToRead, uint8_t* pBufferToWrite, DigitalOut ssel, uint16_t NumBytes)
     {
-        /* Setup. */
-        if (!setup_done)
-        {
-            ssel = 1;
-            setup(8, 3, 1E6);
-            setup_done = true;
-        }
-
         /* Select the chip. */
         ssel = 0;
         
         /* Read and write data at the same time. */
+        if (_bits == 16)
+            for (int i = 0; i < NumBytes; i += 2)
+                ((uint16_t *) pBufferToRead)[i] = write(((uint16_t *) pBufferToWrite)[i]);
+        else if(_bits == 8)
         for (int i = 0; i < NumBytes; i++)
             pBufferToRead[i] = write(pBufferToWrite[i]);
 
@@ -188,12 +174,6 @@ class DevSPI : public SPI
 
         return 0;
     }
-
- protected:
-    bool setup_done;
-    int bits;
-    int mode;
-    int frequency_hz;
 };
 
 #endif /* __DEV_SPI_H */
