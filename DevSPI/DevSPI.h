@@ -56,14 +56,14 @@
  */
 class DevSPI : public SPI
 {
-public:
+ public:
     /*
      * Create a DevSPI interface.
      * @param mosi pin name of the MOSI pin of the SPI device to be used for communication.
      * @param miso pin name of the MISO pin of the SPI device to be used for communication.
      * @param sclk pin name of the SCLK pin of the SPI device to be used for communication.
      */
-    DevSPI(PinName mosi, PinName miso, PinName sclk) : SPI(mosi, miso, sclk) 
+    DevSPI(PinName mosi, PinName miso, PinName sclk) : SPI(mosi, miso, sclk)
     {
         /* Set default configuration. */
         setup(8, 3, 1E6);
@@ -118,7 +118,7 @@ public:
         
         /* Write data. */
 	for (int i = 0; i < NumBytesToWrite; i++) {
-	    write(pBuffer[i]);
+            write(pBuffer[i]);
 	}
 
         /* Unselect the chip. */
@@ -179,7 +179,7 @@ public:
         
         /* Read and write data at the same time. */
 	for (int i = 0; i < NumBytes; i++) {
-	    pBufferToRead[i] = write(pBufferToWrite[i]);
+            pBufferToRead[i] = write(pBufferToWrite[i]);
 	}
 
         /* Unselect the chip. */
