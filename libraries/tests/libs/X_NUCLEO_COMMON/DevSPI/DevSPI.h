@@ -1,15 +1,15 @@
 /**
  ******************************************************************************
  * @file    DevSPI.h
- * @author  AST / Software Platforms and Cloud
- * @version V1.0.1
- * @date    February 11th, 2016
+ * @author  AST / Software Platforms and Cloud / EST
+ * @version V1.2.1
+ * @date    19-February-2016
  * @brief   Header file for a special SPI class DevSPI which provides some
- *          helper function for on-board communication.
+ *          helper functions for on-board communication.
  ******************************************************************************
  * @attention
  *
- * <h2><center>&copy; COPYRIGHT(c) 2014 STMicroelectronics</center></h2>
+ * <h2><center>&copy; COPYRIGHT(c) 2016 STMicroelectronics</center></h2>
  *
  * Redistribution and use in source and binary forms, with or without modification,
  * are permitted provided that the following conditions are met:
@@ -43,20 +43,27 @@
 /* Includes ------------------------------------------------------------------*/
 #include "mbed.h"
 
+/* Macros --------------------------------------------------------------------*/
+#if (defined(__BYTE_ORDER__) && (__BYTE_ORDER__ == __ORDER_BIG_ENDIAN__)) /* GCC */ || \
+    (defined(G_BYTE_ORDER) && (G_BYTE_ORDER == G_BIG_ENDIAN)) /* IAR */ || \
+    (defined(__BIG_ENDIAN)) /* ARM */
+#define __DEV_SPI_BIG_ENDIAN
+#endif
+
 /* Classes -------------------------------------------------------------------*/
-/** Helper class DevSPI providing functions for SPI communication common for a
- *  series of SPI devices.
+/** Helper class DevSPI providing functions for synchronous SPI communication
+ *  common for a series of SPI devices.
  */
 class DevSPI : public SPI
 {
- public:
+public:
     /*
      * Create a DevSPI interface.
      * @param mosi pin name of the MOSI pin of the SPI device to be used for communication.
      * @param miso pin name of the MISO pin of the SPI device to be used for communication.
      * @param sclk pin name of the SCLK pin of the SPI device to be used for communication.
      */
-    DevSPI(PinName mosi, PinName miso, PinName sclk) : SPI(mosi, miso, sclk)
+    DevSPI(PinName mosi, PinName miso, PinName sclk) : SPI(mosi, miso, sclk) 
     {
         /* Set default configuration. */
         setup(8, 3, 1E6);
@@ -88,29 +95,31 @@ class DevSPI : public SPI
         /* Set given configuration. */
         format(bits, mode);
         frequency(frequency_hz);
-     }
+    }
 
     /**
-     * @brief      Writes a buffer to the SPI peripheral device.
+     * @brief      Writes a buffer to the SPI peripheral device in 8-bit data mode 
+     *             using synchronous SPI communication.
      * @param[in]  pBuffer pointer to the buffer of data to send.
      * @param[in]  ssel GPIO of the SSEL pin of the SPI device to be used for communication.
      * @param[in]  NumBytesToWrite number of bytes to write.
      * @retval     0 if ok.
+     * @retval     -1 if data format error.
      * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
      *             before calling this function and to enable them again after.
      */
     int spi_write(uint8_t* pBuffer, DigitalOut ssel, uint16_t NumBytesToWrite)
     {
+	/* Check data format */
+	if(_bits != 8) return -1;
+
         /* Select the chip. */
         ssel = 0;
         
         /* Write data. */
-        if (_bits == 16)
-            for (int i = 0; i < NumBytesToWrite; i += 2)
-                write(((uint16_t *) pBuffer)[i]);
-        else if(_bits == 8)
-        for (int i = 0; i < NumBytesToWrite; i++)
-            write(pBuffer[i]);
+	for (int i = 0; i < NumBytesToWrite; i++) {
+	    write(pBuffer[i]);
+	}
 
         /* Unselect the chip. */
         ssel = 1;
@@ -119,26 +128,28 @@ class DevSPI : public SPI
     }
 
     /**
-     * @brief      Reads a buffer from the SPI peripheral device.
+     * @brief      Reads a buffer from the SPI peripheral device in 8-bit data mode 
+     *             using synchronous SPI communication.
      * @param[out] pBuffer pointer to the buffer to read data into.
      * @param[in]  ssel GPIO of the SSEL pin of the SPI device to be used for communication.
      * @param[in]  NumBytesToRead number of bytes to read.
      * @retval     0 if ok.
+     * @retval     -1 if data format error.
      * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
      *             before calling this function and to enable them again after.
      */
     int spi_read(uint8_t* pBuffer, DigitalOut ssel, uint16_t NumBytesToRead)
     {
+	/* Check data format */
+	if(_bits != 8) return -1;
+
         /* Select the chip. */
         ssel = 0;
         
         /* Read data. */
-        if (_bits == 16)
-            for (int i = 0; i < NumBytesToRead; i += 2)
-                ((uint16_t *) pBuffer)[i] = write(0x00);
-        else if(_bits == 8)
-        for (int i = 0; i < NumBytesToRead; i++)
-            pBuffer[i] = write(0x00);
+	for (int i = 0; i < NumBytesToRead; i++) {
+	    pBuffer[i] = write(0);
+	}
 
         /* Unselect the chip. */
         ssel = 1;
@@ -147,32 +158,144 @@ class DevSPI : public SPI
     }
 
     /**
-     * @brief      Reads and write a buffer from/to the SPI peripheral device at the same time.
+     * @brief      Reads and write a buffer from/to the SPI peripheral device at the same time 
+     *             in 8-bit data mode using synchronous SPI communication.
      * @param[out] pBufferToRead pointer to the buffer to read data into.
      * @param[in]  pBufferToWrite pointer to the buffer of data to send.
      * @param[in]  ssel GPIO of the SSEL pin of the SPI device to be used for communication.
      * @param[in]  NumBytes number of bytes to read and write.
      * @retval     0 if ok.
+     * @retval     -1 if data format error.
      * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
      *             before calling this function and to enable them again after.
      */
     int spi_read_write(uint8_t* pBufferToRead, uint8_t* pBufferToWrite, DigitalOut ssel, uint16_t NumBytes)
     {
+	/* Check data format */
+	if(_bits != 8) return -1;
+
         /* Select the chip. */
         ssel = 0;
         
         /* Read and write data at the same time. */
-        if (_bits == 16)
-            for (int i = 0; i < NumBytes; i += 2)
-                ((uint16_t *) pBufferToRead)[i] = write(((uint16_t *) pBufferToWrite)[i]);
-        else if(_bits == 8)
-        for (int i = 0; i < NumBytes; i++)
-            pBufferToRead[i] = write(pBufferToWrite[i]);
+	for (int i = 0; i < NumBytes; i++) {
+	    pBufferToRead[i] = write(pBufferToWrite[i]);
+	}
 
         /* Unselect the chip. */
         ssel = 1;
 
         return 0;
+    }
+
+    /**
+     * @brief      Writes a buffer to the SPI peripheral device in 16-bit data mode 
+     *             using synchronous SPI communication.
+     * @param[in]  pBuffer pointer to the buffer of data to send.
+     * @param[in]  ssel GPIO of the SSEL pin of the SPI device to be used for communication.
+     * @param[in]  NumValuesToWrite number of 16-bit values to write.
+     * @retval     0 if ok.
+     * @retval     -1 if data format error.
+     * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
+     *             before calling this function and to enable them again after.
+     * @note       In order to guarantee this method to work correctly you have to
+     *             pass buffers which are correctly aligned.
+     */
+    int spi_write(uint16_t* pBuffer, DigitalOut ssel, uint16_t NumValuesToWrite)
+    {
+	/* Check data format */
+	if(_bits != 16) return -1;
+
+        /* Select the chip. */
+        ssel = 0;
+        
+        /* Write data. */
+	for (int i = 0; i < NumValuesToWrite; i++) {
+	    write(htons(pBuffer[i]));
+	}
+
+        /* Unselect the chip. */
+        ssel = 1;
+
+        return 0;
+    }
+
+    /**
+     * @brief      Reads a buffer from the SPI peripheral device in 16-bit data mode 
+     *             using synchronous SPI communication.
+     * @param[out] pBuffer pointer to the buffer to read data into.
+     * @param[in]  ssel GPIO of the SSEL pin of the SPI device to be used for communication.
+     * @param[in]  NumValuesToRead number of 16-bit values to read.
+     * @retval     0 if ok.
+     * @retval     -1 if data format error.
+     * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
+     *             before calling this function and to enable them again after.
+     * @note       In order to guarantee this method to work correctly you have to
+     *             pass buffers which are correctly aligned.
+     */
+    int spi_read(uint16_t* pBuffer, DigitalOut ssel, uint16_t NumValuesToRead)
+    {
+	/* Check data format */
+	if(_bits != 16) return -1;
+
+        /* Select the chip. */
+        ssel = 0;
+        
+        /* Read data. */
+	for (int i = 0; i < NumValuesToRead; i++) {
+	    pBuffer[i] = ntohs((uint16_t)write(0));
+	}
+
+        /* Unselect the chip. */
+        ssel = 1;
+
+        return 0;
+    }
+
+    /**
+     * @brief      Reads and write a buffer from/to the SPI peripheral device at the same time 
+     *             in 16-bit data mode using synchronous SPI communication.
+     * @param[out] pBufferToRead pointer to the buffer to read data into.
+     * @param[in]  pBufferToWrite pointer to the buffer of data to send.
+     * @param[in]  ssel GPIO of the SSEL pin of the SPI device to be used for communication.
+     * @param[in]  NumValues number of 16-bit values to read and write.
+     * @retval     0 if ok.
+     * @retval     -1 if data format error.
+     * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
+     *             before calling this function and to enable them again after.
+     * @note       In order to guarantee this method to work correctly you have to
+     *             pass buffers which are correctly aligned.
+     */
+    int spi_read_write(uint16_t* pBufferToRead, uint16_t* pBufferToWrite, DigitalOut ssel, uint16_t NumValues)
+    {
+	/* Check data format */
+	if(_bits != 16) return -1;
+
+	/* Select the chip. */
+        ssel = 0;
+        
+        /* Read and write data at the same time. */
+	for (int i = 0; i < NumValues; i++) {
+	    pBufferToRead[i] = ntohs((uint16_t)write(htons(pBufferToWrite[i])));
+	}
+
+        /* Unselect the chip. */
+        ssel = 1;
+
+        return 0;
+    }
+
+protected:
+    inline uint16_t htons(uint16_t x) {
+#ifndef __DEV_SPI_BIG_ENDIAN
+	return (((x)<<8)|((x)>>8));
+#else  // __DEV_SPI_BIG_ENDIAN
+	return (x);
+#endif // __DEV_SPI_BIG_ENDIAN
+    }
+
+    inline uint16_t ntohs(uint16_t x) {
+	return htons(x);
     }
 };
 
