@@ -19,6 +19,8 @@ from workspace_tools.data.support import *
 
 TEST_CMSIS_LIB = join(TEST_DIR, "cmsis", "lib")
 TEST_MBED_LIB = join(TEST_DIR, "mbed", "env")
+# betzw
+TEST_STM_LIBS = join(TEST_DIR, "libs", "X_NUCLEO_COMMON")
 
 PERIPHERALS = join(TEST_DIR, "peripherals")
 BENCHMARKS_DIR = join(TEST_DIR, "benchmarks")
@@ -1066,6 +1068,45 @@ TESTS = [
         #"host_test" : "detect_auto",
     },
 
+    # betzw: Battery Monitor
+    {
+        "id": "betzw_test_1", "description": "battery monitor example application",
+        "source_dir": join(TEST_DIR, "betzw_tests", "bm_app"),
+        "dependencies": [MBED_LIBRARIES, 
+                         join(TEST_STM_LIBS, 'DbgMCU'), 
+                         join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(PERIPHERALS, 'X_NUCLEO_IKC01A1')],
+        "mcu": ["NUCLEO_F401RE", "NUCLEO_L053R8", "K64F", "LPC11U68"],
+        "peripherals": ["X_NUCLEO_IKC01A1"]
+    },
+
+    # betzw: Environmental (1/2)
+    {
+        "id": "betzw_test_2", "description": "environmental example application",
+        "source_dir": join(TEST_DIR, "betzw_tests", "sr_app"),
+        "dependencies": [MBED_LIBRARIES, 
+                         join(TEST_STM_LIBS, 'DbgMCU'), 
+                         join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
+        "peripherals": ["X_NUCLEO_IKS01A1"]
+    },
+
+    # betzw: Environmental (2/2)
+    {
+        "id": "betzw_test_3", "description": "environmental example application",
+        "source_dir": join(TEST_DIR, "betzw_tests", "hw_iks01a1"),
+        "dependencies": [MBED_LIBRARIES, 
+                         join(TEST_STM_LIBS, 'DevI2C'), 
+                         join(PERIPHERALS, 'X_NUCLEO_IKS01A1')],
+        "peripherals": ["X_NUCLEO_IKS01A1"]
+    },
+
+    # betzw: Heap
+    {
+        "id": "betzw_test_4", "description": "heap test",
+        "source_dir": join(TEST_DIR, "betzw_tests", "heap_check"),
+        "dependencies": [MBED_LIBRARIES]
+    },
 ]
 
 # Group tests with the same goals into categories
