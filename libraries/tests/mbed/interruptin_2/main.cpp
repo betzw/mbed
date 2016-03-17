@@ -1,5 +1,9 @@
 #include "mbed.h"
 
+#if !DEVICE_INTERRUPTIN
+  #error [NOT_SUPPORTED] InterruptIn is not supported
+#endif
+
 #if defined(TARGET_LPC4088)
 InterruptIn button(p18);
 InterruptIn button1(p17);

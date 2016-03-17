@@ -1,6 +1,10 @@
 #include "mbed.h"
 #include "test_env.h"
 
+#if !DEVICE_I2C
+  #error [NOT_SUPPORTED] I2C is not supported
+#endif
+
 #define SIZE (10)
 #define ADDR (0x90)
 

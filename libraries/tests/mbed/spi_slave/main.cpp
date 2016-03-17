@@ -1,5 +1,9 @@
 #include "mbed.h"
 
+#if !DEVICE_SPISLAVE
+  #error [NOT_SUPPORTED] SPI Slave not supported
+#endif
+
 #if defined(TARGET_KL25Z)
 SPISlave device(PTD2, PTD3, PTD1, PTD0);    // mosi, miso, sclk, ssel
 #elif defined(TARGET_nRF51822)
