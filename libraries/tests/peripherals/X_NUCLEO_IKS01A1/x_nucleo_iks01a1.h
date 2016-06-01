@@ -83,6 +83,11 @@ class X_NUCLEO_IKS01A1
  protected:
 	X_NUCLEO_IKS01A1(DevI2C *ext_i2c, PinName ff_irq_pin);
 
+	~X_NUCLEO_IKS01A1(void) {
+	    /* should never be called */
+	    error("Trial to delete X_NUCLEO_IKS01A1 singleton!\n");
+	}
+
 	/**
 	 * @brief  Initialize the singleton's sensors to default settings
 	 * @retval true if initialization successful, 
