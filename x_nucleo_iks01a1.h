@@ -124,16 +124,6 @@ class X_NUCLEO_IKS01A1
 					  PinName ff_irq_pin = IKS01A1_PIN_FF);
 	static X_NUCLEO_IKS01A1* Instance(PinName sda, PinName scl, PinName ff_irq_pin = NC);
 
-	/**
- 	* @brief      Destructor
-	*/	
-	~X_NUCLEO_IKS01A1(){
-		//if(dev_i2c!=NULL){ delete dev_i2c; dev_i2c=0; }  how to understand if dev_i2c is locally allocated (so it must be deleted) or comes from constructors args?
-   		if(ht_sensor!=NULL){ delete ht_sensor; ht_sensor=NULL; }
-   		if(magnetometer!=NULL){ delete magnetometer; magnetometer=NULL; }
-   		if(pt_sensor!=NULL){ delete pt_sensor; pt_sensor=NULL; }          		
-	}
-
 	DevI2C  *dev_i2c;
 
 	HTS221  *ht_sensor;
