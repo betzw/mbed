@@ -108,7 +108,7 @@ public:
      * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
      *             before calling this function and to enable them again after.
      */
-    int spi_write(uint8_t* pBuffer, DigitalOut ssel, uint16_t NumBytesToWrite)
+    int spi_write(uint8_t* pBuffer, DigitalOut &ssel, uint16_t NumBytesToWrite)
     {
 	/* Check data format */
 	if(_bits != 8) return -1;
@@ -138,7 +138,7 @@ public:
      * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
      *             before calling this function and to enable them again after.
      */
-    int spi_read(uint8_t* pBuffer, DigitalOut ssel, uint16_t NumBytesToRead)
+    int spi_read(uint8_t* pBuffer, DigitalOut &ssel, uint16_t NumBytesToRead)
     {
 	/* Check data format */
 	if(_bits != 8) return -1;
@@ -169,7 +169,7 @@ public:
      * @note       When using the SPI in Interrupt-mode, remember to disable interrupts
      *             before calling this function and to enable them again after.
      */
-    int spi_read_write(uint8_t* pBufferToRead, uint8_t* pBufferToWrite, DigitalOut ssel, uint16_t NumBytes)
+    int spi_read_write(uint8_t* pBufferToRead, uint8_t* pBufferToWrite, DigitalOut &ssel, uint16_t NumBytes)
     {
 	/* Check data format */
 	if(_bits != 8) return -1;
@@ -201,7 +201,7 @@ public:
      * @note       In order to guarantee this method to work correctly you have to
      *             pass buffers which are correctly aligned.
      */
-    int spi_write(uint16_t* pBuffer, DigitalOut ssel, uint16_t NumValuesToWrite)
+    int spi_write(uint16_t* pBuffer, DigitalOut &ssel, uint16_t NumValuesToWrite)
     {
 	/* Check data format */
 	if(_bits != 16) return -1;
@@ -233,7 +233,7 @@ public:
      * @note       In order to guarantee this method to work correctly you have to
      *             pass buffers which are correctly aligned.
      */
-    int spi_read(uint16_t* pBuffer, DigitalOut ssel, uint16_t NumValuesToRead)
+    int spi_read(uint16_t* pBuffer, DigitalOut &ssel, uint16_t NumValuesToRead)
     {
 	/* Check data format */
 	if(_bits != 16) return -1;
@@ -266,7 +266,7 @@ public:
      * @note       In order to guarantee this method to work correctly you have to
      *             pass buffers which are correctly aligned.
      */
-    int spi_read_write(uint16_t* pBufferToRead, uint16_t* pBufferToWrite, DigitalOut ssel, uint16_t NumValues)
+    int spi_read_write(uint16_t* pBufferToRead, uint16_t* pBufferToWrite, DigitalOut &ssel, uint16_t NumValues)
     {
 	/* Check data format */
 	if(_bits != 16) return -1;
