@@ -21,7 +21,7 @@ python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw
 
 Compile sr_app:
 ===============
-python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NUCLEO/ -n betzw_test_2
+python workspace_tools/make.py -t GCC_ARM -m NUCLEO_F401RE -d /media/betzw/NODE_F401RE/ -n betzw_test_2
 python workspace_tools/make.py -t GCC_ARM -m NUCLEO_L053R8 -d /media/betzw/NUCLEO/ -n betzw_test_2
 python workspace_tools/make.py -t GCC_ARM -m LPC11U68 -d /media/betzw/MBED/ -n betzw_test_2
 python workspace_tools/make.py -t GCC_ARM -m K64F -d /media/betzw/MBED/ -n betzw_test_2
