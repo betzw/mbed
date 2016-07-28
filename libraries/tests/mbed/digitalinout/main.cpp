@@ -22,6 +22,7 @@ DigitalInOut d2(D7);
       defined(TARGET_NUCLEO_F410RB) || \
       defined(TARGET_NUCLEO_F411RE) || \
       defined(TARGET_NUCLEO_F446RE) || \
+      defined(TARGET_NUCLEO_F446ZE) || \
       defined(TARGET_NUCLEO_L053R8) || \
       defined(TARGET_NUCLEO_L073RZ) || \
       defined(TARGET_NUCLEO_L152RE)
@@ -29,7 +30,9 @@ DigitalInOut d1(PC_7);
 DigitalInOut d2(PB_8);
 
 #elif defined(TARGET_NUCLEO_F031K6) || \
-      defined(TARGET_NUCLEO_F042K6)
+      defined(TARGET_NUCLEO_F042K6) || \
+      defined(TARGET_NUCLEO_L011K4) || \
+      defined(TARGET_NUCLEO_L031K6)
 DigitalInOut d1(A4);
 DigitalInOut d2(A5);
 
@@ -79,6 +82,10 @@ DigitalInOut d2(PA07);
 #elif defined(TARGET_SAMG55J19)
 DigitalInOut d1(PA18);
 DigitalInOut d2(PA17);
+
+#elif defined(TARGET_VK_RZ_A1H)
+DigitalInOut d1(P3_2);
+DigitalInOut d2(P5_6);
 
 #else
 DigitalInOut d1(p5);

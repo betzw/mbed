@@ -2,6 +2,10 @@
 #include "test_env.h"
 #include "rtos.h"
 
+#if defined(MBED_RTOS_SINGLE_THREAD)
+  #error [NOT_SUPPORTED] test not supported
+#endif
+
 #define QUEUE_SIZE              5
 #define THREAD_DELAY            250
 #define QUEUE_PUT_ISR_VALUE     128
@@ -16,6 +20,14 @@
     #define STACK_SIZE DEFAULT_STACK_SIZE/4
 #elif (defined(TARGET_STM32F030R8)) && defined(TOOLCHAIN_IAR)
     #define STACK_SIZE DEFAULT_STACK_SIZE/2
+#elif (defined(TARGET_EFM32HG_STK3400)) && !defined(TOOLCHAIN_ARM_MICRO)
+    #define STACK_SIZE 512
+#elif (defined(TARGET_EFM32LG_STK3600) || defined(TARGET_EFM32WG_STK3800) || defined(TARGET_EFM32PG_STK3401)) && !defined(TOOLCHAIN_ARM_MICRO)
+    #define STACK_SIZE 768
+#elif (defined(TARGET_EFM32GG_STK3700)) && !defined(TOOLCHAIN_ARM_MICRO)
+    #define STACK_SIZE 1536
+#elif defined(TARGET_MCU_NRF51822)
+    #define STACK_SIZE 512
 #else
     #define STACK_SIZE DEFAULT_STACK_SIZE
 #endif
