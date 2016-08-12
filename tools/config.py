@@ -169,7 +169,8 @@ class ConfigCumulativeOverride:
 
     def update_target(self, target):
         setattr(target, self.name, list(
-                set(getattr(target, self.name, [])) | self.additions - self.removals))
+                (set(getattr(target, self.name, [])) | self.additions) - self.removals))
+
 
 
 # 'Config' implements the mbed configuration mechanism
@@ -443,7 +444,7 @@ class Config:
             self.add_config_files(resources.json_files)
 
             # Add features while we find new ones
-            features = self.get_features()
+            features = set(self.get_features())
             if features == prev_features:
                 break
 

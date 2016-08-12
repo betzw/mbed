@@ -28,7 +28,7 @@ from time import time
 import fnmatch
 
 from tools.utils import mkdir, run_cmd, run_cmd_ext, NotSupportedException, ToolException, InvalidReleaseTargetException
-from tools.paths import MBED_TARGETS_PATH, MBED_LIBRARIES, MBED_API, MBED_HAL, MBED_COMMON
+from tools.paths import MBED_TARGETS_PATH, MBED_LIBRARIES, MBED_API, MBED_HAL, MBED_COMMON, MBED_CONFIG_FILE
 from tools.targets import TARGET_NAMES, TARGET_MAP
 from tools.libraries import Library
 from tools.toolchains import TOOLCHAIN_CLASSES
@@ -156,6 +156,14 @@ def is_official_target(target_name, version):
                     (("official release: %s" + linesep) % ", ".join(required_toolchains_sorted)) + \
                     ("Currently it is only configured to support the ") + \
                     ("following toolchains: %s" % ", ".join(supported_toolchains_sorted))
+
+            elif not target.default_build == 'standard':
+                result = False
+                reason = ("Target '%s' must set the 'default_build' " % target.name) + \
+                    ("to 'standard' to be included in the mbed OS 5.0 ") + \
+                    ("official release." + linesep) + \
+                    ("Currently it is set to '%s'" % target.default_build)
+
         else:
             result = False
             reason = ("Target '%s' has set an invalid release version of '%s'" % version) + \
@@ -403,6 +411,12 @@ def build_library(src_paths, build_path, target, toolchain_name,
     else:
         tmp_path = build_path
 
+    # Clean the build directory
+    if clean:
+        if exists(tmp_path):
+            rmtree(tmp_path)
+    mkdir(tmp_path)
+
     # Pass all params to the unified prepare_toolchain()
     toolchain = prepare_toolchain(src_paths, target, toolchain_name,
         macros=macros, options=options, clean=clean, jobs=jobs,
@@ -560,6 +574,11 @@ def build_lib(lib_id, target, toolchain_name, options=None, verbose=False, clean
 
         toolchain.info("Building library %s (%s, %s)" % (name.upper(), target.name, toolchain_name))
 
+        # Take into account the library configuration (MBED_CONFIG_FILE)
+        config = Config(target)
+        toolchain.config = config
+        config.add_config_files([MBED_CONFIG_FILE])
+
         # Scan Resources
         resources = []
         for src_path in src_paths:
@@ -581,6 +600,11 @@ def build_lib(lib_id, target, toolchain_name, options=None, verbose=False, clean
 
         if inc_dirs:
             dependencies_include_dir.extend(inc_dirs)
+
+        # Add other discovered configuration data to the configuration object
+        for r in resources:
+            config.load_resources(r)
+        toolchain.set_config_data(toolchain.config.get_config_data())
 
         # Create the desired build directory structure
         bin_path = join(build_path, toolchain.obj_path)
@@ -659,6 +683,12 @@ def build_mbed_libs(target, toolchain_name, options=None, verbose=False, clean=F
         toolchain.VERBOSE = verbose
         toolchain.jobs = jobs
         toolchain.build_all = clean
+
+        # Take into account the library configuration (MBED_CONFIG_FILE)
+        config = Config(target)
+        toolchain.config = config
+        config.add_config_files([MBED_CONFIG_FILE])
+        toolchain.set_config_data(toolchain.config.get_config_data())
 
         # Source and Build Paths
         BUILD_TARGET = join(MBED_LIBRARIES, "TARGET_" + target.name)
