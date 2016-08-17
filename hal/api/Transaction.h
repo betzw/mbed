@@ -31,6 +31,7 @@ typedef struct {
     uint32_t event;            /**< Event for a transaction */
     event_callback_t callback; /**< User's callback */
     uint8_t width;             /**< Buffer's word width (8, 16, 32, 64) */
+    void *data;
 } transaction_t;
 
 /** Transaction class defines a transaction.

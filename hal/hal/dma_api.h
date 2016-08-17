@@ -19,6 +19,7 @@
 #include <stdint.h>
 
 #define DMA_ERROR_OUT_OF_CHANNELS (-1)
+#define NUM_OF_DIRECTIONS         (2)
 
 typedef enum {
     DMA_USAGE_NEVER,
