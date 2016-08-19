@@ -1,27 +1,41 @@
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2013 ARM Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #include "I2S.h"
-#include "mbed_assert.h"
 #include "critical.h"
+#include "mbed_assert.h"
 
 #if DEVICE_I2S
 
 namespace mbed {
-
-//using namespace util;
 
 #if TRANSACTION_QUEUE_SIZE_I2S
 CircularBuffer<I2S::transaction_t, TRANSACTION_QUEUE_SIZE_I2S> I2S::_transaction_buffer;
 #endif
 
 I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
-        _i2s(),
-	_irq_tx(this), _irq_rx(this),
-        _dbits(16),
-        _fbits(16),
-	_polarity(0),
-	_protocol(PHILIPS),
-	_mode(MASTER_TX),
-	_busy(false),
-        _hz(44100) {
+    _i2s(),
+    _irq_tx(this),
+    _irq_rx(this),
+    _dbits(16),
+    _fbits(16),
+    _polarity(0),
+    _protocol(PHILIPS),
+    _mode(MASTER_TX),
+    _busy(false),
+    _hz(44100) {
     i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode);
     i2s_format(&_i2s, _dbits, _fbits, _polarity);
     i2s_audio_frequency(&_i2s, _hz);
@@ -29,42 +43,61 @@ I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
 }
 
 void I2S::format(int dbits, int fbits, int polarity) {
+    lock();
     _dbits = dbits;
     _fbits = fbits;
     _polarity = polarity;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
+    unlock();
 }
 
 void I2S::audio_frequency(unsigned int hz) {
+    lock();
     _hz = hz;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
+    unlock();
 }
 
 void I2S::set_protocol(i2s_bitorder_t protocol) {
+    lock();
     _protocol = protocol;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
+    unlock();
 }
 
 void I2S::set_mode(i2s_mode_t mode) {
-	_mode = mode;
+    lock();
+    _mode = mode;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
+    unlock();
 }
 
 I2S* I2S::_owner = NULL;
+SingletonPtr<PlatformMutex> I2S::_mutex;
 
 // ignore the fact there are multiple physical i2ss, and always update if it wasn't us last
 void I2S::aquire() {
-     if (_owner != this) {
+    lock();
+    if (_owner != this) {
     	i2s_format(&_i2s, _dbits, _fbits, _polarity);
         i2s_audio_frequency(&_i2s, _hz);
         i2s_set_protocol(&_i2s, _protocol);
         i2s_set_mode(&_i2s, _mode);
         _owner = this;
     }
+    unlock();
+}
+
+void I2S::lock() {
+    _mutex->lock();
+}
+
+void I2S::unlock() {
+    _mutex->unlock();
 }
 
 int I2S::transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td)
@@ -108,7 +141,7 @@ int I2S::get_transfer_status()
 
 unsigned int I2S::get_module()
 {
-	return i2s_get_module(&_i2s);
+    return i2s_get_module(&_i2s);
 }
 
 int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td)
@@ -124,7 +157,7 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
     t.callback = callback;
     t.width = bit_width;
     t.data = (i2s_transaction_data_t *) td;
-    Transaction<SPI> transaction(this, t);
+    Transaction<I2S> transaction(this, t);
     if (_transaction_buffer.full()) {
         return -1; // the buffer is full
     } else {
@@ -141,25 +174,13 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
 #endif
 }
 
-//void I2S::start_transfer(const transaction_t &t)
 void I2S::start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td)
 {
     aquire();
-    _current_transaction.tx_buffer = (void *) tx_buffer;
-    _current_transaction.tx_length = tx_length;
-    _current_transaction.rx_buffer = (void *) rx_buffer;
-    _current_transaction.rx_length = rx_length;
-    _current_transaction.event = event;
-    _current_transaction.callback = callback;
-    _current_transaction.width = bit_width;
-    _current_transaction.data = (void *) td;
+    _callback = callback;
     _irq_tx.callback(&I2S::irq_handler_asynch_tx);
     _irq_rx.callback(&I2S::irq_handler_asynch_rx);
-    i2s_transfer(&_i2s,
-    		_current_transaction.tx_buffer, _current_transaction.tx_length,
-			_current_transaction.rx_buffer, _current_transaction.rx_length,
-			(*((i2s_transaction_data_t *) _current_transaction.data))._circular, (*((i2s_transaction_data_t *) _current_transaction.data))._priority,
-            _irq_tx.entry(), _irq_rx.entry(), _current_transaction.event);
+    i2s_transfer(&_i2s, (void *) tx_buffer, tx_length, (void *) rx_buffer, rx_length, td->_circular, td->_priority, _irq_tx.entry(), _irq_rx.entry(), event);
 }
 
 #if TRANSACTION_QUEUE_SIZE_I2S
@@ -171,18 +192,11 @@ void I2S::start_transaction(transaction_t *t)
 
 void I2S::dequeue_transaction()
 {
-    transaction_t t;
-    bool dequeued;
-    {
-        CriticalSectionLock lock;
-        dequeued = _transaction_buffer.pop(t);
-        _busy = dequeued;
-    }
-
-    if (dequeued) {
+    Transaction<I2S> t;
+    if (_transaction_buffer.pop(t)) {
         I2S* obj = t.get_object();
-        transaction_t* t = t.get_transaction();
-        obj->start_transaction(t);
+        transaction_t* data = t.get_transaction();
+        obj->start_transaction(data);
     }
 }
 
@@ -191,8 +205,8 @@ void I2S::dequeue_transaction()
 void I2S::irq_handler_asynch_rx(void)
 {
     int event = i2s_irq_handler_asynch(&_i2s, I2S_RX_EVENT);
-    if (_current_transaction.callback && (event & I2S_EVENT_ALL)) {
-        _current_transaction.callback.call(event & I2S_EVENT_ALL);
+    if (_callback && (event & I2S_EVENT_ALL)) {
+        _callback.call(event & I2S_EVENT_ALL);
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
     if (event & (I2S_EVENT_ALL | I2S_EVENT_INTERNAL_TRANSFER_COMPLETE)) {
@@ -204,8 +218,8 @@ void I2S::irq_handler_asynch_rx(void)
 void I2S::irq_handler_asynch_tx(void)
 {
     int event = i2s_irq_handler_asynch(&_i2s, I2S_TX_EVENT);
-    if (_current_transaction.callback && (event & I2S_EVENT_ALL)) {
-        _current_transaction.callback.call(event & I2S_EVENT_ALL);
+    if (_callback && (event & I2S_EVENT_ALL)) {
+        _callback.call(event & I2S_EVENT_ALL);
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
     if (event & (I2S_EVENT_ALL | I2S_EVENT_INTERNAL_TRANSFER_COMPLETE)) {

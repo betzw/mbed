@@ -1,3 +1,18 @@
+/* mbed Microcontroller Library
+ * Copyright (c) 2006-2015 ARM Limited
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 #ifndef MBED_I2S_H
 #define MBED_I2S_H
 
@@ -5,7 +20,10 @@
 
 #if DEVICE_I2S
 
+#include "PlatformMutex.h"
 #include "i2s_api.h"
+#include "SingletonPtr.h"
+
 #include "CThunk.h"
 #include "dma_api.h"
 #include "CircularBuffer.h"
@@ -24,21 +42,10 @@ namespace mbed {
  * NOTE: This information will be deprecated soon.
  * Most I2S devices will also require Reset signals. These
  * can be controlled using <DigitalOut> pins
+ *
+ * @Note Synchronization level: Thread safe
  */
 class I2S {
-
-public:
-    /** I2S transfer callback
-     *  @param Buffer the tx buffer
-     *  @param Buffer the rx buffer
-     *  @param int the event that triggered the callbacki2s_init
-     */
-    typedef Callback<void(int)> event_callback_t;
-    typedef struct
-    {
-        bool _circular;
-        i2s_dma_prio_t _priority;
-    } i2s_transaction_data_t;
 
 public:
     /** Create a I2S master connected to the specified pins
@@ -78,6 +85,14 @@ public:
      *  @return Zero if the usage was set, -1 if a transaction is on-going
      */
     void set_mode(i2s_mode_t mode);
+
+    /** Acquire exclusive access to this I2S bus
+     */
+    virtual void lock(void);
+	     
+    /** Release exclusive access to this I2S bus
+     */
+    virtual void unlock(void);
 
     /** Start non-blocking I2S transfer using 8bit buffers.
      *
@@ -211,11 +226,12 @@ protected:
 #endif
     CThunk<I2S> _irq_tx;
     CThunk<I2S> _irq_rx;
-    transaction_t _current_transaction;
+    event_callback_t _callback;
 
     void aquire(void);
 
     static I2S *_owner;
+    static SingletonPtr<PlatformMutex> _mutex;
     int _dbits;
     int _fbits;
     int _polarity;
