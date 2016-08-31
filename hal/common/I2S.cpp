@@ -35,9 +35,12 @@ I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
 	/*** betzw - DILEMMA:
 	 *   To whom is it up to guarantee that there will be no two SPI objects with the same
 	 *   pins (maybe created by two threads concurrently)?
+	 *   If this is considered to be possible, for sure we need some locking here, but also
+	 *   we need to figure out how to handle things like SPI clock enabling and
+	 *   above all disabling correctly!
 	 ***/
 
-    i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode);
+    i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode); // betzw: I do not think that 'i2s_init()' is (required to be) thread safe!
     aquire();
 }
 
@@ -194,12 +197,12 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
  * we would need some IRQ enable/disable mechanism which for sure is impacting performance, irq latencies, and real-time
  * behavior too heavily, and limits what can be done within such critical sections very very much!
  *
- * The only solution which comes in mind to me is splitting somehow the IRQ handlers in top and bottom halves, where:
+ * The only solution which comes to my mind is splitting somehow the IRQ handlers in top and bottom halves, where:
  * The so-called top-half is the routine that actually responds to the interrupt (i.e. the actual interrupt handler).
- * The bottom-half is a routine that is scheduled by the top-half to be executed later, at a safer time, and which
+ * The bottom-half is a routine that is scheduled by the top-half to be executed later, at a "safer time", and which
  * performs most of the often substantial amount of work that must be done in response to a device interrupt.
  * The big difference between the top-half handler and the bottom-half is that all interrupts are enabled during execution
- * of the bottom-half - that’s why it runs at a safer time.
+ * of the bottom-half - that’s why it runs at a "safer time".
  * In a typical scenario, the top-half saves device data to a device-specific buffer, schedules its bottom-half,
  * and exits: this operation is very fast. Note: interrupt handlers need to finish up quickly and not keep interrupts
  * blocked for long!
@@ -256,7 +259,7 @@ void I2S::dequeue_transaction()
     if (_transaction_buffer.pop(t)) {
         I2S* obj = t.get_object();
         transaction_t* data = t.get_transaction();
-        obj->start_transaction(data);
+        obj->start_transaction(data); // betzw: what if 'obj' is NOT equal to 'this'?
     }
 }
 
