@@ -1,18 +1,3 @@
-/* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 #ifndef MBED_I2S_API_H
 #define MBED_I2S_API_H
 
@@ -42,11 +27,6 @@
 #define I2S_TX_EVENT				(0x0) // see DMA_TX
 #define I2S_RX_EVENT				(0x1) // see DMA_RX
 
-#define I2S_EVENT_RX(x)             (((x) & 0xFF) != 0x0)
-#define I2S_EVENT_TX(x)             (((x) & 0xFF00) != 0x0)
-
-#define I2S_FILL_WORD              (0xFFFFFFFF)
-
 typedef enum {
 	PHILIPS,
 	MSB,
@@ -68,14 +48,6 @@ typedef enum {
 	HIGH,
 	URGENT
 } i2s_dma_prio_t;
-
-/* Davide */
-typedef struct
-{
-    bool _circular;
-    i2s_dma_prio_t _priority;
-} i2s_transaction_data_t;
-/* Davide */
 
 /** Asynch I2S HAL structure
  */
@@ -180,16 +152,16 @@ uint8_t i2s_get_module(i2s_t *obj);
  * @param[in] tx_length  The number of bytes to transmit
  * @param[in] rx         The receive buffer
  * @param[in] rx_length  The number of bytes to receive
- * @param[in] bit_width  Deprecated argument
  * @param[in] circular   Enable circular buffer transfer
- * @param[in] event      The logical OR of events to be registered
+ * @param[in] prio       DMA priority of the transfer
  * @param[in] handler_tx I2S tx interrupt handler
  * @param[in] handler_rx I2S rx interrupt handler
+ * @param[in] event      The logical OR of events to be registered
  */
-void i2s_transfer(i2s_t *obj, void *tx, size_t tx_length, void *rx, size_t rx_length,
-			 bool circular, i2s_dma_prio_t prio,
-			 uint32_t handler_tx, uint32_t handler_rx, 
-			 uint32_t event);
+void i2s_transfer(i2s_t *obj, void *tx, int tx_length, void *rx, int rx_length,
+		  bool circular, i2s_dma_prio_t prio,
+		  uint32_t handler_tx, uint32_t handler_rx, 
+		  uint32_t event);
 
 /** The asynchronous IRQ handler
  *

@@ -1,141 +1,137 @@
-/* mbed Microcontroller Library
- * Copyright (c) 2006-2013 ARM Limited
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 #include "I2S.h"
 #include "critical.h"
-#include "mbed_assert.h"
 
 #if DEVICE_I2S
 
 namespace mbed {
 
 #if TRANSACTION_QUEUE_SIZE_I2S
-CircularBuffer<I2S::transaction_t, TRANSACTION_QUEUE_SIZE_I2S> I2S::_transaction_buffer;
+CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> I2S::_transaction_buffer;
 #endif
 
-I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
-    _i2s(),
-    _irq_tx(this),
-    _irq_rx(this),
-    _dbits(16),
-    _fbits(16),
-    _polarity(0),
-    _protocol(PHILIPS),
-    _mode(MASTER_TX),
-    _busy(false),
-    _hz(44100) {
-    i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode);
-    i2s_format(&_i2s, _dbits, _fbits, _polarity);
-    i2s_audio_frequency(&_i2s, _hz);
-    i2s_set_protocol(&_i2s, _protocol);
+I2S* I2S::_owner = NULL;
+
+void I2S::lock() {
+	// betzw - DILEMMA: the right synchronization mechanism needs still to be found (see beyond)!
 }
 
-void I2S::format(int dbits, int fbits, int polarity) {
+void I2S::unlock() {
+	// betzw - DILEMMA: the right synchronization mechanism needs still to be found (see beyond)!
+}
+
+I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
+        _i2s(),
+	_irq_tx(this), _irq_rx(this),
+        _priority(MEDIUM),
+        _dbits(16),
+        _fbits(16),
+	_polarity(0),
+	_protocol(PHILIPS),
+	_mode(MASTER_TX),
+        _circular(false),
+        _hz(44100) {
+    // No lock needed in the constructor
+
+	/*** betzw - DILEMMA:
+	 *   To whom is it up to guarantee that there will be no two SPI objects with the same
+	 *   pins (maybe created by two threads concurrently)?
+	 ***/
+
+    i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode);
+    aquire();
+}
+
+int I2S::format(int dbits, int fbits, int polarity) {
     lock();
+    if (i2s_active(&_i2s)) {
+    	unlock();
+        return -1;
+    }
     _dbits = dbits;
     _fbits = fbits;
     _polarity = polarity;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
     unlock();
+    return 0;
 }
 
-void I2S::audio_frequency(unsigned int hz) {
+int I2S::audio_frequency(unsigned int hz) {
     lock();
+    if (i2s_active(&_i2s)) {
+    	unlock();
+        return -1;
+    }
     _hz = hz;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
     unlock();
+    return 0;
 }
 
-void I2S::set_protocol(i2s_bitorder_t protocol) {
+int I2S::set_protocol(i2s_bitorder_t protocol) {
     lock();
+    if (i2s_active(&_i2s)) {
+    	unlock();
+        return -1;
+    }
     _protocol = protocol;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
     unlock();
+    return 0;
 }
 
-void I2S::set_mode(i2s_mode_t mode) {
+int I2S::set_mode(i2s_mode_t mode, bool circular) {
     lock();
+    if (i2s_active(&_i2s)) {
+    	unlock();
+        return -1;
+    }
     _mode = mode;
+    _circular = circular;
     I2S::_owner = NULL; // Not that elegant, but works. rmeyer
     aquire();
     unlock();
-}
-
-I2S* I2S::_owner = NULL;
-SingletonPtr<PlatformMutex> I2S::_mutex;
-
-// ignore the fact there are multiple physical i2ss, and always update if it wasn't us last
-void I2S::aquire() {
-    lock();
-    if (_owner != this) {
-    	i2s_format(&_i2s, _dbits, _fbits, _polarity);
-        i2s_audio_frequency(&_i2s, _hz);
-        i2s_set_protocol(&_i2s, _protocol);
-        i2s_set_mode(&_i2s, _mode);
-        _owner = this;
-    }
-    unlock();
-}
-
-void I2S::lock() {
-    _mutex->lock();
-}
-
-void I2S::unlock() {
-    _mutex->unlock();
-}
-
-int I2S::transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td)
-{
-    if (i2s_active(&_i2s)) {
-        return queue_transfer(tx_buffer, tx_length, rx_buffer, rx_length, bit_width, callback, event, td);
-    }
-    start_transfer(tx_buffer, tx_length, rx_buffer, rx_length, bit_width, callback, event, td);
     return 0;
 }
 
 void I2S::abort_transfer()
 {
+    lock();
     i2s_abort_asynch(&_i2s);
 #if TRANSACTION_QUEUE_SIZE_I2S
     dequeue_transaction();
 #endif
+    unlock();
 }
 
 
 void I2S::clear_transfer_buffer()
 {
 #if TRANSACTION_QUEUE_SIZE_I2S
+    lock();
     _transaction_buffer.reset();
+    unlock();
 #endif
 }
 
 void I2S::abort_all_transfers()
 {
+    lock();
     clear_transfer_buffer();
     abort_transfer();
+    unlock();
 }
 
 int I2S::get_transfer_status()
 {
+	lock();
     if (i2s_active(&_i2s)) {
+    	unlock();
         return -1;
     }
+    unlock();
     return  0;
 }
 
@@ -144,7 +140,19 @@ unsigned int I2S::get_module()
     return i2s_get_module(&_i2s);
 }
 
-int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td)
+int I2S::set_dma_priority(i2s_dma_prio_t prio)
+{
+    lock();
+    if (i2s_active(&_i2s)) {
+    	unlock();
+        return -1;
+    }
+    _priority = prio;
+    unlock();
+    return  0;
+}
+
+int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, const event_callback_t& callback, int event)
 {
 #if TRANSACTION_QUEUE_SIZE_I2S
     transaction_t t;
@@ -155,18 +163,20 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
     t.rx_length = rx_length;
     t.event = event;
     t.callback = callback;
-    t.width = bit_width;
-    t.data = (i2s_transaction_data_t *) td;
+    t.width = 16;
     Transaction<I2S> transaction(this, t);
+    core_util_critical_section_enter();
     if (_transaction_buffer.full()) {
+        core_util_critical_section_enter();
         return -1; // the buffer is full
     } else {
-        core_util_critical_section_enter();
         _transaction_buffer.push(transaction);
+        core_util_critical_section_exit();
+        lock();
         if (!i2s_active(&_i2s)) {
             dequeue_transaction();
         }
-        core_util_critical_section_exit();
+        unlock();
         return 0;
     }
 #else
@@ -174,20 +184,70 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
 #endif
 }
 
-void I2S::start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td)
+
+/***
+ *
+ * betzw - NOTE: ALL the following functions MIGHT be called in interrupt context, so pay attention (e.g. no mutex locking)!!!
+ *
+ * This is kind of a DILEMMA as at least some of these functions should be synchronized with all the above ones thru the
+ * same synchronization mechanism. But being in interrupt context a PlatformMutex is no option anymore, so everywhere
+ * we would need some IRQ enable/disable mechanism which for sure is impacting performance, irq latencies, and real-time
+ * behavior too heavily, and limits what can be done within such critical sections very very much!
+ *
+ * The only solution which comes in mind to me is splitting somehow the IRQ handlers in top and bottom halves, where:
+ * The so-called top-half is the routine that actually responds to the interrupt (i.e. the actual interrupt handler).
+ * The bottom-half is a routine that is scheduled by the top-half to be executed later, at a safer time, and which
+ * performs most of the often substantial amount of work that must be done in response to a device interrupt.
+ * The big difference between the top-half handler and the bottom-half is that all interrupts are enabled during execution
+ * of the bottom-half - that’s why it runs at a safer time.
+ * In a typical scenario, the top-half saves device data to a device-specific buffer, schedules its bottom-half,
+ * and exits: this operation is very fast. Note: interrupt handlers need to finish up quickly and not keep interrupts
+ * blocked for long!
+ * The bottom-half then performs whatever other work is required, such as starting up another I/O operation, perform
+ * housekeeping, and so on.
+ * This setup permits the top-halves to service a new interrupt while bottom-halves might still be working.
+ * Almost every serious interrupt handler is split this way!
+ * For instance, when a network interface reports the arrival of a new packet, the handler just retrieves the data and
+ * pushes it up to the protocol layer; actual processing of the packet is performed in a bottom-half.
+ *
+ * So we need to find a general way on how to schedule bottom-halves to be executed at a "safer time" in mbed-os!
+ *
+ ***/
+
+// ignore the fact there are multiple physical i2s's, and always update if it wasn't us last
+void I2S::aquire() { // betzw - DILEMMA: MUST be called with lock held?!?
+	// betzw - TODO: evtl. assert here that lock is held!
+
+    if (_owner != this) {
+    	i2s_format(&_i2s, _dbits, _fbits, _polarity);
+        i2s_audio_frequency(&_i2s, _hz);
+        i2s_set_protocol(&_i2s, _protocol);
+        i2s_set_mode(&_i2s, _mode);
+        _owner = this;
+    }
+}
+
+void I2S::start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, 
+			 const event_callback_t& callback, int event)
 {
+	// betzw - DILEMMA: lock();
     aquire();
     _callback = callback;
     _irq_tx.callback(&I2S::irq_handler_asynch_tx);
     _irq_rx.callback(&I2S::irq_handler_asynch_rx);
-    i2s_transfer(&_i2s, (void *) tx_buffer, tx_length, (void *) rx_buffer, rx_length, td->_circular, td->_priority, _irq_tx.entry(), _irq_rx.entry(), event);
+    i2s_transfer(&_i2s,
+    		const_cast<void *>(tx_buffer), tx_length, rx_buffer, rx_length,
+			_circular, _priority,
+			_irq_tx.entry(), _irq_rx.entry(),
+			event);
+    // betzw - DILEMMA: unlock();
 }
 
 #if TRANSACTION_QUEUE_SIZE_I2S
 
-void I2S::start_transaction(transaction_t *t)
+void I2S::start_transaction(transaction_t *data)
 {
-    start_transfer(t->tx_buffer, t->tx_length, t->rx_buffer, t->rx_length, t->width, t->callback, t->event, (i2s_transaction_data_t *) t->data));
+	start_transfer(data->tx_buffer, data->tx_length, data->rx_buffer, data->rx_length, data->callback, data->event);
 }
 
 void I2S::dequeue_transaction()
@@ -200,7 +260,7 @@ void I2S::dequeue_transaction()
     }
 }
 
-#endif // TRANSACTION_QUEUE_SIZE_I2S
+#endif
 
 void I2S::irq_handler_asynch_rx(void)
 {
@@ -209,7 +269,7 @@ void I2S::irq_handler_asynch_rx(void)
         _callback.call(event & I2S_EVENT_ALL);
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
-    if (event & (I2S_EVENT_ALL | I2S_EVENT_INTERNAL_TRANSFER_COMPLETE)) {
+    if (event & I2S_EVENT_INTERNAL_TRANSFER_COMPLETE) {
         dequeue_transaction();
     }
 #endif
@@ -222,7 +282,7 @@ void I2S::irq_handler_asynch_tx(void)
         _callback.call(event & I2S_EVENT_ALL);
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
-    if (event & (I2S_EVENT_ALL | I2S_EVENT_INTERNAL_TRANSFER_COMPLETE)) {
+    if (event & I2S_EVENT_INTERNAL_TRANSFER_COMPLETE) {
         dequeue_transaction();
     }
 #endif

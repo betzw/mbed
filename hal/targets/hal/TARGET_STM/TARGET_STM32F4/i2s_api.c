@@ -1,54 +1,14 @@
-/* mbed Microcontroller Library
- *******************************************************************************
- * Copyright (c) 2015, STMicroelectronics
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * 1. Redistributions of source code must retain the above copyright notice,
- *    this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright notice,
- *    this list of conditions and the following disclaimer in the documentation
- *    and/or other materials provided with the distribution.
- * 3. Neither the name of STMicroelectronics nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- *******************************************************************************
- */
-#if DEVICE_I2S
-
-/* Davide */
-//#include "uvisor-lib/uvisor-lib.h"
-#include "cmsis.h"
-#include "core_cm4.h"
-
-#define vIRQ_EnableIRQ  NVIC_EnableIRQ
-#define vIRQ_DisableIRQ NVIC_DisableIRQ
-#define vIRQ_SetVector  NVIC_SetVector              
-#define vIRQ_GetVector  NVIC_GetVector
-/* Davide */
-
 #include "mbed_assert.h"
+#include "mbed_error.h"
 #include "i2s_api.h"
 
 // betzw
 #include "dma_caps.h"
 
+#if DEVICE_I2S
+
 #include <math.h>
 #include <string.h>
-#include "i2s_api.h"
 #include "cmsis.h"
 #include "pinmap.h"
 #include "PeripheralPins.h"
@@ -274,7 +234,7 @@ static void dma_i2s_free(i2s_t *obj, uint8_t direction) {
      MBED_ASSERT(stream != NULL);
 
      // disable irq
-     vIRQ_DisableIRQ(stream->dma_stream_irq);
+     NVIC_DisableIRQ(stream->dma_stream_irq);
 
      // free channel
      dma_channel_free((void*)stream);
@@ -558,13 +518,13 @@ uint8_t i2s_get_module(i2s_t *obj)
 }
 
 static void i2s_start_asynch_transfer(i2s_t *obj, transfer_type_t transfer_type,
-					     void *tx, void *rx, size_t length)
+					     void *tx, void *rx, int length)
 {
      I2S_HandleTypeDef *handle = &I2sHandle[obj->i2s.module];
      obj->i2s.transfer_type = transfer_type;
 
      // the HAL expects number of transfers instead of number of bytes
-     size_t words;
+     int words;
      switch(handle->Init.DataFormat) {
      case I2S_DATAFORMAT_16B:
      case I2S_DATAFORMAT_16B_EXTENDED:
@@ -584,20 +544,20 @@ static void i2s_start_asynch_transfer(i2s_t *obj, transfer_type_t transfer_type,
      switch(transfer_type) {
      case I2S_TRANSFER_TYPE_TXRX:
 	  // enable the interrupts
-	  vIRQ_EnableIRQ(obj->dma.dma[DMA_TX]->dma_stream_irq);
-	  vIRQ_EnableIRQ(obj->dma.dma[DMA_RX]->dma_stream_irq);
+	  NVIC_EnableIRQ(obj->dma.dma[DMA_TX]->dma_stream_irq);
+	  NVIC_EnableIRQ(obj->dma.dma[DMA_RX]->dma_stream_irq);
 	  // trigger DMA transfers
 	  rc = HAL_I2SEx_TransmitReceive_DMA(handle, (uint16_t*)tx, (uint16_t*)rx, (uint16_t)words);
 	  break;
      case I2S_TRANSFER_TYPE_TX:
 	  // enable the interrupt
-	  vIRQ_EnableIRQ(obj->dma.dma[DMA_TX]->dma_stream_irq);
+	  NVIC_EnableIRQ(obj->dma.dma[DMA_TX]->dma_stream_irq);
 	  // trigger DMA transfer
 	  rc = HAL_I2S_Transmit_DMA(handle, (uint16_t*)tx, (uint16_t)words);
 	  break;
      case I2S_TRANSFER_TYPE_RX:
 	  // enable the interrupt
-	  vIRQ_EnableIRQ(obj->dma.dma[DMA_RX]->dma_stream_irq);
+	  NVIC_EnableIRQ(obj->dma.dma[DMA_RX]->dma_stream_irq);
 	  // trigger DMA transfer
 	  rc = HAL_I2S_Receive_DMA(handle, (uint16_t*)rx, (uint16_t)words);
 	  break;
@@ -612,8 +572,8 @@ static void i2s_start_asynch_transfer(i2s_t *obj, transfer_type_t transfer_type,
 
 // asynchronous API
 void i2s_transfer(i2s_t *obj,
-			 void *tx, size_t tx_length,
-			 void *rx, size_t rx_length,
+			 void *tx, int tx_length,
+			 void *rx, int rx_length,
 			 bool circular, i2s_dma_prio_t prio,
 			 uint32_t handler_tx, uint32_t handler_rx, uint32_t event)
 {
@@ -645,15 +605,15 @@ void i2s_transfer(i2s_t *obj,
 
      // register the thunking handler
      if(use_tx) {
-	  vIRQ_SetVector(obj->dma.dma[DMA_TX]->dma_stream_irq, handler_tx);
+	  NVIC_SetVector(obj->dma.dma[DMA_TX]->dma_stream_irq, handler_tx);
      }
      if(use_rx) {
-	  vIRQ_SetVector(obj->dma.dma[DMA_RX]->dma_stream_irq, handler_rx);
+	  NVIC_SetVector(obj->dma.dma[DMA_RX]->dma_stream_irq, handler_rx);
      }
 
      // enable the right hal transfer
      if (use_tx && use_rx) {
-      size_t size = (tx_length < rx_length)? tx_length : rx_length;
+      int size = (tx_length < rx_length)? tx_length : rx_length;
 	  i2s_start_asynch_transfer(obj, I2S_TRANSFER_TYPE_TXRX, tx, rx, size);
      } else if (use_tx) {
 	  i2s_start_asynch_transfer(obj, I2S_TRANSFER_TYPE_TX, tx, NULL, tx_length);
@@ -680,8 +640,8 @@ uint32_t i2s_irq_handler_asynch(i2s_t *obj, uint8_t direction)
      switch(HAL_I2S_GetState(i2s_handle)) {
      case HAL_I2S_STATE_READY: {
     	 // adjust buffer positions (betzw - TODO: to be checked for DMA transfers!!!)
-    	 size_t tx_size = (i2s_handle->TxXferSize - i2s_handle->TxXferCount);
-    	 size_t rx_size = (i2s_handle->RxXferSize - i2s_handle->RxXferCount);
+    	 int tx_size = (i2s_handle->TxXferSize - i2s_handle->TxXferCount);
+    	 int rx_size = (i2s_handle->RxXferSize - i2s_handle->RxXferCount);
 
     	 // take data format into consideration
     	 switch(i2s_handle->Init.DataFormat) {
@@ -757,7 +717,7 @@ uint32_t i2s_irq_handler_asynch(i2s_t *obj, uint8_t direction)
 				 }
 				 break;
 			 default:
-				 printf("betzw(%s, %d): dma_state=0x%x\r\n\n", __func__, __LINE__, (int)dma_state);
+				 printf("betzw(%s, %d): dma_state=0x%x\r\n", __func__, __LINE__, (int)dma_state);
 				 MBED_ASSERT(0);
 				 break;
 			 }

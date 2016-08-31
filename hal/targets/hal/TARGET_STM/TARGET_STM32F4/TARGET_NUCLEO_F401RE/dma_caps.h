@@ -1,6 +1,7 @@
 // betzw: file which defines DMA capabilities (in platform dependent way for the moment)
 
 #define NUM_OF_DEVICES           (2)
+#define NUM_OF_DIRECTIONS        (2)
 
 #define DMA_SPI2                 (0x0)
 #define DMA_SPI3                 (0x1)

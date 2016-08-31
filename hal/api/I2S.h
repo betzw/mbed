@@ -1,18 +1,3 @@
-/* mbed Microcontroller Library
- * Copyright (c) 2006-2015 ARM Limited
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 #ifndef MBED_I2S_H
 #define MBED_I2S_H
 
@@ -34,16 +19,17 @@ namespace mbed {
 
 /** A I2S Master/Slave, used for communicating with I2S slave/master devices
  *
- * The default format is set to master transmission mode, 16 data bits & 16 bits per frame,
- * clock polarity 0, protocol PHILIPS, and a clock frequency of 44.1kHz
+ * The default format is set to master transmission mode, one-shot (i.e. not circular) 
+ * 16 data bits & 16 bits per frame, clock polarity 0, 
+ * protocol PHILIPS, and a clock frequency of 44.1kHz
  *
  * TODO: "direct" PDM support
  *
- * NOTE: This information will be deprecated soon.
  * Most I2S devices will also require Reset signals. These
  * can be controlled using <DigitalOut> pins
  *
  * @Note Synchronization level: Thread safe
+ *
  */
 class I2S {
 
@@ -63,58 +49,65 @@ public:
      *  @param dbits Number of data bits per I2S frame (16, 24, or 32)
      *  @param fbits Number of bits per I2S frame (16 or 32)
      *  @param polarity Clock polarity (either 0/low or 1/high, default = 0)
+     *  @return Zero if the usage was set, -1 if a transaction is on-going
      */
-    void format(int dbits, int fbits, int polarity = 0);
+    int format(int dbits, int fbits, int polarity = 0);
 
     /** Set the i2s audio frequency
      *
      *  @param hz audio frequency in hz
+     *  @return Zero if the usage was set, -1 if a transaction is on-going
      */
-    void audio_frequency(unsigned int hz);
+    int audio_frequency(unsigned int hz);
 
     /** Set the i2s bus protocol
      *
      *  @param protocol I2S protocol to be used
      *  @return Zero if the usage was set, -1 if a transaction is on-going
      */
-    void set_protocol(i2s_bitorder_t protocol);
+    int set_protocol(i2s_bitorder_t protocol);
 
     /** Set the i2s mode
      *
-     *  @param mode I2S mode to be used
+     *  @param mode     I2S mode to be used
+     *  @param circular I2S should read/write buffers continously (in circular mode)
      *  @return Zero if the usage was set, -1 if a transaction is on-going
      */
-    void set_mode(i2s_mode_t mode);
+    int set_mode(i2s_mode_t mode, bool circular);
 
+    /** Start non-blocking I2S transfer as configured with above methods
+     *
+     * @param tx_buffer The TX buffer with data to be transfered. If NULL is passed,
+     *                  no transmission will be set up 
+     * @param tx_length The length of TX buffer in bytes
+     * @param rx_buffer The RX buffer which is used for received data. If NULL is passed,
+     *                  received data will be ignored
+     * @param rx_length The length of RX buffer in bytes
+     * @param callback  The event callback function
+     *                  NOTE: this one will be executed in interrupt context!!!
+     * @param event     The logical OR of events to notify. Look at i2s hal header file for I2S events.
+     * @return Zero if the transfer has started (or been queued), or 
+     *         -1   if I2S peripheral is busy (or out of resources)
+     */
+    template<typename Type>
+    int transfer(const Type *tx_buffer, int tx_length, Type *rx_buffer, int rx_length, const event_callback_t& callback, int event) {
+    lock();
+	if (i2s_active(&_i2s)) {
+		unlock();
+	    return queue_transfer(tx_buffer, tx_length, rx_buffer, rx_length, callback, event);
+	}
+	start_transfer(tx_buffer, tx_length, rx_buffer, rx_length, callback, event);
+	unlock();
+	return 0;
+    }
+    
     /** Acquire exclusive access to this I2S bus
      */
     virtual void lock(void);
-	     
+
     /** Release exclusive access to this I2S bus
      */
     virtual void unlock(void);
-
-    /** Start non-blocking I2S transfer using 8bit buffers.
-     *
-     * @param tx_buffer The TX buffer with data to be transfered. If NULL is passed,
-     *                  the default I2S value is sent.
-     * @param tx_length The length of TX buffer in bytes
-     * @param rx_buffer The RX buffer which is used for received data. If NULL is passed,
-     *                  received data are ignored.
-     * @param rx_length The length of RX buffer in bytes.
-     * @param callback  The event callback function.
-     * @param event     The logical OR of events to modify. Look at i2s hal header file for I2S events.
-     * @param td        The pointer to the I2S transaction's data.
-     * @return Zero if the transfer has started, or -1 if I2S peripheral is busy.
-     */
-    template<typename Type>
-    int transfer(const Type *tx_buffer, int tx_length, Type *rx_buffer, int rx_length, const event_callback_t& callback, int event/* = I2S_EVENT_COMPLETE*/, i2s_transaction_data_t *td) {
-        if (i2s_active(&_i2s)) {
-            return queue_transfer(tx_buffer, tx_length, rx_buffer, rx_length, sizeof(Type) * 8, callback, event, td);
-        }
-        start_transfer(tx_buffer, tx_length, rx_buffer, rx_length, sizeof(Type) * 8, callback, event, td);
-        return 0;
-    }
 
     /** Abort the on-going I2S transfer, and continue with transfer's in the queue if any.
      */
@@ -140,6 +133,13 @@ public:
      */
     unsigned int get_module();
 
+    /** Configure DMA priority for transfers
+     *
+     *  @param prio The DMA priority to be used
+     *  @return Zero if the usage was set, -1 if a transaction is on-going
+    */
+    int set_dma_priority(i2s_dma_prio_t prio);
+
 protected:
     /** I2S TX DMA IRQ handler
      *
@@ -152,64 +152,33 @@ protected:
     void irq_handler_asynch_rx(void);
 
     /** Add a transfer to the queue
-     *
-     * @param tx_buffer The TX buffer with data to be transfered. If NULL is passed,
-     *                  the default I2S value is sent.
-     * @param tx_length The length of TX buffer in bytes
-     * @param rx_buffer The RX buffer which is used for received data. If NULL is passed,
-     *                  received data are ignored.
-     * @param rx_length The length of RX buffer in bytes.
-     * @param bit_width The width in bits of the data;
-     * @param callback  The event callback function.
-     * @param event     The logical OR of events to modify. Look at i2s hal header file for I2S events.
-     * @param td        The pointer to the I2S transaction's data.
-     * @return Zero if a transfer was added to the queue, or -1 if the queue is full.
+     * @param data Transaction data
+     * @return Zero if a transfer was added to the queue, or -1 if the queue is full
      */
-    int queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td);
-
+    int queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, 
+		       const event_callback_t& callback, int event);
+    
     /** Configures a callback, i2s peripheral and initiate a new transfer
      *
      * @param data Transaction data
-     *                  the default I2S value is sent.
-     * @param tx_length The length of TX buffer in bytes
-     * @param rx_buffer The RX buffer which is used for received data. If NULL is passed,
-     *                  received data are ignored.
-     * @param rx_length The length of RX buffer in bytes.
-     * @param bit_width The width in bits of the data;
-     * @param callback  The event callback function.
-     * @param event     The logical OR of events to modify. Look at i2s hal header file for I2S events.
-     * @param td        The pointer to the I2S transaction's data.
      */
-    void start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td);
+    void start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, 
+			const event_callback_t& callback, int event);
 
 #if TRANSACTION_QUEUE_SIZE_I2S
     /** Start a new transaction
      *
      *  @param data Transaction data
      */
-    void start_transaction(transaction_t *t)
+    void start_transaction(transaction_t *data);
 
     /** Dequeue a transaction
      *
      */
     void dequeue_transaction();
-#endif // TRANSACTION_QUEUE_SIZE_I2S
 
-    /** Initiate a transfer
-     *
-     * @param tx_buffer The TX buffer with data to be transfered. If NULL is passed,
-     *                  the default I2S value is sent.
-     * @param tx_length The length of TX buffer in bytes
-     * @param rx_buffer The RX buffer which is used for received data. If NULL is passed,
-     *                  received data are ignored.
-     * @param rx_length The length of RX buffer in bytes.
-     * @param bit_width The width in bits of the data;
-     * @param callback  The event callback function.
-     * @param event     The logical OR of events to modify. Look at i2s hal header file for I2S events.
-     * @param td        The pointer to the I2S transaction's data.
-     * @return The result of validating the transfer parameters.
-     */
-    int transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, unsigned char bit_width, const event_callback_t& callback, int event, i2s_transaction_data_t *td);
+    static CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> _transaction_buffer;
+#endif // TRANSACTION_QUEUE_SIZE_I2S
 
 public:
     virtual ~I2S() {
@@ -221,23 +190,21 @@ public:
 protected:
     i2s_t _i2s;
 
-#if TRANSACTION_QUEUE_SIZE_I2S
-    static CircularBuffer<transaction_t, TRANSACTION_QUEUE_SIZE_I2S> _transaction_buffer;
-#endif
     CThunk<I2S> _irq_tx;
     CThunk<I2S> _irq_rx;
     event_callback_t _callback;
+    i2s_dma_prio_t _priority; // DMA priority
 
     void aquire(void);
 
     static I2S *_owner;
-    static SingletonPtr<PlatformMutex> _mutex;
+
     int _dbits;
     int _fbits;
     int _polarity;
     i2s_bitorder_t _protocol;
     i2s_mode_t _mode;
-    bool _busy;
+    bool _circular;
     unsigned int _hz;
 };
 
