@@ -2,6 +2,7 @@
 #include "dma_caps.h"
 #include "device.h"
 #include "stm32f401xe.h"
+#include "critical.h"
 
 static struct dma_stream_s dma_map[NUM_OF_DEVICES][NUM_OF_DIRECTIONS];
 static unsigned int dma1_ref_counter = 0;
@@ -48,13 +49,16 @@ channelid_t dma_channel_allocate(uint32_t capabilities) {
 
 	struct dma_stream_s *channel = &dma_map[device][direction];
 
-	if(channel->busy)
+	core_util_critical_section_enter();
+	if(channel->busy) {
+		core_util_critical_section_exit();
 		return DMA_ERROR_OUT_OF_CHANNELS;
-	else {
+	} else {
 		if(!(dma1_ref_counter++)) {
 			  __DMA1_CLK_ENABLE();
 		}
 		channel->busy = 1;
+		core_util_critical_section_exit();
 		return (channelid_t)channel;
 	}
 }
@@ -63,6 +67,9 @@ void dma_channel_free(channelid_t channelid) {
 	struct dma_stream_s *channel = (struct dma_stream_s*)channelid;
 
 	MBED_ASSERT((channel->busy == 1) && (dma1_ref_counter > 0));
+
+
+	core_util_critical_section_enter();
 	channel->busy = 0;
 
 	if(!(--dma1_ref_counter)) {
@@ -71,5 +78,6 @@ void dma_channel_free(channelid_t channelid) {
 		  __DMA1_CLK_DISABLE();
 	}
 
+	core_util_critical_section_exit();
 	return;
 }

@@ -177,7 +177,7 @@ protected:
      */
     void dequeue_transaction();
 
-    static CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> _transaction_buffer;
+    /* betzw - WAS : static */ CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> _transaction_buffer;
 #endif // TRANSACTION_QUEUE_SIZE_I2S
 
 public:

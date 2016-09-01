@@ -5,43 +5,49 @@
 
 namespace mbed {
 
+/* betzw - WAS
 #if TRANSACTION_QUEUE_SIZE_I2S
 CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> I2S::_transaction_buffer;
 #endif
+$*/
 
 I2S* I2S::_owner = NULL;
 
 void I2S::lock() {
-	// betzw - DILEMMA: the right synchronization mechanism needs still to be found (see beyond)!
+    // betzw - DILEMMA: the right synchronization mechanism needs still to be found (see beyond)!
+	//                  I assume here beyond in several calls to it that this lock will be (at least) a class level lock.
 }
 
 void I2S::unlock() {
-	// betzw - DILEMMA: the right synchronization mechanism needs still to be found (see beyond)!
+    // betzw - DILEMMA: the right synchronization mechanism needs still to be found (see beyond)!
+	//                  I assume here beyond in several calls to it that this lock will be (at least) a class level lock.
 }
 
 I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
-        _i2s(),
-	_irq_tx(this), _irq_rx(this),
-        _priority(MEDIUM),
-        _dbits(16),
-        _fbits(16),
-	_polarity(0),
-	_protocol(PHILIPS),
-	_mode(MASTER_TX),
-        _circular(false),
-        _hz(44100) {
+    _i2s(),
+    _irq_tx(this), _irq_rx(this),
+    _priority(MEDIUM),
+    _dbits(16),
+    _fbits(16),
+    _polarity(0),
+    _protocol(PHILIPS),
+    _mode(MASTER_TX),
+    _circular(false),
+    _hz(44100) {
     // No lock needed in the constructor
 
-	/*** betzw - DILEMMA:
-	 *   To whom is it up to guarantee that there will be no two SPI objects with the same
-	 *   pins (maybe created by two threads concurrently)?
-	 *   If this is considered to be possible, for sure we need some locking here, but also
-	 *   we need to figure out how to handle things like SPI clock enabling and
-	 *   above all disabling correctly!
-	 ***/
+    /*** betzw - DILEMMA:
+     *   To whom is it up to guarantee that there will be no two SPI objects with the same
+     *   pins (maybe created by two threads concurrently)?
+     *   If this is considered to be possible, for sure we need some locking here, but also
+     *   we need to figure out how to handle things like SPI clock enabling and
+     *   above all disabling correctly!
+     ***/
 
+    // betzw - DILEMMA: lock();
     i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode); // betzw: I do not think that 'i2s_init()' is (required to be) thread safe!
     aquire();
+    // betzw - DILEMMA: unlock();
 }
 
 int I2S::format(int dbits, int fbits, int polarity) {
@@ -129,7 +135,7 @@ void I2S::abort_all_transfers()
 
 int I2S::get_transfer_status()
 {
-	lock();
+    lock();
     if (i2s_active(&_i2s)) {
     	unlock();
         return -1;
@@ -175,11 +181,7 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
     } else {
         _transaction_buffer.push(transaction);
         core_util_critical_section_exit();
-        lock();
-        if (!i2s_active(&_i2s)) {
-            dequeue_transaction();
-        }
-        unlock();
+        dequeue_transaction();
         return 0;
     }
 #else
@@ -219,7 +221,7 @@ int I2S::queue_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, i
 
 // ignore the fact there are multiple physical i2s's, and always update if it wasn't us last
 void I2S::aquire() { // betzw - DILEMMA: MUST be called with lock held?!?
-	// betzw - TODO: evtl. assert here that lock is held!
+    // betzw - TODO: evtl. assert here that lock is held!
 
     if (_owner != this) {
     	i2s_format(&_i2s, _dbits, _fbits, _polarity);
@@ -233,16 +235,16 @@ void I2S::aquire() { // betzw - DILEMMA: MUST be called with lock held?!?
 void I2S::start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, 
 			 const event_callback_t& callback, int event)
 {
-	// betzw - DILEMMA: lock();
+    // betzw - DILEMMA: lock();
     aquire();
     _callback = callback;
     _irq_tx.callback(&I2S::irq_handler_asynch_tx);
     _irq_rx.callback(&I2S::irq_handler_asynch_rx);
     i2s_transfer(&_i2s,
-    		const_cast<void *>(tx_buffer), tx_length, rx_buffer, rx_length,
-			_circular, _priority,
-			_irq_tx.entry(), _irq_rx.entry(),
-			event);
+		 const_cast<void *>(tx_buffer), tx_length, rx_buffer, rx_length,
+		 _circular, _priority,
+		 _irq_tx.entry(), _irq_rx.entry(),
+		 event);
     // betzw - DILEMMA: unlock();
 }
 
@@ -250,30 +252,40 @@ void I2S::start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, 
 
 void I2S::start_transaction(transaction_t *data)
 {
-	start_transfer(data->tx_buffer, data->tx_length, data->rx_buffer, data->rx_length, data->callback, data->event);
+    start_transfer(data->tx_buffer, data->tx_length, data->rx_buffer, data->rx_length, data->callback, data->event);
 }
 
 void I2S::dequeue_transaction()
 {
-    Transaction<I2S> t;
-    if (_transaction_buffer.pop(t)) {
-        I2S* obj = t.get_object();
-        transaction_t* data = t.get_transaction();
-        obj->start_transaction(data); // betzw: what if 'obj' is NOT equal to 'this'?
+    // betzw - DILEMMA: lock();
+    if (!i2s_active(&_i2s)) {
+    	Transaction<I2S> t;
+    	if (_transaction_buffer.pop(t)) {
+    		I2S* obj = t.get_object();
+    		transaction_t* data = t.get_transaction();
+    		MBED_ASSERT(obj == this); // betzw: what if 'obj' is NOT equal to 'this'?
+    		obj->start_transaction(data);
+    	}
     }
+    // betzw - DILEMMA: unlock();
 }
 
 #endif
 
+/***
+ * betzw - TODO: the beyond irq handlers must be split in top and bottom halves (see above).
+ *               Above all the '_callback' and 'dequeue_transaction()' shall be executed in
+ *               the bottom half!
+ ***/
 void I2S::irq_handler_asynch_rx(void)
 {
     int event = i2s_irq_handler_asynch(&_i2s, I2S_RX_EVENT);
     if (_callback && (event & I2S_EVENT_ALL)) {
-        _callback.call(event & I2S_EVENT_ALL);
+        _callback.call(event & I2S_EVENT_ALL); // betzw - TODO: schedule as bottom half
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
     if (event & I2S_EVENT_INTERNAL_TRANSFER_COMPLETE) {
-        dequeue_transaction();
+    	dequeue_transaction(); // betzw - TODO: schedule as bottom half
     }
 #endif
 }
@@ -282,11 +294,11 @@ void I2S::irq_handler_asynch_tx(void)
 {
     int event = i2s_irq_handler_asynch(&_i2s, I2S_TX_EVENT);
     if (_callback && (event & I2S_EVENT_ALL)) {
-        _callback.call(event & I2S_EVENT_ALL);
+        _callback.call(event & I2S_EVENT_ALL); // betzw - TODO: schedule as bottom half
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
     if (event & I2S_EVENT_INTERNAL_TRANSFER_COMPLETE) {
-        dequeue_transaction();
+    	dequeue_transaction(); // betzw - TODO: schedule as bottom half
     }
 #endif
 }

@@ -56,6 +56,7 @@
 #include "SPISlave.h"
 #include "I2C.h"
 #include "I2CSlave.h"
+#include "I2S.h"
 #include "Ethernet.h"
 #include "CAN.h"
 #include "RawSerial.h"
