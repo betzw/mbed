@@ -5,6 +5,10 @@
 
 #if DEVICE_I2S
 
+#ifndef MBED_CONF_RTOS_PRESENT
+#error "I2S only supports asynchronous transfers which require a RTOS!"
+#endif
+
 #include "PlatformMutex.h"
 #include "i2s_api.h"
 #include "SingletonPtr.h"
@@ -14,6 +18,9 @@
 #include "CircularBuffer.h"
 #include "FunctionPointer.h"
 #include "Transaction.h"
+
+#include "Thread.h"
+#include "EventQueue.h"
 
 namespace mbed {
 
@@ -41,6 +48,10 @@ public:
      *  @param wsel  I2S word select output pin (might be NC for PDM sources)
      *  @param fdpin I2S data input pin (for full-duplex operation, default = NC)
      *  @param mck   I2S master clock output (additional pin when needed for some external audio devices, default = NC)
+     *
+     *  @Note It is up to the application programmer to not generate at the same time two I2S instances with the
+     *        same pin (NC excluded) for one the parameters, otherwise the correct operation of this class cannot be
+     *        guaranteed (e.g. things like SPI clock enabling and above all disabling might not work correctly)!
      */
     I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin = NC, PinName mck = NC);
 
@@ -91,14 +102,20 @@ public:
      */
     template<typename Type>
     int transfer(const Type *tx_buffer, int tx_length, Type *rx_buffer, int rx_length, const event_callback_t& callback, int event) {
-    lock();
-	if (i2s_active(&_i2s)) {
-		unlock();
-	    return queue_transfer(tx_buffer, tx_length, rx_buffer, rx_length, callback, event);
-	}
-	start_transfer(tx_buffer, tx_length, rx_buffer, rx_length, callback, event);
-	unlock();
-	return 0;
+    	int ret = 0;
+
+    	lock();
+    	if (i2s_active(&_i2s)
+#if TRANSACTION_QUEUE_SIZE_I2S
+    			|| !_transaction_buffer.empty()
+#endif
+    	) {
+    		ret = queue_transfer(tx_buffer, tx_length, rx_buffer, rx_length, callback, event);
+    	} else {
+    		start_transfer(tx_buffer, tx_length, rx_buffer, rx_length, callback, event);
+    	}
+    	unlock();
+    	return ret;
     }
     
     /** Acquire exclusive access to this I2S bus
@@ -165,6 +182,41 @@ protected:
     void start_transfer(const void *tx_buffer, int tx_length, void *rx_buffer, int rx_length, 
 			const event_callback_t& callback, int event);
 
+    class I2sBhHandler {
+    	friend class I2S;
+
+    	static void init() {
+    		static bool inited = false;
+
+    		if(!inited) {
+    			Callback<void()> i2s_bh_task(i2s_bh_func);
+    			_i2s_bh_daemon.start(i2s_bh_task);
+    			inited = true;
+    		}
+    	}
+
+    	static void i2s_bh_func() {
+    		while(1) {
+    			rtos::Thread::signal_wait(_i2s_signal);
+    			_i2s_bh_queue.dispatch(0);
+    		}
+    	}
+
+    	static void i2s_defer_function(const event_callback_t& bottom_half, int event) {
+    		_i2s_bh_queue.call(bottom_half, event);
+    		_i2s_bh_daemon.signal_set(_i2s_signal);
+    	}
+
+    	static void i2s_defer_function(const Callback<void()>& bottom_half) {
+    		_i2s_bh_queue.call(bottom_half);
+    		_i2s_bh_daemon.signal_set(_i2s_signal);
+    	}
+
+    	static const int32_t _i2s_signal;
+    	static rtos::Thread _i2s_bh_daemon;
+    	static events::EventQueue _i2s_bh_queue;
+    };
+
 #if TRANSACTION_QUEUE_SIZE_I2S
     /** Start a new transaction
      *
@@ -195,9 +247,10 @@ protected:
     event_callback_t _callback;
     i2s_dma_prio_t _priority; // DMA priority
 
-    void aquire(void);
+    void acquire(void);
 
     static I2S *_owner;
+    static SingletonPtr<PlatformMutex> _mutex;
 
     int _dbits;
     int _fbits;
