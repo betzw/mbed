@@ -1,5 +1,6 @@
 #include "I2S.h"
 #include "critical.h"
+#include "mbed_assert.h"
 
 #if DEVICE_I2S
 
