@@ -66,12 +66,11 @@ channelid_t dma_channel_allocate(uint32_t capabilities) {
 void dma_channel_free(channelid_t channelid) {
 	struct dma_stream_s *channel = (struct dma_stream_s*)channelid;
 
+	core_util_critical_section_enter();
+
 	MBED_ASSERT((channel->busy == 1) && (dma1_ref_counter > 0));
 
-
-	core_util_critical_section_enter();
 	channel->busy = 0;
-
 	if(!(--dma1_ref_counter)) {
 		  __DMA1_FORCE_RESET();
 		  __DMA1_RELEASE_RESET();

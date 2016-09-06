@@ -244,8 +244,7 @@ void I2S::irq_handler_asynch_rx(void)
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
     if (event & I2S_EVENT_INTERNAL_TRANSFER_COMPLETE) {
-    	Callback<void()> cb(this, &mbed::I2S::dequeue_transaction);
-    	I2sBhHandler::i2s_defer_function(cb);
+    	I2sBhHandler::i2s_defer_function(Callback<void()>(this, &I2S::dequeue_transaction));
     }
 #endif
 }
@@ -258,8 +257,7 @@ void I2S::irq_handler_asynch_tx(void)
     }
 #if TRANSACTION_QUEUE_SIZE_I2S
     if (event & I2S_EVENT_INTERNAL_TRANSFER_COMPLETE) {
-    	Callback<void()> cb(this, &mbed::I2S::dequeue_transaction);
-    	I2sBhHandler::i2s_defer_function(cb);
+    	I2sBhHandler::i2s_defer_function(Callback<void()>(this, &I2S::dequeue_transaction));
     }
 #endif
 }
