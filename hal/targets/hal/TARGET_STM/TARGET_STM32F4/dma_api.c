@@ -10,7 +10,11 @@ static unsigned int dma1_ref_counter = 0;
 void dma_init(void) {
 	static int inited = 0;
 
-	if(inited) return;
+	core_util_critical_section_enter();
+	if(inited) {
+		core_util_critical_section_exit();
+		return;
+	}
 
 	inited = 1;
 
@@ -41,6 +45,8 @@ void dma_init(void) {
 	dma_map[DMA_SPI3][DMA_RX].channel_nr = DMA_CHANNEL_0;
 	dma_map[DMA_SPI3][DMA_RX].channel_nr_fd = DMA_CHANNEL_3;
 	dma_map[DMA_SPI3][DMA_RX].busy = 0;
+
+	core_util_critical_section_exit();
 }
 
 channelid_t dma_channel_allocate(uint32_t capabilities) {
