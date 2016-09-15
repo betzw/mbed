@@ -105,6 +105,11 @@ public:
     	int ret = 0;
 
     	lock();
+    	if(callback && (event & I2S_EVENT_ALL)) {
+    	    /* Init bottom half daemon */
+    	    I2sBhHandler::init();
+    	}
+
     	if (i2s_active(&_i2s)
 #if TRANSACTION_QUEUE_SIZE_I2S
     			|| !_transaction_buffer.empty()

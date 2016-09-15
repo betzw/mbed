@@ -42,8 +42,10 @@ I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
     /* Init instance */
     i2s_init(&_i2s, dpin, clk, wsel, fdpin, mck, _mode);
     acquire();
+#if TRANSACTION_QUEUE_SIZE_I2S
     /* Init bottom half daemon */
     I2sBhHandler::init();
+#endif
     unlock();
 }
 
