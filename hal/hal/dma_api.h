@@ -18,7 +18,9 @@
 
 #include <stdint.h>
 
-#define DMA_ERROR_OUT_OF_CHANNELS (-1)
+// betzw: Using a slightly modified interface as starting point for I2S/DMA implementation */
+
+#define DMA_ERROR_OUT_OF_CHANNELS (NULL)
 
 typedef enum {
     DMA_USAGE_NEVER,
@@ -28,15 +30,17 @@ typedef enum {
     DMA_USAGE_ALLOCATED
 } DMAUsage;
 
+typedef void* channelid_t;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 void dma_init(void);
 
-int dma_channel_allocate(uint32_t capabilities);
+channelid_t dma_channel_allocate(uint32_t capabilities);
 
-int dma_channel_free(int channelid);
+void dma_channel_free(channelid_t channelid);
 
 #ifdef __cplusplus
 }

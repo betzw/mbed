@@ -35,6 +35,9 @@
 #include "PeripheralNames.h"
 #include "PinNames.h"
 
+// betzw
+#include "dma_caps.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -77,6 +80,31 @@ struct spi_s {
 struct i2c_s {
     I2CName  i2c;
     uint32_t slave;
+};
+
+struct i2s_s {
+    PinName pin_data;
+    PinName pin_sclk;
+    PinName pin_wsel;
+    PinName pin_fdpx;
+    PinName pin_mclk;
+    uint32_t event;
+    uint8_t module;
+    uint8_t transfer_type;
+};
+
+struct dma_stream_s {
+	DMA_Stream_TypeDef *dma_stream;
+	IRQn_Type dma_stream_irq;
+	uint32_t  channel_nr;
+	uint32_t  channel_nr_fd;
+	uint8_t busy;
+};
+
+struct dma_s {
+    uint8_t dma_device;                                /**< DMA device */
+    uint8_t dma_direction;                             /**< Primary DMA direction */
+    const struct dma_stream_s *dma[NUM_OF_DIRECTIONS]; /**< Tx/Rx DMA devices */ // NOTE: do NOT touch contents!
 };
 
 #include "common_objects.h"
