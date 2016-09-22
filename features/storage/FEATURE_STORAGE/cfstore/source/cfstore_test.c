@@ -257,8 +257,8 @@ int32_t cfstore_test_startup(void)
 #ifdef CFSTORE_CONFIG_BACKEND_FLASH_ENABLED
 
     static FlashJournal_t jrnl;
-    extern ARM_DRIVER_STORAGE ARM_Driver_Storage_(0);
-    const ARM_DRIVER_STORAGE *drv = &ARM_Driver_Storage_(0);
+    extern ARM_DRIVER_STORAGE ARM_Driver_Storage_MTD_K64F;
+    const ARM_DRIVER_STORAGE *drv = &ARM_Driver_Storage_MTD_K64F;
 
     ret = FlashJournal_initialize(&jrnl, drv, &FLASH_JOURNAL_STRATEGY_SEQUENTIAL, NULL);
     if(ret < JOURNAL_STATUS_OK){
@@ -374,17 +374,12 @@ int32_t cfstore_test_delete_all(void)
             CFSTORE_ERRLOG("%s:Error: failed to delete key_name=%s, len=%d\r\n", __func__, key_name, (int) len);
             return ret;
         }
-        ret = drv->Close(next);
-        if(ret < ARM_DRIVER_OK){
-            CFSTORE_ERRLOG("%s:Error: failed to close key_name=%s, len=%d\r\n", __func__, key_name, (int) len);
-            return ret;
-        }
+        CFSTORE_HANDLE_SWAP(prev, next);
     }
     if(ret == ARM_CFSTORE_DRIVER_ERROR_KEY_NOT_FOUND) {
         /* as expected, no more keys have been found by the Find()*/
         ret = ARM_DRIVER_OK;
     }
-    // todo: find portable format specification CFSTORE_FENTRYLOG("%s:exiting (ret=%ld).\r\n", __func__, ret);
     CFSTORE_FENTRYLOG("%s:exiting (ret=%d).\r\n", __func__, (int) ret);
     return ret;
 }

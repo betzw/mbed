@@ -352,6 +352,7 @@ __attribute__((used)) void _mutex_release (OS_ID *mutex) {
 extern void pre_main (void);
 
 #if defined(TARGET_MCU_NRF51822) || defined(TARGET_MCU_NRF52832) || defined (TARGET_STM32F334R8) ||\
+    defined(TARGET_STM32F070RB) || defined(TARGET_STM32F072RB) || \
     defined(TARGET_STM32F302R8) || defined(TARGET_STM32F303K8) || defined (TARGET_STM32F334C8)
 static uint32_t thread_stack_main[DEFAULT_STACK_SIZE / sizeof(uint32_t)];
 #else
@@ -460,7 +461,7 @@ osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 1U, 
 #elif defined(TARGET_DISCO_F303VC)
 #define INITIAL_SP            (0x2000A000UL)
 
-#elif defined(TARGET_STM32F407) || defined(TARGET_F407VG)
+#elif defined(TARGET_STM32F407) || defined(TARGET_STM32F407VG)
 #define INITIAL_SP            (0x20020000UL)
 
 #elif defined(TARGET_STM32F401RE)
@@ -496,14 +497,8 @@ osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 1U, 
 #elif  defined(TARGET_STM32F405RG)
 #define INITIAL_SP            (0x20020000UL)
 
-#elif defined(TARGET_STM32F429ZI)
+#elif defined(TARGET_STM32F429ZI) || defined(TARGET_UBLOX_C029)
 #define INITIAL_SP            (0x20030000UL)
-
-#elif defined(TARGET_STM32L031K6) || defined(TARGET_STM32L053R8) || defined(TARGET_STM32L053C8)
-#define INITIAL_SP            (0x20002000UL)
-
-#elif defined(TARGET_STM32F072RB)
-#define INITIAL_SP            (0x20004000UL)
 
 #elif defined(TARGET_STM32F091RC)
 #define INITIAL_SP            (0x20008000UL)
@@ -511,7 +506,7 @@ osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 1U, 
 #elif defined(TARGET_STM32F401VC)
 #define INITIAL_SP            (0x20010000UL)
 
-#elif defined(TARGET_STM32F303RE)
+#elif defined(TARGET_STM32F303RE) ||  defined(TARGET_STM32F303ZE)
 #define INITIAL_SP            (0x20010000UL)
 
 #elif defined(TARGET_STM32F303K8)
@@ -535,8 +530,8 @@ osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 1U, 
 #elif defined(TARGET_STM32F446RE) || defined(TARGET_STM32F446VE) || defined(TARGET_STM32F446ZE)
 #define INITIAL_SP            (0x20020000UL)
 
-#elif defined(TARGET_STM32F070RB) || defined(TARGET_STM32F030R8)
-#define INITIAL_SP            (0x20002000UL)
+#elif defined(TARGET_STM32F072RB) || defined(TARGET_STM32F070RB)
+#define INITIAL_SP            (0x20004000UL)
 
 #elif defined(TARGET_STM32L432KC)
 #define INITIAL_SP            (0x2000C000UL)
@@ -574,14 +569,17 @@ osThreadDef_t os_thread_def_main = {(os_pthread)pre_main, osPriorityNormal, 1U, 
 #elif (defined(TARGET_STM32F767ZI))
 #define INITIAL_SP            (0x20080000UL)
 
+#elif (defined(TARGET_STM32F769NI))
+#define INITIAL_SP            (0x20080000UL)
+
 #elif defined(TARGET_NUMAKER_PFM_NUC472)
 #   if defined(__CC_ARM)
-extern uint32_t                 Image$$ARM_LIB_HEAP$$Base[];
-extern uint32_t                 Image$$ARM_LIB_HEAP$$Length[];
+extern uint32_t                 Image$$ARM_LIB_HEAP$$ZI$$Base[];
+extern uint32_t                 Image$$ARM_LIB_HEAP$$ZI$$Length[];
 extern uint32_t                 Image$$ARM_LIB_STACK$$ZI$$Base[];
 extern uint32_t                 Image$$ARM_LIB_STACK$$ZI$$Length[];
-#define HEAP_START              ((unsigned char*) Image$$ARM_LIB_HEAP$$Base)
-#define HEAP_SIZE               ((uint32_t) Image$$ARM_LIB_HEAP$$Length)
+#define HEAP_START              ((unsigned char*) Image$$ARM_LIB_HEAP$$ZI$$Base)
+#define HEAP_SIZE               ((uint32_t) Image$$ARM_LIB_HEAP$$ZI$$Length)
 #define ISR_STACK_START         ((unsigned char*)Image$$ARM_LIB_STACK$$ZI$$Base)
 #define ISR_STACK_SIZE          ((uint32_t)Image$$ARM_LIB_STACK$$ZI$$Length)
 #   elif defined(__GNUC__)
@@ -798,7 +796,6 @@ void pre_main(void) {
     singleton_mutex_id = osMutexCreate(osMutex(singleton_mutex));
     malloc_mutex_id = osMutexCreate(osMutex(malloc_mutex));
     env_mutex_id = osMutexCreate(osMutex(env_mutex));
-    atexit(__libc_fini_array);
     __libc_init_array();
     main(0, NULL);
 }

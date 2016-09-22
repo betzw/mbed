@@ -145,6 +145,11 @@ const char *lwip_get_ip_address(void)
 int lwip_bringup(void)
 {
     // Check if we've already connected
+    if (lwip_get_ip_address()) {
+        return NSAPI_ERROR_PARAMETER;
+    }
+
+    // Check if we've already brought up lwip
     if (!lwip_get_mac_address()) {
         // Set up network
         lwip_set_mac_address();
@@ -181,12 +186,19 @@ int lwip_bringup(void)
     return 0;
 }
 
-void lwip_bringdown(void)
+int lwip_bringdown(void)
 {
+    // Check if we've connected
+    if (!lwip_get_ip_address()) {
+        return NSAPI_ERROR_PARAMETER;
+    }
+
     // Disconnect from the network
     dhcp_release(&lwip_netif);
     dhcp_stop(&lwip_netif);
     lwip_ip_addr[0] = '\0';
+
+    return 0;
 }
 
 
@@ -194,11 +206,12 @@ void lwip_bringdown(void)
 static int lwip_err_remap(err_t err) {
     switch (err) {
         case ERR_OK:
+        case ERR_CLSD:
+        case ERR_RST:
             return 0;
         case ERR_MEM:
             return NSAPI_ERROR_NO_MEMORY;
         case ERR_CONN:
-        case ERR_CLSD:
             return NSAPI_ERROR_NO_CONNECTION;
         case ERR_TIMEOUT:
         case ERR_RTE:
@@ -242,6 +255,12 @@ static int lwip_gethostbyname(nsapi_stack_t *stack, nsapi_addr_t *addr, const ch
 
 static int lwip_socket_open(nsapi_stack_t *stack, nsapi_socket_t *handle, nsapi_protocol_t proto)
 {
+    // check if network is connected
+    if (!lwip_get_ip_address()) {
+        return NSAPI_ERROR_NO_CONNECTION;
+    }
+
+    // allocate a socket
     struct lwip_socket *s = lwip_arena_alloc();
     if (!s) {
         return NSAPI_ERROR_NO_SOCKET;
@@ -278,6 +297,11 @@ static int lwip_socket_bind(nsapi_stack_t *stack, nsapi_socket_t handle, nsapi_a
         return NSAPI_ERROR_PARAMETER;
     }
 
+    if ((s->conn->type == NETCONN_TCP && s->conn->pcb.tcp->local_port != 0) ||
+        (s->conn->type == NETCONN_UDP && s->conn->pcb.udp->local_port != 0)) {
+        return NSAPI_ERROR_PARAMETER;
+    }
+
     err_t err = netconn_bind(s->conn, (ip_addr_t *)addr.bytes, port);
     return lwip_err_remap(err);
 }
@@ -308,6 +332,9 @@ static int lwip_socket_accept(nsapi_stack_t *stack, nsapi_socket_t server, nsapi
 {
     struct lwip_socket *s = (struct lwip_socket *)server;
     struct lwip_socket *ns = lwip_arena_alloc();
+    if (!ns) {
+        return NSAPI_ERROR_NO_SOCKET;
+    }
 
     err_t err = netconn_accept(s->conn, &ns->conn);
     if (err != ERR_OK) {
@@ -345,7 +372,7 @@ static int lwip_socket_recv(nsapi_stack_t *stack, nsapi_socket_t handle, void *d
         s->offset = 0;
 
         if (err != ERR_OK) {
-            return (err == ERR_CLSD) ? 0 : lwip_err_remap(err);
+            return lwip_err_remap(err);
         }
     }
 

@@ -15,10 +15,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 """
 
+import os
+import sys
+
 # Implementation of mbed configuration mechanism
 from tools.utils import json_file_to_dict
 from tools.targets import Target
-import os
 
 # Base class for all configuration exceptions
 class ConfigException(Exception):
@@ -339,7 +341,7 @@ class Config(object):
     __allowed_keys = {
         "library": set(["name", "config", "target_overrides", "macros",
                         "__config_path"]),
-        "application": set(["config", "custom_targets", "target_overrides",
+        "application": set(["config", "target_overrides",
                             "macros", "__config_path"])
     }
 
@@ -348,7 +350,7 @@ class Config(object):
         "UVISOR", "BLE", "CLIENT", "IPV4", "IPV6", "COMMON_PAL", "STORAGE"
     ]
 
-    def __init__(self, target, top_level_dirs=None):
+    def __init__(self, target, top_level_dirs=None, app_config=None):
         """Construct a mbed configuration
 
         Positional arguments:
@@ -357,27 +359,32 @@ class Config(object):
 
         Keyword argumets:
         top_level_dirs - a list of top level source directories (where
-                         mbed_abb_config.json could be found)
+                         mbed_app_config.json could be found)
+        app_config - location of a chosen mbed_app.json file
 
         NOTE: Construction of a Config object will look for the application
-        configuration file in top_level_dirs. If found once, it'll parse it and
-        check if it has a custom_targets function. If it does, it'll update the
-        list of targets as needed. If more than one config file is found, an
-        exception is raised. top_level_dirs may be None (in this case,
-        the constructor will not search for a configuration file)
+        configuration file in top_level_dirs. If found once, it'll parse it.
+        top_level_dirs may be None (in this case, the constructor will not
+        search for a configuration file).
         """
-        app_config_location = None
-        for directory in top_level_dirs or []:
-            full_path = os.path.join(directory, self.__mbed_app_config_name)
-            if os.path.isfile(full_path):
-                if app_config_location is not None:
-                    raise ConfigException("Duplicate '%s' file in '%s' and '%s'"
-                                          % (self.__mbed_app_config_name,
-                                             app_config_location, full_path))
-                else:
-                    app_config_location = full_path
-        self.app_config_data = json_file_to_dict(app_config_location) \
-                               if app_config_location else {}
+        app_config_location = app_config
+        if app_config_location is None:
+            for directory in top_level_dirs or []:
+                full_path = os.path.join(directory, self.__mbed_app_config_name)
+                if os.path.isfile(full_path):
+                    if app_config_location is not None:
+                        raise ConfigException("Duplicate '%s' file in '%s' and '%s'"
+                                              % (self.__mbed_app_config_name,
+                                                 app_config_location, full_path))
+                    else:
+                        app_config_location = full_path
+        try:
+            self.app_config_data = json_file_to_dict(app_config_location) \
+                                   if app_config_location else {}
+        except ValueError as exc:
+            sys.stderr.write(str(exc) + "\n")
+            self.app_config_data = {}
+
         # Check the keys in the application configuration data
         unknown_keys = set(self.app_config_data.keys()) - \
                        self.__allowed_keys["application"]
@@ -387,7 +394,6 @@ class Config(object):
                                    self.__mbed_app_config_name))
         # Update the list of targets with the ones defined in the application
         # config, if applicable
-        Target.add_py_targets(self.app_config_data.get("custom_targets", {}))
         self.lib_config_data = {}
         # Make sure that each config is processed only once
         self.processed_configs = {}
@@ -419,7 +425,12 @@ class Config(object):
             self.processed_configs[full_path] = True
             # Read the library configuration and add a "__full_config_path"
             # attribute to it
-            cfg = json_file_to_dict(config_file)
+            try:
+                cfg = json_file_to_dict(config_file)
+            except ValueError as exc:
+                sys.stderr.write(str(exc) + "\n")
+                continue
+
             cfg["__config_path"] = full_path
 
             if "name" not in cfg:
