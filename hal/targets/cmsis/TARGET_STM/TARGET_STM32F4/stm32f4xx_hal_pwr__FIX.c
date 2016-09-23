@@ -398,8 +398,11 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
   else
   {
     /* Request Wait For Event */
+#if 0 // betzw - WHY: What is the reasoning here?
+	  //              Otherwise we might block far too often!!!
     __SEV();
     __WFE();
+#endif
     __WFE();
   }
 }
@@ -444,8 +447,11 @@ void HAL_PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
   else
   {
     /* Request Wait For Event */
+#if 0 // betzw - WHY: What is the reasoning here?
+	  //              Otherwise we might block far too often!!!
     __SEV();
     __WFE();
+#endif
     __WFE();
   }
   /* Reset SLEEPDEEP bit of Cortex System Control Register */
@@ -528,7 +534,7 @@ void HAL_PWR_EnableSleepOnExit(void)
   * @retval None
   */
 void HAL_PWR_DisableSleepOnExit(void)
-{
+{9.2.6. Send event on pend (SEVONPEND)...............................300
   /* Clear SLEEPONEXIT bit of Cortex System Control Register */
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPONEXIT_Msk));
 }
