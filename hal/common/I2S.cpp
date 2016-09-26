@@ -10,7 +10,7 @@ namespace mbed {
 #if TRANSACTION_QUEUE_SIZE_I2S
 CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> I2S::_transaction_buffer;
 #endif
-$*/
+*/
 
 I2S* I2S::_owner = NULL;
 SingletonPtr<PlatformMutex> I2S::_mutex; // intentional class level lock!
