@@ -534,7 +534,7 @@ void HAL_PWR_EnableSleepOnExit(void)
   * @retval None
   */
 void HAL_PWR_DisableSleepOnExit(void)
-{9.2.6. Send event on pend (SEVONPEND)...............................300
+{
   /* Clear SLEEPONEXIT bit of Cortex System Control Register */
   CLEAR_BIT(SCB->SCR, ((uint32_t)SCB_SCR_SLEEPONEXIT_Msk));
 }

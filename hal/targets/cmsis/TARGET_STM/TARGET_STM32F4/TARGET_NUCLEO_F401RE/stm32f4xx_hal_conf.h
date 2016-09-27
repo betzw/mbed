@@ -258,7 +258,7 @@
 #endif /* HAL_GPIO_MODULE_ENABLED */
 
 #ifdef HAL_DMA_MODULE_ENABLED
-  #include "stm32f4xx_hal_dma.h"
+  #include "stm32f4xx_hal_dma__FIX.h"
 #endif /* HAL_DMA_MODULE_ENABLED */
    
 #ifdef HAL_CORTEX_MODULE_ENABLED

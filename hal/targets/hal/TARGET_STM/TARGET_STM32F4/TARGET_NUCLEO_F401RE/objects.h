@@ -63,11 +63,6 @@ struct analogin_s {
     uint8_t channel;
 };
 
-struct i2c_s {
-    I2CName  i2c;
-    uint32_t slave;
-};
-
 struct i2s_s {
     PinName pin_data;
     PinName pin_sclk;

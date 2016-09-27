@@ -615,7 +615,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-f030r8"},
         "detect_code": ["0725"],
-        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_lib": "small",
         "release_versions": ["2"]
     },
@@ -656,7 +656,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-f070rb"},
         "detect_code": ["0755"],
-        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_F072RB": {
@@ -668,7 +668,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-f072rb"},
         "detect_code": ["0730"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_F091RC": {
@@ -680,7 +680,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-f091rc"},
         "detect_code": ["0750"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_F103RB": {
@@ -750,15 +750,14 @@
     "NUCLEO_F303ZE": {
         "supported_form_factors": ["ARDUINO", "MORPHO"],
         "core": "Cortex-M4F",
-        "fpu": "single",
-        "default_toolchain": "uARM",
+        "default_toolchain": "ARM",
         "extra_labels": ["STM", "STM32F3", "STM32F303ZE"],
         "supported_toolchains": ["ARM", "uARM", "IAR", "GCC_ARM"],
         "inherits": ["Target"],
         "progen": {"target": "nucleo-f303ze"},
-        "detect_code": ["0745"],
+        "detect_code": ["0747"],
         "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "NUCLEO_F334R8": {
         "supported_form_factors": ["ARDUINO", "MORPHO"],
@@ -783,7 +782,7 @@
         "progen": {"target": "nucleo-f401re"},
         "detect_code": ["0720"],
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2"],
-        "device_has": ["ANALOGIN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES", "I2S"],
+        "device_has": ["ANALOGIN", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES", "I2S"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_F410RB": {
@@ -796,7 +795,7 @@
         "progen": {"target": "nucleo-f410rb"},
         "macros": ["MBEDTLS_ENTROPY_HARDWARE_ALT", "TRANSACTION_QUEUE_SIZE_SPI=2"],
         "detect_code": ["0740"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_F411RE": {
@@ -809,7 +808,7 @@
         "progen": {"target": "nucleo-f411re"},
         "detect_code": ["0740"],
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2"],
-        "device_has": ["ANALOGIN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "ELMO_F411RE": {
@@ -834,7 +833,7 @@
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "progen": {"target": "nucleo-f429zi"},
         "macros": ["MBEDTLS_ENTROPY_HARDWARE_ALT", "DEVICE_RTC_LSI=1", "TRANSACTION_QUEUE_SIZE_SPI=2"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "RTC_LSI", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "detect_code": ["0796"],
         "features": ["IPV4"],
         "release_versions": ["2", "5"]
@@ -849,7 +848,7 @@
         "progen": {"target": "nucleo-f446re"},
         "detect_code": ["0777"],
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_F446ZE": {
@@ -862,7 +861,8 @@
         "progen": {"target": "nucleo-f446ze"},
         "detect_code": ["0778"],
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"]
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "release_versions": ["2", "5"]
     },
 
     "B96B_F446VE": {
@@ -892,7 +892,7 @@
         },
         "supported_form_factors": ["ARDUINO"],
         "detect_code": ["0816"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "features": ["IPV4"],
         "release_versions": ["2", "5"]
     },
@@ -905,7 +905,7 @@
         "macros": ["MBEDTLS_ENTROPY_HARDWARE_ALT"],
         "progen": {"target": "nucleo-f767zi"},
         "detect_code": ["0818"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "features": ["IPV4"],
         "release_versions": ["2", "5"]
     },
@@ -918,7 +918,7 @@
         "supported_form_factors": ["ARDUINO"],
         "detect_code": ["0780"],
         "progen": {"target":"nucleo-l011k4"},
-        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_lib": "small",
         "release_versions": ["2"]
     },
@@ -932,7 +932,7 @@
         "supported_form_factors": ["ARDUINO"],
         "detect_code": ["0790"],
         "progen": {"target": "nucleo-l031k6"},
-        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_lib": "small",
         "release_versions": ["2"]
     },
@@ -945,7 +945,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-l053r8"},
         "detect_code": ["0715"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_lib": "small",
         "release_versions": ["2"]
     },
@@ -958,7 +958,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-l073rz"},
         "detect_code": ["0760"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_L152RE": {
@@ -970,7 +970,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-l152re"},
         "detect_code": ["0710"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_L432KC": {
@@ -982,7 +982,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-l432kc"},
         "detect_code": ["0770"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "CAN", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "CAN", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "NUCLEO_L476RG": {
@@ -994,7 +994,7 @@
         "inherits": ["Target"],
         "progen": {"target": "nucleo-l476rg"},
         "detect_code": ["0765"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "STM32F3XX": {
@@ -1058,7 +1058,7 @@
         "detect_code": ["0810"],
         "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "RTC_LSI", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_lib": "small",
-	"release_versions": ["2"]
+        "release_versions": ["2"]
     },
     "DISCO_F407VG": {
         "inherits": ["Target"],
@@ -1077,7 +1077,7 @@
         "macros": ["MBEDTLS_ENTROPY_HARDWARE_ALT","DEVICE_RTC_LSI=1","TRANSACTION_QUEUE_SIZE_SPI=2"],
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "progen": {"target": "disco-f429zi"},
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "DISCO_F469NI": {
@@ -1090,7 +1090,7 @@
         "macros": ["MBEDTLS_ENTROPY_HARDWARE_ALT","TRANSACTION_QUEUE_SIZE_SPI=2"],
         "progen": {"target": "disco-f469ni"},
         "detect_code": ["0788"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "DISCO_L053C8": {
@@ -1100,7 +1100,7 @@
         "extra_labels": ["STM", "STM32L0", "STM32L053C8"],
         "supported_toolchains": ["ARM", "uARM", "IAR", "GCC_ARM"],
         "progen": {"target": "disco-l053c8"},
-        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "default_lib": "small",
         "release_versions": ["2"]
     },
@@ -1113,7 +1113,7 @@
         "macros": ["MBEDTLS_ENTROPY_HARDWARE_ALT"],
         "progen": {"target": "disco-f746ng"},
         "detect_code": ["0815"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "features": ["IPV4"],
         "release_versions": ["2", "5"]
     },
@@ -1125,7 +1125,7 @@
         "default_toolchain": "ARM",
         "progen": {"target": "disco-f769ni"},
         "detect_code": ["0817"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "features": ["IPV4"],
         "release_versions": ["2"]
     },
@@ -1137,7 +1137,7 @@
         "supported_toolchains": ["ARM", "uARM", "IAR", "GCC_ARM"],
         "progen": {"target": "disco-l476vg"},
         "detect_code": ["0820"],
-        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
     },
     "MTS_MDOT_F405RG": {
@@ -1146,7 +1146,7 @@
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "extra_labels": ["STM", "STM32F4", "STM32F405RG"],
         "is_disk_virtual": true,
-        "macros": ["HSE_VALUE=26000000", "OS_CLOCK=48000000", "TRANSACTION_QUEUE_SIZE_SPI=2"],
+        "macros": ["HSE_VALUE=26000000", "TRANSACTION_QUEUE_SIZE_SPI=2"],
         "progen": {"target": "mts-mdot-f405rg"},
         "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "release_versions": ["2"]
@@ -1156,7 +1156,7 @@
         "core": "Cortex-M4F",
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "extra_labels": ["STM", "STM32F4", "STM32F411RE"],
-        "macros": ["HSE_VALUE=26000000", "OS_CLOCK=96000000", "USE_PLL_HSE_EXTC=0", "VECT_TAB_OFFSET=0x00010000","TRANSACTION_QUEUE_SIZE_SPI=2"],
+        "macros": ["HSE_VALUE=26000000", "USE_PLL_HSE_EXTC=0", "VECT_TAB_OFFSET=0x00010000","TRANSACTION_QUEUE_SIZE_SPI=2"],
         "post_binary_hook": {
             "function": "MTSCode.combine_bins_mts_dot",
             "toolchains": ["GCC_ARM", "ARM_STD", "ARM_MICRO"]
@@ -1178,6 +1178,16 @@
         "progen": {"target": "mts-dragonfly-f411re"},
         "device_has": ["ANALOGIN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "release_versions": ["2", "5"]
+    },
+    "XDOT_L151CC": {
+        "inherits": ["Target"],
+        "core": "Cortex-M3",
+        "default_toolchain": "ARM",
+        "extra_labels": ["STM", "STM32L1", "STM32L151CC"],
+        "supported_toolchains": ["ARM", "GCC_ARM"],
+        "progen": {"target": "xdot-l151cc"},
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "default_lib": "std"
     },
     "MOTE_L152RC": {
         "inherits": ["Target"],
@@ -1210,6 +1220,7 @@
         "macros": ["HSE_VALUE=24000000", "HSE_STARTUP_TIMEOUT=5000", "CB_INTERFACE_SDIO","CB_CHIP_WL18XX","SUPPORT_80211D_ALWAYS","WLAN_ENABLED"],
         "inherits": ["Target"],
         "device_has": ["ANALOGIN", "CAN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "features": ["IPV4"],
         "release_versions": ["5"]
     },
     "NZ32_SC151": {
@@ -1516,6 +1527,7 @@
     "NRF51_DK_LEGACY": {
         "supported_form_factors": ["ARDUINO"],
         "inherits": ["MCU_NRF51_32K"],
+        "extra_labels_add": ["NRF51_DK"],
         "progen": {"target": "nrf51-dk"}
     },
     "NRF51_DK_BOOT": {
@@ -1530,9 +1542,10 @@
         "extra_labels_add": ["NRF51_DK"],
         "macros_add": ["TARGET_NRF51_DK"]
     },
-    "NRF51_DONGLE": {
+    "NRF51_DONGLE_LEGACY": {
         "inherits": ["MCU_NRF51_32K"],
         "progen": {"target": "nrf51-dongle"},
+        "extra_labels_add": ["NRF51_DONGLE"],
         "release_versions": ["2"]
     },
     "NRF51_DONGLE_BOOT": {
@@ -1769,39 +1782,39 @@
         "core": "Cortex-M3",
         "macros": ["EFM32GG990F1024"],
         "extra_labels": ["Silicon_Labs", "EFM32"],
-        "supported_toolchains": ["GCC_ARM", "ARM", "uARM"],
+        "supported_toolchains": ["GCC_ARM", "ARM", "uARM", "IAR"],
         "progen": {"target": "efm32gg-stk"},
         "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_PATTERN", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "forced_reset_timeout": 2,
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "EFM32LG_STK3600": {
         "inherits": ["Target"],
         "core": "Cortex-M3",
         "macros": ["EFM32LG990F256"],
         "extra_labels": ["Silicon_Labs", "EFM32"],
-        "supported_toolchains": ["GCC_ARM", "ARM", "uARM"],
+        "supported_toolchains": ["GCC_ARM", "ARM", "uARM", "IAR"],
         "progen": {"target": "efm32lg-stk"},
         "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_PATTERN", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "forced_reset_timeout": 2,
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "EFM32WG_STK3800": {
         "inherits": ["Target"],
         "core": "Cortex-M4F",
         "macros": ["EFM32WG990F256"],
         "extra_labels": ["Silicon_Labs", "EFM32"],
-        "supported_toolchains": ["GCC_ARM", "ARM", "uARM"],
+        "supported_toolchains": ["GCC_ARM", "ARM", "uARM", "IAR"],
         "progen": {"target": "efm32wg-stk"},
         "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_PATTERN", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "forced_reset_timeout": 2,
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "EFM32ZG_STK3200": {
         "inherits": ["Target"],
         "core": "Cortex-M0+",
         "default_toolchain": "uARM",
-        "supported_toolchains": ["GCC_ARM", "uARM"],
+        "supported_toolchains": ["GCC_ARM", "uARM", "IAR"],
         "extra_labels": ["Silicon_Labs", "EFM32"],
         "macros": ["EFM32ZG222F32"],
         "progen": {
@@ -1816,7 +1829,7 @@
         "inherits": ["Target"],
         "core": "Cortex-M0+",
         "default_toolchain": "uARM",
-        "supported_toolchains": ["GCC_ARM", "uARM"],
+        "supported_toolchains": ["GCC_ARM", "uARM", "IAR"],
         "extra_labels": ["Silicon_Labs", "EFM32"],
         "macros": ["EFM32HG322F64"],
         "progen": {
@@ -1976,6 +1989,12 @@
         "inherits": ["MCU_NRF51_32K_UNIFIED"],
         "progen": {"target": "nrf51-dk"},
         "device_has": ["ANALOGIN", "ERROR_PATTERN", "I2C", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPI_ASYNCH", "SPISLAVE"],
+        "release_versions": ["2", "5"]
+    },
+    "NRF51_DONGLE": {
+        "inherits": ["MCU_NRF51_32K_UNIFIED"],
+        "progen": {"target": "nrf51-dongle"},
+        "device_has": ["ERROR_PATTERN", "I2C", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPI_ASYNCH", "SPISLAVE"],        
         "release_versions": ["2", "5"]
     },
     "MCU_NRF52": {
