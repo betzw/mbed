@@ -21,6 +21,7 @@
  */
 
 #include "rtos_idle.h"
+#include "sleep_api.h"
 
 static void default_idle_hook(void)
 {
