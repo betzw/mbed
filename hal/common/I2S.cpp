@@ -20,11 +20,21 @@ rtos::Thread I2S::I2sBhHandler::_i2s_bh_daemon;
 events::EventQueue I2S::I2sBhHandler::_i2s_bh_queue;
 
 void I2S::lock() {
+#ifdef NDEBUG
     _mutex->lock(); // intentional class level lock!
+#else
+    osStatus ret = _mutex->lock(); // intentional class level lock!
+    MBED_ASSERT(ret == osOK);
+#endif
 }
 
 void I2S::unlock() {
+#ifdef NDEBUG
     _mutex->unlock(); // intentional class level lock!
+#else
+    osStatus ret = _mutex->unlock(); // intentional class level lock!
+    MBED_ASSERT(ret == osOK);
+#endif
 }
 
 I2S::I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin, PinName mck) :
