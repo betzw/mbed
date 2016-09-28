@@ -196,30 +196,20 @@ protected:
     		static bool inited = false;
 
     		if(!inited) {
-    			Callback<void()> i2s_bh_task(i2s_bh_func);
+    			Callback<void()> i2s_bh_task(&_i2s_bh_queue, &events::EventQueue::dispatch);
     			_i2s_bh_daemon.start(i2s_bh_task);
     			inited = true;
     		}
     	}
 
-    	static void i2s_bh_func() {
-    		while(1) {
-    			rtos::Thread::signal_wait(_i2s_signal);
-    			_i2s_bh_queue.dispatch(0);
-    		}
-    	}
-
     	static void i2s_defer_function(const event_callback_t& bottom_half, int event) {
     		_i2s_bh_queue.call(bottom_half, event);
-    		_i2s_bh_daemon.signal_set(_i2s_signal);
     	}
 
     	static void i2s_defer_function(const Callback<void()>& bottom_half) {
     		_i2s_bh_queue.call(bottom_half);
-    		_i2s_bh_daemon.signal_set(_i2s_signal);
     	}
 
-    	static const int32_t _i2s_signal;
     	static rtos::Thread _i2s_bh_daemon;
     	static events::EventQueue _i2s_bh_queue;
     };

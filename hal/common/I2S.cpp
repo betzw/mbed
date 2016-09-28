@@ -15,7 +15,6 @@ CircularBuffer<Transaction<I2S>, TRANSACTION_QUEUE_SIZE_I2S> I2S::_transaction_b
 I2S* I2S::_owner = NULL;
 SingletonPtr<PlatformMutex> I2S::_mutex; // intentional class level lock!
 
-const int32_t I2S::I2sBhHandler::_i2s_signal = 0x1;
 rtos::Thread I2S::I2sBhHandler::_i2s_bh_daemon;
 events::EventQueue I2S::I2sBhHandler::_i2s_bh_queue;
 
