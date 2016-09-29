@@ -6,7 +6,9 @@
 #if DEVICE_I2S
 
 #ifndef MBED_CONF_RTOS_PRESENT
-#error "I2S only supports asynchronous transfers which require a RTOS!"
+#error "I2S only supports asynchronous transfers which currently require a RTOS!"
+#else
+#include "Thread.h" // betzw - TODO: this requires a RTOS (i.e. needs to be generalized for mbed-classic)
 #endif
 
 #include "PlatformMutex.h"
@@ -19,7 +21,6 @@
 #include "FunctionPointer.h"
 #include "Transaction.h"
 
-#include "Thread.h"
 #include "EventQueue.h"
 
 namespace mbed {
@@ -50,8 +51,8 @@ public:
      *  @param mck   I2S master clock output (additional pin when needed for some external audio devices, default = NC)
      *
      *  @Note It is up to the application programmer to not generate at the same time two I2S instances with the
-     *        same pin (NC excluded) for one the parameters, otherwise the correct operation of this class cannot be
-     *        guaranteed (e.g. things like SPI clock enabling and above all disabling might not work correctly)!
+     *        same pin (NC excluded) for one of the parameters, otherwise the correct operation of this class cannot be
+     *        guaranteed (e.g. things like SPI/I2S clock enabling and above all disabling might not work correctly)!
      */
     I2S(PinName dpin, PinName clk, PinName wsel, PinName fdpin = NC, PinName mck = NC);
 
@@ -81,7 +82,7 @@ public:
     /** Set the i2s mode
      *
      *  @param mode     I2S mode to be used
-     *  @param circular I2S should read/write buffers continously (in circular mode)
+     *  @param circular I2S should read/write buffers continuously (in circular mode)
      *  @return Zero if the usage was set, -1 if a transaction is on-going
      */
     int set_mode(i2s_mode_t mode, bool circular);
@@ -95,7 +96,6 @@ public:
      *                  received data will be ignored
      * @param rx_length The length of RX buffer in bytes
      * @param callback  The event callback function
-     *                  NOTE: this one will be executed in interrupt context!!!
      * @param event     The logical OR of events to notify. Look at i2s hal header file for I2S events.
      * @return Zero if the transfer has started (or been queued), or 
      *         -1   if I2S peripheral is busy (or out of resources)
@@ -197,7 +197,7 @@ protected:
 
     		if(!inited) {
     			Callback<void()> i2s_bh_task(&_i2s_bh_queue, &events::EventQueue::dispatch);
-    			_i2s_bh_daemon.start(i2s_bh_task);
+    			_i2s_bh_daemon.start(i2s_bh_task); // betzw - TODO: this requires a RTOS (i.e. needs to be generalized for mbed-classic)
     			inited = true;
     		}
     	}
@@ -210,7 +210,7 @@ protected:
     		_i2s_bh_queue.call(bottom_half);
     	}
 
-    	static rtos::Thread _i2s_bh_daemon;
+    	static rtos::Thread _i2s_bh_daemon; // betzw - TODO: this requires a RTOS (i.e. needs to be generalized for mbed-classic)
     	static events::EventQueue _i2s_bh_queue;
     };
 
