@@ -398,8 +398,11 @@ void HAL_PWR_EnterSLEEPMode(uint32_t Regulator, uint8_t SLEEPEntry)
   else
   {
     /* Request Wait For Event */
+#if 0 // betzw - WHY: What is the reasoning here?
+	  //              Otherwise we might block far too often!!!
     __SEV();
     __WFE();
+#endif
     __WFE();
   }
 }
@@ -444,8 +447,11 @@ void HAL_PWR_EnterSTOPMode(uint32_t Regulator, uint8_t STOPEntry)
   else
   {
     /* Request Wait For Event */
+#if 0 // betzw - WHY: What is the reasoning here?
+	  //              Otherwise we might block far too often!!!
     __SEV();
     __WFE();
+#endif
     __WFE();
   }
   /* Reset SLEEPDEEP bit of Cortex System Control Register */
