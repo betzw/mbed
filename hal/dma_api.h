@@ -1,3 +1,6 @@
+
+/** \addtogroup hal */
+/** @{*/
 /* mbed Microcontroller Library
  * Copyright (c) 2014-2015 ARM Limited
  *
@@ -47,3 +50,5 @@ void dma_channel_free(channelid_t channelid);
 #endif
 
 #endif
+
+/** @}*/
