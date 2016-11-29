@@ -19,8 +19,7 @@
 #include "mbed_assert.h"
 
 UDPSocket::UDPSocket()
-    : _pending(0), _read_sem(0), _write_sem(0),
-      _read_in_progress(false), _write_in_progress(false)
+    : _pending(0), _read_sem(0), _write_sem(0)
 {
 }
 
@@ -34,10 +33,10 @@ nsapi_protocol_t UDPSocket::get_proto()
     return NSAPI_UDP;
 }
 
-int UDPSocket::sendto(const char *host, uint16_t port, const void *data, unsigned size)
+nsapi_size_or_error_t UDPSocket::sendto(const char *host, uint16_t port, const void *data, nsapi_size_t size)
 {
     SocketAddress address;
-    int err = _stack->gethostbyname(host, &address);
+    nsapi_size_or_error_t err = _stack->gethostbyname(host, &address);
     if (err) {
         return NSAPI_ERROR_DNS_FAILURE;
     }
@@ -48,16 +47,10 @@ int UDPSocket::sendto(const char *host, uint16_t port, const void *data, unsigne
     return sendto(address, data, size);
 }
 
-int UDPSocket::sendto(const SocketAddress &address, const void *data, unsigned size)
+nsapi_size_or_error_t UDPSocket::sendto(const SocketAddress &address, const void *data, nsapi_size_t size)
 {
     _lock.lock();
-    int ret;
-
-    // If this assert is hit then there are two threads
-    // performing a send at the same time which is undefined
-    // behavior
-    MBED_ASSERT(!_write_in_progress);
-    _write_in_progress = true;
+    nsapi_size_or_error_t ret;
 
     while (true) {
         if (!_socket) {
@@ -66,7 +59,7 @@ int UDPSocket::sendto(const SocketAddress &address, const void *data, unsigned s
         }
 
         _pending = 0;
-        int sent = _stack->socket_sendto(_socket, address, data, size);
+        nsapi_size_or_error_t sent = _stack->socket_sendto(_socket, address, data, size);
         if ((0 == _timeout) || (NSAPI_ERROR_WOULD_BLOCK != sent)) {
             ret = sent;
             break;
@@ -87,21 +80,14 @@ int UDPSocket::sendto(const SocketAddress &address, const void *data, unsigned s
         }
     }
 
-    _write_in_progress = false;
     _lock.unlock();
     return ret;
 }
 
-int UDPSocket::recvfrom(SocketAddress *address, void *buffer, unsigned size)
+nsapi_size_or_error_t UDPSocket::recvfrom(SocketAddress *address, void *buffer, nsapi_size_t size)
 {
     _lock.lock();
-    int ret;
-
-    // If this assert is hit then there are two threads
-    // performing a recv at the same time which is undefined
-    // behavior
-    MBED_ASSERT(!_read_in_progress);
-    _read_in_progress = true;
+    nsapi_size_or_error_t ret;
 
     while (true) {
         if (!_socket) {
@@ -110,7 +96,7 @@ int UDPSocket::recvfrom(SocketAddress *address, void *buffer, unsigned size)
         }
 
         _pending = 0;
-        int recv = _stack->socket_recvfrom(_socket, address, buffer, size);
+        nsapi_size_or_error_t recv = _stack->socket_recvfrom(_socket, address, buffer, size);
         if ((0 == _timeout) || (NSAPI_ERROR_WOULD_BLOCK != recv)) {
             ret = recv;
             break;
@@ -131,7 +117,6 @@ int UDPSocket::recvfrom(SocketAddress *address, void *buffer, unsigned size)
         }
     }
 
-    _read_in_progress = false;
     _lock.unlock();
     return ret;
 }

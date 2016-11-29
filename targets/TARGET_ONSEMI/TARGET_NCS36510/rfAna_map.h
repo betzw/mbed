@@ -104,22 +104,21 @@ typedef struct {
         __IO uint32_t WORD;
     } PLL_TRIM;
     __IO uint32_t PLL_VCO_TAP_LOCATION;
-    __IO uint32_t TX_CHAIN_TRIM;
-#ifdef REVC
-    __IO uint32_t RX_VCO_TRIM_LUT2;             /** 0x40019098 */
-    __IO uint32_t RX_VCO_TRIM_LUT1;             /** 0x4001909C */
-    __IO uint32_t TX_VCO_TRIM_LUT2;             /** 0x400190A0 */
-    __IO uint32_t TX_VCO_TRIM_LUT1;             /** 0x400190A4 */
-    __IO uint32_t ADC_OFFSET_BUF;               /** 0x400190A8 */
-#endif
+    union {
+        struct {
+            __IO uint32_t TX_TUNE:4;
+            __IO uint32_t PA_REGULATOR_TRIM:4;
+            __IO uint32_t REGULATOR_TRIM:2;
+            __IO uint32_t RESERVED:2;
+        } BITS;
+        __IO uint32_t WORD;
+    } TX_TRIM;
 
-#ifdef REVD
     __IO uint32_t RX_VCO_TRIM_LUT2;             /** 0x40019098 */
     __IO uint32_t RX_VCO_TRIM_LUT1;             /** 0x4001909C */
     __IO uint32_t TX_VCO_TRIM_LUT2;             /** 0x400190A0 */
     __IO uint32_t TX_VCO_TRIM_LUT1;             /** 0x400190A4 */
     __IO uint32_t ADC_OFFSET_BUF;               /** 0x400190A8 */
-#endif /* REVD */
 } RfAnaTrimReg_t, *RfAnaTrimReg_pt;
 
 #endif /* RFANA_MAP_H_ */

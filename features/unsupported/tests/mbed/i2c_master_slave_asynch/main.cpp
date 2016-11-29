@@ -2,6 +2,18 @@
 #include "test_env.h"
 #include <stdio.h>
 
+#if !DEVICE_I2C
+  #error [NOT_SUPPORTED] I2C is not supported
+#endif
+
+#if !DEVICE_I2CSLAVE
+  #error [NOT_SUPPORTED] I2C Slave is not supported
+#endif
+
+#if !DEVICE_I2C_ASYNCH
+  #error [NOT_SUPPORTED] I2C Async is not supported
+#endif
+
 #define ADDR (0x90)
 #define FREQ 100000
 #define SIZE 10
@@ -11,21 +23,28 @@
 // the same chip, one configured as master, the other as
 // slave.
 //
-// Wiring: cf below
+// Wiring: connect master SCL to slave SCL, and master SDA to slave SDA
 // ********************************************************
 
-#if defined (TARGET_NUCLEO_F411RE) || defined (TARGET_NUCLEO_F446RE) || defined (TARGET_NUCLEO_F410RB)  || defined (TARGET_NUCLEO_F401RE)
-I2C master(PB_9, PB_8); // I2C_1 (Arduino: D14/D15)
-I2CSlave slave(PB_3, PB_10); // I2C_2 (Arduino: D3/D6)
-#elif defined (TARGET_NUCLEO_F429ZI) || defined (TARGET_DISCO_F429ZI) || defined (TARGET_NUCLEO_F446ZE)
-I2C master(PB_9, PB_8); // I2C_1 (Arduino: D14/D15)
-I2CSlave slave(PB_11, PB_10); // I2C_2 
+#if defined (TARGET_DISCO_F429ZI)
+I2C master(PB_9, PB_8);
+#elif defined(TARGET_FF_ARDUINO)
+I2C master(D14, D15); // I2C_SDA, I2C_SCL
+#endif
+
+#if defined (TARGET_NUCLEO_F429ZI) || \
+    defined (TARGET_DISCO_F429ZI) || \
+    defined (TARGET_NUCLEO_F446ZE)
+I2CSlave slave(PB_11, PB_10);
+
+#else
+I2CSlave slave(D3, D6);
+
 #endif
 
 volatile int why;
 volatile bool master_complete = false;
 void cbmaster_done(int event) {
-    printf("cbmaster_done\n");
     master_complete = true;
     why = event;
 }
@@ -50,7 +69,8 @@ int main()
 
     // First transfer: master to slave
     printf("\nFirst transfer: Master Tx, Repeated Start\n");
-    master.transfer(ADDR, buf_master, SIZE, 0, 0, callback, I2C_EVENT_ALL, true);
+    if(master.transfer(ADDR, buf_master, SIZE, 0, 0, callback, I2C_EVENT_ALL, true) != 0)
+            notify_completion(false);
 
     while (!master_complete) {
         if(slave.receive() == I2CSlave::WriteAddressed) {
@@ -70,7 +90,8 @@ int main()
 
     // Second transfer: slave to master
     printf("\nSecond transfer: Master Rx\n");
-    master.transfer(ADDR, 0, 0, res_master, SIZE, callback, I2C_EVENT_ALL, true);
+    if(master.transfer(ADDR, 0, 0, res_master, SIZE, callback, I2C_EVENT_ALL, true) != 0)
+            notify_completion(false);
 
     while (!master_complete) {
         if(slave.receive() == I2CSlave::ReadAddressed) {
@@ -98,7 +119,8 @@ int main()
 
     // Third transfer: Tx/Rx
     printf("\nThird transfer: Master Tx/Rx\n");
-    master.transfer(ADDR, buf_master_tx, SIZE, buf_master_rx, SIZE, callback, I2C_EVENT_ALL, false);
+    if(master.transfer(ADDR, buf_master_tx, SIZE, buf_master_rx, SIZE, callback, I2C_EVENT_ALL, false) != 0)
+            notify_completion(false);
 
     while (!master_complete) {
 
@@ -110,6 +132,7 @@ int main()
                 buf_slave_txrx[i]++;
             }
         }
+
         if((i == I2CSlave::ReadAddressed) ) {
             slave.write(buf_slave_txrx, SIZE);
         }

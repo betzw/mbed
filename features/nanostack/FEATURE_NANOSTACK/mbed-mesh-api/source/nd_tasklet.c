@@ -23,9 +23,8 @@
 #include "include/nd_tasklet.h"
 #include "include/static_config.h"
 #include "include/mesh_system.h"
-#ifndef YOTTA_CFG
 #include "ns_event_loop.h"
-#endif
+
 // For tracing we need to define flag, have include and define group
 #define HAVE_DEBUG 1
 #include "ns_trace.h"
@@ -263,6 +262,10 @@ void nd_tasklet_configure_and_connect_to_network(void)
     arm_nwk_6lowpan_link_nwk_id_filter_for_nwk_scan(
         tasklet_data_ptr->network_interface_id, NULL);
 
+    arm_nwk_6lowpan_link_panid_filter_for_nwk_scan(
+         tasklet_data_ptr->network_interface_id,
+         MBED_MESH_API_6LOWPAN_ND_PANID_FILTER);
+
     status = arm_nwk_interface_up(tasklet_data_ptr->network_interface_id);
     if (status >= 0) {
         tasklet_data_ptr->tasklet_state = TASKLET_STATE_BOOTSTRAP_STARTED;
@@ -382,9 +385,7 @@ int8_t nd_tasklet_connect(mesh_interface_cb callback, int8_t nwk_interface_id)
             // -2 memory allocation failure
             return tasklet_data_ptr->tasklet;
         }
-#ifndef YOTTA_CFG
         ns_event_loop_thread_start();
-#endif
     } else {
         tasklet_data_ptr->tasklet = tasklet_id;
         mesh_system_send_connect_event(tasklet_data_ptr->tasklet);

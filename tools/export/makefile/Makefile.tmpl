@@ -9,17 +9,17 @@ ifeq ($(shell echo $$OS),$$OS)
     MAKEDIR = if not exist "$(1)" mkdir "$(1)"
     RM = rmdir /S /Q "$(1)"
 else
-    MAKEDIR = $(SHELL) -c "mkdir -p \"$(1)\""
-    RM = $(SHELL) -c "rm -rf \"$(1)\""
+    MAKEDIR = '$(SHELL)' -c "mkdir -p \"$(1)\""
+    RM = '$(SHELL)' -c "rm -rf \"$(1)\""
 endif
 
+OBJDIR := BUILD
 # Move to the build directory
-ifeq (,$(filter .build,$(notdir $(CURDIR))))
+ifeq (,$(filter $(OBJDIR),$(notdir $(CURDIR))))
 .SUFFIXES:
-OBJDIR := .build
 mkfile_path := $(abspath $(lastword $(MAKEFILE_LIST)))
-MAKETARGET = $(MAKE) --no-print-directory -C $(OBJDIR) -f $(mkfile_path) \
-		SRCDIR=$(CURDIR) $(MAKECMDGOALS)
+MAKETARGET = '$(MAKE)' --no-print-directory -C $(OBJDIR) -f '$(mkfile_path)' \
+		'SRCDIR=$(CURDIR)' $(MAKECMDGOALS)
 .PHONY: $(OBJDIR) clean
 all:
 	+@$(call MAKEDIR,$(OBJDIR))
@@ -53,8 +53,8 @@ PROJECT := {{name}}
 {% endfor %}
 {% for path in include_paths %}INCLUDE_PATHS += -I{{path}}
 {% endfor %}
-LIBRARY_PATHS :={% for p in library_paths %} -L{{p}} {% endfor %}
-LIBRARIES :={% for lib in libraries %} -l{{lib}} {% endfor %}
+LIBRARY_PATHS :={% for p in library_paths %} {{user_library_flag}}{{p}} {% endfor %}
+LIBRARIES :={% for lib in libraries %} {{lib}} {% endfor %}
 LINKER_SCRIPT := {{linker_script}}
 {%- block additional_variables -%}{% endblock %}
 
@@ -127,6 +127,7 @@ $(PROJECT).elf: $(OBJECTS) $(SYS_OBJECTS) $(LINKER_SCRIPT)
 
 $(PROJECT).bin: $(PROJECT).elf
 {%- block elf2bin -%}{%- endblock %}
+{% if not hex_files %}	+@echo ===== bin file ready to flash: $(OBJDIR)/$@ ===== {% endif %}
 
 $(PROJECT).hex: $(PROJECT).elf
 {%- block elf2hex -%}{%- endblock %}
@@ -135,6 +136,7 @@ $(PROJECT).hex: $(PROJECT).elf
 $(PROJECT)-combined.hex: $(PROJECT).hex
 	+@echo "NOTE: the $(SREC_CAT) binary is required to be present in your PATH. Please see http://srecord.sourceforge.net/ for more information."
 	$(SREC_CAT) {% for f in hex_files %}{{f}} {% endfor %} -intel $(PROJECT).hex -intel -o $(PROJECT)-combined.hex -intel --line-length=44
+	+@echo ===== hex file ready to flash: $(OBJDIR)/$@ =====
 {% endif %}
 # Rules
 ###############################################################################

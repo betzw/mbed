@@ -45,8 +45,7 @@ public:
      */
     template <typename S>
     UDPSocket(S *stack)
-        : _pending(0), _read_sem(0), _write_sem(0),
-          _read_in_progress(false), _write_in_progress(false)
+        : _pending(0), _read_sem(0), _write_sem(0)
     {
         open(stack);
     }
@@ -74,7 +73,8 @@ public:
      *  @return         Number of sent bytes on success, negative error
      *                  code on failure
      */
-    int sendto(const char *host, uint16_t port, const void *data, unsigned size);
+    nsapi_size_or_error_t sendto(const char *host, uint16_t port,
+            const void *data, nsapi_size_t size);
 
     /** Send a packet over a UDP socket
      *
@@ -91,7 +91,8 @@ public:
      *  @return         Number of sent bytes on success, negative error
      *                  code on failure
      */
-    int sendto(const SocketAddress &address, const void *data, unsigned size);
+    nsapi_size_or_error_t sendto(const SocketAddress &address,
+            const void *data, nsapi_size_t size);
 
     /** Receive a packet over a UDP socket
      *
@@ -108,7 +109,8 @@ public:
      *  @return         Number of received bytes on success, negative error
      *                  code on failure
      */
-    int recvfrom(SocketAddress *address, void *data, unsigned size);
+    nsapi_size_or_error_t recvfrom(SocketAddress *address,
+            void *data, nsapi_size_t size);
 
 protected:
     virtual nsapi_protocol_t get_proto();
@@ -117,8 +119,6 @@ protected:
     volatile unsigned _pending;
     rtos::Semaphore _read_sem;
     rtos::Semaphore _write_sem;
-    bool _read_in_progress;
-    bool _write_in_progress;
 };
 
 

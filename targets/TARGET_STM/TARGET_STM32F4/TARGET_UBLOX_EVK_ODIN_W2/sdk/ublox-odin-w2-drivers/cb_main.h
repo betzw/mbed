@@ -49,6 +49,12 @@ typedef void(*cbMAIN_ErrorHandler)(
     const cb_char*      filename,
     cb_uint32           line);
 
+typedef struct
+{
+    cbWLAN_MACAddress      mac;                 /**< MAC of WLAN interface, set to all zeros if hardware programmed address should be used. */
+    cbWM_TxPowerSettings   txPowerSettings;     /**< Transmission power settings. */
+} cbMAIN_WlanStartParams;
+
 /*---------------------------------------------------------------------------
 * Callback to indicate that initialization of BT stack is completed.
 *-------------------------------------------------------------------------*/
@@ -89,7 +95,7 @@ extern cb_int32 cbMAIN_initWlan(void);
 * @param params Start parameters passed to WLAN driver instance.
 * @return cbSTATUS_OK if successful, otherwise cbSTATUS_ERROR.
 */
-extern cb_int32 cbMAIN_startWlan(cb_int32 targetId, cbWLAN_StartParameters *params);
+extern cb_int32 cbMAIN_startWlan(cb_int32 targetId, cbMAIN_WlanStartParams *params);
 
 /**
 * Register error handler function.
@@ -110,6 +116,7 @@ extern void cbMAIN_startOS(void);
 /**
 * Get event queue. Used for running a function in the same thread context as the driver.
 * Can not be called before cbMAIN_initOS/cbMAIN_initBt/cbMAIN_initWlan.
+* Use cbMAIN_dispatchEventQueue to trigger the driver to call the queued up functions.
 * @return EventQueue     Pointer to the event queue where function calls can be enqueued.
 */
 extern EventQueue* cbMAIN_getEventQueue(void);
@@ -127,5 +134,12 @@ extern void cbMAIN_driverLock(void);
 * @return void
 */
 extern void cbMAIN_driverUnlock(void);
+
+/**
+* Dispatch event queue. Should be called to trigger calls that have been queued up in the driver context
+*
+* @return void
+*/
+extern void cbMAIN_dispatchEventQueue(void);
 
 #endif /*_CB_MAIN_H_*/

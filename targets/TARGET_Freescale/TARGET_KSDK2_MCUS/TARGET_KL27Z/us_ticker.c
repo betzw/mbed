@@ -22,15 +22,12 @@
 
 static int us_ticker_inited = 0;
 
-void us_ticker_init(void) {
+void us_ticker_init(void)
+{
     if (us_ticker_inited) {
         return;
     }
     us_ticker_inited = 1;
-
-    // Need to initialize the clocks here as ticker init gets called before mbed_sdk_init
-    if (SystemCoreClock == DEFAULT_SYSTEM_CLOCK)
-        BOARD_BootClockRUN();
 
     //Timer uses PIT
     //Common for ticker/timer
@@ -64,7 +61,8 @@ void us_ticker_init(void) {
 }
 
 
-uint32_t us_ticker_read() {
+uint32_t us_ticker_read()
+{
     if (!us_ticker_inited) {
         us_ticker_init();
     }
@@ -72,15 +70,18 @@ uint32_t us_ticker_read() {
     return ~(PIT_GetCurrentTimerCount(PIT, kPIT_Chnl_1));
 }
 
-void us_ticker_disable_interrupt(void) {
+void us_ticker_disable_interrupt(void)
+{
     LPTMR_DisableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
 }
 
-void us_ticker_clear_interrupt(void) {
+void us_ticker_clear_interrupt(void)
+{
     LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
 }
 
-void us_ticker_set_interrupt(timestamp_t timestamp) {
+void us_ticker_set_interrupt(timestamp_t timestamp)
+{
     int delta = (int)(timestamp - us_ticker_read());
     if (delta <= 0) {
         // This event was in the past.

@@ -40,6 +40,7 @@
 #include "common_rtc.h"
 #include "app_util.h"
 #include "nrf_drv_common.h"
+#include "nrf_drv_config.h"
 #include "lp_ticker_api.h"
 
 
@@ -76,12 +77,19 @@ void COMMON_RTC_IRQ_HANDLER(void)
     }
 }
 
+#if (defined (__ICCARM__)) && defined(TARGET_MCU_NRF51822)//IAR
+__stackless __task 
+#endif
+void RTC1_IRQHandler(void);
+
 void common_rtc_init(void)
 {
     if (m_common_rtc_enabled) {
         return;
     }
 
+    NVIC_SetVector(RTC1_IRQn, (uint32_t)RTC1_IRQHandler);
+    
     // RTC is driven by the low frequency (32.768 kHz) clock, a proper request
     // must be made to have it running.
     // Currently this clock is started in 'SystemInit' (see "system_nrf51.c"
@@ -102,9 +110,6 @@ void common_rtc_init(void)
     // events will be enabled or disabled as needed (such approach is more
     // energy efficient).
     nrf_rtc_int_enable(COMMON_RTC_INSTANCE,
-    #if defined(TARGET_MCU_NRF51822)
-        OS_TICK_INT_MASK |
-    #endif
     #if DEVICE_LOWPOWERTIMER
         LP_TICKER_INT_MASK |
     #endif
@@ -125,7 +130,12 @@ void common_rtc_init(void)
         US_TICKER_INT_MASK);
 
     nrf_drv_common_irq_enable(nrf_drv_get_IRQn(COMMON_RTC_INSTANCE),
-        APP_IRQ_PRIORITY_LOW);
+#ifdef NRF51
+        APP_IRQ_PRIORITY_LOW
+#elif defined(NRF52)
+        APP_IRQ_PRIORITY_LOWEST
+#endif
+        );
 
     nrf_rtc_task_trigger(COMMON_RTC_INSTANCE, NRF_RTC_TASK_START);
 
@@ -493,6 +503,7 @@ static void register_next_tick() {
 int os_tick_init (void)
 {
     common_rtc_init();
+    nrf_rtc_int_enable(COMMON_RTC_INSTANCE, OS_TICK_INT_MASK);
 
     nrf_rtc_cc_set(COMMON_RTC_INSTANCE, OS_TICK_CC_CHANNEL, 0);
     register_next_tick();

@@ -44,7 +44,7 @@
 #define portNVIC_SYSTICK_INT_BIT            ( 1UL << 1UL )
 #define portNVIC_SYSTICK_ENABLE_BIT         ( 1UL << 0UL )
 
-void sleep(void)
+void fncs36510_sleep(void)
 {
     /** Unset SLEEPDEEP (SCR) and COMA to select sleep mode */
     SCB->SCR &= ~SCB_SCR_SLEEPDEEP_Msk;
@@ -55,7 +55,7 @@ void sleep(void)
     __WFI();
 }
 
-void deepsleep(void)
+void fncs36510_deepsleep(void)
 {
     /** Set SLEEPDEEP (SCR) and unset COMA to select deep sleep mode */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -72,7 +72,7 @@ void deepsleep(void)
     PMUREG->CONTROL.BITS.INT32M = 1;
 }
 
-void coma(void)
+void fncs36510_coma(void)
 {
     /** Set SLEEPDEEP (SCR) and set COMA to select coma mode */
     SCB->SCR |= SCB_SCR_SLEEPDEEP_Msk;
@@ -101,10 +101,10 @@ void coma(void)
 
     /** Trim the oscillators */
     if ((TRIMREG->TRIM_32K_EXT & 0xFFFF0000) != 0xFFFF0000) {
-        CLOCKREG->TRIM_32K_EXT = TRIMREG->TRIM_32K_EXT;
+        CLOCKREG->TRIM_32K_EXT.WORD = TRIMREG->TRIM_32K_EXT;
     }
     if ((TRIMREG->TRIM_32M_EXT & 0xFFFF0000) != 0xFFFF0000) {
-        CLOCKREG->TRIM_32M_EXT = TRIMREG->TRIM_32M_EXT;
+        CLOCKREG->TRIM_32M_EXT.WORD = TRIMREG->TRIM_32M_EXT;
     }
 
     /* Enable UART 1 & 2 FIFO */

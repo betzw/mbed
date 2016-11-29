@@ -10,7 +10,7 @@ from shutil import move, rmtree
 from argparse import ArgumentParser
 from os.path import normpath, realpath
 
-from tools.paths import EXPORT_DIR, MBED_HAL, MBED_LIBRARIES
+from tools.paths import EXPORT_DIR, MBED_HAL, MBED_LIBRARIES, MBED_TARGETS_PATH
 from tools.export import EXPORTERS, mcu_ide_matrix
 from tools.tests import TESTS, TEST_MAP
 from tools.tests import test_known, test_name_known, Test
@@ -18,6 +18,7 @@ from tools.targets import TARGET_NAMES
 from tools.utils import argparse_filestring_type, argparse_many, args_error
 from tools.utils import argparse_force_lowercase_type
 from tools.utils import argparse_force_uppercase_type
+from tools.utils import print_large_string
 from tools.project_api import export_project, get_exporter_toolchain
 from tools.options import extract_profile
 
@@ -54,6 +55,7 @@ def setup_project(ide, target, program=None, source_dir=None, build=None, export
             if MBED_LIBRARIES in test.dependencies:
                 test.dependencies.remove(MBED_LIBRARIES)
                 test.dependencies.append(MBED_HAL)
+                test.dependencies.append(MBED_TARGETS_PATH)
 
 
         src_paths = [test.source_dir]
@@ -189,7 +191,7 @@ def main():
 
     # Only prints matrix of supported IDEs
     if options.supported_ides:
-        print mcu_ide_matrix()
+        print_large_string(mcu_ide_matrix())
         exit(0)
 
     # Only prints matrix of supported IDEs
@@ -232,7 +234,9 @@ def main():
     if (options.program is None) and (not options.source_dir):
         args_error(parser, "one of -p, -n, or --source is required")
         # Export to selected toolchain
-    _, toolchain_name = get_exporter_toolchain(options.ide)
+    exporter, toolchain_name = get_exporter_toolchain(options.ide)
+    if options.mcu not in exporter.TARGETS:
+        args_error(parser, "%s not supported by %s"%(options.mcu,options.ide))
     profile = extract_profile(parser, options, toolchain_name)
     export(options.mcu, options.ide, build=options.build,
            src=options.source_dir, macros=options.macros,

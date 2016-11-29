@@ -78,7 +78,8 @@ public:
      *  @param gateway  Null-terminated representation of the local gateway
      *  @return         0 on success, negative error code on failure
      */
-    virtual int set_network(const char *ip_address, const char *netmask, const char *gateway);
+    virtual nsapi_error_t set_network(
+            const char *ip_address, const char *netmask, const char *gateway);
 
     /** Enable or disable DHCP on the network
      *
@@ -89,33 +90,19 @@ public:
      *  @param dhcp     True to enable DHCP
      *  @return         0 on success, negative error code on failure
      */
-    virtual int set_dhcp(bool dhcp);
+    virtual nsapi_error_t set_dhcp(bool dhcp);
 
     /** Start the interface
      *
      *  @return     0 on success, negative error code on failure
      */
-    virtual int connect() = 0;
+    virtual nsapi_error_t connect() = 0;
 
     /** Stop the interface
      *
      *  @return     0 on success, negative error code on failure
      */
-    virtual int disconnect() = 0;
-
-    /** Translates a hostname to an IP address
-     *
-     *  The hostname may be either a domain name or an IP address. If the
-     *  hostname is an IP address, no network transactions will be performed.
-     *
-     *  If no stack-specific DNS resolution is provided, the hostname
-     *  will be resolve using a UDP socket on the stack.
-     *
-     *  @param address  Destination for the host SocketAddress
-     *  @param host     Hostname to resolve
-     *  @return         0 on success, negative error code on failure
-     */
-    virtual int gethostbyname(const char *host, SocketAddress *address);
+    virtual nsapi_error_t disconnect() = 0;
 
     /** Translates a hostname to an IP address with specific version
      *
@@ -127,17 +114,19 @@ public:
      *
      *  @param address  Destination for the host SocketAddress
      *  @param host     Hostname to resolve
-     *  @param version  IP version of address to resolve
+     *  @param version  IP version of address to resolve, NSAPI_UNSPEC indicates
+     *                  version is chosen by the stack (defaults to NSAPI_UNSPEC)
      *  @return         0 on success, negative error code on failure
      */
-    virtual int gethostbyname(const char *host, SocketAddress *address, nsapi_version_t version);
+    virtual nsapi_error_t gethostbyname(const char *host,
+            SocketAddress *address, nsapi_version_t version = NSAPI_UNSPEC);
 
     /** Add a domain name server to list of servers to query
      *
      *  @param addr     Destination for the host address
      *  @return         0 on success, negative error code on failure
      */
-    virtual int add_dns_server(const SocketAddress &address);
+    virtual nsapi_error_t add_dns_server(const SocketAddress &address);
 
 protected:
     friend class Socket;
