@@ -874,6 +874,9 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *hdma)
         /* Clear all interrupt flags at correct offset within the register */
         regs->IFCR = 0x3FU << hdma->StreamIndex;
 
+        /* Process Unlocked */
+        __HAL_UNLOCK(hdma);
+
         /* Change the DMA state */
         hdma->State = HAL_DMA_STATE_READY;
 
@@ -922,6 +925,9 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *hdma)
           /* Disable the transfer complete interrupt */
           hdma->Instance->CR  &= ~(DMA_IT_TC);
 
+          /* Process Unlocked */
+          __HAL_UNLOCK(hdma);
+
           /* Change the DMA state */
           hdma->State = HAL_DMA_STATE_READY;
         }
@@ -953,6 +959,9 @@ void HAL_DMA_IRQHandler(DMA_HandleTypeDef *hdma)
         }
       }
       while((hdma->Instance->CR & DMA_SxCR_EN) != RESET);
+
+      /* Process Unlocked */
+      __HAL_UNLOCK(hdma);
 
       /* Change the DMA state */
       hdma->State = HAL_DMA_STATE_READY;
