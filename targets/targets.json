@@ -148,15 +148,7 @@
         "device_name": "LPC11U35FHI33/501"
     },
     "XADOW_M0": {
-        "inherits": ["LPCTarget"],
-        "core": "Cortex-M0",
-        "default_toolchain": "uARM",
-        "extra_labels": ["NXP", "LPC11UXX", "MCU_LPC11U35_501"],
-        "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "GCC_CR", "IAR"],
-        "device_has": ["ANALOGIN", "ERROR_PATTERN", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "SERIAL", "SLEEP", "SPI", "SPISLAVE"],
-        "default_lib": "small",
-        "release_versions": ["2"],
-        "device_name": "LPC11U35FHI33/501"
+        "inherits": ["LPC11U35_501"]
     },
     "LPC11U35_Y5_MBUG": {
         "inherits": ["LPCTarget"],
@@ -347,6 +339,7 @@
             "function": "LPC4088Code.binary_hook"
         },
         "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "DEBUG_AWARENESS", "ERROR_PATTERN", "ETHERNET", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
+        "features": ["LWIP"],
         "device_name": "LPC4088FBD144"
     },
     "LPC4088": {
@@ -571,6 +564,23 @@
         "release_versions": ["2", "5"],
         "device_name": "MKW41Z512xxx4"
     },
+    "MCU_K24F1M": {
+        "core": "Cortex-M4F",
+        "supported_toolchains": ["ARM", "GCC_ARM", "IAR"],
+        "extra_labels": ["Freescale", "MCUXpresso_MCUS", "KSDK2_MCUS", "MCU_K24F", "KPSDK_MCUS", "KPSDK_CODE", "FLASH_CMSIS_ALGO"],
+        "is_disk_virtual": true,
+        "public": false,
+        "macros": ["CPU_MK24FN1M0VDC12", "FSL_RTOS_MBED"],
+        "inherits": ["Target"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "ERROR_RED", "I2C", "I2CSLAVE", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPI_ASYNCH", "SPISLAVE", "STDIO_MESSAGES", "TRNG", "FLASH"],
+        "device_name": "MK24FN1M0xxx12"
+    },
+    "RO359B": {
+        "supported_form_factors": ["ARDUINO"],
+        "inherits": ["MCU_K24F1M"],
+        "detect_code": ["1022"],
+        "release_versions": ["2", "5"]
+    },
     "K64F": {
         "supported_form_factors": ["ARDUINO"],
         "core": "Cortex-M4F",
@@ -737,6 +747,13 @@
         "default_toolchain": "ARM",
         "extra_labels": ["STM", "STM32F2", "STM32F207ZG"],
         "supported_toolchains": ["ARM", "uARM", "IAR", "GCC_ARM"],
+        "config": {
+            "d11_configuration": {
+                "help": "Value: PA_7 for the default board configuration, PB_5 in case of solder bridge update (SB121 off/ SB122 on)",
+                "value": "PA_7",
+                "macro_name": "STM32_D11_SPI_ETHERNET_PIN"
+            }
+        },
         "inherits": ["Target"],
         "detect_code": ["0835"],
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2", "USBHOST_OTHER"],
@@ -884,6 +901,13 @@
         "inherits": ["Target"],
         "core": "Cortex-M4F",
         "default_toolchain": "ARM",
+        "config": {
+            "d11_configuration": {
+                "help": "Value: PA_7 for the default board configuration, PB_5 in case of solder bridge update (SB121 off/ SB122 on)",
+                "value": "PA_7",
+                "macro_name": "STM32_D11_SPI_ETHERNET_PIN"
+            }
+        },
         "extra_labels": ["STM", "STM32F4", "STM32F429", "STM32F429ZI", "STM32F429xx", "STM32F429xI", "FLASH_CMSIS_ALGO"],
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "progen": {"target": "nucleo-f429zi"},
@@ -900,6 +924,13 @@
         "inherits": ["Target"],
         "core": "Cortex-M4F",
         "default_toolchain": "ARM",
+        "config": {
+            "d11_configuration": {
+                "help": "Value: PA_7 for the default board configuration, PB_5 in case of solder bridge update (SB121 off/ SB122 on)",
+                "value": "PA_7",
+                "macro_name": "STM32_D11_SPI_ETHERNET_PIN"
+            }
+        },
         "extra_labels": ["STM", "STM32F4", "STM32F439", "STM32F439ZI", "STM32F439xx", "STM32F439xI", "FLASH_CMSIS_ALGO"],
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "progen": {"target": "nucleo-f439zi"},
@@ -955,6 +986,13 @@
         "extra_labels": ["STM", "STM32F7", "STM32F746", "STM32F746xG", "STM32F746ZG"],
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "default_toolchain": "ARM",
+        "config": {
+            "d11_configuration": {
+                "help": "Value: PA_7 for the default board configuration, PB_5 in case of solder bridge update (SB121 off/ SB122 on)",
+                "value": "PA_7",
+                "macro_name": "STM32_D11_SPI_ETHERNET_PIN"
+            }
+        },
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2", "USBHOST_OTHER"],
         "supported_form_factors": ["ARDUINO"],
         "detect_code": ["0816"],
@@ -969,6 +1007,13 @@
         "extra_labels": ["STM", "STM32F7", "STM32F756", "STM32F756xG", "STM32F756ZG"],
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "default_toolchain": "ARM",
+        "config": {
+            "d11_configuration": {
+                "help": "Value: PA_7 for the default board configuration, PB_5 in case of solder bridge update (SB121 off/ SB122 on)",
+                "value": "PA_7",
+                "macro_name": "STM32_D11_SPI_ETHERNET_PIN"
+            }
+        },
         "supported_form_factors": ["ARDUINO"],
         "detect_code": ["0819"],
         "device_has": ["ANALOGIN", "ANALOGOUT", "CAN", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES", "TRNG"],
@@ -982,6 +1027,13 @@
         "extra_labels": ["STM", "STM32F7", "STM32F767", "STM32F767xI", "STM32F767ZI"],
         "supported_toolchains": ["ARM", "uARM", "GCC_ARM", "IAR"],
         "default_toolchain": "ARM",
+        "config": {
+            "d11_configuration": {
+                "help": "Value: PA_7 for the default board configuration, PB_5 in case of solder bridge update (SB121 off/ SB122 on)",
+                "value": "PA_7",
+                "macro_name": "STM32_D11_SPI_ETHERNET_PIN"
+            }
+        },
         "supported_form_factors": ["ARDUINO"],
         "macros": ["TRANSACTION_QUEUE_SIZE_SPI=2", "USBHOST_OTHER"],
         "detect_code": ["0818"],
@@ -1206,6 +1258,19 @@
         "release_versions": ["2"],
         "device_name": "STM32L053C8"
     },
+    "DISCO_L072CZ_LRWAN1": {
+        "inherits": ["Target"],
+        "core": "Cortex-M0+",
+        "default_toolchain": "ARM",
+        "extra_labels": ["STM", "STM32L0", "STM32L072CZ", "STM32L072xx"],
+        "supported_toolchains": ["ARM", "uARM", "IAR", "GCC_ARM"],
+        "supported_form_factors": ["ARDUINO", "MORPHO"],
+        "macros": ["RTC_LSI=1"],
+        "detect_code": ["0833"],
+        "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES", "TRNG"],
+        "release_versions": ["2", "5"],
+        "device_name": "STM32L072CZ"
+    },
     "DISCO_F746NG": {
         "inherits": ["Target"],
         "core": "Cortex-M7F",
@@ -1292,10 +1357,10 @@
         "default_toolchain": "ARM",
         "extra_labels": ["STM", "STM32L1", "STM32L151CC"],
         "supported_toolchains": ["ARM", "GCC_ARM", "IAR"],
-        "progen": {"target": "xdot-l151cc"},
         "device_has": ["ANALOGIN", "ANALOGOUT", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "default_lib": "std",
-        "release_versions": ["5"]
+        "release_versions": ["5"],
+        "device_name": "STM32L151CC"
     },
     "MOTE_L152RC": {
         "inherits": ["Target"],
@@ -1328,7 +1393,7 @@
         "extra_labels": ["STM", "STM32F4", "STM32F439", "STM32F439ZI","STM32F439xx", "FLASH_CMSIS_ALGO"],
         "macros": ["HSE_VALUE=24000000", "HSE_STARTUP_TIMEOUT=5000", "CB_INTERFACE_SDIO","CB_CHIP_WL18XX","SUPPORT_80211D_ALWAYS","WLAN_ENABLED","MBEDTLS_ARC4_C","MBEDTLS_DES_C","MBEDTLS_MD4_C","MBEDTLS_MD5_C","MBEDTLS_SHA1_C"],
         "inherits": ["Target"],
-        "device_has": ["ANALOGIN", "CAN", "EMAC", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "SERIAL", "SLEEP", "SPI", "SPISLAVE", "STDIO_MESSAGES", "TRNG", "FLASH"],
+        "device_has": ["ANALOGIN", "CAN", "EMAC", "I2C", "I2CSLAVE", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "SERIAL", "SPI", "SPISLAVE", "STDIO_MESSAGES", "TRNG", "FLASH"],
         "features": ["LWIP"],
         "release_versions": ["5"],
         "device_name": "STM32F439ZI",
@@ -2320,7 +2385,7 @@
         },
         "public": false
     },
-    "THUNDERBOARD_SENSE": {
+    "TB_SENSE_1": {
         "inherits": ["EFR32MG1P233F256GM48"],
         "device_has": ["ANALOGIN", "ERROR_PATTERN", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "forced_reset_timeout": 5,
@@ -2417,7 +2482,7 @@
         "release_versions": ["2", "5"],
         "public": false
     },
-	"THUNDERBOARD_SENSE_12": {
+	"TB_SENSE_12": {
         "inherits": ["EFR32MG12P332F1024GL125"],
         "device_has": ["ANALOGIN", "ERROR_PATTERN", "I2C", "I2CSLAVE", "I2C_ASYNCH", "INTERRUPTIN", "LOWPOWERTIMER", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_ASYNCH", "SLEEP", "SPI", "SPISLAVE", "SPI_ASYNCH", "STDIO_MESSAGES"],
         "forced_reset_timeout": 5,
@@ -2458,27 +2523,27 @@
         "supported_form_factors": ["ARDUINO"],
         "core": "Cortex-M0",
         "extra_labels": ["WIZNET", "W7500x", "WIZwiki_W7500"],
-        "supported_toolchains": ["uARM", "ARM"],
+        "supported_toolchains": ["uARM", "ARM", "GCC_ARM", "IAR"],
         "inherits": ["Target"],
         "device_has": ["ANALOGIN", "I2C", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "WIZWIKI_W7500P": {
         "supported_form_factors": ["ARDUINO"],
         "core": "Cortex-M0",
         "extra_labels": ["WIZNET", "W7500x", "WIZwiki_W7500P"],
-        "supported_toolchains": ["uARM", "ARM"],
+        "supported_toolchains": ["uARM", "ARM", "GCC_ARM", "IAR"],
         "inherits": ["Target"],
         "device_has": ["ANALOGIN", "I2C", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "WIZWIKI_W7500ECO": {
         "inherits": ["Target"],
         "core": "Cortex-M0",
         "extra_labels": ["WIZNET", "W7500x", "WIZwiki_W7500ECO"],
-        "supported_toolchains": ["uARM", "ARM"],
+        "supported_toolchains": ["uARM", "ARM", "GCC_ARM", "IAR"],
         "device_has": ["ANALOGIN", "I2C", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SPI", "SPISLAVE", "STDIO_MESSAGES"],
-        "release_versions": ["2"]
+        "release_versions": ["2", "5"]
     },
     "SAMR21G18A": {
         "inherits": ["Target"],
@@ -2543,7 +2608,7 @@
             "TARGET_MCU_NRF51822"
         ],
         "MERGE_BOOTLOADER": false,
-        "extra_labels": ["NORDIC", "MCU_NRF51", "MCU_NRF51822_UNIFIED", "NRF5"],
+        "extra_labels": ["NORDIC", "MCU_NRF51", "MCU_NRF51822_UNIFIED", "NRF5", "SDK11"],
         "OUTPUT_EXT": "hex",
         "is_disk_virtual": true,
         "supported_toolchains": ["ARM", "GCC_ARM", "IAR"],
@@ -2599,7 +2664,7 @@
         "inherits": ["Target"],
         "core": "Cortex-M4F",
         "macros": ["NRF52", "TARGET_NRF52832", "BLE_STACK_SUPPORT_REQD", "SOFTDEVICE_PRESENT", "S132"],
-        "extra_labels": ["NORDIC", "MCU_NRF52", "MCU_NRF52832", "NRF5"],
+        "extra_labels": ["NORDIC", "MCU_NRF52", "MCU_NRF52832", "NRF5", "SDK11", "NRF52_COMMON"],
         "OUTPUT_EXT": "hex",
         "is_disk_virtual": true,
         "supported_toolchains": ["GCC_ARM", "ARM", "IAR"],
@@ -2679,7 +2744,7 @@
         "inherits": ["Target"],
         "core": "Cortex-M4F",
         "macros": ["TARGET_NRF52840", "BLE_STACK_SUPPORT_REQD", "SOFTDEVICE_PRESENT", "S140", "NRF_SD_BLE_API_VERSION=5", "NRF52840_XXAA", "NRF_DFU_SETTINGS_VERSION=1", "NRF_SD_BLE_API_VERSION=5"],
-        "extra_labels": ["NORDIC", "MCU_NRF52840", "NRF5_SDK13"],
+        "extra_labels": ["NORDIC", "MCU_NRF52840", "NRF5", "SDK13", "NRF52_COMMON"],
         "OUTPUT_EXT": "hex",
         "is_disk_virtual": true,
         "supported_toolchains": ["GCC_ARM", "ARM", "IAR"],
