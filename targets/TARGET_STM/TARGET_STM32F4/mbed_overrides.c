@@ -51,3 +51,14 @@ void HAL_Delay(__IO uint32_t Delay)
     while ((us_ticker_read() - start) < (uint32_t)(Delay * 1000));
 }
 
+/**
+  * @brief Provides a tick value in millisecond.
+  * @note This function is the modified version of the __weak version contained in
+  *       stm32f4xx_hal.c, using us_ticker
+  * @retval tick value
+  */
+uint32_t HAL_GetTick(void)
+{
+  return us_ticker_read()/1000;
+}
+
