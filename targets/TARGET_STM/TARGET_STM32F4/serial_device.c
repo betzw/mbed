@@ -273,8 +273,9 @@ static void uart_irq(int id)
     UART_HandleTypeDef * huart = &uart_handlers[id];
     
     if (serial_irq_ids[id] != 0) {
-        if (__HAL_UART_GET_FLAG(huart, UART_FLAG_TXE) != RESET) {
-            if (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_TXE) != RESET) {
+        if (__HAL_UART_GET_FLAG(huart, UART_FLAG_TC) != RESET) {
+            if (__HAL_UART_GET_IT_SOURCE(huart, UART_IT_TC) != RESET) {
+                __HAL_UART_CLEAR_FLAG(huart, UART_FLAG_TC);
                 irq_handler(serial_irq_ids[id], TxIrq);
             }
         }
@@ -437,7 +438,7 @@ void serial_irq_set(serial_t *obj, SerialIrq irq, uint32_t enable)
         if (irq == RxIrq) {
             __HAL_UART_ENABLE_IT(huart, UART_IT_RXNE);
         } else { // TxIrq
-            __HAL_UART_ENABLE_IT(huart, UART_IT_TXE);
+            __HAL_UART_ENABLE_IT(huart, UART_IT_TC);
         }
             NVIC_SetVector(irq_n, vector);
             NVIC_EnableIRQ(irq_n);
@@ -447,11 +448,11 @@ void serial_irq_set(serial_t *obj, SerialIrq irq, uint32_t enable)
         if (irq == RxIrq) {
             __HAL_UART_DISABLE_IT(huart, UART_IT_RXNE);
             // Check if TxIrq is disabled too
-            if ((huart->Instance->CR1 & USART_CR1_TXEIE) == 0) {
+            if ((huart->Instance->CR1 & USART_CR1_TCIE) == 0) {
                 all_disabled = 1;
             }
         } else { // TxIrq
-            __HAL_UART_DISABLE_IT(huart, UART_IT_TXE);
+            __HAL_UART_DISABLE_IT(huart, UART_IT_TC);
             // Check if RxIrq is disabled too
             if ((huart->Instance->CR1 & USART_CR1_RXNEIE) == 0) {
                 all_disabled = 1;
@@ -688,7 +689,7 @@ int serial_tx_asynch(serial_t *obj, const void *tx, size_t tx_length, uint8_t tx
     NVIC_SetVector(irq_n, (uint32_t)handler);
     NVIC_EnableIRQ(irq_n);
 
-    // the following function will enable UART_IT_TXE and error interrupts
+    // the following function will enable UART_IT_TC and error interrupts
     if (HAL_UART_Transmit_IT(huart, (uint8_t*)tx, tx_length) != HAL_OK) {
         return 0;
     }
