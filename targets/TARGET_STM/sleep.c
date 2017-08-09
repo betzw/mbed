@@ -34,6 +34,7 @@
 #include "sleep_api.h"
 #include "rtc_api_hal.h"
 #include "hal_tick.h"
+#include "mbed_critical.h"
 
 extern void HAL_SuspendTick(void);
 extern void HAL_ResumeTick(void);
