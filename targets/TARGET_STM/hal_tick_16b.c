@@ -148,6 +148,11 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
     // Enable timer
     HAL_TIM_Base_Start(&TimMasterHandle);
 
+ #ifndef NDEBUG
+    // Freeze timer on stop/breakpoint
+    TIM_MST_DBGMCU_FREEZE;
+ #endif
+
 #if DEBUG_TICK > 0
     __HAL_RCC_GPIOB_CLK_ENABLE();
     GPIO_InitTypeDef GPIO_InitStruct;

@@ -112,6 +112,10 @@ void rtc_init(void)
     // Enable RTC
     __HAL_RCC_RTC_ENABLE();
 
+#ifndef NDEBUG
+    __HAL_DBGMCU_FREEZE_RTC();
+#endif
+
 #if TARGET_STM32F1
     RtcHandle.Init.AsynchPrediv = RTC_AUTO_1_SECOND;
 #else /* TARGET_STM32F1 */
