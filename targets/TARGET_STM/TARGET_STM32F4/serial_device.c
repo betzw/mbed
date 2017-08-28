@@ -284,7 +284,22 @@ static void uart_irq(int id)
                 /*  Flag has been cleared when reading the content */
             }
         }
-        if (__HAL_UART_GET_FLAG(huart, UART_FLAG_ORE) != RESET) {
+	if (__HAL_UART_GET_FLAG(huart, UART_FLAG_ORE) != RESET) {
+	    if (__HAL_UART_GET_IT_SOURCE(huart, USART_IT_ERR) != RESET) {
+                volatile uint32_t tmpval = huart->Instance->DR; // Clear ORE flag
+            }
+        }
+        if (__HAL_UART_GET_FLAG(huart, UART_FLAG_NE) != RESET) {
+            if (__HAL_UART_GET_IT_SOURCE(huart, USART_IT_ERR) != RESET) {
+                volatile uint32_t tmpval = huart->Instance->DR; // Clear ORE flag
+            }
+        }
+        if (__HAL_UART_GET_FLAG(huart, UART_FLAG_FE) != RESET) {
+            if (__HAL_UART_GET_IT_SOURCE(huart, USART_IT_ERR) != RESET) {
+		volatile uint32_t tmpval = huart->Instance->DR; // Clear ORE flag
+            }
+        }
+        if (__HAL_UART_GET_FLAG(huart, UART_FLAG_PE) != RESET) {
             if (__HAL_UART_GET_IT_SOURCE(huart, USART_IT_ERR) != RESET) {
                 volatile uint32_t tmpval = huart->Instance->DR; // Clear ORE flag
             }
