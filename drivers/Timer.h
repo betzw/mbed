@@ -54,6 +54,10 @@ public:
     Timer();
     Timer(const ticker_data_t *data);
 
+    /* betzw: see mbed-os issue #5067 */
+    /* TODO: `stop()` is doing more than what the destructor would need to do => optimize! */
+    ~Timer() { stop(); }
+
     /** Start the timer
      */
     void start();

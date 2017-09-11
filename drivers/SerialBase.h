@@ -242,6 +242,10 @@ protected:
 protected:
     SerialBase(PinName tx, PinName rx, int baud);
     virtual ~SerialBase() {
+        /* betzw: see mbed-os issue #5067 */
+        /* TODO: `attach()` is doing more than what the destructor would need to do => optimize! */
+        attach(NULL, TxIrq);
+        attach(NULL, RxIrq);
     }
 
     int _base_getc();
