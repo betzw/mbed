@@ -168,7 +168,9 @@
 #include "cmsis_os2.h"
 #include "mbed_toolchain.h"
 #include "mbed_error.h"
-
+#if defined(__IAR_SYSTEMS_ICC__ ) && (__VER__ >= 8000000)
+#include <DLib_Threads.h>
+#endif
 /* Heap limits - only used if set */
 extern unsigned char *mbed_heap_start;
 extern uint32_t mbed_heap_size;
@@ -232,7 +234,7 @@ osMutexAttr_t             singleton_mutex_attr;
 #if !defined(HEAP_START)
     #if defined(__ICCARM__)
         #error "Heap should already be defined for IAR"
-    #elif defined(__CC_ARM)
+    #elif defined(__CC_ARM) || (defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
         extern uint32_t          Image$$RW_IRAM1$$ZI$$Limit[];
         #define HEAP_START      ((unsigned char*)Image$$RW_IRAM1$$ZI$$Limit)
         #define HEAP_SIZE       ((uint32_t)((uint32_t)INITIAL_SP - (uint32_t)HEAP_START))
@@ -328,7 +330,7 @@ void mbed_start_main(void)
 
 /******************** Toolchain specific code ********************/
 
-#if defined (__CC_ARM)
+#if defined (__CC_ARM) || (defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050))
 
 /* Common for both ARMC and MICROLIB */
 int $Super$$main(void);
@@ -400,7 +402,12 @@ void pre_main (void)
    With the RTOS there is not only one stack above the heap, there are multiple
    stacks and some of them are underneath the heap pointer.
 */
+#if defined (__ARMCC_VERSION) && (__ARMCC_VERSION >= 6010050)
+__asm(".global __use_two_region_memory\n\t");
+__asm(".global __use_no_semihosting\n\t");
+#else
 #pragma import(__use_two_region_memory)
+#endif
 
 /* Called by the C library */
 void __rt_entry (void) {
@@ -552,7 +559,7 @@ void __rtos_env_unlock( struct _reent *_r )
 
 #endif
 
-#if defined(TOOLCHAIN_IAR) /******************** IAR ********************/
+#if defined(__ICCARM__) /******************** IAR ********************/
 
 extern void* __vector_table;
 extern int  __low_level_init(void);
@@ -574,9 +581,14 @@ void pre_main(void)
     singleton_mutex_attr.cb_mem = &singleton_mutex_obj;
     singleton_mutex_id = osMutexNew(&singleton_mutex_attr);
 
+#if defined(__IAR_SYSTEMS_ICC__ ) && (__VER__ >= 8000000)
+    __iar_Initlocks();
+#endif
+
     if (low_level_init_needed) {
         __iar_dynamic_initialization();
     }
+
     mbed_main();
     main();
 }
