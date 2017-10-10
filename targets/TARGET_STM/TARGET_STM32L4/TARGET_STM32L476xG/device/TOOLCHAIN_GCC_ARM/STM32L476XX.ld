@@ -86,6 +86,11 @@ SECTIONS
     __etext = .;
     _sidata = .;
 
+    .mesh_heap (COPY):
+    {
+        *(mesh_heap*)
+    } > SRAM2
+
     .data : AT (__etext)
     {
         __data_start__ = .;

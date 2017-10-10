@@ -24,6 +24,7 @@
 #include "ns_hal_init.h"
 #include "include/mesh_system.h"
 #include "mbed_assert.h"
+#include "mbed_toolchain.h"
 // For tracing we need to define flag, have include and define group
 #define HAVE_DEBUG 1
 #include "ns_trace.h"
@@ -31,10 +32,16 @@
 
 /* Heap for NanoStack */
 #if !MBED_CONF_MBED_MESH_API_USE_MALLOC_FOR_HEAP
+
+#if defined(TARGET_NUCLEO_L476RG) && defined(TOOLCHAIN_GCC_ARM)
+static uint8_t app_stack_heap[MBED_CONF_MBED_MESH_API_HEAP_SIZE + 1] MBED_SECTION("mesh_heap");
+#else // !(defined(TARGET_NUCLEO_L476RG) && defined(TOOLCHAIN_GCC_ARM))
 static uint8_t app_stack_heap[MBED_CONF_MBED_MESH_API_HEAP_SIZE + 1];
-#else
+#endif // !(defined(TARGET_NUCLEO_L476RG) && defined(TOOLCHAIN_GCC_ARM))
+
+#else // MBED_CONF_MBED_MESH_API_USE_MALLOC_FOR_HEAP
 static uint8_t *app_stack_heap;
-#endif
+#endif // MBED_CONF_MBED_MESH_API_USE_MALLOC_FOR_HEAP
 static bool mesh_initialized = false;
 
 /*
