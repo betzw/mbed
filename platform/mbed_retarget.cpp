@@ -27,6 +27,8 @@
 #include "platform/mbed_stats.h"
 #include "platform/mbed_critical.h"
 #include "platform/PlatformMutex.h"
+#include "us_ticker_api.h"
+#include "lp_ticker_api.h"
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
@@ -252,7 +254,7 @@ extern "C" FILEHANDLE PREFIX(_open)(const char* name, int openmode) {
             /* The first part of the filename (between first 2 '/') is not a
              * registered mount point in the namespace.
              */
-            return handle_open_errors(-ENOENT, fh_i);
+            return handle_open_errors(-ENODEV, fh_i);
         }
 
         if (path.isFile()) {
@@ -260,7 +262,7 @@ extern "C" FILEHANDLE PREFIX(_open)(const char* name, int openmode) {
         } else {
             FileSystemHandle *fs = path.fileSystem();
             if (fs == NULL) {
-                return handle_open_errors(-ENOENT, fh_i);
+                return handle_open_errors(-ENODEV, fh_i);
             }
             int posix_mode = openmode_to_posix(openmode);
             int err = fs->open(&res, path.fileName(), posix_mode);
@@ -565,7 +567,7 @@ extern "C" int remove(const char *path) {
     FilePath fp(path);
     FileSystemHandle *fs = fp.fileSystem();
     if (fs == NULL) {
-        errno = ENOENT;
+        errno = ENODEV;
         return -1;
     }
 
@@ -585,7 +587,7 @@ extern "C" int rename(const char *oldname, const char *newname) {
     FileSystemHandle *fsNew = fpNew.fileSystem();
 
     if (fsOld == NULL) {
-        errno = ENOENT;
+        errno = ENODEV;
         return -1;
     }
 
@@ -625,7 +627,7 @@ extern "C" DIR *opendir(const char *path) {
     FilePath fp(path);
     FileSystemHandle* fs = fp.fileSystem();
     if (fs == NULL) {
-        errno = ENOENT;
+        errno = ENODEV;
         return NULL;
     }
 
@@ -677,7 +679,10 @@ extern "C" void seekdir(DIR *dir, off_t off) {
 extern "C" int mkdir(const char *path, mode_t mode) {
     FilePath fp(path);
     FileSystemHandle *fs = fp.fileSystem();
-    if (fs == NULL) return -1;
+    if (fs == NULL) {
+        errno = ENODEV;
+        return -1;
+    }
 
     int err = fs->mkdir(fp.fileName(), mode);
     if (err < 0) {
@@ -691,7 +696,10 @@ extern "C" int mkdir(const char *path, mode_t mode) {
 extern "C" int stat(const char *path, struct stat *st) {
     FilePath fp(path);
     FileSystemHandle *fs = fp.fileSystem();
-    if (fs == NULL) return -1;
+    if (fs == NULL) {
+        errno = ENODEV;
+        return -1;
+    }
 
     int err = fs->stat(fp.fileName(), st);
     if (err < 0) {
@@ -1062,4 +1070,24 @@ extern "C" clock_t clock()
     t /= 1000000 / CLOCKS_PER_SEC; // convert to processor time
     _mutex->unlock();
     return t;
+}
+
+// temporary - Default to 1MHz at 32 bits if target does not have us_ticker_get_info
+MBED_WEAK const ticker_info_t* us_ticker_get_info()
+{
+    static const ticker_info_t info = {
+        1000000,
+        32
+    };
+    return &info;
+}
+
+// temporary - Default to 1MHz at 32 bits if target does not have lp_ticker_get_info
+MBED_WEAK const ticker_info_t* lp_ticker_get_info()
+{
+    static const ticker_info_t info = {
+        1000000,
+        32
+    };
+    return &info;
 }

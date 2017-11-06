@@ -36,22 +36,21 @@
 #
 # Command usage:
 #
-# update.py -c <config file> - T <github_token> -l <logging level> -f -b 
+# update.py -c <config file> - T <github_token> -f -b -s
 #
 # Where:
 # -c <config file> - Optional path to an examples file.
 #                    If not proved the default is 'examples.json'
 # -T <github_token> - GitHub token for secure access (required)
-# -l <logging level> - Optional Level for providing logging output. Can be one of,
-#                      CRITICAL, ERROR, WARNING, INFO, DEBUG
-#                      If not provided the default is 'INFO'
 # -f                 - Update forked repos. This will use the 'github-user' parameter in
 #                      the 'via-fork' section.
 # -b                 - Update branched repos. This will use the "src-branch" and 
 #                      "dst-branch" parameters in the 'via-branch' section. The destination
 #                      branch is created from the source branch (if it doesn't already exist).
+# -s               - Show the status of any pull requests with a tag matching that in the 
+#                    json config file
 # 
-# The options -f and -b are mutually exlusive. Only one can be specified.
+# The options -f, -b and -s are mutually exlusive. Only one can be specified.
 #
 #
 
@@ -75,16 +74,34 @@ sys.path.insert(0, ROOT)
 import examples_lib as lib
 from examples_lib import SUPPORTED_TOOLCHAINS
 
-def run_cmd(command, exit_on_failure=False):
-    """ Run a system command and return the result status
-    
-    Description:
-    
-    Passes a command to the system and returns a True/False result, once the 
-    command has been executed, indicating success/failure. Commands are passed
-    as a list of tokens. 
-    E.g. The command 'git remote -v' would be passed in as ['git', 'remote', '-v']
+userlog = logging.getLogger("Update")
 
+# Set logging level
+userlog.setLevel(logging.DEBUG)
+
+# Everything is output to the log file
+logfile = os.path.join(os.getcwd(), 'update.log')
+fh = logging.FileHandler(logfile)
+fh.setLevel(logging.DEBUG)
+
+# create console handler with a higher log level
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+
+formatter = logging.Formatter('%(name)s: %(levelname)s - %(message)s')
+ch.setFormatter(formatter)
+fh.setFormatter(formatter)    
+
+# add the handlers to the logger
+userlog.addHandler(fh)
+userlog.addHandler(ch)
+
+def run_cmd(command, exit_on_failure=False):
+    """ Run a system command returning a status result
+    
+    This is just a wrapper for the run_cmd_with_output() function, but
+    only returns the status of the call.
+    
     Args:
     command - system command as a list of tokens
     exit_on_failure - If True exit the program on failure (default = False)
@@ -92,48 +109,40 @@ def run_cmd(command, exit_on_failure=False):
     Returns:
     return_code - True/False indicating the success/failure of the command
     """
-    update_log.debug('[Exec] %s', ' '.join(command))
-    return_code = subprocess.call(command, shell=True)
-    
-    if return_code:
-        update_log.warning("Command '%s' failed with return code: %s", 
-                           ' '.join(command), return_code)
-        if exit_on_failure:
-            sys.exit(1)
-    
+    return_code, _ = run_cmd_with_output(command, exit_on_failure)       
     return return_code
 
 def run_cmd_with_output(command, exit_on_failure=False):
-    """ Run a system command and return the result status plus output  
+    """ Run a system command returning a status result and any command output
     
-    Description:
-        
     Passes a command to the system and returns a True/False result once the 
     command has been executed, indicating success/failure. If the command was 
     successful then the output from the command is returned to the caller.
-    Commands are passed as a list of tokens. 
-    E.g. The command 'git remote -v' would be passed in as ['git', 'remote', '-v']
+    Commands are passed as a string. 
+    E.g. The command 'git remote -v' would be passed in as "git remote -v"
 
     Args:
-    command - system command as a list of tokens
+    command - system command as a string
     exit_on_failure - If True exit the program on failure (default = False)
     
     Returns:
-    returncode - True/False indicating the success/failure of the command
+    return_code - True/False indicating the success/failure of the command
     output - The output of the command if it was successful, else empty string
     """
-    update_log.debug('[Exec] %s', ' '.join(command))
+    text = '[Exec] ' + command
+    userlog.debug(text)
     returncode = 0
     output = ""
     try:
         output = subprocess.check_output(command, shell=True)
     except subprocess.CalledProcessError as e:
-        update_log.warning("Command '%s' failed with return code: %s", 
-                           ' '.join(command), e.returncode)
+        text = "The command " + str(command) + "failed with return code: " + str(e.returncode)
+        userlog.warning(text)
         returncode = e.returncode
         if exit_on_failure:
             sys.exit(1)
     return returncode, output
+
 
 def rmtree_readonly(directory):
     """ Deletes a readonly directory tree.
@@ -198,7 +207,7 @@ def upgrade_single_example(example, tag, directory, ref):
         
         os.rename("mbed-os.lib", "mbed-os.lib_bak")
     else:
-        update_log.error("Failed to backup mbed-os.lib prior to updating.")
+        userlog.error("Failed to backup mbed-os.lib prior to updating.")
         return False
     
     # mbed-os.lib file contains one line with the following format
@@ -221,7 +230,7 @@ def upgrade_single_example(example, tag, directory, ref):
 
     if updated:
         # Setup and run the git add command
-        cmd = ['git', 'add', 'mbed-os.lib']
+        cmd = "git add mbed-os.lib"
         return_code = run_cmd(cmd)
 
     os.chdir(cwd)
@@ -242,12 +251,12 @@ def prepare_fork(arm_example):
     """
 
     logstr = "In: " + os.getcwd()
-    update_log.debug(logstr)
+    userlog.debug(logstr)
 
-    for cmd in [['git', 'remote', 'add', 'armmbed', arm_example],
-                ['git', 'fetch', 'armmbed'],
-                ['git', 'reset', '--hard', 'armmbed/master'],
-                ['git', 'push', '-f', 'origin']]:
+    for cmd in ["git remote add armmbed " + str(arm_example),
+                "git fetch armmbed",
+                "git reset --hard armmbed/master",
+                "git push -f origin"]:
         run_cmd(cmd, exit_on_failure=True)
 
 def prepare_branch(src, dst):
@@ -265,25 +274,34 @@ def prepare_branch(src, dst):
     
     """
 
-    update_log.debug("Preparing branch: %s", dst)
+    userlog.debug("Preparing branch: %s", dst)
 
     # Check if branch already exists or not.
-    cmd = ['git', 'branch']
+    # We can use the 'git branch -r' command. This returns all the remote branches for
+    # the current repo.
+    # The output consists of a list of lines of the form:
+    # origin/<branch>
+    # From these we need to extract just the branch names to a list and then check if 
+    # the specified dst exists in that list
+    branches = []
+    cmd = "git branch -r"
     _, output = run_cmd_with_output(cmd, exit_on_failure=True)
 
-    if not dst in output:
+    branches = [line.split('/')[1] for line in output.split('\n') if 'origin' in line and not '->' in line]
+  
+    if not dst in branches:
         
         # OOB branch does not exist thus create it, first ensuring we are on 
         # the src branch and then check it out
 
-        for cmd in [['git', 'checkout', src],
-                    ['git', 'checkout', '-b', dst],
-                    ['git', 'push', '-u', 'origin', dst]]:
+        for cmd in ["git checkout " + str(src),
+                    "git checkout -b " + str(dst),
+                    "git push -u origin " + str(dst)]:
 
             run_cmd(cmd, exit_on_failure=True)
 
     else: 
-        cmd = ['git', 'checkout', dst]
+        cmd = "git checkout " + str(dst)
         run_cmd(cmd, exit_on_failure=True)
    
 def upgrade_example(github, example, tag, ref, user, src, dst, template):
@@ -321,18 +339,18 @@ def upgrade_example(github, example, tag, ref, user, src, dst, template):
         user = 'ARMmbed'
                 
     ret = False
-    update_log.info("Updating example '%s'", example['name'])
-    update_log.debug("User: %s", user)
-    update_log.debug("Src branch: %s", (src or "None"))
-    update_log.debug("Dst branch: %s", (dst or "None"))
+    userlog.info("Updating example '%s'", example['name'])
+    userlog.debug("User: %s", user)
+    userlog.debug("Src branch: %s", (src or "None"))
+    userlog.debug("Dst branch: %s", (dst or "None"))
 
     cwd = os.getcwd()
 
     update_repo = "https://github.com/" + user + '/' + example['name'] 
-    update_log.debug("Update repository: %s", update_repo)
+    userlog.debug("Update repository: %s", update_repo)
 
     # Clone the example repo
-    clone_cmd = ['git', 'clone', update_repo]
+    clone_cmd = "git clone " +  str(update_repo)
     return_code = run_cmd(clone_cmd)
     
     if not return_code:
@@ -353,16 +371,13 @@ def upgrade_example(github, example, tag, ref, user, src, dst, template):
                 os.chdir(cwd)
                 return False
 
-        # Setup the default commit message
-        commit_message = 'Updating mbed-os to ' + tag 
-
         # Setup and run the commit command
-        commit_cmd = ['git', 'commit', '-m', commit_message]
+        commit_cmd = "git commit -m \"Updating mbed-os to " + tag + "\""
         return_code = run_cmd(commit_cmd)
         if not return_code:
 
             # Setup and run the push command
-            push_cmd = ['git', 'push', 'origin']
+            push_cmd = "git push origin"
             return_code = run_cmd(push_cmd)
             
             if not return_code:
@@ -370,13 +385,13 @@ def upgrade_example(github, example, tag, ref, user, src, dst, template):
                 if user != 'ARMmbed': 
                     
                     upstream_repo = 'ARMmbed/'+ example['name']
-                    update_log.debug("Upstream repository: %s", upstream_repo)
+                    userlog.debug("Upstream repository: %s", upstream_repo)
                     # Check access to mbed-os repo
                     try:
                         repo = github.get_repo(upstream_repo, False)
 
                     except:
-                        update_log.error("Upstream repo: %s, does not exist - skipping", upstream_repo)
+                        userlog.error("Upstream repo: %s, does not exist - skipping", upstream_repo)
                         return False
            
                     jinja_loader = FileSystemLoader(template)
@@ -391,15 +406,15 @@ def upgrade_example(github, example, tag, ref, user, src, dst, template):
                         ret = True
                     except GithubException as e:
                         # Default to False
-                         update_log.error("Pull request creation failed with error: %s", e)
+                         userlog.error("Pull request creation failed with error: %s", e)
                 else:
                     ret = True                    
             else:
-                update_log.error("Git push command failed.")
+                userlog.error("Git push command failed.")
         else:
-            update_log.error("Git commit command failed.")
+            userlog.error("Git commit command failed.")
     else:
-        update_log.error("Git clone %s failed", update_repo)
+        userlog.error("Git clone %s failed", update_repo)
 
     os.chdir(cwd)
     return ret
@@ -413,10 +428,51 @@ def create_work_directory(path):
     
     """
     if os.path.exists(path):
-        update_log.info("'%s' directory already exists. Deleting...", path)
+        userlog.info("'%s' directory already exists. Deleting...", path)
         rmtree_readonly(path)
     
     os.makedirs(path)
+
+def check_update_status(examples, github, tag):
+    """ Check the status of previously raised update pull requests
+    
+    Args:
+    examples - list of examples which should have had PRs raised against them. 
+    github - github rest API instance
+    tag - release tag used for the update
+    
+    """
+
+    for example in examples:
+
+        repo_name = ''.join(['ARMmbed/', example['name']])
+        try:
+            repo = github.get_repo(repo_name, False)
+
+        except Exception as exc:
+            text = "Cannot access: " + str(repo_name)
+            userlog.error(text)
+            userlog.exception(exc)
+            sys.exit(1)
+
+        # Create the full repository filter component
+        org_str = ''.join(['repo:ARMmbed/', example['name']])
+        filt = ' '.join([org_str, 'is:pr', tag])        
+        merged = False
+
+        issues = github.search_issues(query=(filt))
+        pr_list = [repo.get_pull(issue.number) for issue in issues]
+
+        # Should only be one matching PR but just in case, go through paginated list  
+        for pr in pr_list:
+            if pr.merged:
+                userlog.info("%s - '%s': MERGED", example['name'], pr.title)
+            elif pr.state == 'open':
+                userlog.info("%s - '%s': PENDING", example['name'], pr.title)
+            elif pr.state == 'closed':
+                userlog.info("%s - '%s': CLOSED NOT MERGED", example['name'], pr.title)
+            else:
+                userlog.error("%s: Cannot find a pull request for %s", example['name'], tag)
 
 if __name__ == '__main__':
 
@@ -424,33 +480,21 @@ if __name__ == '__main__':
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('-c', '--config_file', help="Path to the configuration file (default is 'examples.json')", default='examples.json')
     parser.add_argument('-T', '--github_token', help="GitHub token for secure access")
-    parser.add_argument('-l', '--log-level', 
-                        help="Level for providing logging output", 
-                        default='INFO')
     
     exclusive = parser.add_mutually_exclusive_group(required=True)
     exclusive.add_argument('-f', '--fork', help="Update a fork", action='store_true')
     exclusive.add_argument('-b', '--branch', help="Update a branch", action='store_true')
+    exclusive.add_argument('-s', '--status', help="Show examples update status", action='store_true')
     
     args = parser.parse_args()
-
-    default = getattr(logging, 'INFO')
-    level = getattr(logging, args.log_level.upper(), default)
-        
-    # Set logging level
-    logging.basicConfig(level=level)
-
-    update_log = logging.getLogger("Update")
 
     # Load the config file
     with open(os.path.join(os.path.dirname(__file__), args.config_file)) as config:
         if not config:
-            update_log.error("Failed to load config file '%s'", args.config_file)
+            userlog.error("Failed to load config file '%s'", args.config_file)
             sys.exit(1)
         json_data = json.load(config)
         
-    # Create working directory
-    create_work_directory('examples')
 
     github = Github(args.github_token)
     config = json_data['update-config']
@@ -459,6 +503,15 @@ if __name__ == '__main__':
     user = None
     src = "master"
     dst = None
+
+    if args.status:
+        
+        # This option should only be called after an update has been performed
+        check_update_status(json_data['examples'], github, tag)
+        exit(0)
+
+    # Create working directory
+    create_work_directory('examples')
 
     if args.fork:
         user = config['via-fork']['github-user']
@@ -470,11 +523,11 @@ if __name__ == '__main__':
         exit(1)    
 
     # Get the github sha corresponding to the specified mbed-os tag
-    cmd = ['git', 'rev-list', '-1', tag]
+    cmd = "git rev-list -1 " + tag
     return_code, ref = run_cmd_with_output(cmd) 
 
     if return_code:
-        update_log.error("Could not obtain SHA for tag: %s",  tag)
+        userlog.error("Could not obtain SHA for tag: %s",  tag)
         sys.exit(1)
 
     # Loop through the examples
@@ -499,11 +552,11 @@ if __name__ == '__main__':
     os.chdir('../')
     
     # Finish the script and report the results
-    update_log.info("Finished updating examples")
+    userlog.info("Finished updating examples")
     if successes:
         for success in successes:
-            update_log.info(" SUCCEEDED: %s", success)
+            userlog.info(" SUCCEEDED: %s", success)
     
     if failures:
         for fail in failures:
-            update_log.info(" FAILED: %s", fail)
+            userlog.info(" FAILED: %s", fail)
