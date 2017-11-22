@@ -1,0 +1,45 @@
+{
+    "config": {
+        "wifi-secure-ssid": {
+            "help": "WiFi SSID for WPA2 secured network",
+            "value": "\"crespan\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"Arches0n\""
+        },
+        "wifi-ch-secure": {
+            "help": "Channel number of secure SSID",
+            "value": 1
+        },
+        "wifi-driver": {
+            "help": "Wifi driver to use, valid values are INTERNAL, WIFI_ESP8266 and X_NUCLEO_IDW0XX1",
+            "value": "X_NUCLEO_IDW0XX1"
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "D8"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "D2"
+        },
+        "ap-mac-secure": {
+            "help": "BSSID of secure AP in form of AA:BB:CC:DD:EE:FF",
+            "value": "\"2C:B0:5D:23:85:CC\""
+        },
+        "max-scan-size": {
+            "help": "How many networks may appear in Wifi scan result",
+            "value": 10
+        }
+    },
+    "target_overrides": {
+        "*": {
+            "platform.stdio-convert-newlines": true,
+            "idw0xx1.expansion-board": "IDW04A1",
+	    "drivers.uart-serial-txbuf-size": 750,
+	    "drivers.uart-serial-rxbuf-size": 750
+        }
+    },
+    "macros": ["IDW04A1_WIFI_HW_BUG_WA"]
+}
