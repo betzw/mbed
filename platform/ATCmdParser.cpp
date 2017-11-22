@@ -255,7 +255,7 @@ restart:
             // Receive next character
             int c = getc();
             if (c < 0) {
-                debug_if(_dbg_on, "AT(Timeout)\n");
+                debug_if(true, "AT(Timeout)\n");
                 return false;
             }
             // Simplify newlines (borrowed from retarget.cpp)
@@ -282,7 +282,7 @@ restart:
                     oob->cb();
 
                     if (_aborted) {
-                        debug_if(_dbg_on, "AT(Aborted)\n");
+                        debug_if(true, "AT(Aborted)\n");
                         return false;
                     }
                     // oob may have corrupted non-reentrant buffer,
@@ -319,7 +319,9 @@ restart:
             // Clear the buffer when we hit a newline or ran out of space
             // running out of space usually means we ran into binary data
             if (c == '\n' || j+1 >= _buffer_size - offset) {
-                debug_if(_dbg_on, "AT< %s", _buffer+offset);
+                if(strlen(_buffer+offset) > 1) {
+                    debug_if(true, "AT< %s", _buffer+offset);
+                }
                 j = 0;
             }
         }
