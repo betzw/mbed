@@ -76,7 +76,7 @@ void test_tcp_hello_world() {
         // Server will respond with HTTP GET's success code
         int len = 0;
         int ret;
-        while((ret = sock.recv(buffer+len, sizeof(buffer) - 1- len)) > 0) {
+        while((ret = sock.recv(buffer+len, sizeof(buffer) - 1 - len)) > 0) {
             len += ret;
             sock.set_timeout(0);
         }
@@ -95,7 +95,7 @@ void test_tcp_hello_world() {
 
         if (found_200_ok && found_hello) result = true;
 
-        printf("HTTP: Received %d chars from server\r\n", ret);
+        printf("HTTP: Received %d chars from server\r\n", len);
         printf("HTTP: Received 200 OK status ... %s\r\n", found_200_ok ? "[OK]" : "[FAIL]");
         printf("HTTP: Received '%s' status ... %s\r\n", HTTP_HELLO_STR, found_hello ? "[OK]" : "[FAIL]");
         printf("HTTP: Received message:\r\n");
