@@ -63,7 +63,6 @@ static SingletonPtr<PlatformMutex> _mutex;
 #   define STDERR_FILENO    2
 
 #else
-#   include <sys/stat.h>
 #   include <sys/syslimits.h>
 #   define PREFIX(x)    x
 #endif
@@ -942,7 +941,11 @@ extern "C" WEAK void __iar_file_Mtxdst(__iar_Rmtx *mutex) {}
 extern "C" WEAK void __iar_file_Mtxlock(__iar_Rmtx *mutex) {}
 extern "C" WEAK void __iar_file_Mtxunlock(__iar_Rmtx *mutex) {}
 #if defined(__IAR_SYSTEMS_ICC__ ) && (__VER__ >= 8000000)
-extern "C" WEAK void *__aeabi_read_tp (void) { return NULL ;}
+#pragma section="__iar_tls$$DATA"
+extern "C" WEAK void *__aeabi_read_tp (void) {
+  // Thread Local storage is not supported, using main thread memory for errno
+  return __section_begin("__iar_tls$$DATA");
+}
 #endif
 #elif defined(__CC_ARM)
 // Do nothing
@@ -1042,15 +1045,11 @@ void *operator new[](std::size_t count, const std::nothrow_t& tag)
 
 void operator delete(void *ptr)
 {
-    if (ptr != NULL) {
-        free(ptr);
-    }
+    free(ptr);
 }
 void operator delete[](void *ptr)
 {
-    if (ptr != NULL) {
-        free(ptr);
-    }
+    free(ptr);
 }
 
 /* @brief   standard c library clock() function.
