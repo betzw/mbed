@@ -79,10 +79,7 @@ void test_tcp_hello_world() {
         while((ret = sock.recv(buffer+len, sizeof(buffer) - 1 - len)) > 0) {
             len += ret;
         }
-        if(len >= 0)
-            buffer[len] = '\0';
-        else
-            buffer[0] = '\0';
+        buffer[len] = '\0';
 
         // Find 200 OK HTTP status in reply
         bool found_200_ok = find_substring(buffer, buffer + len, HTTP_OK_STR, HTTP_OK_STR + strlen(HTTP_OK_STR));
