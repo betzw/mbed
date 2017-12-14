@@ -78,7 +78,6 @@ void test_tcp_hello_world() {
         int ret;
         while((ret = sock.recv(buffer+len, sizeof(buffer) - 1 - len)) > 0) {
             len += ret;
-            sock.set_timeout(0);
         }
         if(len >= 0)
             buffer[len] = '\0';
