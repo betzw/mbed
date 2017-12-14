@@ -108,7 +108,7 @@ void test_udp_dtls_handshake() {
 
         int step = 0;
         while (step < udp_dtls_handshake_count) {
-            err = sock.recvfrom(NULL, buffer, udp_dtls_handshake_pattern[step]);
+            err = sock.recvfrom(NULL, buffer, sizeof(buffer));
             printf("UDP: rx <- %d ", err);
 
             // check length
