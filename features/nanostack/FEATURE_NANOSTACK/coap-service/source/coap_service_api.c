@@ -1,5 +1,18 @@
 /*
- * Copyright (c) 2015-2017 ARM Limited. All Rights Reserved.
+ * Copyright (c) 2015-2017, Arm Limited and affiliates.
+ * SPDX-License-Identifier: Apache-2.0
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 
@@ -175,7 +188,7 @@ static uint8_t coap_tx_function(uint8_t *data_ptr, uint16_t data_len, sn_nsdl_ad
             memcpy(transaction_ptr->data_ptr, data_ptr, data_len);
             transaction_ptr->data_len = data_len;
         }
-    } else if ((ret_val == -1) || (transaction_ptr->resp_cb == NULL)) {
+    } else if ((ret_val == -1) || (!transaction_ptr->resp_cb && transaction_ptr->req_msg_type == COAP_MSG_TYPE_NON_CONFIRMABLE)) {
         transaction_delete(transaction_ptr);
     }
 
@@ -287,7 +300,7 @@ static void sec_done_cb(int8_t socket_id, uint8_t address[static 16], uint16_t p
         ns_dyn_mem_free(transaction_ptr->data_ptr);
         transaction_ptr->data_ptr = NULL;
         transaction_ptr->data_len = 0;
-        if (transaction_ptr->resp_cb == NULL) {
+        if (!transaction_ptr->resp_cb && transaction_ptr->req_msg_type == COAP_MSG_TYPE_NON_CONFIRMABLE) {
             transaction_delete(transaction_ptr);
         }
     }
