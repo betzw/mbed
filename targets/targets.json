@@ -1078,6 +1078,31 @@
         "device_name": "STM32F412ZG",
         "bootloader_supported": true
     },
+    "MTB_MXCHIP_EMW3166": {
+        "inherits": ["FAMILY_STM32"],
+        "core": "Cortex-M4F",
+        "extra_labels_add": ["STM32F4", "STM32F412xG", "STM32F412ZG"],
+        "macros_add": ["USB_STM_HAL", "USBHOST_OTHER"],
+        "device_has_add": ["CAN", "LOWPOWERTIMER", "SERIAL_ASYNCH", "SERIAL_FC", "TRNG", "FLASH"],
+        "release_versions": ["2", "5"],
+        "device_name": "STM32F412ZG",
+        "bootloader_supported": true,
+        "config": {
+            "stdio_uart_tx": {
+                "help": "Value PB_6",
+                "value": "PB_6"
+            },
+            "stdio_uart_rx": {
+                "help": "Value PB_7",
+                "value": "PB_7"
+            },
+            "clock_source": {
+                "help": "Mask value : USE_PLL_HSE_EXTC | USE_PLL_HSE_XTAL (need HW patch) | USE_PLL_HSI",
+                "value": "USE_PLL_HSI",
+                "macro_name": "CLOCK_SOURCE"
+            }
+        }
+    },
     "DISCO_F413ZH": {
         "inherits": ["FAMILY_STM32"],
         "supported_form_factors": ["ARDUINO"],
@@ -1859,19 +1884,14 @@
                 "value": 1,
                 "macro_name": "MODEM_ON_BOARD_UART"
             },
-            "usb_tx": {
+            "stdio_uart_tx": {
                 "help": "Value PB_6",
                 "value": "PB_6"
             },
-            "usb_rx": {
+            "stdio_uart_rx": {
                 "help": "Value PB_7",
                 "value": "PB_7"
-            },
-            "stdio_uart": {
-                "help": "Value: UART_1",
-                "value": "UART_1",
-                "macro_name": "STDIO_UART"
-             }
+            }
         },
         "overrides": {
                  "lse_available": 0
@@ -2546,6 +2566,15 @@
         "inherits": ["RZ_A1XX"],
         "extra_labels": ["RZA1H", "VKRZA1H"],
         "release_versions": []
+    },
+    "GR_LYCHEE": {
+        "inherits": ["RZ_A1XX"],
+        "supported_form_factors": ["ARDUINO"],
+        "extra_labels_add": ["RZA1UL", "MBRZA1LU"],
+        "device_has_add": ["TRNG"],
+        "device_has_remove": ["ETHERNET"],
+        "features_remove": ["LWIP"],
+        "release_versions": ["2", "5"]
     },
     "MAXWSNENV": {
         "inherits": ["Target"],
@@ -3487,7 +3516,7 @@
         "post_binary_hook": {"function": "NCS36510TargetCode.ncs36510_addfib"},
         "macros": ["CM3", "CPU_NCS36510", "TARGET_NCS36510", "LOAD_ADDRESS=0x3000"],
         "supported_toolchains": ["GCC_ARM", "ARM", "IAR"],
-        "device_has": ["ANALOGIN", "SERIAL", "I2C", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "RTC", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "LOWPOWERTIMER", "TRNG", "SPISLAVE"],
+        "device_has": ["ANALOGIN", "SERIAL", "I2C", "INTERRUPTIN", "PORTIN", "PORTINOUT", "PORTOUT", "PWMOUT", "SERIAL", "SERIAL_FC", "SLEEP", "SPI", "LOWPOWERTIMER", "TRNG", "SPISLAVE"],
         "release_versions": ["2", "5"]
     },
     "NUMAKER_PFM_M453": {
