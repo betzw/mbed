@@ -416,7 +416,7 @@ bool ATCmdParser::process_oob()
         if (i+1 >= _buffer_size ||
             strcmp(&_buffer[i-_output_delim_size], _output_delimiter) == 0) {
 
-            debug_if(_dbg_on, "AT< %s", _buffer);
+            debug_if(true, "AT- %s", _buffer);
             i = 0;
         }
     }

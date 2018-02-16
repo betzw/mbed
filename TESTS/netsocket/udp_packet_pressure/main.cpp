@@ -175,6 +175,9 @@ void test_udp_packet_pressure() {
                 if (chunk_size > window) {
                     chunk_size = window;
                 }
+                if (chunk_size > buffer_size) {
+                    chunk_size = buffer_size;
+                }
 
                 tx_seq.buffer(buffer, chunk_size);
                 int td = sock.sendto(udp_addr, buffer, chunk_size);
@@ -200,6 +203,7 @@ void test_udp_packet_pressure() {
 
             // Prioritize recieving over sending packets to avoid flooding
             // the network while handling erronous packets
+            int trials = 0;
             while (rx_count < size) {
                 int rd = sock.recvfrom(NULL, buffer, buffer_size);
                 TEST_ASSERT(rd > 0 || rd == NSAPI_ERROR_WOULD_BLOCK);
@@ -216,6 +220,7 @@ void test_udp_packet_pressure() {
                         if (window < MBED_CFG_UDP_CLIENT_PACKET_PRESSURE_MAX) {
                             window += MBED_CFG_UDP_CLIENT_PACKET_PRESSURE_MIN;
                         }
+                        trials = 0;
                     }
                 } else if (timer.read_ms() - known_time >
                         MBED_CFG_UDP_CLIENT_PACKET_PRESSURE_TIMEOUT) {
@@ -231,7 +236,9 @@ void test_udp_packet_pressure() {
                     if (MBED_CFG_UDP_CLIENT_PACKET_PRESSURE_DEBUG) {
                         printf("UDP: Dropped, window = %d\r\n", window);
                     }
-                } else if (rd == NSAPI_ERROR_WOULD_BLOCK) {
+
+                    break;
+                } else if ((rd == NSAPI_ERROR_WOULD_BLOCK) && (trials++ > 5)) {
                     break;
                 }
             }
@@ -253,7 +260,7 @@ void test_udp_packet_pressure() {
 
 // Test setup
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(120, "udp_echo");
+    GREENTEA_SETUP(5*120, "udp_echo");
     return verbose_test_setup_handler(number_of_cases);
 }
 

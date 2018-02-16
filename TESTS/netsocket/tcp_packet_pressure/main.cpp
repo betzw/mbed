@@ -158,7 +158,11 @@ void test_tcp_packet_pressure() {
             tcp_addr.get_ip_address(), tcp_addr.get_port(), size);
 
         //recv connection prefix message
-        sock.recv(buffer, sizeof(MBED_CONF_APP_TCP_ECHO_PREFIX));
+        do {
+            err = sock.recv(buffer, sizeof(MBED_CONF_APP_TCP_ECHO_PREFIX));
+        } while(err < 0);
+        TEST_ASSERT_EQUAL(sizeof(MBED_CONF_APP_TCP_ECHO_PREFIX), err);
+
         memset(buffer, 0, sizeof(buffer));
 
         sock.set_blocking(false);
@@ -234,7 +238,7 @@ void test_tcp_packet_pressure() {
 
 // Test setup
 utest::v1::status_t test_setup(const size_t number_of_cases) {
-    GREENTEA_SETUP(120, "tcp_echo");
+    GREENTEA_SETUP(3*120, "tcp_echo");
     return verbose_test_setup_handler(number_of_cases);
 }
 
