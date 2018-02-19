@@ -87,7 +87,7 @@ private:
 
 public:
     // Limiting stack size to 1k
-    Echo(): thread(osPriorityNormal, 1024), result(false) {
+    Echo(): thread(osPriorityNormal, 4*1024), result(false) {
     }
 
     void start(int id, char *uuid) {
@@ -118,7 +118,7 @@ public:
                 iomutex.unlock();
             } else {
                 iomutex.lock();
-                printf("[ID:%01d][%02d] Network error %d\n", id, i, ret);
+                printf("[ID:%01d][%02d] Network error %d (%d)\n", id, i, ret, __LINE__);
                 iomutex.unlock();
                 continue;
             }
@@ -131,7 +131,7 @@ public:
                 iomutex.unlock();
             } else {
                 iomutex.lock();
-                printf("[ID:%01d][%02d] Network error %d\n", id, i, n);
+                printf("[ID:%01d][%02d] Network error %d (%d)\n", id, i, n, __LINE__);
                 iomutex.unlock();
                 continue;
             }

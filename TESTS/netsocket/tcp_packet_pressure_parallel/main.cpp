@@ -122,10 +122,13 @@ void generate_buffer(uint8_t **buffer, size_t *size, size_t min, size_t max) {
         free(b);
         i *= 2;
     }
+    if(!(i < max)) { // betzw: exiting the `while` loop "normally" (i.e. not thru `break`)
+        i /= 4;
+    }
 
     *buffer = (uint8_t *)malloc(i);
     *size = i;
-    TEST_ASSERT(buffer);
+    TEST_ASSERT(*buffer);
 }
 
 
@@ -168,7 +171,11 @@ public:
             TEST_ASSERT_EQUAL(0, err);
             err = sock.connect(tcp_addr);
             TEST_ASSERT_EQUAL(0, err);
-            sock.recv(buffer, sizeof(MBED_CONF_APP_TCP_ECHO_PREFIX));
+
+            do {
+                err = sock.recv(buffer, sizeof(MBED_CONF_APP_TCP_ECHO_PREFIX));
+            } while(err < 0);
+            TEST_ASSERT_EQUAL(sizeof(MBED_CONF_APP_TCP_ECHO_PREFIX), err);
 
             iomutex.lock();
             printf("TCP: %s:%d streaming %d bytes\r\n",
@@ -198,7 +205,7 @@ public:
                     if (td > 0) {
                         if (MBED_CFG_TCP_CLIENT_PACKET_PRESSURE_DEBUG) {
                             iomutex.lock();
-                            printf("TCP: tx -> %d\r\n", td);
+                            printf("TCP: tx -> %d (%d)\r\n", td, chunk_size);
                             iomutex.unlock();
                         }
                         tx_seq.skip(td);
