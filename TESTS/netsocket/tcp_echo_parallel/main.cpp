@@ -67,7 +67,7 @@ private:
 
 public:
     // Limiting stack size to 1k
-    Echo(): thread(osPriorityNormal, 1024) {
+    Echo(): thread(osPriorityNormal, 4*1024) {
     }
 
     void start() {
