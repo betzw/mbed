@@ -35,11 +35,13 @@
 #if (defined(TWO_RAM_REGIONS) && defined(__GNUC__) && !defined(__CC_ARM))
 #include <errno.h>
 #include "stm32l4xx.h"
-extern uint32_t __mbed_sbrk_start;
-extern uint32_t __mbed_krbs_start;
 
-#define STM32L4_HEAP_ALIGN               32
-#define STM32L4_ALIGN_UP(X, ALIGN)       (((X) + (ALIGN) - 1) & ~((ALIGN) - 1))
+extern uint32_t __end__;
+
+/* Heap limits - only used if set */
+extern unsigned char *mbed_heap_start;
+extern uint32_t mbed_heap_size;
+
 /**
  * The default implementation of _sbrk() (in platform/mbed_retarget.cpp) for GCC_ARM requires one-region model (heap and 
  * stack share one region), which doesn't fit two-region model (heap and stack are two distinct regions), for example, 
@@ -49,18 +51,25 @@ extern uint32_t __mbed_krbs_start;
  */
 void *__wrap__sbrk(int incr)
 {
-    static uint32_t heap_ind = (uint32_t) &__mbed_sbrk_start;
-    uint32_t heap_ind_old = STM32L4_ALIGN_UP(heap_ind, STM32L4_HEAP_ALIGN);
-    uint32_t heap_ind_new = STM32L4_ALIGN_UP(heap_ind_old + incr, STM32L4_HEAP_ALIGN);
-    
-    if (heap_ind_new > &__mbed_krbs_start) {
+    static unsigned char* heap = (unsigned char*)&__end__;
+    unsigned char*        prev_heap = heap;
+    unsigned char*        new_heap = heap + incr;
+
+#if !MBED_CONF_RTOS_PRESENT
+    if (new_heap >= (unsigned char*)__get_MSP()) {
         errno = ENOMEM;
-        return (void *) -1;
-    } 
-    
-    heap_ind = heap_ind_new;
-    
-    return (void *) heap_ind_old;
+        return (caddr_t)-1;
+    }
+#endif
+
+    // Additional heap checking if set
+    if (mbed_heap_size && (new_heap >= mbed_heap_start + mbed_heap_size)) {
+        errno = ENOMEM;
+        return (caddr_t)-1;
+    }
+
+    heap = new_heap;
+    return (caddr_t) prev_heap;
 }
 #endif /* GCC_ARM toolchain && TWO_RAM_REGIONS*/
 
