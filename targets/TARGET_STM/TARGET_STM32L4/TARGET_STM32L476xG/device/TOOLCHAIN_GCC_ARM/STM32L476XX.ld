@@ -142,8 +142,10 @@ SECTIONS
         . += (ORIGIN(SRAM1) + LENGTH(SRAM1) - .);
         __HeapLimit = .;
     } > SRAM1
+    /* Check if data + heap exceeds RAM1 limit */
+    ASSERT((ORIGIN(SRAM1)+LENGTH(SRAM1)) >= __HeapLimit, "SRAM1 overflow")
 
-    /* .stack_dummy section doesn't contains any symbols. It is only
+    /* .stack_dummy section doesn't contain any symbols. It is only
      * used for linker to calculate size of stack sections, and assign
      * values to stack symbols later */
     .stack_dummy (COPY):
@@ -157,7 +159,4 @@ SECTIONS
     _estack = __StackTop;
     __StackLimit = __StackTop - SIZEOF(.stack_dummy);
     PROVIDE(__stack = __StackTop);
-
-    /* Check if stack exceeds RAM2 limit */
-    ASSERT(__StackLimit >= ORIGIN(SRAM2), "SRAM2 underflow")
 }

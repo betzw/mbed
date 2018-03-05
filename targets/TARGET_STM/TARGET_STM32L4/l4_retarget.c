@@ -37,10 +37,7 @@
 #include "stm32l4xx.h"
 
 extern uint32_t __end__;
-
-/* Heap limits - only used if set */
-extern unsigned char *mbed_heap_start;
-extern uint32_t mbed_heap_size;
+extern uint32_t __HeapLimit;
 
 /**
  * The default implementation of _sbrk() (in platform/mbed_retarget.cpp) for GCC_ARM requires one-region model (heap and 
@@ -55,15 +52,7 @@ void *__wrap__sbrk(int incr)
     unsigned char*        prev_heap = heap;
     unsigned char*        new_heap = heap + incr;
 
-#if !MBED_CONF_RTOS_PRESENT
-    if (new_heap >= (unsigned char*)__get_MSP()) {
-        errno = ENOMEM;
-        return (caddr_t)-1;
-    }
-#endif
-
-    // Additional heap checking if set
-    if (mbed_heap_size && (new_heap >= mbed_heap_start + mbed_heap_size)) {
+    if (new_heap >= (unsigned char*)&__HeapLimit) {     /* __HeapLimit is end of heap section */
         errno = ENOMEM;
         return (caddr_t)-1;
     }
