@@ -31,7 +31,7 @@ static const int WAIT2RECV_TIMEOUT = 1000; //[ms]
 static const int RETRIES = 2;
 
 static const double EXPECTED_LOSS_RATIO = 0.0;
-static const double TOLERATED_LOSS_RATIO = 0.3;
+static const double TOLERATED_LOSS_RATIO = 0.9;
 
 UDPSocket sock;
 Semaphore tx_sem(0, 1);

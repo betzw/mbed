@@ -31,7 +31,7 @@ int result_no_mem;
 int result_dns_failure;
 int result_exp_timeout;
 
-const int EXTERNAL_THREAD_SIZE = 2048;
+const int EXTERNAL_THREAD_SIZE = 4096;
 const int EVENT_QUEUE_SIZE = 10;
 
 events::EventQueue *event_queue;

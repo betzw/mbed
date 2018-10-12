@@ -45,6 +45,14 @@ NetworkInterface *get_interface()
 static void _ifup()
 {
     net = NetworkInterface::get_default_instance();
+
+    if(WiFiInterface *wifi = net->wifiInterface()) {
+	nsapi_error_t err = wifi->set_credentials(MBED_CONF_APP_WIFI_SECURE_SSID,
+						  MBED_CONF_APP_WIFI_PASSWORD,
+						  NSAPI_SECURITY_WPA_WPA2);
+	TEST_ASSERT_EQUAL(NSAPI_ERROR_OK, err);
+    }
+    
     nsapi_error_t err = net->connect();
     TEST_ASSERT_EQUAL(NSAPI_ERROR_OK, err);
     printf("MBED: UDPClient IP address is '%s'\n", net->get_ip_address());

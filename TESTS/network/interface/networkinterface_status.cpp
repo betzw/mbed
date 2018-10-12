@@ -77,6 +77,13 @@ void NETWORKINTERFACE_STATUS()
     net->attach(status_cb);
     net->set_blocking(true);
 
+    if(WiFiInterface *wifi = net->wifiInterface()) {
+	nsapi_error_t err = wifi->set_credentials(MBED_CONF_APP_WIFI_SECURE_SSID,
+						  MBED_CONF_APP_WIFI_PASSWORD,
+						  NSAPI_SECURITY_WPA_WPA2);
+	TEST_ASSERT_EQUAL(NSAPI_ERROR_OK, err);
+    }
+    
     for (int i = 0; i < repeats; i++) {
         nsapi_error_t err = net->connect();
         TEST_ASSERT_EQUAL(NSAPI_ERROR_OK, err);
